@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha</title>
+    <link rel="stylesheet"  href="/css/codigoRecuperacao.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="/css/img/LogoSimples.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body>
+          <!-- teste de formulario-->
+
+      <div class="login-box">
+        <p>Enviamos um código para o seu email</p>
+        <img src="/css/img/Modelo Logo.png" alt="" class="logo-inicio">
+        
+
+        <form action="/digitarCodigo" method="post" id="input-codigo">
+          <div class="user-box">
+            <input type="number" name="codigo"  maxlength="5" required>
+            <label>Digite o código recebido pelo email</label>
+
+            <div th:if="${mensagemCodigo}" class="error-message">
+              <p th:text="${mensagemCodigo}"></p>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-style" id="link-verificar-codigo">
+            Verificar
+            <span></span>
+          </button>    
+
+
+        <button type="submit" class="btn-style" id="voltar-btn2">
+          <a  th:href="@{/login}" style="color: #e8e8e8;">
+            Voltar
+          </a>
+        </button>
+
+      </form>
+        <svg viewBox="25 25 50 50" id="carregamento">
+          <circle r="20" cy="50" cx="50"></circle>
+        </svg>
+      </div>
+
+
+</body>
+
+</html>
