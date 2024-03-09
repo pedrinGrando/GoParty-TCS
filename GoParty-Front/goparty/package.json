@@ -1,5 +1,5 @@
 {
-  "name": "goparty",
+  "name": "my-project",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -10,15 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^6.5.1",
-    "@fortawesome/free-solid-svg-icons": "^6.5.1",
-    "@fortawesome/react-fontawesome": "^0.2.0",
-    "flowbite": "^2.3.0",
-    "flowbite-react": "^0.7.2",
+    "@material-tailwind/react": "^2.1.9",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.22.3",
-    "react-toastify": "^10.0.4"
+    "react-router-dom": "^6.22.3"
   },
   "devDependencies": {
     "@types/react": "^18.2.56",
