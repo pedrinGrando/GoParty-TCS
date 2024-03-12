@@ -48,7 +48,7 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/v1/usuarios")
-@CrossOrigin(origins = "http://localhost:3000") // Permitindo requisições apenas do localhost:3000
+@CrossOrigin(origins = "http://localhost:5173/") // Permitindo requisições apenas do localhost:3000
 public class UsuarioController {
 
     @Autowired

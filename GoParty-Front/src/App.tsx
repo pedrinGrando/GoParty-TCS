@@ -1,26 +1,32 @@
-import React from 'react'
-import './index.css'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
+import './index.css';
 
-// Fixar aqui qual componente desejado para ser renderizado como default
-import Home from './pages/public/home/Home'
-import Login from './pages/public/login/Login'
-
+// Componente/Page
+import { UserProvider } from './components/UserContext/UserContext';
+import Home from './pages/public/home/Home';
+import Login from './pages/public/login/Login';
+import Register from './pages/public/register/Register';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path='/' element={<Login></Login>} />
-        {/* Rotas de navegação do sistema */}
-        {/*ROTA2= <Route path='/' element={<Home></Home>} /> */}
-        {/*ROTA3= <Route path='/' element={<Home></Home>} /> */}
-        {/*ROTA4= <Route path='/' element={<Home></Home>} /> */}
-        {/*ROTA5= <Route path='/' element={<Home></Home>} /> */}
-        {/*ROTA6= <Route path='/' element={<Home></Home>} /> */}
-      </Routes>
+      <UserProvider>
+        <Routes>
+          <Route path='/' element={<Login />} />
+          <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/home' element={<Home />} />
+          {/* Rotas de navegação do sistema */}
+          {/*ROTA2= <Route path='/' element={<Home />} /> */}
+          {/*ROTA3= <Route path='/' element={<Home />} /> */}
+          {/*ROTA4= <Route path='/' element={<Home />} /> */}
+          {/*ROTA5= <Route path='/' element={<Home />} /> */}
+          {/*ROTA6= <Route path='/' element={<Home />} /> */}
+        </Routes>
+      </UserProvider>
     </Router>
   )
 }
 
-export default App
+export default App;
+

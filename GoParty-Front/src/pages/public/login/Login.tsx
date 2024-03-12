@@ -1,15 +1,28 @@
-import React from 'react';
-import { useState } from 'react'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useUser } from '../../../components/UserContext/UserContext';
+
+//Componentes/Pages
+import { Footer } from '../../../components/Footer/Footer';
+import { Loading } from '../../../components/Loading/Loading';
+import { NavBar } from '../../../components/NavBar/NavBar';
 
 export default function Login(){
 
     const [isLoading, setIsLoading] = useState(false);
-    const [newUserState, setNewUserState] = useState<boolean>(false);
+    const { setUser } = useUser();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const navigate = useNavigate();
   
     const [formData, setFormData] = useState({
       username: '', 
       senha: '',
     });
+
+    const handleButtonClick = () => {
+      navigate('/register');
+    };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const { name, value } = event.target;
@@ -41,11 +54,12 @@ export default function Login(){
             username: '',
             senha: '',
           });
-        
+
+          setUser({ username: formData.username, senha: formData.senha });
           setIsLoading(false);
-          
-          
+          navigate('/home');
           console.log('Login efetuado com sucesso!');
+          
         } else {
           setIsLoading(false);
           console.error('Erro ao efetuar o login:', response.statusText);
@@ -57,14 +71,16 @@ export default function Login(){
     };
 
     return (
-        <form className='bg-white'>
-        <div className="bg-white relative lg:py-20">
+        
+        <form onSubmit={handleSubmit} className='bg-white'>
+         <NavBar/>
+         <div className="bg-white relative lg:py-20 mt-[0px]">
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                <img src="/imagens/FotoCurtindoFesta2.png" className="btn-"/>
+                <img src="/imagens/Foto 1.png" className="btn-"/>
                 </div>
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
@@ -77,7 +93,9 @@ export default function Login(){
                           absolute">Username</label>
                       <input placeholder="John" 
                               type="text" 
+                              onChange={handleChange}
                               id='username'
+                              value={formData.username}
                               name='username'
                              className="border placeholder-gray-400 focus:outline-none
                           focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
@@ -88,6 +106,8 @@ export default function Login(){
                           absolute">Password</label>
                             <input placeholder="Password"
                             id='senha'
+                            onChange={handleChange}
+                            value={formData.senha}
                             name='senha'
                             type="password" 
                       className="border placeholder-gray-400 focus:outline-none
@@ -99,24 +119,7 @@ export default function Login(){
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                          
                          {isLoading ? (
-                             <div>
-                                <div
-                                  className="inline-block h-4 w-4 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-                                  role="status">
-                                  <span
-                                    className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
-                                    >Loading...</span
-                                  >
-                                </div>
-                                <div
-                                  className="inline-block h-4 w-4 animate-[spinner-grow_0.75s_linear_infinite] rounded-full bg-current align-[-0.125em] opacity-0 motion-reduce:animate-[spinner-grow_1.5s_linear_infinite]"
-                                  role="status">
-                                  <span
-                                    className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]"
-                                    >Loading...</span
-                                  >
-                                </div>
-                          </div> 
+                             <Loading/>
                         ) : (
                           'Entrar'
                         )}
@@ -128,7 +131,7 @@ export default function Login(){
                     <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
                     Ainda não possui conta
         
-                    <button className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
+                    <button onClick={handleButtonClick} className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
                    ? Crie a sua rápido e fácil
                    </button>
                    
@@ -246,33 +249,7 @@ export default function Login(){
             </div>
          </div>
         </div> 
-
-      <footer className="rounded-lg shadow dark:bg-gray-800 m-4">
-          <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
-              <div className="sm:flex sm:items-center sm:justify-between">
-                  <a href="/login" className="flex items-center mb-4 sm:mb-0 space-x-3 rtl:space-x-reverse">
-                      <img src="/imagens/favicon.png" className="h-8" alt="GoParty Logo" />
-                      <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">GoParty</span>
-                  </a>
-                  <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
-                      <li>
-                          <a href="#" className="hover:underline me-4 md:me-6">Sobre</a>
-                      </li>
-                      <li>
-                          <a href="#" className="hover:underline me-4 md:me-6">Política de Privacidade</a>
-                      </li>
-                      <li>
-                          <a href="#" className="hover:underline me-4 md:me-6">Licença</a>
-                      </li>
-                      <li>
-                          <a href="#" className="hover:underline">Contato</a>
-                      </li>
-                  </ul>
-              </div>
-              <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-              <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2023 <a href="https://flowbite.com/" className="hover:underline">GoParty™</a>. Todos os Direitos Reservados.</span>
-          </div>
-        </footer>
+        <Footer/>
       </form>
     )
 }

@@ -8,7 +8,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -26,18 +25,16 @@ import go.party.tcs.model.Comentario;
 import go.party.tcs.model.Curtida;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Usuario;
-import go.party.tcs.repository.EventoRepository;
 import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EventoService;
 import go.party.tcs.service.NotificationService;
-import go.party.tcs.service.UsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/v1/eventos")
-@CrossOrigin(origins = "http://localhost:3000") // Permitindo requisições apenas do localhost:3000
+@CrossOrigin(origins = "http://localhost:5173/") // Permitindo requisições apenas do localhost:3000
 public class EventoController {
     
     @Autowired
