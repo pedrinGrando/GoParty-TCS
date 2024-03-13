@@ -3,7 +3,7 @@ import React from "react";
 export const NavBar: React.FC = () => {
     return (
       <div>
-        <nav className="bg-white dark:bg-indigo-500">
+        <nav className="bg-white dark:bg-indigo-500 mb-[0px]">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
             <a href="https://goparty.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
                 <img src="/imagens/logoGoParty.png" className="h-8" alt="GoParty Logo" />

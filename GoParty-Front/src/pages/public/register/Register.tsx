@@ -11,7 +11,12 @@ export default function Register(){
 
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string>('');
+    const [isChecked, setIsChecked] = useState(false);
     const navigate = useNavigate();
+
+    const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setIsChecked(e.target.checked);
+    };
 
       const [formData, setFormData] = useState({
         nome: '',
@@ -102,7 +107,7 @@ export default function Register(){
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img src="/imagens/Foto 2.png" className="btn-"/>
+                  <img src="/imagens/Foto 2.png" className="rounded btn- mb-[500px]"/>
                 </div>
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
@@ -228,6 +233,7 @@ export default function Register(){
                         type="checkbox"
                         className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-pink-500 checked:bg-pink-500 checked:before:bg-pink-500 hover:before:opacity-10"
                         id="checkbox"
+                        onChange={handleCheckboxChange}
                     />
                     <span className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
                         <svg
@@ -261,7 +267,9 @@ export default function Register(){
                     </label>
                 </div>
                     <div className="relative">
-                      <button type='submit' className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
+                      <button type='submit' 
+                      disabled={!isChecked || isLoading}
+                      className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                            {isLoading ? (
                              <Loading/>
