@@ -575,6 +575,19 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/check-email")
+    public ResponseEntity<String> checkEmailExists(@RequestParam String email) {
+
+        boolean exists = usuarioRepository.existsByEmail(email);
+        if (exists){
+            return ResponseEntity.ok("Email já cadastrado!");
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
+    }
+
     @GetMapping("/search")
     public List<Usuario> searchUsers(@RequestParam String query) {
         // Realiza a pesquisa com base na consulta e retorne os resultados

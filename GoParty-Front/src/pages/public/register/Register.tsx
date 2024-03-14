@@ -18,6 +18,7 @@ export default function Register(){
     const [isValidDate, setIsValidDate] = useState(true);
     const [alertAge, setAlertAge] = useState(false);
     const [message, setMessage] = useState(""); 
+    const [isEmailUnique, setIsEmailUnique] = useState(true);
     const navigate = useNavigate();
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,10 +35,29 @@ export default function Register(){
       return emailRegex.test(email);
     };
 
-    const handleBlur = () => {
-      // Verificar se o e-mail é válido quando o campo perder o foco
+    const handleBlurUserName = async () => {
+
+    }
+
+    const handleBlur = async () => {
       setIsLoading(false);
       setIsValidEmail(validateEmail(formData.email));
+
+      try {
+        const response = await fetch(`http://localhost:8081/v1/usuarios/check-email?email=${formData.email}`);
+
+        if (response.ok){
+          setIsEmailUnique(false)
+          console.log(response)
+        } else {
+          setIsEmailUnique(true)
+          console.log(response)
+        }
+        
+    } catch (error) {
+        console.error('Error checking email uniqueness:', error);
+        setIsEmailUnique(false);
+    }
       return;
   };
 
@@ -206,8 +226,9 @@ export default function Register(){
                             onBlur={handleBlur} 
                             type="text" 
                       className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.email
-                    || !isValidEmail  ? 'border-red-500' : ''}`}/>
+                    || !isValidEmail || !isEmailUnique  ? 'border-red-500' : ''}`}/>
                    {!isValidEmail && <p style={{ color: 'red' }}>Por favor, insira um e-mail válido.</p>}
+                   {!isEmailUnique && <p style={{ color: 'red' }}>Este e-mail já está cadastrado no GoParty!</p>}
                     </div>
                     <div className="relative">
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -216,6 +237,7 @@ export default function Register(){
                             placeholder="Username"
                             id='username'
                             name='username'
+                            onBlur={handleBlurUserName}
                             value={formData.username}
                             onChange={handleChange}
                             type="text" 
@@ -277,7 +299,7 @@ export default function Register(){
                                             </RenderIf>
 
                                             <RenderIf condition={!!imagePreview}>
-                                                <img src={imagePreview} width={250} className='rounded-md' />
+                                                <img src={imagePreview} width={250} className='rounded-full' />
                                             </RenderIf>
 
                                             <input accept="image/*" onChange={onFileUpload} id='fotoPerfil' name='fotoPerfil' type='file' className='sr-only' />
@@ -335,7 +357,7 @@ export default function Register(){
                 </div>
                     <div className="relative">
                       <button type='submit' 
-                      disabled={!isChecked || isLoading}
+                      disabled={!isChecked || errors.idade || !isValidEmail || !isEmailUnique}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                            {isLoading ? (
