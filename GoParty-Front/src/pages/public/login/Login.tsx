@@ -14,8 +14,8 @@ export default function Login(){
     const { setUser } = useUser();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState(false);
     const navigate = useNavigate();
+    const [error, setError] = useState(false);
     const [message, setMessage] = useState(""); 
   
     const [formData, setFormData] = useState({
@@ -132,14 +132,19 @@ export default function Login(){
                       className="border placeholder-gray-400 focus:outline-none
                           focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
                           border-gray-300 rounded-md"/>
+
+                        <div className="text-sm ml-auto">
+                          <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Esqueceu a senha?</a>
+                        </div>
                     </div>
                             <Error
                               error={error}
                               message={message}
                               onClose={handleCloseFooter}
                             />
-
+       
                     <div className="relative">
+
                       <button type='submit' className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                          
@@ -231,7 +236,6 @@ export default function Login(){
               </div>
             </div>
           </div>
-
                    {/* Div de Tela Laranja na Parte de Baixo */}
               <div className="bg-indigo-500 py-8 flex items-center justify-center rounded">
                <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">

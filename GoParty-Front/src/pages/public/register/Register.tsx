@@ -7,8 +7,6 @@ import { Footer } from '../../../components/Footer/Footer';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 import { Error } from '../../../components/Error/Error';
-import { AlertEmail } from '../../../components/Error/AlertEmail';
-import { AlertAge } from '../../../components/Error/AlertAge';
 
 export default function Register(){
 
@@ -16,7 +14,8 @@ export default function Register(){
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
     const [error, setError] = useState(false);
-    const [alertEmail, setAlertEmail] = useState(false);
+    const [isValidEmail, setIsValidEmail] = useState(true);
+    const [isValidDate, setIsValidDate] = useState(true);
     const [alertAge, setAlertAge] = useState(false);
     const [message, setMessage] = useState(""); 
     const navigate = useNavigate();
@@ -28,10 +27,6 @@ export default function Register(){
     const handleCloseFooter = () => {
       setError(false); 
     };
-
-    const handleCloseAge = () => {
-      setAlertAge(false); 
-    };
     
     const validateEmail = (email: string): boolean => {
       // Expressão regular para verificar se o e-mail é válido
@@ -41,11 +36,9 @@ export default function Register(){
 
     const handleBlur = () => {
       // Verificar se o e-mail é válido quando o campo perder o foco
-     if(validateEmail(formData.email)){
-      setAlertEmail(true)
       setIsLoading(false);
+      setIsValidEmail(validateEmail(formData.email));
       return;
-     }
   };
 
     const [errors, setErrors] = useState({
@@ -96,7 +89,6 @@ export default function Register(){
                 
                 if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
                     setErrors({ ...errors, idade: age - 1 < 16 });
-                    setAlertAge(true)
                 } else {
                     setErrors({ ...errors, idade: age < 16 });
                 }
@@ -124,7 +116,6 @@ export default function Register(){
         setIsLoading(false)
         setMessage('Preencha todos os campos obrigatórios!')
         setError(true)
-
         return;
     }
 
@@ -215,13 +206,9 @@ export default function Register(){
                             onBlur={handleBlur} 
                             type="text" 
                       className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.email
-                       ? 'border-red-500' : ''}`}/>
+                    || !isValidEmail  ? 'border-red-500' : ''}`}/>
+                   {!isValidEmail && <p style={{ color: 'red' }}>Por favor, insira um e-mail válido.</p>}
                     </div>
-                             <AlertEmail
-                              error={error}
-                              message={'O E-mail digitado é inválido!'}
-                              onClose={handleCloseFooter}
-                            />
                     <div className="relative">
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Username</label>
@@ -244,13 +231,11 @@ export default function Register(){
                             value={formData.idade}
                             onChange={handleChange}
                             type="date" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.idade ? 'border-red-500' : ''}`}/>
-                    </div>
-                    <AlertAge
-                              error={error}
-                              message={'É necessário ter pelo menos 16 anos para o cadastro!'}
-                              onClose={handleCloseAge}
-                            />
+                     className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.idade
+                    ? 'border-red-500' : ''}`}/>
+                   {errors.idade && <p style={{ color: 'red' }}>Você deve ter pelo menos 16 anos de idade.</p>}
+
+                  </div>
                     <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Crie uma senha</label>
