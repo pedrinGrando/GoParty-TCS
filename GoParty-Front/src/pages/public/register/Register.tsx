@@ -6,17 +6,55 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 import { Footer } from '../../../components/Footer/Footer';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
+import { Error } from '../../../components/Error/Error';
+import { AlertEmail } from '../../../components/Error/AlertEmail';
+import { AlertAge } from '../../../components/Error/AlertAge';
 
 export default function Register(){
 
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
+    const [error, setError] = useState(false);
+    const [alertEmail, setAlertEmail] = useState(false);
+    const [alertAge, setAlertAge] = useState(false);
+    const [message, setMessage] = useState(""); 
     const navigate = useNavigate();
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setIsChecked(e.target.checked);
     };
+
+    const handleCloseFooter = () => {
+      setError(false); 
+    };
+
+    const handleCloseAge = () => {
+      setAlertAge(false); 
+    };
+    
+    const validateEmail = (email: string): boolean => {
+      // Expressão regular para verificar se o e-mail é válido
+      const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    };
+
+    const handleBlur = () => {
+      // Verificar se o e-mail é válido quando o campo perder o foco
+     if(validateEmail(formData.email)){
+      setAlertEmail(true)
+      setIsLoading(false);
+      return;
+     }
+  };
+
+    const [errors, setErrors] = useState({
+      nome: false,
+      email: false,
+      username: false,
+      idade: false,
+      senha: false,
+   });
 
       const [formData, setFormData] = useState({
         nome: '',
@@ -35,25 +73,60 @@ export default function Register(){
         const { name, value, type } = event.target;
       
         if (type === 'file' && event.target instanceof HTMLInputElement) {
-          const file = event.target.files && event.target.files[0];
-          if (file) {
-            const blob = new Blob([file], { type: file.type });
-            setFormData({
-              ...formData,
-              [name]: blob,
-            });
-          }
+            const file = event.target.files && event.target.files[0];
+            if (file) {
+                const blob = new Blob([file], { type: file.type });
+                setFormData({
+                    ...formData,
+                    [name]: blob,
+                });
+            }
         } else {
-          setFormData({
-            ...formData,
-            [name]: value,
-          });
+            setFormData({
+                ...formData,
+                [name]: value,
+            });
+
+            if (name === 'idade') {
+                // calcula a idade com base na data de nascimento fornecida
+                const today = new Date();
+                const birthDate = new Date(value);
+                const age = today.getFullYear() - birthDate.getFullYear();
+                const monthDiff = today.getMonth() - birthDate.getMonth();
+                
+                if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                    setErrors({ ...errors, idade: age - 1 < 16 });
+                    setAlertAge(true)
+                } else {
+                    setErrors({ ...errors, idade: age < 16 });
+                }
+            }
         }
-      };
+    };
       
       const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsLoading(true);
+
+         const newErrors = {
+          nome: formData.nome.trim() === '',
+          email: formData.email.trim() === '',
+          username: formData.username.trim() === '',
+          idade: formData.idade.trim() === '',
+          senha: formData.senha.trim() === ''
+      };
+
+      setErrors(newErrors);
+
+      // Verificar se há erros
+      if (Object.values(newErrors).some(error => error)) {
+
+        setIsLoading(false)
+        setMessage('Preencha todos os campos obrigatórios!')
+        setError(true)
+
+        return;
+    }
 
         try {
           const response = await fetch('http://localhost:8081/v1/usuarios/cadastro', {
@@ -82,10 +155,14 @@ export default function Register(){
 
           } else {
             setIsLoading(false);
+            setError(true);
+            setMessage('Alguns dados digitados são inválidos!');
             console.error('Erro ao enviar formulário:', response.statusText);
           }
         } catch (error) {
           setIsLoading(false);
+          setError(true);
+          setMessage(""+error);
           console.error('Erro ao enviar formulário:', error);
         }
       };
@@ -124,9 +201,7 @@ export default function Register(){
                               id='nome'
                               value={formData.nome}
                               onChange={handleChange}
-                             className="border placeholder-gray-400 focus:outline-none
-                          focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
-                          border-gray-300 rounded-md"/>
+                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.nome ? 'border-red-500' : ''}`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='email' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -137,11 +212,16 @@ export default function Register(){
                             name='email'
                             value={formData.email}
                             onChange={handleChange}
-                            type="email" 
-                      className="border placeholder-gray-400 focus:outline-none
-                          focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
-                          border-gray-300 rounded-md"/>
+                            onBlur={handleBlur} 
+                            type="text" 
+                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.email
+                       ? 'border-red-500' : ''}`}/>
                     </div>
+                             <AlertEmail
+                              error={error}
+                              message={'O E-mail digitado é inválido!'}
+                              onClose={handleCloseFooter}
+                            />
                     <div className="relative">
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Username</label>
@@ -152,9 +232,7 @@ export default function Register(){
                             value={formData.username}
                             onChange={handleChange}
                             type="text" 
-                      className="border placeholder-gray-400 focus:outline-none
-                          focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
-                          border-gray-300 rounded-md"/>
+                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.username ? 'border-red-500' : ''}`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='idade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -166,10 +244,13 @@ export default function Register(){
                             value={formData.idade}
                             onChange={handleChange}
                             type="date" 
-                      className="border placeholder-gray-400 focus:outline-none
-                          focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
-                          border-gray-300 rounded-md"/>
+                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.idade ? 'border-red-500' : ''}`}/>
                     </div>
+                    <AlertAge
+                              error={error}
+                              message={'É necessário ter pelo menos 16 anos para o cadastro!'}
+                              onClose={handleCloseAge}
+                            />
                     <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Crie uma senha</label>
@@ -180,9 +261,7 @@ export default function Register(){
                               value={formData.senha}
                               onChange={handleChange}
                               type="password" 
-                      className="border placeholder-gray-400 focus:outline-none
-                          focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
-                          border-gray-300 rounded-md"/>
+                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha ? 'border-red-500' : ''}`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='senhaConfirm' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -192,9 +271,7 @@ export default function Register(){
                             name='senhaConfirm'
                             onChange={handleChange}
                             type="password" 
-                      className="border placeholder-gray-400 focus:outline-none
-                          focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
-                          border-gray-300 rounded-md"/>
+                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha ? 'border-red-500' : ''}`}/>
                     </div>
 
                     <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
@@ -223,6 +300,11 @@ export default function Register(){
                                     </div>   
                                 </div>
                             </div>
+                            <Error
+                              error={error}
+                              message={message}
+                              onClose={handleCloseFooter}
+                            />
 
                             <div className="inline-flex items-center">
                     <label
