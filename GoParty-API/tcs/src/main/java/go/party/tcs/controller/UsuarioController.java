@@ -486,12 +486,30 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/check-username/{username}")
-    public ResponseEntity<Map<String, Boolean>> checkUsernameExists(@PathVariable String username) {
+    @GetMapping("/check-username")
+    public ResponseEntity<String> checkUsernameExists(@RequestParam String username) {
         boolean exists = usuarioService.checkUsernameExists(username);
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("exists", exists);
-        return ResponseEntity.ok(response);
+       
+        if (exists){
+            return ResponseEntity.ok("Username já cadastrado!");
+        }else{
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username não cadastrado!");
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username não cadastrado!");
+    }
+
+    @GetMapping("/check-email")
+    public ResponseEntity<String> checkEmailExists(@RequestParam String email) {
+
+        boolean exists = usuarioRepository.existsByEmail(email);
+        if (exists){
+            return ResponseEntity.ok("Email já cadastrado!");
+        } else {
+            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
     }
 
     @GetMapping("/profile/{id}")
@@ -575,18 +593,6 @@ public class UsuarioController {
         }
     }
 
-    @GetMapping("/check-email")
-    public ResponseEntity<String> checkEmailExists(@RequestParam String email) {
-
-        boolean exists = usuarioRepository.existsByEmail(email);
-        if (exists){
-            return ResponseEntity.ok("Email já cadastrado!");
-        } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
-        }
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
-    }
 
     @GetMapping("/search")
     public List<Usuario> searchUsers(@RequestParam String query) {

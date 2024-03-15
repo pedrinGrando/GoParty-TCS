@@ -16,12 +16,17 @@ export default function Login(){
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const [error, setError] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const [message, setMessage] = useState(""); 
   
     const [formData, setFormData] = useState({
       username: '', 
       senha: '',
     });
+
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+  };
 
     const handleButtonClick = () => {
       navigate('/register');
@@ -128,10 +133,21 @@ export default function Login(){
                             onChange={handleChange}
                             value={formData.senha}
                             name='senha'
-                            type="password" 
+                            type={showPassword ? 'text' : 'password'}
                       className="border placeholder-gray-400 focus:outline-none
                           focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
                           border-gray-300 rounded-md"/>
+                 <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 px-3 mb-4 text-gray-600"
+                  >
+                    {showPassword ? (
+                       <img src="/imagens/view.png" alt="" />
+                    ) : (
+                        <img src="imagens/hide.png" alt="" />
+                    )}
+                </button>
 
                         <div className="text-sm ml-auto">
                           <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Esqueceu a senha?</a>

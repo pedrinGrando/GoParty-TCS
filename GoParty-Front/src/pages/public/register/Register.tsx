@@ -19,7 +19,13 @@ export default function Register(){
     const [alertAge, setAlertAge] = useState(false);
     const [message, setMessage] = useState(""); 
     const [isEmailUnique, setIsEmailUnique] = useState(true);
+    const [isUsernameUnique, setIsUsernameUnique] = useState(true);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
+
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+  };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setIsChecked(e.target.checked);
@@ -37,6 +43,21 @@ export default function Register(){
 
     const handleBlurUserName = async () => {
 
+      try {
+        const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
+
+        if (response.ok){
+          setIsUsernameUnique(false)
+          console.log(response)
+        } else {
+          setIsUsernameUnique(true)
+          console.log(response)
+        }
+        
+      } catch (error) {
+          console.error('Error checking username uniqueness:', error);
+          setIsUsernameUnique(false);
+      }
     }
 
     const handleBlur = async () => {
@@ -241,7 +262,8 @@ export default function Register(){
                             value={formData.username}
                             onChange={handleChange}
                             type="text" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.username ? 'border-red-500' : ''}`}/>
+                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
+                      {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
                     </div>
                     <div className="relative">
                       <label htmlFor='idade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -267,7 +289,7 @@ export default function Register(){
                               id='senha'
                               value={formData.senha}
                               onChange={handleChange}
-                              type="password" 
+                              type='password'
                       className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha ? 'border-red-500' : ''}`}/>
                     </div>
                     <div className="relative">
@@ -277,10 +299,20 @@ export default function Register(){
                             id='senhaConfirm'
                             name='senhaConfirm'
                             onChange={handleChange}
-                            type="password" 
+                            type={showPassword ? 'text' : 'password'}
                       className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha ? 'border-red-500' : ''}`}/>
+                <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 px-3 text-gray-600"
+                >
+                    {showPassword ? (
+                       <img src="/imagens/view.png" alt="" />
+                    ) : (
+                        <img src="imagens/hide.png" alt="" />
+                    )}
+                </button>
                     </div>
-
                     <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
                                 <div className='text-center'>
 
@@ -357,7 +389,7 @@ export default function Register(){
                 </div>
                     <div className="relative">
                       <button type='submit' 
-                      disabled={!isChecked || errors.idade || !isValidEmail || !isEmailUnique}
+                      disabled={!isChecked || errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                            {isLoading ? (
