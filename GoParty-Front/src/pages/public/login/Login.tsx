@@ -6,6 +6,7 @@ import { useUser } from '../../../components/UserContext/UserContext';
 import { Footer } from '../../../components/Footer/Footer';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
+import { Error } from '../../../components/Error/Error';
 
 export default function Login(){
 
@@ -14,14 +15,25 @@ export default function Login(){
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
+    const [error, setError] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
+    const [message, setMessage] = useState(""); 
   
     const [formData, setFormData] = useState({
       username: '', 
       senha: '',
     });
 
+    const togglePasswordVisibility = () => {
+      setShowPassword(!showPassword);
+  };
+
     const handleButtonClick = () => {
       navigate('/register');
+    };
+
+    const handleCloseFooter = () => {
+      setError(false); 
     };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -35,7 +47,15 @@ export default function Login(){
     const handleSubmit = async (event: any) => {
       event.preventDefault();
       setIsLoading(true);
-      
+
+         
+        if (formData.username.trim() === "" || formData.senha.trim() === "") {
+          setError(true);
+          setIsLoading(false);
+          setMessage("Preencha todos os campos!")
+          return;
+        }
+
       try {
         const response = await fetch('http://localhost:8081/v1/usuarios/auth', {
           method: 'POST',
@@ -62,10 +82,14 @@ export default function Login(){
           
         } else {
           setIsLoading(false);
+          setMessage("Usuário ou senha inválidos!")
+          setError(true);
           console.error('Erro ao efetuar o login:', response.statusText);
         }
       } catch (error) {
         setIsLoading(false);
+        setMessage("Usuário ou senha inválidos!")
+        setError(true);
         console.error('Erro ao efetuar o login:', error);
       }
     };
@@ -109,12 +133,34 @@ export default function Login(){
                             onChange={handleChange}
                             value={formData.senha}
                             name='senha'
-                            type="password" 
+                            type={showPassword ? 'text' : 'password'}
                       className="border placeholder-gray-400 focus:outline-none
                           focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white
                           border-gray-300 rounded-md"/>
+                 <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="absolute inset-y-0 right-0 px-3 mb-4 text-gray-600"
+                  >
+                    {showPassword ? (
+                       <img src="/imagens/view.png" alt="" />
+                    ) : (
+                        <img src="imagens/hide.png" alt="" />
+                    )}
+                </button>
+
+                        <div className="text-sm ml-auto">
+                          <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Esqueceu a senha?</a>
+                        </div>
                     </div>
+                            <Error
+                              error={error}
+                              message={message}
+                              onClose={handleCloseFooter}
+                            />
+       
                     <div className="relative">
+
                       <button type='submit' className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                          
@@ -129,10 +175,10 @@ export default function Login(){
 
                     {/* AQUI*/}
                     <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
-                    Ainda não possui conta
+                    Ainda não possui conta? 
         
                     <button onClick={handleButtonClick} className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
-                   ? Crie a sua rápido e fácil
+                     Crie a sua rápido e fácil
                    </button>
                    
                    </p>
@@ -206,7 +252,6 @@ export default function Login(){
               </div>
             </div>
           </div>
-
                    {/* Div de Tela Laranja na Parte de Baixo */}
               <div className="bg-indigo-500 py-8 flex items-center justify-center rounded">
                <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">

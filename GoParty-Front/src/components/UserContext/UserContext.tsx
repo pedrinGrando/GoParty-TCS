@@ -1,12 +1,12 @@
 import React, { ReactNode, createContext, useContext, useState } from 'react';
 
-// Definindo o formato dos dados do usuário
+// Define o formato dos dados do usuário
 interface UserData {
   username: string;
   senha: string;
 }
 
-// Criando o contexto de usuário
+// Cria o contexto de usuário
 interface UserContextType {
   user: UserData | null;
   setUser: (user: UserData | null) => void;
