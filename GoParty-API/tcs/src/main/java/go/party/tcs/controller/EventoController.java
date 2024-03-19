@@ -87,6 +87,12 @@ public class EventoController {
         return "redirect:/home";
     }
 
+    @GetMapping("/buscar-eventos")
+    public ResponseEntity<List<Evento>> getAllEvents() {
+        List<Evento> events = eventoService.getAllEventos();
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
     @PostMapping("/comments/{eventoId}/comment")
     public ResponseEntity<String> criarComentario(@PathVariable Integer eventoId,
                                                    @RequestBody Comentario comentario,
