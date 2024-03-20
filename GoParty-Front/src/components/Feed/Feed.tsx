@@ -1,5 +1,6 @@
 import React from 'react';
 import Event from '../../types/Event';
+import { NoEvent } from './NoEvent';
 
 interface FeedProps {
     events: Event[];
@@ -10,7 +11,7 @@ const Feed: React.FC<FeedProps> = ({ events }) => {
         <div>
             {events.length === 0 ? (
                 <div className="flex justify-center items-center h-screen">
-                    <p>Não encontramos nenhum evento disponível.</p>
+                    <NoEvent/>
                 </div>
             ) : (
                 events.map(evento => (

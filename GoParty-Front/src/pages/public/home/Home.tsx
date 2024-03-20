@@ -32,7 +32,7 @@ export default function Home () {
            <Feed events={events}/>
     
             {/* Teste de Evento(Sem dados do banco) */}
-            <div className="flex justify-center items-center h-screen-3">
+            {/* <div className="flex justify-center items-center h-screen-3">
                 <div className="max-w-sm rounded overflow-hidden shadow-lg">
                     <img className="w-full" src="/imagens/Foto 2.png" alt="Sunset in the mountains" />
                     <div className="px-6 py-4">
@@ -47,9 +47,9 @@ export default function Home () {
                     <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
                     </div>
                 </div>
-                </div>
+                </div> */}
                 {/* Teste de Evento2 */}
-            <div className="flex justify-center items-center h-screen">
+            {/* <div className="flex justify-center items-center h-screen">
                 <div className="max-w-sm rounded overflow-hidden shadow-lg">
                     <img className="w-full" src="/imagens/Foto 3.png" alt="Sunset in the mountains" />
                     <div className="px-6 py-4">
@@ -64,7 +64,7 @@ export default function Home () {
                     <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">#winter</span>
                     </div>
                 </div>
-                </div>
+                </div> */}
                 <Sidebar/>
             </div>
     )
