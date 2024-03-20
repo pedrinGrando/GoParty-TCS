@@ -34,7 +34,7 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/v1/eventos")
-@CrossOrigin(origins = "http://localhost:5173/") // Permitindo requisições apenas do localhost:3000
+@CrossOrigin(origins = "http://localhost:5173/") 
 public class EventoController {
     
     @Autowired
@@ -52,41 +52,39 @@ public class EventoController {
     private Usuario usuarioLogado = new Usuario();
     
     // Método para Criar um Evento
-    @PostMapping("/criar-evento")
-    public String criarEvento(@RequestParam("titulo") String titulo,
-                            @RequestParam("descricao") String descricao,
-                            @RequestParam("imagemEvento") MultipartFile imagemEvento,
-                            @RequestParam("estado") String estado,
-                            @RequestParam("cidade") String cidade,
-                            @RequestParam("bairro") String bairro,
-                            @RequestParam("valor") String valor,
-                            @RequestParam("horario") String horario,
-                            HttpSession session) throws IOException {
+
+     @CrossOrigin(origins = "http://http:/localhost:5173/")   
+     @PostMapping("/criar-evento")
+    public ResponseEntity<String> criarEvento(@RequestParam("titulo") String titulo,
+                              @RequestParam("descricao") String descricao,
+                              @RequestParam("imagemEvento") MultipartFile imagemEvento,
+                              @RequestParam("estado") String estado,
+                              @RequestParam("cidade") String cidade,
+                              @RequestParam("bairro") String bairro,
+                              @RequestParam("valor") String valor,
+                              @RequestParam("horario") String horario,
+                              HttpSession session) throws IOException {
 
         // Recupere o usuário da sessão
         // chave "usuario"
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         usuarioLogado = usuario;
 
-        
         Evento evento = new Evento(titulo, descricao, usuario, valor, horario);
-    
         evento.setEstado(estado);
         evento.setCidade(cidade);
         evento.setBairro(bairro);
 
-        
         if (!imagemEvento.isEmpty()) {
             byte[] imagemBytes = imagemEvento.getBytes();
-            evento.setFotoEvento(imagemBytes); // Supondo que você tenha um método setImagem para o evento
+            evento.setFotoEvento(imagemBytes); 
         }
-        
-        
-        eventoService.criarEvento(evento, null);
 
-        return "redirect:/home";
+        eventoService.criarEvento(evento, null);
+        return ResponseEntity.ok("Evento criado com sucesso");
     }
 
+    @CrossOrigin(origins = "http://http:/localhost:5173/") // Especifique aqui os domínios permitidos
     @GetMapping("/buscar-eventos")
     public ResponseEntity<List<Evento>> getAllEvents() {
         List<Evento> events = eventoService.getAllEventos();
