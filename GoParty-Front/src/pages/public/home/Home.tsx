@@ -9,28 +9,38 @@ import Event from '../../../types/Event';
 export default function Home () {
     const { user } = useUser();
     const [events, setEvents] = useState<Event[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     //Busca os eventos postados
     useEffect(() => {
+        setIsLoading(true)
         const fetchEvents = async () => {
             try {
                 const response = await fetch('http://localhost:8081/v1/eventos/buscar-eventos');
                 if (!response.ok) {
                     throw new Error('Failed to fetch events');
                 }
+                setIsLoading(false)
                 const data = await response.json();
                 setEvents(data);
             } catch (error) {
                 console.error(error);
+                setIsLoading(false)
             }
         };
         fetchEvents();
     }, []);
 
     return (
-        <div>
-           <Feed events={events}/>
-    
+               <div>
+                       {isLoading ? (
+                             <div>
+                                <p>Carregando eventos...</p>
+                             </div>
+                        ) : (
+                            <Feed events={events}/>
+                        )}
+
             {/* Teste de Evento(Sem dados do banco) */}
             {/* <div className="flex justify-center items-center h-screen-3">
                 <div className="max-w-sm rounded overflow-hidden shadow-lg">

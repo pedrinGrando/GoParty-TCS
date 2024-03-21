@@ -17,10 +17,10 @@ export default function Login(){
     const navigate = useNavigate();
     const [error, setError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
-    const [message, setMessage] = useState(""); 
+    const [message, setMessage] = useState("");
   
     const [formData, setFormData] = useState({
-      username: '', 
+      username: '',
       senha: '',
     });
 

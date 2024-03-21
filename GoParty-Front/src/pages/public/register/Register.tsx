@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import MaskedInput from 'react-text-mask';
 import { RenderIf } from '../../../components/RenderIf/RenderIf';
 
 //Componentes/Pages
@@ -24,7 +25,7 @@ export default function Register(){
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [senhaNotEqual, setSenhaNotEqual] = useState(false);
-    const [senhaInvalid, setInvalidSenha] = useState(false);
+    const [invalidSenha, setInvalidSenha] = useState(false);
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
@@ -33,6 +34,23 @@ export default function Register(){
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setIsChecked(e.target.checked);
     };
+
+    const validatePassword = (password: string) => {
+      // Verifica se a senha tem entre 8 e 15 caracteres
+      if (password.length < 8 || password.length > 15) {
+          return false;
+      }
+      
+      // Verifica se a senha contém pelo menos um caractere especial e um numérico
+      const regexSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+      const regexNumeric = /[0-9]+/;
+      
+      if (!regexSpecialChar.test(password) || !regexNumeric.test(password)) {
+          return false;
+      }
+      
+      return true;
+  };
 
     const handleCloseFooter = () => {
       setError(false); 
@@ -105,6 +123,7 @@ export default function Register(){
       username: false,
       idade: false,
       senha: false,
+      cpf: false,
       senhaConfirm: false,
       senhaRegras: false
    });
@@ -115,6 +134,7 @@ export default function Register(){
         username: '',
         idade: '',
         senha: '',
+        cpf: '',
         fotoPerfil: null,
         senhaConfirm: '',
         senhaRegras: '',
@@ -148,12 +168,12 @@ export default function Register(){
               setSenhaNotEqual(false);
             }
 
-          // Verifica regras de senha
-          const senhaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,15}$/;
-          if (name === 'senha' && !senhaRegex.test(value)) {
-              setInvalidSenha(true);
-          } else {
-            setInvalidSenha(false);
+            if (name === 'senha') {
+              const isValidPassword = validatePassword(value);
+              setErrors({
+                  ...errors,
+                  senha: !isValidPassword
+              });
           }
 
             if (name === 'idade') {
@@ -182,6 +202,7 @@ export default function Register(){
           username: formData.username.trim() === '',
           idade: formData.idade.trim() === '',
           senha: formData.senha.trim() === '',
+          cpf: formData.senha.trim() === '',
           senhaConfirm: formData.senhaConfirm.trim() === '',
           senhaRegras: formData.senhaConfirm.trim() === ''
       };
@@ -214,6 +235,7 @@ export default function Register(){
               username: '',
               idade: '',
               senha: '',
+              cpf: '',
               fotoPerfil: null,
               senhaConfirm: '',
               senhaRegras: ''
@@ -319,7 +341,20 @@ export default function Register(){
                    {errors.idade && <p style={{ color: 'red' }}>Você deve ter pelo menos 16 anos de idade.</p>}
 
                   </div>
-                    <div className="relative">
+
+                  <div className="relative">
+                        <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">Seu CPF</label>
+                        <MaskedInput
+                          mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
+                          placeholder="Digite seu CPF"
+                          id='cpf'
+                          name='cpf'
+                          value={formData.cpf}
+                          onChange={handleChange}
+                          className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.cpf ? 'border-red-500' : ''}`}
+                        />
+                      </div>
+                   <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Crie uma senha</label>
                             <input 
@@ -329,13 +364,12 @@ export default function Register(){
                               value={formData.senha}
                               onChange={handleChange}
                               type='password'
-                     className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha || senhaInvalid ? 'border-red-500' : ''}`}/>
-                    
-                    {senhaInvalid ? (
-                       <ErrorPassword/>
-                    ) : (
-                      <p></p>
-                    )}
+                     className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}/>
+                  
+                  {errors.senha && (
+                        <ErrorPassword />
+                   )}
+
 
                     </div>
                     <div className="relative">
@@ -348,7 +382,7 @@ export default function Register(){
                             value={formData.senhaConfirm}
                             type={showPassword ? 'text' : 'password'}
                       className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}/>
-                 {senhaNotEqual && <p style={{ color: 'red' }}>As senhas não coincidem.</p>}
+                 {senhaNotEqual && <p style={{ color: 'red' }}>As senhas não coincidem!</p>}
                 <button
                     type="button"
                     onClick={togglePasswordVisibility}

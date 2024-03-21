@@ -41,6 +41,9 @@ public class Usuario {
     @Column(name = "idade")
     private LocalDate idade;
 
+    @Column(name = "cpf")
+    private String cpf;
+
     @Column(name = "url")
     private String url;
 
