@@ -17,15 +17,12 @@ export default function Register(){
     const [isChecked, setIsChecked] = useState(false);
     const [error, setError] = useState(false);
     const [isValidEmail, setIsValidEmail] = useState(true);
-    const [isValidDate, setIsValidDate] = useState(true);
-    const [alertAge, setAlertAge] = useState(false);
     const [message, setMessage] = useState(""); 
     const [isEmailUnique, setIsEmailUnique] = useState(true);
     const [isUsernameUnique, setIsUsernameUnique] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [senhaNotEqual, setSenhaNotEqual] = useState(false);
-    const [invalidSenha, setInvalidSenha] = useState(false);
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
@@ -50,7 +47,7 @@ export default function Register(){
       }
       
       return true;
-  };
+    };
 
     const handleCloseFooter = () => {
       setError(false); 
