@@ -5,7 +5,6 @@ export default function Explore () {
    
     return (
         <div>
-             
                  <div className="px-4 mx-auto text-center max-w-xl">
                     <h1 className="mb-4 text-2xl font-semibold text-white md:text-3xl lg:text-4xl">PAGE EXPLORAR EM CONSTRUCAO.</h1>
                         <p className="mb-6 text-base text-gray-300 lg:text-lg sm:px-6 lg:px-12">Mas não se preocupe, você pode criar seu primeiro próprio evento e atrair o público correto para a busca de fundos necessários. Seja um GoParty Adm agora!</p>
