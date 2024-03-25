@@ -1,19 +1,19 @@
 package go.party.tcs.model;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -55,24 +55,16 @@ public class Formatura {
     private LocalDate dataPrevista;
 
     @ManyToOne
-    @Column(name = "goparty_adm")
+    @JoinColumn(name = "usuario_id")
     private Usuario adm;
 
     @Lob
-    @Column(name = "foto_evento", columnDefinition = "LONGBLOB")
+    @Column(name = "foto_formatura", columnDefinition = "LONGBLOB")
     private byte[] fotoEvento;
 
-    @ManyToOne
-    @JoinColumn(name = "comentario_id")
-    private Comentario comentario;
-
-    @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
-    private List<Comentario> comentarios = new ArrayList<>();
-
-    @OneToMany(mappedBy = "evento")
-    private List<Curtida> curtidas;
-
-    @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Ingresso> ingressos;
-
+    @ManyToMany
+    @JoinTable(name = "formatura_grupo",
+               joinColumns = @JoinColumn(name = "formatura_id"),
+               inverseJoinColumns = @JoinColumn(name = "usuario_id"))
+    private Set<Usuario> grupo = new HashSet<>();
 }

@@ -70,17 +70,12 @@ public class EventoController {
         Usuario usuario = (Usuario) session.getAttribute("usuario");
         usuarioLogado = usuario;
 
-        Evento evento = new Evento(titulo, descricao, usuario, valor, horario);
-        evento.setEstado(estado);
-        evento.setCidade(cidade);
-        evento.setBairro(bairro);
-
         if (!imagemEvento.isEmpty()) {
             byte[] imagemBytes = imagemEvento.getBytes();
-            evento.setFotoEvento(imagemBytes); 
+           // evento.setFotoEvento(imagemBytes); 
         }
 
-        eventoService.criarEvento(evento, null);
+       // eventoService.criarEvento(evento, null);
         return ResponseEntity.ok("Evento criado com sucesso");
     }
 

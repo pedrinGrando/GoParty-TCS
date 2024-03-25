@@ -4,7 +4,7 @@ export const LoadingHome: React.FC = () => {
     return (
 <div className="px-4 mx-auto text-center max-w-xl h-screen flex justify-center items-center">
   <div>
-    <h1 className="mb-4 text-2xl font-semibold text-black md:text-3xl lg:text-4xl">Carregando Eventos para você</h1>
+    <h1 className="mb-4 text-2xl font-semibold text-black md:text-2xl lg:text-2xl">Carregando Eventos para você</h1>
     <div className="flex justify-center">
       <div>
         <div

@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 
 //Pages/components
+import { NoEvent } from '../../../components/Feed/NoEvent';
+import TrendEvents from '../../../components/Feed/TrendEvents';
+import { LoadingHome } from '../../../components/Loading/LoadingHome';
 import { useUser } from "../../../components/UserContext/UserContext";
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import Event from '../../../types/Event';
-import { LoadingHome } from '../../../components/Loading/LoadingHome';
-import { NoEvent } from '../../../components/Feed/NoEvent';
 
 export default function Home () {
     const { user } = useUser();
@@ -34,6 +35,7 @@ export default function Home () {
 
            return (
                    <div>
+                     <TrendEvents/>
                        {isLoading ? (
                               <LoadingHome/>
                         ) : (
@@ -44,6 +46,7 @@ export default function Home () {
                 </div>
             ) : (
                 events.map(evento => (
+                  
                     <div key={evento.id} className="flex justify-center items-center h-screen">
                         <div className="max-w-sm rounded overflow-hidden shadow-lg">
                             <img className="w-full" src="/imagens/Foto 3.png" alt="Sunset in the mountains" />

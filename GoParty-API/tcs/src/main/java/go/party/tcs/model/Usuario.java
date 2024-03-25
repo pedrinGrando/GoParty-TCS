@@ -2,8 +2,7 @@ package go.party.tcs.model;
 
 import java.time.LocalDate;
 
-import org.hibernate.usertype.UserType;
-
+import go.party.tcs.Enums.TipoUsuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
