@@ -22,7 +22,7 @@ import jakarta.mail.MessagingException;
 
 @RestController
 @RequestMapping("/v1/resetpassword")
-@CrossOrigin(origins = "http://localhost:3000") // Permitindo requisições apenas do localhost:3000
+@CrossOrigin(origins = "http://localhost:5173/") // Permitindo requisições apenas do localhost:3000
 public class SenhaResetController {
 
     @Autowired

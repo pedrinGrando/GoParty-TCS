@@ -1,5 +1,6 @@
 package go.party.tcs.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,12 +51,16 @@ public class Evento {
     @Column(name = "valor")
     private String valor;
 
-    @Column(name = "horario")
-    private String horario;
+    @Column(name = "data_evento")
+    private LocalDateTime dataEvento;
 
     @ManyToOne
     @JoinColumn(name = "autor_id")
     private Usuario autor;
+
+    @ManyToOne
+    @JoinColumn(name = "formatura_id")
+    private Formatura formatura;
 
     @Lob
     @Column(name = "foto_evento", columnDefinition = "LONGBLOB")
@@ -73,15 +78,5 @@ public class Evento {
 
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Ingresso> ingressos;
-
-
-    // Construtor com parâmetros
-    public Evento(String titulo, String descricao, Usuario autor, String valor, String horario) {
-        this.titulo = titulo;
-        this.descricao = descricao;
-        this.autor = autor;
-        this.valor = valor;
-        this.horario = horario;
-    }
     
 }
