@@ -9,24 +9,25 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.model.Curtida;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Notification;
@@ -39,7 +40,6 @@ import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EmailService;
 import go.party.tcs.service.EventoService;
-import go.party.tcs.service.FollowerService;
 import go.party.tcs.service.MensagemService;
 import go.party.tcs.service.NotificationService;
 import go.party.tcs.service.UsuarioService;
@@ -80,9 +80,6 @@ public class UsuarioController {
 
     @Autowired
     private EventoRepository eventoRepository;
-
-    @Autowired
-    private FollowerService followerService;
     
     @Autowired
     private EventoService eventoService;
@@ -106,6 +103,7 @@ public class UsuarioController {
             // Criptrografia de Senha
             String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
             usuario.setSenha(senhaCriptografada);
+            usuario.setTipoUsuario(TipoUsuario.USER);
 
             // Servico de cadastro de usuarios 
             usuarioService.cadastrarUsuario(usuario);
@@ -375,47 +373,6 @@ public class UsuarioController {
         return new ResponseEntity<>(imagemPerfil, HttpStatus.OK);
     }
 
-    @PostMapping("/follow/{id}")
-    public ResponseEntity<String> followUser(@PathVariable Integer id, HttpSession session) {
-        try {
-            Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-
-            Usuario follower = usuarioService.getUserById(sessionUsuario.getId());
-            Usuario following = usuarioService.getUserById(id);
-
-            usuarioService.follow(follower, following);
-
-            // NOTIFICAR O USUÀRIO
-            // Crie uma notificação
-            byte[] fotoPerfil = sessionUsuario.getFotoPerfil();
-            String message = follower.getUsername() + " seguiu você";
-            Integer userIdToNotify = id;
-
-            notificationService.createNotification(message, userIdToNotify, fotoPerfil);
-
-            return ResponseEntity.ok("Usuário seguido com sucesso.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao seguir usuário.");
-        }
-    }
-
-    @PostMapping("/unfollow/{id}")
-    public ResponseEntity<String> unfollowUser(@PathVariable Integer id, HttpSession session) {
-        try {
-            Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-
-            Usuario follower = usuarioService.getUserById(sessionUsuario.getId());
-            Usuario following = usuarioService.getUserById(id);
-
-            usuarioService.unfollow(follower, following);
-
-            return ResponseEntity.ok("Usuário deixou de seguir com sucesso.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao deixar de seguir usuário.");
-        }
-    }
 
     @GetMapping("/notifications")
     public String notificacoes(Model model, HttpSession session, HttpServletRequest request) {
@@ -523,26 +480,9 @@ public class UsuarioController {
             // Buscar os eventos criados por esse usuário com base no ID do usuário
             List<Evento> eventosDoUsuario = eventoService.buscarEventosPorAutor(id);
 
-            // MOSTRAR CONTADOR DE SEGUIDORES
-            List<Usuario> followers = usuarioService.getFollowers(usuario);
-            List<Usuario> following = usuarioService.getFollowing(usuario);
-
-            // Verificar se o sessionUsuario está na lista de followers
-            boolean isUserInFollowers = followerService.isUserInFollowersList(sessionUsuario, usuario);
-            boolean isNotFollower = !isUserInFollowers;
-
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("usuario", usuario);
             responseData.put("eventos", eventosDoUsuario);
-            responseData.put("followersCount", followers.size());
-            responseData.put("followingCount", following.size());
-
-            // Adicionar apenas se sessionUsuarioIsFollower for verdadeira
-            if (isUserInFollowers) {
-                responseData.put("sessionUsuarioIsFollower", "Você segue " + usuario.getUsername());
-            } else {
-                responseData.put("isNotFollower", isNotFollower);
-            }
 
             //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
             int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
@@ -576,9 +516,7 @@ public class UsuarioController {
                 Map<String, Object> usuarioInfo = new HashMap<>();
                 usuarioInfo.put("id", usuario.getId());
                 usuarioInfo.put("username", usuario.getUsername());
-                // Verifica se o usuário da sessão está seguindo este usuário
-                boolean isUserFollowing = followerService.isUserInFollowersList(sessionUsuario, usuario);
-                usuarioInfo.put("isUserFollowing", isUserFollowing);
+               
                 usuariosResponse.add(usuarioInfo);
             }
 
@@ -613,20 +551,11 @@ public class UsuarioController {
         if (sessionUsuario != null) {
             //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
             int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
-
-            // Preencha o Map com informações sobre se o usuário da sessão está seguindo cada usuário
-            Map<Integer, Boolean> seguirStatusMap = new HashMap<>();
-            for (Usuario usuario : usuarios) {
-                boolean isUserFollowing = followerService.isUserInFollowersList(sessionUsuario, usuario);
-                seguirStatusMap.put(usuario.getId(), isUserFollowing);
-            }
-
             // Montar a resposta
             Map<String, Object> responseData = new HashMap<>();
             responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
             responseData.put("usuarios", usuarios);
             responseData.put("sessionUser", sessionUsuario);
-            responseData.put("seguirStatusMap", seguirStatusMap);
 
             return ResponseEntity.ok(responseData);
         } else {
