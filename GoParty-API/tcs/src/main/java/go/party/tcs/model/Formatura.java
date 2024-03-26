@@ -31,7 +31,7 @@ public class Formatura {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "titulo")
     private String titulo;
@@ -49,7 +49,10 @@ public class Formatura {
     private String bairro;
 
     @Column(name = "meta_arrecad")
-    private String valor;
+    private String metaArrecad;
+
+    @Column(name = "pendente_aprovacao")
+    private boolean pendenteAprovacao;
 
     @Column(name = "data_prevista")
     private LocalDate dataPrevista;

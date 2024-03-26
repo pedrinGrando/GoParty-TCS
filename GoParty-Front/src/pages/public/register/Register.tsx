@@ -489,7 +489,7 @@ export default function Register(){
 
                     {/*AQUI*/}
                     <div className="w-full p-1 text-center">
-                        © 2023 Pedro e Caue direitos reservados
+                         © 2023 GoParty direitos reservados
                         <a className="text-white" href="https://tw-elements.com/"></a>
                     </div>
                    
