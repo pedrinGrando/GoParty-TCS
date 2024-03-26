@@ -23,6 +23,7 @@ const TrendEvents: React.FC = () => {
 
   return (
     <div>
+        
      <ul role="list" className="hidden md:block absolute top-14 right-0 w-max max-w-sm mt-4 mr-4 divide-y divide-gray-300 dark:divide-gray-300">
           {/* {events.map((event) => ( */}
           <li className="py-3 sm:py-4">

@@ -143,6 +143,16 @@ export default function Register(){
 
       const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = event.target;
+
+        if (name === 'cpf' && type === 'text') {
+          const numericValue = value.replace(/\D/g, '');
+          
+          setFormData({
+              ...formData,
+              [name]: numericValue,
+          });
+
+        }
       
           if (type === 'file' && event.target instanceof HTMLInputElement) {
               const file = event.target.files && event.target.files[0];

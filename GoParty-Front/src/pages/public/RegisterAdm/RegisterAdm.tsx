@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import CurrencyInput from 'react-currency-input-field';
 import { RenderIf } from '../../../components/RenderIf/RenderIf';
 
 //Pages/components
@@ -207,15 +208,14 @@ export default function RegisterAdm () {
                       <label htmlFor='metaArrecad' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Meta de Arrecadação
                           </label>
-                            <input 
+                          <CurrencyInput
                             placeholder="R$ 0,00"
                             id='metaArrecad'
                             name='metaArrecad'
                             value={formData.metaArrecad}
                             onChange={handleChange}
-                            type="number" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
-                     
+                            className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
+                        />
                     </div>
                     <div className="relative">
                       <label htmlFor='dataPrevista' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
