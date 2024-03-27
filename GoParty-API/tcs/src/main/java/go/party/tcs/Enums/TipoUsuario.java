@@ -1,8 +1,8 @@
 package go.party.tcs.Enums;
 
 public enum TipoUsuario {
-    USER,
+    User,
     ADM,
-    MEMBER,
-    TEAM
+    Member,
+    Team
 }

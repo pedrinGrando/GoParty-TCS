@@ -102,7 +102,7 @@ public class UsuarioController {
             // Criptrografia de Senha
             String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
             usuario.setSenha(senhaCriptografada);
-            usuario.setTipoUsuario(TipoUsuario.USER);
+            usuario.setTipoUsuario(TipoUsuario.User);
 
             // Servico de cadastro de usuarios 
             usuarioService.cadastrarUsuario(usuario);
