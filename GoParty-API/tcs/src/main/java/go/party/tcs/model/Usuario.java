@@ -36,14 +36,11 @@ public class Usuario {
     @Column(name = "username", unique = true)
     private String username;
 
-    @Column(name = "descricao")
-    private String descricao;
-
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "idade")
-    private LocalDate idade;
+    @Column(name = "dataNasci")
+    private LocalDate dataNasci;
 
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;
@@ -51,20 +48,12 @@ public class Usuario {
     @Column(name = "cpf")
     private String cpf;
 
-    @Column(name = "url")
-    private String url;
-
     @Column(name = "senha")
     private String senha;
 
     @Lob
     @Column(name = "fotoPerfil", columnDefinition = "LONGBLOB")
     private byte[] fotoPerfil;
-
-    //SEGUIDORES E SEGUINDO
-    private int seguidores;
-
-    private int seguindo;
 
     @Lob
     @Column(columnDefinition = "BLOB")

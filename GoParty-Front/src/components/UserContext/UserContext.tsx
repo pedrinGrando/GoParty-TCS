@@ -4,6 +4,13 @@ import React, { ReactNode, createContext, useContext, useState } from 'react';
 interface UserData {
   username: string;
   senha: string;
+  email: string;
+  id: string;
+  dataNasci: Date;
+  nome: string;
+  tipoUsuario: string;
+  cpf: string;
+  fotoPerfil: Blob | string;
 }
 
 // Cria o contexto de usuário

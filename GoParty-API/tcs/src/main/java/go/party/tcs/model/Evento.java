@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -58,7 +59,7 @@ public class Evento {
     @JoinColumn(name = "autor_id")
     private Usuario autor;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "formatura_id")
     private Formatura formatura;
 

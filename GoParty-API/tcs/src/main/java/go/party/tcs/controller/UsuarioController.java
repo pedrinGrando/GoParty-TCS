@@ -1,7 +1,6 @@
 package go.party.tcs.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,7 +116,7 @@ public class UsuarioController {
 
     //Autenticação
     @PostMapping("/auth")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> requestBody) {
         
         String username = requestBody.get("username");
         String senha = requestBody.get("senha");
@@ -128,7 +127,7 @@ public class UsuarioController {
             if (usuario != null) {
                 if (passwordEncoder.matches(senha, usuario.getSenha())) {
                     // Autenticação bem-sucedida
-                    return ResponseEntity.ok("Login bem-sucedido!");
+                    return ResponseEntity.ok(usuario);
                 }
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuário ou senha inválidos.");
@@ -190,7 +189,7 @@ public class UsuarioController {
         return "home";
     }
 
-    //Metodo para Editar a Conta do Usuario
+    //Atualizar Dados
     @PutMapping("/update")
     public ResponseEntity<String> editarUsuario(
         @RequestParam(name = "usuarioNome", required = false) String novoUsuarioNome,
@@ -201,28 +200,17 @@ public class UsuarioController {
         HttpSession session
     ) {
         try {
-            // Passo 1: Recupere o usuário da sessão.
             Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-
-            // Passo 2: Obtenha o ID do usuário da sessão.
+ 
             Integer userId = sessionUsuario.getId();
 
-            // Passo 3: Use o ID para carregar o usuário correspondente do banco de dados.
-            Usuario usuarioNoBanco = usuarioService.encontrarId(userId); // Substitua 'usuarioService' pelo seu serviço de usuário.
+            Usuario usuarioNoBanco = usuarioService.encontrarId(userId);
 
-            // Passo 4: Atualize as informações do usuário com os novos valores.
             if (novoUsuarioNome != null && !novoUsuarioNome.isEmpty()) {
                 usuarioNoBanco.setUsername(novoUsuarioNome);
             }
             if (novoEmail != null && !novoEmail.isEmpty()) {
                 usuarioNoBanco.setEmail(novoEmail);
-            }
-            if (novaDescricao != null && !novaDescricao.isEmpty()) {
-                usuarioNoBanco.setDescricao(novaDescricao);
-            }
-            if (novaIdade != null && !novaIdade.isEmpty()) {
-                LocalDate idade = LocalDate.parse(novaIdade);
-                usuarioNoBanco.setIdade(idade);
             }
             if (novaSenha != null && !novaSenha.isEmpty()) {
                 String senhaCriptografada = passwordEncoder.encode(novaSenha);
