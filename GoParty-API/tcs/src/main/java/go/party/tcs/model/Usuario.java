@@ -51,9 +51,8 @@ public class Usuario {
     @Column(name = "senha")
     private String senha;
 
-    @Lob
-    @Column(name = "fotoPerfil", columnDefinition = "LONGBLOB")
-    private byte[] fotoPerfil;
+    @Column(name = "photo_path")
+    private String photoPath;
 
     @Lob
     @Column(columnDefinition = "BLOB")
@@ -78,10 +77,4 @@ public class Usuario {
     public void setChavePublica(byte[] chavePublica) {
         this.chavePublica = chavePublica;
     }
-    
-    //METODO PARA VERIFICAR SE EXISTE FOTO DE PERFIL
-    public boolean temImagemPerfil() {
-        return fotoPerfil != null && fotoPerfil.length > 0;
-    }
-  
 }

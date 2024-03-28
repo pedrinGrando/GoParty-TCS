@@ -8,9 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
@@ -267,9 +265,6 @@ public class UsuarioController {
                     // Converte a imagem para um array de bytes
                     byte[] fotoBytes = fotoPerfil.getBytes();
                     
-                    // Associa a imagem de perfil ao usuário
-                    sessionUsuario.setFotoPerfil(fotoBytes);
-                    
                     // Salva o usuário no banco de dados
                     usuarioService.atualizarUsuario(sessionUsuario);;
                     
@@ -286,53 +281,6 @@ public class UsuarioController {
         } else {
             return "redirect:/loginValida";
         }
-    }
-
-    //Metodo para adicionar foto do Perfil do Usuario da Sessão
-    @GetMapping("/perfil-imagem-session/{usuarioId}")
-    public ResponseEntity<byte[]> getImagemPerfilSession(@PathVariable Integer usuarioId, HttpSession session) {
-        
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        
-        if (sessionUsuario != null && sessionUsuario.getId().equals(usuarioId)) {
-
-            byte[] imagemPerfil = sessionUsuario.getFotoPerfil();
-            if (imagemPerfil != null && imagemPerfil.length > 0) {
-                // Defina os cabeçalhos de resposta
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_JPEG); 
-
-                // Retorna a imagem como uma resposta HTTP
-                return new ResponseEntity<>(imagemPerfil, headers, HttpStatus.OK);
-            }
-        }
-        
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-    
-    //Metodo para adicionar fotos de Perfil dos Usuarios
-    @GetMapping("/perfil-imagem/{usuarioId}")
-    public ResponseEntity<byte[]> getImagemPerfil(@PathVariable Integer usuarioId) {
-        // Recupere os detalhes do usuário com base no ID do usuário
-        Usuario usuario = usuarioService.encontrarId(usuarioId);
-        usuarioPerfilVisitado = usuario;
-
-        // Verifique se o usuário foi encontrado
-        if (usuario != null) {
-            // Recupere a imagem de perfil do usuário
-            byte[] imagemPerfil = usuario.getFotoPerfil();
-
-            if (imagemPerfil != null && imagemPerfil.length > 0) {
-                
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_JPEG); // ou MediaType.IMAGE_PNG, dependendo do tipo de imagem
-
-                // Retorna a imagem como uma resposta HTTP
-                return new ResponseEntity<>(imagemPerfil, headers, HttpStatus.OK);
-            }
-        }
-        // Se o usuário não for encontrado ou não tiver uma imagem de perfil, retorne uma resposta vazia ou um erro
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     //Metodo para mostrar a foto do Perfil do Usuario que fez a notificação 

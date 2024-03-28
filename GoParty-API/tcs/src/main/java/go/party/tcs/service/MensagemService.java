@@ -5,7 +5,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.time.LocalDateTime;
 
-import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -49,8 +48,6 @@ public class MensagemService {
              String mensagemDescriptografada = criptografiaService.descriptografarMensagem(mensagemCriptografada, chaveSecreta);
 
              String msgNoti = sessao.getUsername()+" enviou uma mensagem: " + mensagemDescriptografada;
-
-             notificationService.createNotification(msgNoti, receiver.getId(), sessao.getFotoPerfil());
 
         } catch (Exception e) {
             e.printStackTrace();

@@ -223,7 +223,7 @@ export default function Register(){
         setMessage('Preencha todos os campos obrigatórios!')
         setError(true)
         return;
-    }
+     }
 
         try {
           const response = await fetch('http://localhost:8081/v1/usuarios/cadastro', {
@@ -233,6 +233,8 @@ export default function Register(){
             },
             body: JSON.stringify(formData),
           });
+
+
           
           if (response.ok) {
             // Limpar o formulário após o envio bem-sucedido, se necessário
@@ -267,13 +269,29 @@ export default function Register(){
         }
       };
 
-      function onFileUpload(event: React.ChangeEvent<HTMLInputElement>){
+      const onFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if(event.target.files){
             const file = event.target.files[0]
             const imageURL = URL.createObjectURL(file)
+            const fileData = new FormData();
+            fileData.append('file', file);
             setImagePreview(imageURL)
+
+            try {
+             const response =  await fetch('http://localhost:8081/profile-image/v1/files/upload', {
+                  method: 'POST',
+                  body: fileData,
+              });
+
+              if(response.ok){
+                console.log('File uploaded successfully.');
+              }
+              
+          } catch (error) {
+              console.error('Failed to upload file.');
+          }
+      }
         }
-    }
 
     return (
       <form onSubmit={handleSubmit}>

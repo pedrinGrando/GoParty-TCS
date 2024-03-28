@@ -104,14 +104,11 @@ public class EventoController {
             // Salva o comentário no banco de dados
             comentarioService.save(comentario);
 
-            // NOTIFICAR O USUÀRIO
-            // Crie uma notificação
-            byte[] fotoPerfil = usuario.getFotoPerfil();
             String message = usuario.getUsername() + " fez um comentário no seu post: " + comentario.getTexto();
             Integer userIdToNotify = evento.getAutor().getId();
 
             if (userIdToNotify != usuario.getId()) {
-                notificationService.createNotification(message, userIdToNotify, fotoPerfil);
+                //notificationService.createNotification(message, userIdToNotify, fotoPerfil);
             }
 
             return ResponseEntity.ok("Comentário criado com sucesso.");
@@ -244,7 +241,6 @@ public class EventoController {
         Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
         curtidaService.curtirEvento(sessionUsuario, evento);
         //Pega a Foto de perfil de quem fez a curtida
-        byte[] fotoPerfil = sessionUsuario.getFotoPerfil();
         String message = sessionUsuario.getUsername()+" curtiu a sua publicação: "+ evento.getTitulo();
         Integer userIdToNotify =  evento.getAutor().getId();
 
