@@ -51,7 +51,7 @@ export default function Profile () {
 
                    <div className="flex items-center mb-2 text-blueGray-600 mt-10">
                     <img src="/imagens/id-card.png" className="mr-2" alt="id-card"></img>
-                    <span>{user?.email}</span>
+                    <span>{user?.nome}</span>
                     </div>
                     <div className="flex items-center mb-2 text-blueGray-600">
                     <img src="/imagens/envelopes (1).png" className="mr-2" alt="envelopes"></img>

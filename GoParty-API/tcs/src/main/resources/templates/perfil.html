@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoParty | Perfil</title>
+    <link rel="stylesheet"  href="/css/home.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="icon" type="image/x-icon" href="/css/img/LogoSimples.png">
+</head>
+<body>
+    <nav class="menu-lateral" id="menu-lateral">
+        <!--btn-expandir-->
+        <div class="btn-expandir">
+            <img src="/css/img/LogoSimples.png" alt="logo" id="btn-exp" />
+            <span class="txt-link"> <img src="/css/img/LogoGoParty.png" alt="GoParty" id="palavraGoParty"> </span>
+        </div>
+    
+        <ul>
+            <li class="item-menu ativo">
+                <a th:href="@{/perfil}">
+                    <img src="/css/img/profileIcon.png" alt="Perfil" class="icon" >
+                    <span class="txt-link">Perfil</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a  th:href="@{/usuarios}">
+                    <img src="/css/img/UsersIcon.png" alt="Usuários" class="icon">
+                    <span class="txt-link">Explorar</span>
+                </a>
+            </li>
+             <!--
+            <li class="item-menu" style="cursor: pointer;">
+                <a onclick="openModalChat()">
+                    <img src="/css/img/communication.png" alt="Usuários" class="icon">
+                    <span class="txt-link">Conversas</span>
+                </a>
+            </li>
+            -->
+            <li class="item-menu">
+                <a th:href="@{/home}">
+                    <img src="/css/img/homeIcon.png" alt="Home" class="icon">
+                    <span class="txt-link">Home</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                    <a  th:href="@{/evento}">
+                    <img src="/css/img/PostIcon.png" alt="Eventos" class="icon">
+                    <span class="txt-link">Postar</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a  th:href="@{/ingressos}" >
+                    <img src="/css/img/tickets.png" alt="Ingressos" class="icon">
+                    <span class="txt-link">Ingressos</span>
+                </a>
+            </li>
+            <li class="item-menu">
+                <a th:href="@{/notificacoes}">
+                    <div class="contador-notificacao">
+                        <div th:if="${notificacoesNaoVisualizadas > 0}" class="circulo">
+                            <span th:text="${notificacoesNaoVisualizadas}"></span>
+                        </div>
+                    </div>
+                    <img src="/css/img/notification-bell.png" alt="notificacao" class="icon" >
+                    <span class="txt-link">Notificações</span>
+                </a>
+            </li>
+            
+            <li class="item-menu">
+                <a onclick="openModalConfiguracao()" class="links" id="modal-configs">
+                    <img src="/css/img/configs.png" alt="config" class="icon">
+                    <span class="txt-link">Configurações</span>
+                </a>
+            </li>
+    
+            <li class="item-menu">
+                <a th:href="@{/logout}">
+                    <img src="/css/img/log-out.png" alt="logout" class="icon">
+                    <span class="txt-link">Sair</span>
+                </a>
+            </li>
+        </ul>
+    
+    </nav>
+    
+    <!-- Section principal da tela -->
+    <section class="container">
+        <!-- Parte Esquerda Informações do Usuario -->
+        <div class="left-sidebar-perfil">
+        
+        <!-- Imagem de Perfil Usuario -->
+        <img class="imgPerfil" 
+            th:if="${sessionUsuario.fotoPerfil != null}" 
+            th:src="@{'/perfil-imagem/' + ${sessionUsuario.id}}" 
+            alt="Foto de Perfil" />
+            
+        <img class="imgPerfil" 
+            th:unless="${sessionUsuario.fotoPerfil != null}" 
+            src="/css/img/fotoPerfil.jpg" 
+            alt="" 
+            id="imgPerfil-vazio" />
+        
+        <!-- Informações do Usuario -->
+        <h2><span class="arroba">@</span><span th:text="${sessionUsuario.username}"></span></h2>
+        <div class="info">
+            <h3 th:text="${sessionUsuario.nome}"></h3>
+            <h3 class="descricaoUser"><span th:text="${sessionUsuario.descricao}"></span></h3>
+            <h4><span th:text="${sessionUsuario.email}"></span></h4>
+             <!--Seguidores e seguindo-->
+            <div class="seguidores-seguindo-container"> 
+                <a href="">
+                    <p>Seguidores : <span class="qtde-seguir" th:text="${sessionUsuario.seguidores}"></p>
+                </a>
+                <a href="">
+                    <p>Seguindo :  <span class="qtde-seguir" th:text="${sessionUsuario.seguindo}"></p>
+                </a>
+            </div>  
+        </div>
+ 
+        <!-- Bloco com Botões de Config da Conta -->
+        <div class="altera" style="display: none;">
+            <!-- Botão para abrir as Edições -->
+            <button class="Btn-editar" id="btn-editar">
+                <div class="sign">+</div>
+                <div class="text">Editar</div>
+            </button>
+            <!-- Botão para Excluir a Conta -->
+            <form action="/deletar" method="post" id="form-excluir">
+                <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn-excluir" id="btn-excluir">
+                        <svg viewBox="0 0 448 512" class="svgIcon"><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path></svg>
+                    </button>
+            </form>
+                
+            </div>
+        </div>
+    
+        <!-- Feed com seus Post -->
+        <div class="center-content" id="center-perfil">
+            <div th:each="evento : ${eventos}" class="evento-bloco">
+
+                <!-- Parte da Esquerda do Post -->
+                <div class="bloco-evento-left">
+                    <h3 style="margin-bottom: 0;"><img class="logoUser" src="/css/img/LogoSimples.png"><span th:text="${evento.autor.username}"></span></h3>
+                    <h4 style="margin: 0; color: rgb(255, 65, 65);" th:text="${evento.titulo}"></h4>
+                    <img class="imgEvento" th:src="@{'/evento-imagem/' + ${evento.id}}" alt="foto">
+
+                    <button class="btnConfirmados" onclick="abrirConfirmados(this)">Confirmados</button>
+
+                    
+                </div>
+
+                <!-- Parte da Direita do Post -->
+                <div class="bloco-evento-right">
+                    <!-- Parte de cima do Post aonde tem os Botões -->
+                    
+                    <div class="evento-up">
+                        <p class="arroba">Descrição</p>
+                        
+                        <!-- Botão para Excluir o Post -->
+                        <form th:action="@{'/excluir-evento/' + ${evento.id}}" method="post" onsubmit="return confirm('Tem certeza de que deseja excluir este post?')">
+                            <input type="hidden" name="_method" value="DELETE">
+                            <button class="delete-button">
+                                <svg class="delete-svgIcon" viewBox="0 0 448 512">
+                                                <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"></path>
+                                                </svg>
+                            </button>
+                        </form>
+
+                        <!-- Botão para Editar o Post -->
+                        <button class="edit-button open-modal" th:attr="data-target='#modal-${evento.id}'">
+                            <svg class="edit-svgIcon" viewBox="0 0 512 512">
+                                <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Modal de Edições do Post -->
+                        <div id="modal-${evento.id}" class="modal modal-evento">
+                            <div class="editar-evento">
+                                <form method="POST" th:action="@{'/editar-evento/' + ${evento.id}}" enctype="multipart/form-data">
+                                    <input type="hidden" name="_method" value="PUT">
+                                    <input type="text" name="titulo" placeholder="Titulo">
+                                    <textarea  name="descricao" placeholder="Descrição" cols="10" rows="10" ></textarea>
+                                    <input class="btn-foto" type="file" name="imagemEvento">
+                                    <button class="ui-btn" type="submit">
+                                        <span>
+                                        Salvar
+                                        </span>
+                                    </button>
+                                </form>
+                                
+                                <button class="fechar close-modal" id="close-modal">
+                                    x
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                    <p th:text="${evento.descricao}"></p>
+                    <div style="display: flex; align-items: center; margin: 0;" >
+                        
+                        <img src="/css/img/iconHour.png" style="width: 20px; height: 20px;" alt="">
+                        <p th:text="${evento.horario}" style="text-align: start;"></p>
+                    </div>
+                    
+                    <p class="arroba">Local</p>
+                    <div style="display: flex; align-items: center;">
+                        <img src="/css/img/iconLocation.png" style="width: 20px; height: 20px;">
+                        <p th:text="${evento.estado}" style="text-transform: uppercase;"></p>&nbsp;&nbsp;&nbsp;
+                        <p class="arroba" >|&nbsp;&nbsp;&nbsp;</p>
+                        <p th:text="${evento.cidade}"></p>&nbsp;&nbsp;&nbsp;
+                        <p class="arroba">|&nbsp;&nbsp;&nbsp;</p>
+                        <p th:text="${evento.bairro}"></p>
+                    </div>
+                    
+                    <p th:text="${evento.valor}" style="font-weight: bold;"></p>
+                    <!-- Bloco onde ficam os comentários -->
+                    <div class="comentarios hidden" >
+                        <ul class="ul-comentarios">
+                            <li th:each="comentario : ${evento.comentarios}" style="padding: 5px;
+                            background: #fdfdfd;
+                            border-radius: 10px; margin: 5px;">
+                                <div class="bloco-usuario">
+                                    <span class="arroba">@</span>
+                                    <p th:text="${comentario.autor.username}"></p>
+                                </div>
+                                <div class="bloco-comentario">
+                                    <p th:text="${comentario.texto}"></p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- Botão abrir comentários -->
+                    <button class="chatBtn" onclick="toggleComentarios(this)">
+                        <svg height="1.6em" fill="white" xml:space="preserve" viewBox="0 0 1000 1000" y="0px" x="0px" version="1.1">
+                            <path d="M881.1,720.5H434.7L173.3,941V720.5h-54.4C58.8,720.5,10,671.1,10,610.2v-441C10,108.4,58.8,59,118.9,59h762.2C941.2,59,990,108.4,990,169.3v441C990,671.1,941.2,720.5,881.1,720.5L881.1,720.5z M935.6,169.3c0-30.4-24.4-55.2-54.5-55.2H118.9c-30.1,0-54.5,24.7-54.5,55.2v441c0,30.4,24.4,55.1,54.5,55.1h54.4h54.4v110.3l163.3-110.2H500h381.1c30.1,0,54.5-24.7,54.5-55.1V169.3L935.6,169.3z M717.8,444.8c-30.1,0-54.4-24.7-54.4-55.1c0-30.4,24.3-55.2,54.4-55.2c30.1,0,54.5,24.7,54.5,55.2C772.2,420.2,747.8,444.8,717.8,444.8L717.8,444.8z M500,444.8c-30.1,0-54.4-24.7-54.4-55.1c0-30.4,24.3-55.2,54.4-55.2c30.1,0,54.4,24.7,54.4,55.2C554.4,420.2,530.1,444.8,500,444.8L500,444.8z M282.2,444.8c-30.1,0-54.5-24.7-54.5-55.1c0-30.4,24.4-55.2,54.5-55.2c30.1,0,54.4,24.7,54.4,55.2C336.7,420.2,312.3,444.8,282.2,444.8L282.2,444.8z"></path>
+                        </svg>
+                        <span class="tooltip">Comentários&nbsp;<span th:text="${evento.comentarios.size()}"></span> </span>
+                    </button>
+                </div>
+                <div class="bloco-evento-confirmados" id="blocoConfirmados" style="display: none;">
+                    <h1>Confirmados</h1>
+                    <ul style="list-style: none;">
+                        <li class="lista-confirmados" th:each="ingresso : ${evento.ingressos}" 
+                            data-ingresso-id="${ingresso.id}"
+                            th:classappend="${ingresso.status == 'Inativo'} ? 'status-inativo' : ''">
+                            <div class="bloco-ingresso-confirmados">
+                                <div class="ingre" style="display: block;">
+                                    <span>Ingresso</span>
+                                    <p th:text="${ingresso.codigo}"></p>
+                                </div>
+                                <div class="ingre">
+                                    <span>Nome</span>
+                                    <p th:text="${ingresso.idUsuario.nome}"></p>
+                                </div>
+                                <div class="ingre">
+                                    <span>CPF</span>
+                                    <p th:text="${ingresso.cpfComprador}"></p>
+                                </div>
+                                <div class="ingre">
+                                    <span>Evento</span>
+                                    <p th:text="${ingresso.evento.titulo}"></p>
+                                </div>
+                                <div class="ingre">
+                                    <span>Status</span>
+                                    <p th:text="${ingresso.status}"></p>
+                                </div>
+                                
+            
+                                <!-- Formulário para atualização do status -->
+                                <form method="POST" action="/atualizarStatus">
+                                    <input type="hidden" name="_method" value="PUT">
+                                    <input type="hidden" name="ingressoId" th:value="${ingresso.id}"/>
+                                    <button class="btnConfirma"  type="submit">OK</button>
+                                </form>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>   
+            
+            <!--Exclusao de conta loader na tela-->
+            <div class="excluindo-conta-container" id="excluindo-conta">
+                <div class="loader">
+                    <img src="/css/img/Modelo Logo.png" alt="imagem-logo" class="logo-inicio" id="logo-inicio-loader">
+                  <p>
+                    Estamos excluindo a sua conta...
+                  </p>
+
+                <!--Animacao com o loader padrao do sistema-->
+                <svg viewBox="25 25 50 50" id="carregamento-exclusao">
+                    <circle r="20" cy="50" cx="50"></circle>
+                </svg>
+
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <div class="modal-seguidores">
+        <!--<h1>Seguidores</h1>-->
+        <div th:each="usuario : ${seguidos}" class="usuario-bloco">
+            <img class="imgUsuarios" th:src="@{'/perfil-imagem/' + ${usuario.id}}" alt="foto">
+            <h3><span class="arroba">@</span><span th:text="${usuario.username}"></span></h3>
+            <h4 class="descricaoUser"><span th:text="${usuario.descricao}"></span></h4>
+        </div>
+    </div>
+
+    <footer>
+        <ul class="ul-footer">
+            <li><h4>GoParty © 2023</h4></li>
+            <li><h4>Sobre</h4></li>
+            <li><h4>Desenvolvedores</h4></li>
+        </ul>
+    </footer>
+
+    <!--Modal Config-->
+    <div th:replace="home :: #modalConfiguracao"></div>
+    <div th:replace="home :: #modalChat"></div>
+    </div>
+
+    <script src="/css/js/buttons.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Abrir e Fechar Modal -->
+    <script>
+        const openModalButtons = document.querySelectorAll('.open-modal');
+        openModalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.nextElementSibling; // Obtém o modal associado ao botão clicado
+                modal.style.display = 'block'; // Mostra o modal
+            });
+        });
+
+        // Obtém todos os botões de fechamento de modal e adiciona eventos de clique a eles
+        const closeModalButtons = document.querySelectorAll('.close-modal');
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal-evento'); // Obtém o modal associado ao botão clicado
+                modal.style.display = 'none'; // Fecha o modal
+            });
+        });
+    </script>
+
+    <!-- Mostra os dados que estão sendo carregados da IMAGEM -->
+    <script>
+        // Exibir o nome do arquivo selecionado
+        const fileInput2 = document.getElementById('fotoPerfil');
+        const fileNameDisplay = document.getElementById('file-name');
+
+        fileInput2.addEventListener('change', function () {
+            const fileName = fileInput.files[0].name;
+            fileNameDisplay.textContent = `Arquivo selecionado: ${fileName}`;
+        });
+    </script>
+
+    <!-- Abre o Formulario para editar as informações do usuario -->
+    <script>
+        $(document).ready(function() {
+            // Quando o botão "Editar" for clicado
+            $("#btn-editar").click(function() {
+                // Toggle (alternar) a exibição do formulário de edição
+                $(".edit-form").toggle();
+            });
+
+            // Quando o botão "Salvar" for clicado
+            $("#btn-salvar").click(function() {
+                // Obtenha os novos valores dos campos de edição
+                var novoNome = $("#edit-nome").val();
+                var novoEmail = $("#edit-email").val();
+                var novaIdade = $("#edit-idade").val();
+                var novaSenha = $("#edit-senha").val();
+                // Após a atualização bem-sucedida, você pode ocultar o formulário de edição novamente:
+                $(".edit-form").hide();
+            });
+        });
+
+        document.getElementById('edit-form').addEventListener('submit', function (e) {
+        e.preventDefault(); // Evita o envio padrão do formulário
+
+        const formData = new FormData(this);
+        const xhr = new XMLHttpRequest();
+
+        xhr.open('PUT', '/editar', true);
+
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                // Lógica para lidar com a resposta após a atualização
+            }
+        };
+
+        xhr.send(formData);
+
+        function validarFormulario() {
+        // Pega os valores dos campos
+        var novoUsuarioNome = document.getElementById("edit-nome").value;
+        var novoEmail = document.getElementById("edit-email").value;
+        var novaDescricao = document.getElementById("edit-descricao").value;
+        var novaIdade = document.getElementById("edit-idade").value;
+        var novaSenha = document.getElementById("edit-senha").value;
+
+        // Verifica se algum campo está preenchido
+        if (
+            novoUsuarioNome === "" &&
+            novoEmail === "" &&
+            novaDescricao === "" &&
+            novaIdade === "" &&
+            novaSenha === ""
+        ) {
+            // Nenhum campo preenchido, impedir envio
+            alert("Preencha pelo menos um campo.");
+            return false;
+        }
+        // Se algum campo estiver preenchido, permitir envio
+        return true;
+    }
+    });
+
+    </script>
+
+    <!-- Pergunta pro usuario se ele realmente quer excluir sua conta -->
+    <script>
+        $(document).ready(function () {
+        // Captura o clique no botão de exclusão
+        $("#btn-excluir").click(function (event) {
+            event.preventDefault(); // Evita que o formulário seja enviado imediatamente
+
+            // Exibe um pop-up de confirmação
+            if (confirm("Tem certeza de que deseja excluir sua conta? Esta ação não pode ser desfeita.")) {
+                // Se o usuário confirmar, envie o formulário de exclusão
+                $("#form-excluir").submit();
+            }
+        });
+    });
+    </script>
+
+    <!-- Teste de carregamento da foto -->
+    <script>
+        // TESTE FOTO
+        const fotoInput = document.getElementById("fotoInput");
+        const fotoExibida = document.getElementById("fotoExibida");
+        const fotoVazia = document.getElementById('imgPerfil-vazio');
+        
+        fotoInput.addEventListener("change", function () {
+            const file = fotoInput.files[0];
+            fotoExibida.style.display = "";
+            fotoVazia.style.display = "none";
+
+            if (file && file.type.startsWith("image/")) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    fotoExibida.src = e.target.result;
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                alert("Por favor, selecione uma imagem válida.");
+            }
+        });
+    </script>
+
+    <!-- Formatação da data de nascimento -->
+    <script>
+        // Recuperar o elemento span pelo ID
+        var spanElement = document.getElementById("dataNascimento");
+
+        // Obter o valor não formatado da data de nascimento
+        var dataNascimentoNaoFormatada = spanElement.textContent;
+
+        // Formatar a data usando JavaScript (supondo que a data esteja no formato "yyyy-MM-dd")
+        var partesData = dataNascimentoNaoFormatada.split("-");
+        var dataFormatada = partesData[2] + "/" + partesData[1] + "/" + partesData[0];
+
+        // Exibir a data formatada em outro elemento, por exemplo, em um div com o ID "dataFormatada"
+        spanElement.style.display = "none";
+        var divElement = document.getElementById("dataNascimentoFormadata");
+        divElement.textContent = dataFormatada;
+    </script>
+
+    <script>
+        // Captura o botão e o elemento a ser exibido
+        const btnExcluir = document.getElementById('btn-excluir');
+        const excluindoConta = document.getElementById('excluindo-conta');
+
+        btnExcluir.addEventListener('click', () => {
+        // Adiciona uma classe ao corpo para aplicar a baixa opacidade
+        document.body.classList.add('is-blurred');
+
+        // Remove a classe de baixa opacidade da div excluindo-conta-container
+        excluindoConta.classList.remove('is-blurred');
+        
+        // Mostra o elemento com a classe "excluindo-conta-container"
+        excluindoConta.style.display = 'flex';
+        });
+    </script>
+
+    <script src="/css/js/buttons.js"></script>
+    <script src="/css/js/barraLateral.js"></script>
+
+</body>
+</html>

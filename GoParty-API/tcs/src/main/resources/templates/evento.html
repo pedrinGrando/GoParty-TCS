@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GoParty | Evento</title>
+    <link rel="stylesheet"  href="/css/evento.css">
+    <link rel="stylesheet"  href="/css/home.css">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+   
+    <script src="/css/js/vanilla-masker.min.js"></script>
+
+    <link rel="icon" type="image/x-icon" href="/css/img/LogoSimples.png">
+</head>
+<body>
+
+   <!--menu-lateral-->
+   <nav class="menu-lateral" id="menu-lateral">
+    <!--btn-expandir-->
+    <div class="btn-expandir">
+        <img src="/css/img/LogoSimples.png" alt="logo" id="btn-exp" />
+        <span class="txt-link"> <img src="/css/img/LogoGoParty.png" alt="GoParty" id="palavraGoParty"> </span>
+    </div>
+
+    <ul>
+        <li class="item-menu">
+            <a th:href="@{/perfil}">
+                <img src="/css/img/profileIcon.png" alt="Perfil" class="icon" >
+                <span class="txt-link">Perfil</span>
+            </a>
+        </li>
+        <li class="item-menu">
+            <a  th:href="@{/usuarios}">
+                <img src="/css/img/UsersIcon.png" alt="Usuários" class="icon">
+                <span class="txt-link">Explorar</span>
+            </a>
+        </li>
+        <!--
+            <li class="item-menu" style="cursor: pointer;">
+                <a onclick="openModalChat()">
+                    <img src="/css/img/communication.png" alt="Usuários" class="icon">
+                    <span class="txt-link">Conversas</span>
+                </a>
+            </li>
+            -->
+        <li class="item-menu">
+            <a th:href="@{/home}">
+                <img src="/css/img/homeIcon.png" alt="Home" class="icon">
+                <span class="txt-link">Home</span>
+            </a>
+        </li>
+        <li class="item-menu ativo">
+                <a  th:href="@{/evento}">
+                <img src="/css/img/PostIcon.png" alt="Eventos" class="icon">
+                <span class="txt-link">Postar</span>
+            </a>
+        </li>
+        <li class="item-menu">
+            <a  th:href="@{/ingressos}" >
+                <img src="/css/img/tickets.png" alt="Ingressos" class="icon">
+                <span class="txt-link">Ingressos</span>
+            </a>
+        </li>
+        <li class="item-menu">
+            <a th:href="@{/notificacoes}">
+                <div class="contador-notificacao">
+                    <div th:if="${notificacoesNaoVisualizadas > 0}" class="circulo">
+                        <span th:text="${notificacoesNaoVisualizadas}"></span>
+                    </div>
+                </div>
+                <img src="/css/img/notification-bell.png" alt="notificacao" class="icon" >
+                <span class="txt-link">Notificações</span>
+            </a>
+        </li>
+        
+        <li class="item-menu">
+            <a onclick="openModalConfiguracao()" class="links" id="modal-configs">
+                <img src="/css/img/configs.png" alt="config" class="icon">
+                <span class="txt-link">Configurações</span>
+            </a>
+        </li>
+
+        <li class="item-menu">
+            <a th:href="@{/logout}">
+                <img src="/css/img/log-out.png" alt="logout" class="icon">
+                <span class="txt-link">Sair</span>
+            </a>
+        </li>
+    </ul>
+
+    </nav>    
+
+    <div class="container">
+        <div class="center-content" id="center-notificacoes">   
+            <!--Container de criar evento-->
+            
+            <section id="criar-evento-section" class="section">
+                <div class="container-ev">
+                    <h1>
+                        Postar Evento
+                    </h1>
+                    <form action="criar-evento" method="POST" enctype="multipart/form-data">
+                        <input type="text" name="titulo" placeholder="Titulo" required>
+                        <textarea placeholder="Descrição" name="descricao" id="" cols="10" rows="10" required style="resize: none;"></textarea>
+                        <input class="btn-foto" type="file" name="imagemEvento" required>
+                        <input type="text" id="cep" placeholder="CEP(opcional)">
+
+                        <div class="end-cidade" style="display: flex;">
+
+                            <input type="text" name="cidade" id="cidade" placeholder="Cidade" required >
+                       
+                            <select name="estado" id="estado" required style="height: 40px; margin-right: -20px;">
+                                <option value="sc">SC</option>
+                                <option value="sp">SP</option>
+                                <option value="rj">RJ</option>
+                                <option value="ro">RO</option>
+                                <option value="pr">PR</option>
+                                <option value="ac">AC</option>
+                                <option value="rs">RS</option>
+                                <option value="mt">MT</option>
+                                <option value="mg">MG</option>
+                            </select>   
+                        </div>
+
+                        <input type="text" name="bairro" id="bairro" placeholder="Bairro" required>
+
+                        <input type="text" id="valor" name="valor" placeholder="Valor do ingresso" oninput="formatarMoeda(this)" />
+                        <input type="text" id="horario" name="horario" placeholder="Horario do Evento" required>
+                        <button class="ui-btn" type="submit">
+                            <span>
+                            Criar
+                            </span>
+                        </button>
+                    </form>
+                                
+                </div>              
+            </section>
+        </div>
+    </div>
+    <style>
+        /* Estilo básico para o seletor */
+        select {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+    
+        /* Estilizar a seta do seletor (pode variar dependendo do navegador) */
+        select::-ms-expand {
+            display: none;
+        }
+    
+        /* Estilizar o foco (quando o usuário seleciona o seletor) */
+        select:focus {
+            outline: none;
+            border-color: #007bff; /* Cor de destaque ao focar */
+        }
+    
+        /* Alinhar o seletor ao lado do campo "Cidade" */
+        select {
+            display: inline-block; /* Para colocar o seletor ao lado de outros elementos */
+            margin-left: 10px; /* Ajuste a margem esquerda conforme necessário */
+        }
+    </style>
+    
+    
+    <footer>
+        <ul class="ul-footer">
+            <li><h4>GoParty © 2023</h4></li>
+            <li><h4>Sobre</h4></li>
+            <li><h4>Desenvolvedores</h4></li>
+
+        </ul>
+    </footer>
+
+    <!-- Modal Notificações -->
+    <div id="modalNotificacao" class="modal-notificacao" style="display: none;">
+        <div class="modal-content">
+            <span class="close" onclick="fecharModalNotificacao()">&times;</span>
+            <h1 class="tittle-modal">Notificações</h1>
+            <div class="bloco-notificacoes"> 
+                <!--Lista de notificações-->
+                <ul>
+                    <li th:if="${#lists.isEmpty(notifications)}">
+                        <span>Não há notificações.</span>
+                    </li>
+                    <li class="lista-notificacoes" th:each="notification, index : ${notifications}">
+                        
+                        <!--Bloco especifico-->
+                     <div class="notification-container">
+                         <!--Tempo da notificacao-->
+                         
+                        <img class="imgNoti" th:src="@{'/perfil-imagem-notification/' + ${notification.id}}" alt="Foto de Perfil" />
+    
+                        <span class="arroba" id="arroba-id">@</span><span class="notifications" th:text="${notification.message}"> </span>
+                     </div>
+                    </li>                                   
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!--Modal Config-->
+    <div th:replace="home :: #modalConfiguracao"></div>
+    <div th:replace="home :: #modalChat"></div>
+
+
+    <script>
+        function formatarMoeda(elemento) {
+          let valor = elemento.value;
+    
+          valor = valor.replace(/\D/g, '');
+    
+          valor = (valor / 100).toFixed(2);
+    
+          valor = valor.replace('.', ',');
+          
+          // Atualiza o valor no campo de entrada
+          elemento.value = "R$ "+ valor;
+        }
+      </script>
+
+    <script src="/css/js/buttons.js"></script>
+    <script src="/css/js/barraLateral.js"></script>
+</body>
+</html>
