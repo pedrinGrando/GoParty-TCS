@@ -6,55 +6,77 @@ export default function Profile () {
     const { user } = useUser();
 
     return (
-             <div>
-                <div className="p-16">
-                            <div className="p-8 bg-white shadow mt-24">
-                            <div className="grid grid-cols-1 md:grid-cols-3">
-                            <div className="grid grid-cols-3 text-center order-last md:order-first mt-20 md:mt-0">
-                            <div className="col-start-2 md:col-start-3"> {/* Adicionado */}
-                                <div>
-                                <p className="font-bold text-gray-700 text-xl">22</p>
-                                <p className="text-gray-400">Eventos Realizados</p>
-                                </div>
-                                <div>
-                                <p className="font-bold text-gray-700 text-xl">10</p>
-                                <p className="text-gray-400">Ingressos Adquiridos</p>
-                                </div>
-                            </div>
-                            </div>
-                                <div className="relative">
-                                <div className="w-48 h-48 bg-indigo-100 mx-auto rounded-full shadow-2xl absolute inset-x-0 top-0 -mt-24 flex items-center justify-center text-indigo-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-24 w-24" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
-                            </svg>
-                                </div>
-                                </div>
+        <div>
+        <section className="pt-16 bg-blueGray-50">
+        <div className="w-full lg:w-4/12 px-4 mx-auto">
+          <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
+            <div className="px-6">
+              <div className="flex flex-wrap justify-center">
+                <div className="w-full px-4 flex justify-center">
+                <img alt="..." src="/imagens/senac.png" className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"/>
+                </div>
+                <div className="w-full px-4 text-center mt-20">
+                  <div className="flex justify-center py-4 lg:pt-4 pt-8">
+                    <div className="mr-4 p-3 text-center">
+                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                        22
+                      </span>
+                      <span className="text-sm text-blueGray-400">Eventos criados</span>
+                    </div>
+                    <div className="mr-4 p-3 text-center">
+                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                        10
+                      </span>
+                      <span className="text-sm text-blueGray-400">Ingressos adquiridos</span>
+                    </div>
+                    <div className="lg:mr-4 p-3 text-center">
+                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                        89
+                      </span>
+                      <span className="text-sm text-blueGray-400">Curtidas</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="text-center mt-12">
+                <h3 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
+                  @{user?.username}
+                </h3>
+                <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
+                  Florianópolis, Santa Catarina
+                </div>
+                <div className="mb-2 text-green-600 mt-10">
+                  GoParty {user?.tipoUsuario}
+                </div>
 
-                                <div className="space-x-8 flex justify-between mt-32 md:mt-0 md:justify-center">
-                            <button
-                            className="text-white py-2 px-4 uppercase rounded-full bg-indigo-500 hover:bg-blue-500 shadow hover:shadow-lg font-medium transition transform hover:-translate-y-0.5"
-                            >
-                            Atualizar seus dados
-                            </button>
-                                
-                                </div>
-                            </div>
-
-                            <div className="mt-20 text-center border-b pb-12">
-                                <h1 className="text-4xl font-medium text-gray-700">{user?.nome}, <span className="font-light text-gray-500">20</span></h1>
-                                <p className="font-light text-gray-600 mt-3">Florianópolis, Santa Catarina</p>
-
-                                <p className="mt-8 text-gray-500">Você é <span className="text-green">{user?.tipoUsuario}</span></p>
-                            </div>
-
-                            <div className="mt-12 flex flex-col justify-center">
-                                <p className="text-gray-600 text-center font-light lg:px-16">Seus dados cadastrais.</p>
-                            </div>
-
-                            </div>
-                            </div>
+                   <div className="flex items-center mb-2 text-blueGray-600 mt-10">
+                    <img src="/imagens/id-card.png" className="mr-2" alt="id-card"></img>
+                    <span>{user?.email}</span>
+                    </div>
+                    <div className="flex items-center mb-2 text-blueGray-600">
+                    <img src="/imagens/envelopes (1).png" className="mr-2" alt="envelopes"></img>
+                    <span>{user?.email}</span>
+                    </div>
+                    <div className="flex items-center mb-2 text-blueGray-600">
+                    <img src="/imagens/calendar-lines.png" className="mr-2" alt="calendar-lines"></img>
+                    <span>{user?.email}</span>
+                    </div>
+              </div>
+              <div className="mt-10 py-10 border-t border-blueGray-200 text-center">
+                <div className="flex flex-wrap justify-center">
+                    <button>
+                        <img src="/imagens/user-pen.png" alt="" />
+                    </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        </section>
           
                    <Sidebar />
-                </div>
+                   </div>
+               
     )
 }
