@@ -10,7 +10,7 @@ interface UserData {
   nome: string;
   tipoUsuario: string;
   cpf: string;
-  fotoPerfil: Blob | string;
+  fotoCaminho: string;
 }
 
 // Cria o contexto de usuário

@@ -78,7 +78,7 @@ export default function Login(){
           const userData = await response.json();
 
           setUser({ username: formData.username, senha: formData.senha, email: userData.email, dataNasci: userData.dataNasci, 
-          tipoUsuario: userData.tipoUsuario, id: userData.id, nome: userData.nome, fotoPerfil: userData.fotoPerfil, cpf: userData.cpf});
+          tipoUsuario: userData.tipoUsuario, id: userData.id, nome: userData.nome, fotoCaminho: userData.fotoCaminho, cpf: userData.cpf});
 
           setIsLoading(false);
           navigate('/home');

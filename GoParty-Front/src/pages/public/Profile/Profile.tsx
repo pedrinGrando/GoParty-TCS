@@ -13,7 +13,7 @@ export default function Profile () {
             <div className="px-6">
               <div className="flex flex-wrap justify-center">
                 <div className="w-full px-4 flex justify-center">
-                <img alt="..." src="/imagens/senac.png" className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"/>
+                <img alt="..." src={`http://localhost:8081/${user?.fotoCaminho}`} className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"/>
                 </div>
                 <div className="w-full px-4 text-center mt-20">
                   <div className="flex justify-center py-4 lg:pt-4 pt-8">
@@ -21,7 +21,7 @@ export default function Profile () {
                       <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
                         22
                       </span>
-                      <span className="text-sm text-blueGray-400">Eventos criados</span>
+                      <span className="text-sm text-blueGray-400">Eventos Criados</span>
                     </div>
                     <div className="mr-4 p-3 text-center">
                       <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">

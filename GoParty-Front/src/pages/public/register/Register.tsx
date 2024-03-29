@@ -278,7 +278,7 @@ export default function Register(){
             setImagePreview(imageURL)
 
             try {
-             const response =  await fetch('http://localhost:8081/v1/usuarios/imagem-perfil/upload', {
+             const response =  await fetch('http://localhost:8081/v1/usuarios/imagem-perfil/uploads', {
                   method: 'POST',
                   body: fileData,
               });

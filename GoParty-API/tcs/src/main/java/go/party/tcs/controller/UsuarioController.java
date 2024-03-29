@@ -124,14 +124,14 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/imagem-perfil/upload")
+    @PostMapping("/imagem-perfil/uploads")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
             Path filePath = Paths.get(uploadDir + "/" + file.getOriginalFilename());
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            // Salva o caminho da imagem no banco de dados
-             photoPath = "/profile-image/v1/files/" + file.getOriginalFilename();
+             // Salva o caminho da imagem no banco de dados
+             photoPath = "/imagem-perfil/uploads/" + file.getOriginalFilename();
 
             return ResponseEntity.ok("File uploaded successfully.");
         } catch (IOException e) {

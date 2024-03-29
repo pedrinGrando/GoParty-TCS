@@ -28,6 +28,5 @@ public class Autentication implements Filter {
         }
     }
 
-    // Outros métodos do filtro (init e destroy) não são implementados aqui.
 }
 
