@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 
 //Pages/components
+import { FormsTrends } from '../../../components/Feed/FormsTrend';
 import { NoEvent } from '../../../components/Feed/NoEvent';
 import TrendEvents from '../../../components/Feed/TrendEvents';
 import { LoadingHome } from '../../../components/Loading/LoadingHome';
@@ -40,6 +41,8 @@ export default function Home () {
                               <LoadingHome/>
                         ) : (
                             <div>
+             <FormsTrends/>
+             <hr className="my-5 border-gray-300 dark:border-gray-300 lg:my-5" />
             {events.length === 0 ? (
                 <div className="flex justify-center items-center h-screen">
                     <NoEvent/>

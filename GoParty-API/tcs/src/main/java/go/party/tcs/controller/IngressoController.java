@@ -1,17 +1,15 @@
 package go.party.tcs.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Ingresso;
@@ -20,11 +18,8 @@ import go.party.tcs.repository.EventoRepository;
 import go.party.tcs.repository.IngressoRepository;
 import go.party.tcs.service.IngressoService;
 import go.party.tcs.service.NotificationService;
-import jakarta.mail.search.IntegerComparisonTerm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 // Importações omitidas por brevidade
@@ -80,8 +75,6 @@ public class IngressoController {
 
             String message = usuario.getUsername()+ " comprou um ingresso para o seu evento: "+evento.getTitulo();
 
-            //GERAR NOTI
-            notificationService.createNotification(message,  evento.getAutor().getId(), usuario.getFotoPerfil());
             model.addAttribute("sessionUsuario", usuario);
             return "redirect:/ingressos";
         } else {

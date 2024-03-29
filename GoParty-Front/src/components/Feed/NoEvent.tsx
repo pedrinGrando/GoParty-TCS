@@ -1,6 +1,11 @@
 import React from "react";
+import { useUser } from "../UserContext/UserContext";
 
 export const NoEvent: React.FC = () => {
+
+    //Contexto de usuário logado
+    const { user } = useUser();
+
     return (
       <div>
         <section className="bg-center bg-no-repeat rounded-lg bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/conference.jpg')] bg-gray-700 bg-blend-multiply py-24 lg:py-40">

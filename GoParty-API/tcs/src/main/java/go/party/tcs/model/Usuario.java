@@ -2,6 +2,8 @@ package go.party.tcs.model;
 
 import java.time.LocalDate;
 
+import org.hibernate.usertype.UserType;
+
 import go.party.tcs.Enums.TipoUsuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -51,20 +53,11 @@ public class Usuario {
     @Column(name = "cpf")
     private String cpf;
 
-    @Column(name = "url")
-    private String url;
+    @Column(name = "fotoCaminho")
+    private String fotoCaminho;
 
     @Column(name = "senha")
     private String senha;
-
-    @Lob
-    @Column(name = "fotoPerfil", columnDefinition = "LONGBLOB")
-    private byte[] fotoPerfil;
-
-    //SEGUIDORES E SEGUINDO
-    private int seguidores;
-
-    private int seguindo;
 
     @Lob
     @Column(columnDefinition = "BLOB")
@@ -73,26 +66,5 @@ public class Usuario {
     @Lob
     @Column(columnDefinition = "BLOB")
     private byte[] chavePublica;
-
-    public byte[] getChavePrivada() {
-        return chavePrivada;
-    }
-
-    public void setChavePrivada(byte[] chavePrivada) {
-        this.chavePrivada = chavePrivada;
-    }
-
-    public byte[] getChavePublica() {
-        return chavePublica;
-    }
-
-    public void setChavePublica(byte[] chavePublica) {
-        this.chavePublica = chavePublica;
-    }
-    
-    //METODO PARA VERIFICAR SE EXISTE FOTO DE PERFIL
-    public boolean temImagemPerfil() {
-        return fotoPerfil != null && fotoPerfil.length > 0;
-    }
   
 }

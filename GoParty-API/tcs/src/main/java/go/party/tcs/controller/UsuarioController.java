@@ -1,7 +1,10 @@
 package go.party.tcs.controller;
 
 import java.io.IOException;
-import java.time.LocalDate;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,9 +12,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
@@ -93,9 +95,14 @@ public class UsuarioController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    Usuario usuarioLogado = new Usuario();
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    Usuario usuarioCadastro = new Usuario();
 
     Usuario usuarioPerfilVisitado = new Usuario();
+
+    private String photoPath;
 
    @PostMapping("/cadastro")
     public ResponseEntity<String> cadastrarUsuario(@RequestBody Usuario usuario) {
@@ -103,10 +110,12 @@ public class UsuarioController {
             // Criptrografia de Senha
             String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
             usuario.setSenha(senhaCriptografada);
-            usuario.setTipoUsuario(TipoUsuario.USER);
+            usuario.setTipoUsuario(TipoUsuario.User);
+            usuario.setFotoCaminho(photoPath);
 
             // Servico de cadastro de usuarios 
             usuarioService.cadastrarUsuario(usuario);
+            usuarioCadastro = usuario;
 
             return ResponseEntity.ok("Usuário cadastrado com sucesso!");
         } catch (Exception e) {
@@ -115,9 +124,24 @@ public class UsuarioController {
         }
     }
 
+    @PostMapping("/imagem-perfil/uploads")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            Path filePath = Paths.get(uploadDir + "/" + file.getOriginalFilename());
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+             // Salva o caminho da imagem no banco de dados
+             photoPath = "/imagem-perfil/uploads/" + file.getOriginalFilename();
+
+            return ResponseEntity.ok("File uploaded successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
+        }
+    }
+
     //Autenticação
     @PostMapping("/auth")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> requestBody) {
         
         String username = requestBody.get("username");
         String senha = requestBody.get("senha");
@@ -128,7 +152,7 @@ public class UsuarioController {
             if (usuario != null) {
                 if (passwordEncoder.matches(senha, usuario.getSenha())) {
                     // Autenticação bem-sucedida
-                    return ResponseEntity.ok("Login bem-sucedido!");
+                    return ResponseEntity.ok(usuario);
                 }
             }
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuário ou senha inválidos.");
@@ -190,7 +214,7 @@ public class UsuarioController {
         return "home";
     }
 
-    //Metodo para Editar a Conta do Usuario
+    //Atualizar Dados
     @PutMapping("/update")
     public ResponseEntity<String> editarUsuario(
         @RequestParam(name = "usuarioNome", required = false) String novoUsuarioNome,
@@ -201,28 +225,17 @@ public class UsuarioController {
         HttpSession session
     ) {
         try {
-            // Passo 1: Recupere o usuário da sessão.
             Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-
-            // Passo 2: Obtenha o ID do usuário da sessão.
+ 
             Integer userId = sessionUsuario.getId();
 
-            // Passo 3: Use o ID para carregar o usuário correspondente do banco de dados.
-            Usuario usuarioNoBanco = usuarioService.encontrarId(userId); // Substitua 'usuarioService' pelo seu serviço de usuário.
+            Usuario usuarioNoBanco = usuarioService.encontrarId(userId);
 
-            // Passo 4: Atualize as informações do usuário com os novos valores.
             if (novoUsuarioNome != null && !novoUsuarioNome.isEmpty()) {
                 usuarioNoBanco.setUsername(novoUsuarioNome);
             }
             if (novoEmail != null && !novoEmail.isEmpty()) {
                 usuarioNoBanco.setEmail(novoEmail);
-            }
-            if (novaDescricao != null && !novaDescricao.isEmpty()) {
-                usuarioNoBanco.setDescricao(novaDescricao);
-            }
-            if (novaIdade != null && !novaIdade.isEmpty()) {
-                LocalDate idade = LocalDate.parse(novaIdade);
-                usuarioNoBanco.setIdade(idade);
             }
             if (novaSenha != null && !novaSenha.isEmpty()) {
                 String senhaCriptografada = passwordEncoder.encode(novaSenha);
@@ -279,9 +292,6 @@ public class UsuarioController {
                     // Converte a imagem para um array de bytes
                     byte[] fotoBytes = fotoPerfil.getBytes();
                     
-                    // Associa a imagem de perfil ao usuário
-                    sessionUsuario.setFotoPerfil(fotoBytes);
-                    
                     // Salva o usuário no banco de dados
                     usuarioService.atualizarUsuario(sessionUsuario);;
                     
@@ -298,53 +308,6 @@ public class UsuarioController {
         } else {
             return "redirect:/loginValida";
         }
-    }
-
-    //Metodo para adicionar foto do Perfil do Usuario da Sessão
-    @GetMapping("/perfil-imagem-session/{usuarioId}")
-    public ResponseEntity<byte[]> getImagemPerfilSession(@PathVariable Integer usuarioId, HttpSession session) {
-        
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        
-        if (sessionUsuario != null && sessionUsuario.getId().equals(usuarioId)) {
-
-            byte[] imagemPerfil = sessionUsuario.getFotoPerfil();
-            if (imagemPerfil != null && imagemPerfil.length > 0) {
-                // Defina os cabeçalhos de resposta
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_JPEG); 
-
-                // Retorna a imagem como uma resposta HTTP
-                return new ResponseEntity<>(imagemPerfil, headers, HttpStatus.OK);
-            }
-        }
-        
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
-    
-    //Metodo para adicionar fotos de Perfil dos Usuarios
-    @GetMapping("/perfil-imagem/{usuarioId}")
-    public ResponseEntity<byte[]> getImagemPerfil(@PathVariable Integer usuarioId) {
-        // Recupere os detalhes do usuário com base no ID do usuário
-        Usuario usuario = usuarioService.encontrarId(usuarioId);
-        usuarioPerfilVisitado = usuario;
-
-        // Verifique se o usuário foi encontrado
-        if (usuario != null) {
-            // Recupere a imagem de perfil do usuário
-            byte[] imagemPerfil = usuario.getFotoPerfil();
-
-            if (imagemPerfil != null && imagemPerfil.length > 0) {
-                
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_JPEG); // ou MediaType.IMAGE_PNG, dependendo do tipo de imagem
-
-                // Retorna a imagem como uma resposta HTTP
-                return new ResponseEntity<>(imagemPerfil, headers, HttpStatus.OK);
-            }
-        }
-        // Se o usuário não for encontrado ou não tiver uma imagem de perfil, retorne uma resposta vazia ou um erro
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     //Metodo para mostrar a foto do Perfil do Usuario que fez a notificação 

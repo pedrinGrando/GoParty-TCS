@@ -143,6 +143,16 @@ export default function Register(){
 
       const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = event.target;
+
+        if (name === 'cpf' && type === 'text') {
+          const numericValue = value.replace(/\D/g, '');
+          
+          setFormData({
+              ...formData,
+              [name]: numericValue,
+          });
+
+        }
       
           if (type === 'file' && event.target instanceof HTMLInputElement) {
               const file = event.target.files && event.target.files[0];
@@ -213,7 +223,7 @@ export default function Register(){
         setMessage('Preencha todos os campos obrigatórios!')
         setError(true)
         return;
-    }
+     }
 
         try {
           const response = await fetch('http://localhost:8081/v1/usuarios/cadastro', {
@@ -223,6 +233,8 @@ export default function Register(){
             },
             body: JSON.stringify(formData),
           });
+
+
           
           if (response.ok) {
             // Limpar o formulário após o envio bem-sucedido, se necessário
@@ -257,13 +269,29 @@ export default function Register(){
         }
       };
 
-      function onFileUpload(event: React.ChangeEvent<HTMLInputElement>){
+      const onFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
         if(event.target.files){
             const file = event.target.files[0]
             const imageURL = URL.createObjectURL(file)
+            const fileData = new FormData();
+            fileData.append('file', file);
             setImagePreview(imageURL)
+
+            try {
+             const response =  await fetch('http://localhost:8081/v1/usuarios/imagem-perfil/uploads', {
+                  method: 'POST',
+                  body: fileData,
+              });
+
+              if(response.ok){
+                console.log('File uploaded successfully.');
+              }
+              
+          } catch (error) {
+              console.error('Failed to upload file.');
+          }
+      }
         }
-    }
 
     return (
       <form onSubmit={handleSubmit}>
@@ -489,7 +517,7 @@ export default function Register(){
 
                     {/*AQUI*/}
                     <div className="w-full p-1 text-center">
-                        © 2023 Pedro e Caue direitos reservados
+                         © 2023 GoParty direitos reservados
                         <a className="text-white" href="https://tw-elements.com/"></a>
                     </div>
                    

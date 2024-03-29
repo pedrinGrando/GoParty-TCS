@@ -75,7 +75,11 @@ export default function Login(){
             senha: '',
           });
 
-          setUser({ username: formData.username, senha: formData.senha });
+          const userData = await response.json();
+
+          setUser({ username: formData.username, senha: formData.senha, email: userData.email, dataNasci: userData.dataNasci, 
+          tipoUsuario: userData.tipoUsuario, id: userData.id, nome: userData.nome, fotoCaminho: userData.fotoCaminho, cpf: userData.cpf});
+
           setIsLoading(false);
           navigate('/home');
           console.log('Login efetuado com sucesso!');

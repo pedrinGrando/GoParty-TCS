@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha</title>
+    <link rel="stylesheet"  href="/css/recuperarSenha.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js"></script>
+    <link rel="icon" type="image/x-icon" href="/css/img/LogoSimples.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+</head>
+<body>
+          <!-- teste de formulario-->
+
+      <div class="login-box">
+        <h1 class="titulo">Tudo certo! Agora crie a sua nova senha.</h1>
+        <img src="/css/img/Modelo Logo.png" alt="" class="logo-inicio">
+        
+        <form method="POST" action="/trocaDeSenha" id="senha-primeira-form" enctype="multipart/form-data">
+
+          <div class="user-box">
+          <input type="hidden" name="_method" value="PUT">
+          <input type="password" name="novaSenha" id="primeira-senha" required placeholder="Digite sua nova senha" maxlength="8">
+
+           </div>
+
+           <button type="submit" class="btn-style" id="trocar-senha">
+            Salvar
+            <span></span>
+          </button>    
+
+
+        <button type="submit" class="btn-style" id="voltar-btn3">
+          <a  th:href="@{/login}" style="color: #e8e8e8;">
+            Voltar
+          </a>
+        </button>
+      </form>
+        <svg viewBox="25 25 50 50" id="carregamento">
+          <circle r="20" cy="50" cx="50"></circle>
+        </svg>
+      </div>
+
+</body>
+
+</html>
