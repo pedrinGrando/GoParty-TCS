@@ -1,6 +1,10 @@
 package go.party.tcs.controller;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -90,9 +95,14 @@ public class UsuarioController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    Usuario usuarioLogado = new Usuario();
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    Usuario usuarioCadastro = new Usuario();
 
     Usuario usuarioPerfilVisitado = new Usuario();
+
+    private String photoPath;
 
    @PostMapping("/cadastro")
     public ResponseEntity<String> cadastrarUsuario(@RequestBody Usuario usuario) {
@@ -101,14 +111,31 @@ public class UsuarioController {
             String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
             usuario.setSenha(senhaCriptografada);
             usuario.setTipoUsuario(TipoUsuario.User);
+            usuario.setFotoCaminho(photoPath);
 
             // Servico de cadastro de usuarios 
             usuarioService.cadastrarUsuario(usuario);
+            usuarioCadastro = usuario;
 
             return ResponseEntity.ok("Usuário cadastrado com sucesso!");
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar usuário.");
+        }
+    }
+
+    @PostMapping("/imagem-perfil/upload")
+    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+        try {
+            Path filePath = Paths.get(uploadDir + "/" + file.getOriginalFilename());
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Salva o caminho da imagem no banco de dados
+             photoPath = "/profile-image/v1/files/" + file.getOriginalFilename();
+
+            return ResponseEntity.ok("File uploaded successfully.");
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
         }
     }
 

@@ -245,7 +245,7 @@ public class EventoController {
         Integer userIdToNotify =  evento.getAutor().getId();
 
         if(userIdToNotify != sessionUsuario.getId()){
-            notificationService.createNotification(message, userIdToNotify, fotoPerfil);
+            
          }
 
         return "redirect:/home";

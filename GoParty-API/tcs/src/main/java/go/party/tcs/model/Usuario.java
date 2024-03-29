@@ -2,6 +2,8 @@ package go.party.tcs.model;
 
 import java.time.LocalDate;
 
+import org.hibernate.usertype.UserType;
+
 import go.party.tcs.Enums.TipoUsuario;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -36,11 +38,14 @@ public class Usuario {
     @Column(name = "username", unique = true)
     private String username;
 
+    @Column(name = "descricao")
+    private String descricao;
+
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "dataNasci")
-    private LocalDate dataNasci;
+    @Column(name = "idade")
+    private LocalDate idade;
 
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;
@@ -48,11 +53,11 @@ public class Usuario {
     @Column(name = "cpf")
     private String cpf;
 
+    @Column(name = "fotoCaminho")
+    private String fotoCaminho;
+
     @Column(name = "senha")
     private String senha;
-
-    @Column(name = "photo_path")
-    private String photoPath;
 
     @Lob
     @Column(columnDefinition = "BLOB")
@@ -77,4 +82,5 @@ public class Usuario {
     public void setChavePublica(byte[] chavePublica) {
         this.chavePublica = chavePublica;
     }
+  
 }

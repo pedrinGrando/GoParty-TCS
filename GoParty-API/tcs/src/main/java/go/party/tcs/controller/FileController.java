@@ -22,28 +22,5 @@ import go.party.tcs.repository.UsuarioRepository;
 @RequestMapping("/profile-image/v1/files")
 public class FileController {
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
-    @PostMapping("/upload")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
-        try {
-            Path filePath = Paths.get(uploadDir + "/" + file.getOriginalFilename());
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            // Slava o caminho da imagem no banco de dados
-            String photoPath = "/profile-image/v1/files/" + file.getOriginalFilename();
-            
-            //Usuario usuario = getCurrentUser(); 
-            //usuario.setCaminhoFoto(photoPath);
-            //usuarioRepository.save(usuario);
-
-            return ResponseEntity.ok("File uploaded successfully.");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
-        }
-    }
+    
 }
