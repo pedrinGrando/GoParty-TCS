@@ -125,7 +125,7 @@ public class UsuarioController {
     }
 
     @PostMapping("/{userId}/upload-profile-image")
-    public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId, @RequestParam("image") MultipartFile file) {
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId, @RequestParam("file") MultipartFile file) {
         try {
             Optional<Usuario> userOptional = usuarioRepository.findById(userId);
             if (!userOptional.isPresent()) {

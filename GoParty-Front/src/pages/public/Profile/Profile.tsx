@@ -42,8 +42,8 @@ export default function Profile () {
                 <div className="w-full px-4 flex justify-center">
 
                            {/* Upload da foto condicional*/}
-                           {user?.fotoCaminho.length == 0 ? (
-                              <img alt="..." src={`http://localhost:8081${user.fotoCaminho}`} className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"/>
+                           {!user?.fotoCaminho == null  ?  (
+                              <img alt="..." src={`http://localhost:8081${user?.fotoCaminho}`} className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"/>
                             ) : (
                               <div className='mt-0 flex justify-center rounded-full border border-dashed border-gray-900/25 px-6 py-10'>
                               <div className='text-center'>
