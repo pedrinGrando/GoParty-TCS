@@ -124,18 +124,25 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/imagem-perfil/uploads")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/{userId}/upload-profile-image")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId, @RequestParam("image") MultipartFile file) {
         try {
-            Path filePath = Paths.get(uploadDir + "/" + file.getOriginalFilename());
+            Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+            if (!userOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            Usuario usuario = userOptional.get();
+            String filename = userId + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-             // Salva o caminho da imagem no banco de dados
-             photoPath = "/imagem-perfil/uploads/" + file.getOriginalFilename();
+            usuario.setFotoCaminho("/uploads/" + filename);
+            usuarioRepository.save(usuario);
 
-            return ResponseEntity.ok("File uploaded successfully.");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
+            return ResponseEntity.ok("Profile image uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile image");
         }
     }
 

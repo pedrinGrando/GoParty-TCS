@@ -1,9 +1,36 @@
 import { Sidebar } from "../../../components/sidebar/Sidebar";
 import { useUser } from "../../../components/UserContext/UserContext";
+import { RenderIf } from "../../../components/RenderIf/RenderIf";
+import { useState } from "react";
 
 export default function Profile () {
    
+    const [imagePreview, setImagePreview] = useState<string>('');
     const { user } = useUser();
+
+    const onFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+      if(event.target.files){
+          const file = event.target.files[0]
+          const imageURL = URL.createObjectURL(file)
+          const fileData = new FormData();
+          fileData.append('file', file);
+          setImagePreview(imageURL)
+
+          try {
+           const response =  await fetch(`http://localhost:8081/v1/usuarios/${user?.id}/upload-profile-image`, {
+                method: 'POST',
+                body: fileData,
+            });
+
+            if(response.ok){
+              console.log('File uploaded successfully.');
+            }
+            
+        } catch (error) {
+            console.error('Failed to upload file.');
+        }
+    }
+      }
 
     return (
         <div>
@@ -13,7 +40,41 @@ export default function Profile () {
             <div className="px-6">
               <div className="flex flex-wrap justify-center">
                 <div className="w-full px-4 flex justify-center">
-                <img alt="..." src={`http://localhost:8081/${user?.fotoCaminho}`} className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"/>
+
+                           {/* Upload da foto condicional*/}
+                           {user?.fotoCaminho.length == 0 ? (
+                              <img alt="..." src={`http://localhost:8081${user.fotoCaminho}`} className="shadow-xl rounded-full h-auto align-middle border-none absolute -m-16 -ml-20 lg:-ml-16 max-w-150-px"/>
+                            ) : (
+                              <div className='mt-0 flex justify-center rounded-full border border-dashed border-gray-900/25 px-6 py-10'>
+                              <div className='text-center'>
+
+                                  <RenderIf condition={!imagePreview}>
+                                      <svg className="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                          <path fillRule="evenodd" 
+                                              d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" 
+                                              clipRule="evenodd" />
+                                      </svg>
+                                  </RenderIf>
+                                  <div className='mt-2 flex text-sm leading-6 text-gray-600'>
+                                      <label htmlFor='fotoPerfil' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
+                                          
+                                          <RenderIf condition={!imagePreview}>
+                                              <span>Foto de Perfil</span>
+                                          </RenderIf>
+
+                                          <RenderIf condition={!!imagePreview}>
+                                              <img src={imagePreview} width={170} className='rounded-full' />
+                                          </RenderIf>
+
+                                          <input accept="image/*" onChange={onFileUpload} id='fotoPerfil' name='fotoPerfil' type='file' className='sr-only' />
+                                      </label>
+                                  </div>   
+                              </div>
+                          </div>
+                            )}
+
+               
+
                 </div>
                 <div className="w-full px-4 text-center mt-20">
                   <div className="flex justify-center py-4 lg:pt-4 pt-8">

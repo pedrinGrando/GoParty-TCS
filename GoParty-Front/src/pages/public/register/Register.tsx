@@ -13,7 +13,6 @@ import { NavBar } from '../../../components/NavBar/NavBar';
 export default function Register(){
 
     const [isLoading, setIsLoading] = useState(false);
-    const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
     const [error, setError] = useState(false);
     const [isValidEmail, setIsValidEmail] = useState(true);
@@ -251,7 +250,6 @@ export default function Register(){
             });
 
             setIsLoading(false);
-            setImagePreview('');
             console.log('Formulário enviado com sucesso!');
             navigate('/home');
 
@@ -268,30 +266,6 @@ export default function Register(){
           console.error('Erro ao enviar formulário:', error);
         }
       };
-
-      const onFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        if(event.target.files){
-            const file = event.target.files[0]
-            const imageURL = URL.createObjectURL(file)
-            const fileData = new FormData();
-            fileData.append('file', file);
-            setImagePreview(imageURL)
-
-            try {
-             const response =  await fetch('http://localhost:8081/v1/usuarios/imagem-perfil/uploads', {
-                  method: 'POST',
-                  body: fileData,
-              });
-
-              if(response.ok){
-                console.log('File uploaded successfully.');
-              }
-              
-          } catch (error) {
-              console.error('Failed to upload file.');
-          }
-      }
-        }
 
     return (
       <form onSubmit={handleSubmit}>
@@ -420,32 +394,6 @@ export default function Register(){
                     )}
                 </button>
                     </div>
-                    <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
-                                <div className='text-center'>
-
-                                    <RenderIf condition={!imagePreview}>
-                                        <svg className="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                            <path fillRule="evenodd" 
-                                                d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" 
-                                                clipRule="evenodd" />
-                                        </svg>
-                                    </RenderIf>
-                                    <div className='mt-2 flex text-sm leading-6 text-gray-600'>
-                                        <label htmlFor='fotoPerfil' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
-                                            
-                                            <RenderIf condition={!imagePreview}>
-                                                <span>Foto de Perfil</span>
-                                            </RenderIf>
-
-                                            <RenderIf condition={!!imagePreview}>
-                                                <img src={imagePreview} width={250} className='rounded-full' />
-                                            </RenderIf>
-
-                                            <input accept="image/*" onChange={onFileUpload} id='fotoPerfil' name='fotoPerfil' type='file' className='sr-only' />
-                                        </label>
-                                    </div>   
-                                </div>
-                            </div>
                             <Error
                               error={error}
                               message={message}
