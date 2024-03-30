@@ -1,6 +1,7 @@
 import React from "react"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
 import { Link } from "react-router-dom"
+import { NavBar } from "../../../components/NavBar/NavBar"
 
 export default function StartPage() {
    
@@ -9,48 +10,14 @@ export default function StartPage() {
 
     <body>
     <header>
-        <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5">
-            <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-                <a href="https://flowbite.com" className="flex items-center">
-                    <img src="/imagens/Logo GoPartyIcon.webp" className="mr-3 h-6 h-16" alt="Flowbite Logo" />
-                    <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-black">GoParty</span>
-                </a>
-                <div className="flex items-center lg:order-2">
-                    <Link to='/login'>
-                    <a href="#" className="text-gray-800 dark:text-black hover:text-indigo-400 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 focus:outline-none dark:focus:ring-gray-800">Log in</a>
-                    </Link>
-                    <Link to='/register'>
-                    <a href="#" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Cadastro</a>
-                    </Link>
-                    <button data-collapse-toggle="mobile-menu-2" type="button" className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
-                        <span className="sr-only">Open main menu</span>
-                        <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
-                        <svg className="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                    </button>
-                </div>
-                <div className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
-                    <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-                        
-                        <li>
-                            <a href="#" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-indigo-400 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Company</a>
-                        </li>
-                        
-                        <li>
-                            <a href="#" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-indigo-400 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Funcionalidades</a>
-                        </li>
-                        <li>
-                            <a href="#" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-indigo-400 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Time</a>
-                        </li>
-                        <li>
-                            <a href="#" className="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-blue-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-indigo-400 dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Contato</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
+       <NavBar/>
     </header>
 
-    <section className="bg-white">
+    <section 
+    data-aos="fade-up"
+    data-aos-delay="50"
+    data-aos-duration="0"
+    className="bg-white">
         <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
             <div className="mr-auto place-self-center lg:col-span-7">
                 <h1 className="max-w-2xl mb-4 text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl dark:text-black">Festas e Formaturas</h1>
@@ -62,8 +29,8 @@ export default function StartPage() {
                 </a>
                 </Link>
             </div>
-            <div className="hidden lg:mt-0 lg:col-span-5 lg:flex">
-                <img src="/imagens/EnjoyingParty2.webp" alt="mockup" />
+            <div className=" hidden lg:mt-0 lg:col-span-5 lg:flex">
+                <img src="/imagens/EnjoyingParty2.webp" alt="mockup"/>
             </div>                
         </div>
     </section>
@@ -71,8 +38,10 @@ export default function StartPage() {
     <section className="bg-gray-50 dark:bg-gray-800">
         <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
             <div className="max-w-screen-md mb-8 lg:mb-16">
-                <h2 className="mb-4 text-4xl font-extrabold text-gray-900 dark:text-white">Designed for business teams like yours</h2>
-                <p className="text-gray-500 sm:text-xl dark:text-gray-400">Here at Flowbite we focus on markets where technology, innovation, and capital can unlock long-term value and drive economic growth.</p>
+                <h2 className="mb-4 text-4xl font-extrabold text-gray-900 dark:text-white">Criado para trazer simplicidade ao realizar um evento.</h2>
+                <p className="text-gray-500 sm:text-xl dark:text-gray-400">A GoParty é uma plataforma inovadora 
+                 projetada para simplificar a organização de formaturas e eventos, proporcionando uma experiência interativa tanto para usuários interessados em adquirir ingressos quanto para formandos que desejam angariar fundos para suas celebrações. Nosso objetivo é assegurar que cada formatura seja um acontecimento memorável,
+                 otimizando o processo de planejamento e execução para garantir uma comemoração impecável.</p>
             </div>
             <div className="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
                 <div>
@@ -129,8 +98,16 @@ export default function StartPage() {
                 <p>We are strategists, designers and developers. Innovators and problem solvers. Small enough to be simple and quick.</p>
             </div>
             <div className="grid grid-cols-2 gap-4 mt-8">
-                <img className="w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png" alt="office content 1" />
-                <img className="mt-4 w-full lg:mt-10 rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-1.png" alt="office content 2" />
+                <img 
+                data-aos="fade-up"
+                data-aos-delay="50"
+                data-aos-duration="0"
+                className="w-full rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-2.png" alt="office content 1" />
+                <img 
+                data-aos="fade-up"
+                data-aos-delay="50"
+                data-aos-duration="0"
+                className="mt-4 w-full lg:mt-10 rounded-lg" src="https://flowbite.s3.amazonaws.com/blocks/marketing-ui/content/office-long-1.png" alt="office content 2" />
             </div>
         </div>
     </section>
@@ -150,22 +127,20 @@ export default function StartPage() {
       </section>
 
       <section className="bg-white dark:bg-gray-900">
-        <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
-            <div className="mx-auto max-w-screen-sm text-center">
-                <h2 className="mb-4 text-4xl font-extrabold leading-tight text-gray-900 dark:text-white">Start your free trial today</h2>
-                <p className="mb-6 font-light text-gray-500 dark:text-gray-400 md:text-lg">Try Flowbite Platform for 30 days. No credit card required.</p>
-                <a href="#" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Free trial for 30 days</a>
-            </div>
-        </div>
+       
     </section>
 
-    <div className="relative px-8 py-10 bg-white border-t border-gray-200 md:py-16 lg:py-24 xl:py-40 xl:px-0">
+    <div 
+    data-aos="fade-up"
+    data-aos-delay="50"
+    data-aos-duration="0"
+    className="relative px-8 py-10 bg-white border-t border-gray-200 md:py-16 lg:py-24 xl:py-40 xl:px-0">
 
         <div id="pricing" className="container flex flex-col items-center h-full max-w-6xl mx-auto">
-            <h2 className="my-5 text-base font-medium tracking-tight text-indigo-500 uppercase">Our Pricing</h2>
+            <h2 className="my-5 text-base font-medium tracking-tight text-indigo-500 uppercase">Tipos de Contas</h2>
             <h3
                 className="w-full max-w-2xl px-5 px-8 mt-2 text-2xl font-black leading-tight text-center text-gray-900 sm:mt-0 sm:px-0 sm:text-6xl md:px-0">
-                Simple, Transparent Pricing for Everyone</h3>
+                Trazemos uma forma simples de diferencias suas permissoes dentro do GoParty.</h3>
 
             <div className="max-w-full mx-auto md:max-w-6xl sm:px-8">
                 <div className="relative flex flex-col items-center block sm:flex-row">
@@ -174,13 +149,10 @@ export default function StartPage() {
                         <div className="overflow-hidden text-black bg-white border-t border-gray-100 rounded-lg shadow-sm">
                             <div
                                 className="block max-w-sm px-8 mx-auto mt-5 text-sm text-left text-black sm:text-md lg:px-6">
-                                <h3 className="p-3 text-lg font-bold tracking-wide text-center uppercase">Basic<span
-                                        className="ml-2 font-light">Plan</span></h3>
-                                <h4
-                                    className="flex items-center justify-center pb-6 text-4xl font-bold text-center text-gray-900">
-                                    <span className="mr-1 -ml-2 text-lg text-gray-700">$</span>48</h4>
-                                <p className="text-sm text-gray-600">In our basic plan you can take advantage of all these
-                                    features below.
+                                <h3 className="p-3 text-lg font-bold tracking-wide text-center uppercase">User<span
+                                        className="ml-2 font-light">GoParty</span></h3>
+                            
+                                <p className="text-sm text-gray-600">Ao criar a sua conta voce sera um GoParty User.
                                 </p>
                             </div>
 
@@ -195,7 +167,7 @@ export default function StartPage() {
                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                             </svg>
                                         </div>
-                                        <span className="ml-3 text-lg text-gray-700">Awesome Feature</span>
+                                        <span className="ml-3 text-lg text-gray-700">Adiquirir ingressos</span>
                                     </li>
                                     <li className="flex items-center">
                                         <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -206,7 +178,7 @@ export default function StartPage() {
                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                             </svg>
                                         </div>
-                                        <span className="ml-3 text-lg text-gray-700">And Another Cool Feature</span>
+                                        <span className="ml-3 text-lg text-gray-700">Se tornar um GoParty ADM</span>
                                     </li>
                                     <li className="flex items-center">
                                         <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -217,14 +189,12 @@ export default function StartPage() {
                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                             </svg>
                                         </div>
-                                        <span className="ml-3 text-lg text-gray-700">One More Feature</span>
+                                        <span className="ml-3 text-lg text-gray-700">Ser convidado para formaturas</span>
                                     </li>
                                 </ul>
                             </div>
                             <div className="flex items-center block p-8 uppercase">
-                                <a href="#_"
-                                    className="block w-full px-6 py-4 mt-3 text-lg font-semibold text-center text-white bg-gray-900 rounded shadow-sm hover:bg-green-600">Select
-                                    This Plan</a>
+                               
                             </div>
                         </div>
                     </div>
@@ -233,16 +203,12 @@ export default function StartPage() {
                         className="relative z-10 w-full max-w-md my-8 bg-white rounded-lg shadow-lg sm:w-2/3 lg:w-1/3 sm:my-5">
                         <div
                             className="py-4 text-sm font-semibold leading-none tracking-wide text-center text-white uppercase bg-indigo-500 rounded-t">
-                            Most Popular</div>
+                            Mais Vantajoso</div>
                         <div className="block max-w-sm px-8 mx-auto mt-5 text-sm text-left text-black sm:text-md lg:px-6">
-                            <h3 className="p-3 pb-1 text-lg font-bold tracking-wide text-center uppercase">Pro<span
-                                    className="ml-2 font-light">Plan</span></h3>
-                            <h4
-                                className="flex items-center justify-center pb-6 text-5xl font-bold text-center text-gray-900">
-                                <span className="mr-1 -ml-2 text-lg text-gray-700">$</span>98</h4>
-                            <p className="text-sm text-gray-600">Our most popular package is the Pro Plan which gives you
-                                access to the
-                                following:</p>
+                            <h3 className="p-3 pb-1 text-lg font-bold tracking-wide text-center uppercase">Adm<span
+                                    className="ml-2 font-light">GoParty</span></h3>
+                           
+                            <p className="text-sm text-gray-600">Ao ser aprovado em uma solicitacao para ser GoParty ADM</p>
                         </div>
                         <div className="flex justify-start pl-12 mt-8 sm:justify-start">
                             <ul>
@@ -255,7 +221,7 @@ export default function StartPage() {
                                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                         </svg>
                                     </div>
-                                    <span className="ml-3 text-lg text-gray-700">Really Cool Features</span>
+                                    <span className="ml-3 text-lg text-gray-700">Acesso a gestao da formatura</span>
                                 </li>
                                 <li className="flex items-center">
                                     <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -266,7 +232,7 @@ export default function StartPage() {
                                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                         </svg>
                                     </div>
-                                    <span className="ml-3 text-lg text-gray-700">Another Cool Feature</span>
+                                    <span className="ml-3 text-lg text-gray-700">Adicionar membros</span>
                                 </li>
                                 <li className="flex items-center">
                                     <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -277,15 +243,13 @@ export default function StartPage() {
                                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                         </svg>
                                     </div>
-                                    <span className="ml-3 text-lg text-gray-700">And One More</span>
+                                    <span className="ml-3 text-lg text-gray-700">Criar eventos</span>
                                 </li>
                             </ul>
                         </div>
 
                         <div className="flex items-center block p-8 uppercase">
-                            <a href="#_"
-                                className="block w-full px-6 py-4 mt-3 text-lg font-semibold text-center text-white bg-gray-900 rounded shadow-sm hover:bg-indigo-600">Select
-                                This Plan</a>
+                            
                         </div>
                     </div>
                   
@@ -294,14 +258,12 @@ export default function StartPage() {
                         <div className="overflow-hidden text-black bg-white rounded-lg shadow-lg shadow-inner">
                             <div
                                 className="block max-w-sm px-8 mx-auto mt-5 text-sm text-left text-black sm:text-md lg:px-8">
-                                <h3 className="p-3 pb-1 text-lg font-bold tracking-wide text-center uppercase">Premium<span
-                                        className="ml-2 font-light">Plan</span></h3>
+                                <h3 className="p-3 pb-1 text-lg font-bold tracking-wide text-center uppercase">Member<span
+                                        className="ml-2 font-light">GoParty</span></h3>
                                 <h4
                                     className="flex items-center justify-center pb-6 text-4xl font-bold text-center text-gray-900">
                                     <span className="mr-1 -ml-2 text-lg text-gray-700">$</span>78</h4>
-                                <p className="pl-2 text-sm text-gray-600">With our premium plan you can take advantage of
-                                    all the following
-                                    features:</p>
+                                <p className="pl-2 text-sm text-gray-600">Ao ser incluido como membro em uma formatura</p>
                             </div>
                             <div className="flex flex-wrap px-8 mt-8">
                                 <ul>
@@ -314,7 +276,7 @@ export default function StartPage() {
                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                             </svg>
                                         </div>
-                                        <span className="ml-3 text-lg text-gray-700">Totally Tubular Feature</span>
+                                        <span className="ml-3 text-lg text-gray-700">Criar eventos</span>
                                     </li>
                                     <li className="flex items-center">
                                         <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -325,7 +287,7 @@ export default function StartPage() {
                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                             </svg>
                                         </div>
-                                        <span className="ml-3 text-lg text-gray-700">Super Cool Feature</span>
+                                        <span className="ml-3 text-lg text-gray-700">Adquirir Ingressos</span>
                                     </li>
                                     <li className="flex items-center">
                                         <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -336,15 +298,13 @@ export default function StartPage() {
                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                             </svg>
                                         </div>
-                                        <span className="ml-3 text-lg text-gray-700">And One More</span>
+                                        <span className="ml-3 text-lg text-gray-700">Interagir na plataforma.</span>
                                     </li>
                                 </ul>
                             </div>
 
                             <div className="flex items-center block p-8 uppercase">
-                                <a href="#_"
-                                    className="block w-full px-6 py-4 mt-3 text-lg font-semibold text-center text-white bg-gray-900 rounded shadow-sm hover:bg-green-600">Select
-                                    This Plan</a>
+                                
                             </div>
                         </div>
                     </div>

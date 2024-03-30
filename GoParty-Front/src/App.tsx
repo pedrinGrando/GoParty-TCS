@@ -1,5 +1,8 @@
 import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import './index.css';
+import { useEffect } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 // Componente/Page
 import { UserProvider } from './components/UserContext/UserContext';
@@ -17,28 +20,32 @@ import Messages from './pages/public/Mensagens/Mensagens';
 import StartPage from './pages/public/StartPage/Start';
 
 function App() {
+  useEffect(() => {
+    AOS.init({
+      // aqui você pode colocar outras configurações de AOS que desejar
+      once: true, // significa que a animação só acontecerá uma vez por elemento
+      duration: 1000, // duração da animação em milissegundos
+      // Você pode adicionar outras configurações conforme necessário
+    });
+
+    // Esta função será chamada quando o componente for desmontado
+    return () => {
+      AOS.refresh();
+    };
+  }, []);
+
   return (
-      <Router>
-       <UserProvider>
+    <Router>
+      <UserProvider>
         <Routes>
           <Route path='/' element={<StartPage />} />
           <Route path='/about' element={<StartPage />} />
           <Route path='/login' element={<Login />} />
-          <Route path='/register' element={<Register />} />
-          <Route path='/home' element={<Home />} />
-          <Route path='/explore' element={<Explore />} />
-          <Route path='/register-adm' element={<RegisterAdm />} />
-          <Route path='/account-config' element={<Configs />} />
-          <Route path='/your-groups' element={<Groups />} />
-          <Route path='/your-tickets' element={<Tickets />} />
-          <Route path='/your-messages' element={<Messages />} />
-          <Route path='/your-profile' element={<Profile />} />
-          <Route path='/your-notifications' element={<Notifications />} />
-          {/*ROTA2= <Route path='/' element={<Home />} /> */}
-          {/*ROTA3= <Route path='/' element={<Home />} /> */}
+          {/* ... seus outros Routes */}
         </Routes>
       </UserProvider>
     </Router>
-  )
+  );
 }
+
 export default App;
