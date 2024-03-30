@@ -22,6 +22,7 @@ function App() {
        <UserProvider>
         <Routes>
           <Route path='/' element={<StartPage />} />
+          <Route path='/about' element={<StartPage />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/home' element={<Home />} />
