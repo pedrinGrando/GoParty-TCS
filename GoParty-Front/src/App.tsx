@@ -14,13 +14,14 @@ import Tickets from './pages/public/Tickets/Tickets';
 import Profile from './pages/public/Profile/Profile';
 import Notifications from './pages/public/Notifications/Notifications';
 import Messages from './pages/public/Mensagens/Mensagens';
+import StartPage from './pages/public/StartPage/Start';
 
 function App() {
   return (
       <Router>
        <UserProvider>
         <Routes>
-          <Route path='/' element={<Login />} />
+          <Route path='/' element={<StartPage />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/home' element={<Home />} />
