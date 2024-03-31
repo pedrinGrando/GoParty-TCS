@@ -41,6 +41,18 @@ function App() {
           <Route path='/' element={<StartPage />} />
           <Route path='/about' element={<StartPage />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
+          <Route path='/home' element={<Home />} />
+          <Route path='/explore' element={<Explore />} />
+          <Route path='/register-adm' element={<RegisterAdm />} />
+          <Route path='/account-config' element={<Configs />} />
+          <Route path='/your-groups' element={<Groups />} />
+          <Route path='/your-tickets' element={<Tickets />} />
+          <Route path='/your-messages' element={<Messages />} />
+          <Route path='/your-profile' element={<Profile />} />
+          <Route path='/your-notifications' element={<Notifications />} />
+          {/*ROTA2= <Route path='/' element={<Home />} /> */}
+          {/*ROTA3= <Route path='/' element={<Home />} /> */}
           {/* ... seus outros Routes */}
         </Routes>
       </UserProvider>
