@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
-import { RenderIf } from '../../../components/RenderIf/RenderIf';
 
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
 import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
-import { Footer } from '../../../components/Footer/Footer';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 
 export default function Register(){
 
     const [isLoading, setIsLoading] = useState(false);
-    const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
     const [error, setError] = useState(false);
     const [isValidEmail, setIsValidEmail] = useState(true);
@@ -251,7 +248,6 @@ export default function Register(){
             });
 
             setIsLoading(false);
-            setImagePreview('');
             console.log('Formulário enviado com sucesso!');
             navigate('/home');
 
@@ -269,30 +265,6 @@ export default function Register(){
         }
       };
 
-      const onFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        if(event.target.files){
-            const file = event.target.files[0]
-            const imageURL = URL.createObjectURL(file)
-            const fileData = new FormData();
-            fileData.append('file', file);
-            setImagePreview(imageURL)
-
-            try {
-             const response =  await fetch('http://localhost:8081/v1/usuarios/imagem-perfil/uploads', {
-                  method: 'POST',
-                  body: fileData,
-              });
-
-              if(response.ok){
-                console.log('File uploaded successfully.');
-              }
-              
-          } catch (error) {
-              console.error('Failed to upload file.');
-          }
-      }
-        }
-
     return (
       <form onSubmit={handleSubmit}>
         <NavBar/>
@@ -302,7 +274,11 @@ export default function Register(){
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img src="/imagens/Foto 2.png" className="rounded btn- mb-[500px]"/>
+                  <img
+                   data-aos="fade-down"
+                   data-aos-delay="50"
+                   data-aos-duration="0"
+                  src="/imagens/EnjoyingParty2.webp" className="rounded btn- mb-[500px]"/>
                 </div>
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
@@ -339,7 +315,7 @@ export default function Register(){
                     </div>
                     <div className="relative">
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Username</label>
+                          absolute">Nome de usuário</label>
                             <input 
                             placeholder="Username"
                             id='username'
@@ -420,32 +396,6 @@ export default function Register(){
                     )}
                 </button>
                     </div>
-                    <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
-                                <div className='text-center'>
-
-                                    <RenderIf condition={!imagePreview}>
-                                        <svg className="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                            <path fillRule="evenodd" 
-                                                d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z" 
-                                                clipRule="evenodd" />
-                                        </svg>
-                                    </RenderIf>
-                                    <div className='mt-2 flex text-sm leading-6 text-gray-600'>
-                                        <label htmlFor='fotoPerfil' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
-                                            
-                                            <RenderIf condition={!imagePreview}>
-                                                <span>Foto de Perfil</span>
-                                            </RenderIf>
-
-                                            <RenderIf condition={!!imagePreview}>
-                                                <img src={imagePreview} width={250} className='rounded-full' />
-                                            </RenderIf>
-
-                                            <input accept="image/*" onChange={onFileUpload} id='fotoPerfil' name='fotoPerfil' type='file' className='sr-only' />
-                                        </label>
-                                    </div>   
-                                </div>
-                            </div>
                             <Error
                               error={error}
                               message={message}
@@ -587,50 +537,6 @@ export default function Register(){
             </div>
           </div>
         </div>            
-        
-        {/* Div de Tela Propaganda */}
-        <div className="bg-indigo-500 py-8 flex items-center justify-center rounded">
-              
-              <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-               <a href="#">
-                   <img className="rounded-t-lg" src="/imagens/LoginLaranja.png" alt="" />
-               </a>
-               <div className="p-5">
-                   <a href="#">
-                       <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Por quê utilizar a plataforma GoParty?</h5>
-                   </a>
-                   <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">O GoParty é uma nova ferramenta de organização, divulgação e planejamento para seus eventos, que busca trazer além de mais controle, engajamento para seus eventos públicos e privados.</p>
-                   <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                       Saber mais
-                       <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                           <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                       </svg>
-                   </a>
-               </div>
-           </div>
-
-               </div>
-               <div className="bg-pink-500 py-8 flex items-center justify-center">
-
-           <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-               <a href="#">
-                   <img className="rounded-t-lg" src="/imagens/LoginAzul.png" alt="" />
-               </a>
-               <div className="p-5">
-                   <a href="#">
-                       <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Segurança de Ponta a Ponta.</h5>
-                   </a>
-                   <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">O GoParty possui uma tecnologia aprovada que busca a segurança total de seus eventos.</p>
-                   <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                       Read more
-                       <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                           <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                       </svg>
-                   </a>
-               </div>
-           </div>
-        </div>
-        <Footer/>
      </form>
         
     )

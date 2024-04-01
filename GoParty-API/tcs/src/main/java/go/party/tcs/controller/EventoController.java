@@ -105,12 +105,7 @@ public class EventoController {
             comentarioService.save(comentario);
 
             String message = usuario.getUsername() + " fez um comentário no seu post: " + comentario.getTexto();
-            Integer userIdToNotify = evento.getAutor().getId();
-
-            if (userIdToNotify != usuario.getId()) {
-                //notificationService.createNotification(message, userIdToNotify, fotoPerfil);
-            }
-
+          
             return ResponseEntity.ok("Comentário criado com sucesso.");
         } catch (Exception e) {
             e.printStackTrace();
@@ -125,18 +120,10 @@ public class EventoController {
         Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
 
         //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
-        int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
-        model.addAttribute("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
+        //int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
+       // model.addAttribute("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
 
         if (sessionUsuario != null) {
-            // Obtenha o ID do usuário da sessão
-            Integer userId = sessionUsuario.getId();
-
-            // Use o ID do usuário para buscar eventos criados por esse usuário no banco de dados
-            List<Evento> eventosDoUsuario = eventoService.buscarEventosPorAutor(userId);
-
-            // Adicione a lista de eventos ao modelo para exibição na página
-            model.addAttribute("eventos", eventosDoUsuario);
 
             // ... outras atribuições ao modelo
             model.addAttribute("sessionUsuario", sessionUsuario);
@@ -242,11 +229,7 @@ public class EventoController {
         curtidaService.curtirEvento(sessionUsuario, evento);
         //Pega a Foto de perfil de quem fez a curtida
         String message = sessionUsuario.getUsername()+" curtiu a sua publicação: "+ evento.getTitulo();
-        Integer userIdToNotify =  evento.getAutor().getId();
-
-        if(userIdToNotify != sessionUsuario.getId()){
-            
-         }
+    
 
         return "redirect:/home";
     }

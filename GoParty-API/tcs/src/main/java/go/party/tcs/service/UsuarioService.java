@@ -1,20 +1,13 @@
 package go.party.tcs.service;
 
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
-import go.party.tcs.config.RSAKeyGenerator;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.UsuarioRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -24,21 +17,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public void cadastrarUsuario(Usuario usuario) throws java.security.NoSuchProviderException {
-       
-       try {
-            KeyPair keyPair = RSAKeyGenerator.generateKeyPair();
-            byte[] chavePublica = keyPair.getPublic().getEncoded();
-            byte[] chavePrivada = keyPair.getPrivate().getEncoded();
-
-            usuario.setChavePublica(chavePublica);
-            usuario.setChavePrivada(chavePrivada);
-
-             usuarioRepository.save(usuario);
-
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            // Trate exceções adequadamente
-            e.printStackTrace();
-        }
+         usuarioRepository.save(usuario);
     }
 
     public void atualizarUsuario(Usuario usuario){

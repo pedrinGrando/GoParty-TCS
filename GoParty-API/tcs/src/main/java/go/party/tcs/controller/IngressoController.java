@@ -44,8 +44,8 @@ public class IngressoController {
         Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
 
         if (sessionUsuario != null) {
-            List<Ingresso> ingressos = ingressoRepository.findByIdUsuario(sessionUsuario.getId());
-            model.addAttribute("ingressos", ingressos);
+            //List<Ingresso> ingressos = ingressoRepository.findByIdUsuario(sessionUsuario.getId());
+            //model.addAttribute("ingressos", ingressos);
         }
         model.addAttribute("sessionUsuario", sessionUsuario);
         return "ingressos";
@@ -59,7 +59,7 @@ public class IngressoController {
                                 HttpSession session){
 
         Usuario usuario = (Usuario) session.getAttribute("usuario");
-        Integer idUsuario = usuario.getId();
+        Long idUsuario = usuario.getId();
         
         // Buscar o evento no banco de dados com base no eventoId
         Evento evento = eventoRepository.findById(eventoId);
@@ -107,9 +107,6 @@ public class IngressoController {
         
         return "redirect:/perfil"; 
     }
-
-
-    
 
 }
 

@@ -124,18 +124,25 @@ public class UsuarioController {
         }
     }
 
-    @PostMapping("/imagem-perfil/uploads")
-    public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
+    @PostMapping("/{userId}/upload-profile-image")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId, @RequestParam("file") MultipartFile file) {
         try {
-            Path filePath = Paths.get(uploadDir + "/" + file.getOriginalFilename());
+            Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+            if (!userOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+
+            Usuario usuario = userOptional.get();
+            String filename = userId + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-             // Salva o caminho da imagem no banco de dados
-             photoPath = "/imagem-perfil/uploads/" + file.getOriginalFilename();
+            usuario.setFotoCaminho("/uploads/" + filename);
+            usuarioRepository.save(usuario);
 
-            return ResponseEntity.ok("File uploaded successfully.");
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload file.");
+            return ResponseEntity.ok("Profile image uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile image");
         }
     }
 
@@ -172,10 +179,10 @@ public class UsuarioController {
         }
 
         // Lista de Notificações do usuário(Sessão)
-        List<Notification> notifications = notificationRepository.findByUserId(sessionUsuario.getId());
+        //List<Notification> notifications = notificationRepository.findByUserId(sessionUsuario.getId());
 
         // CONTADOR DE NOTIFICAÇÕES NÃO VISUALIZADAS
-        int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
+        //int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
 
         // LISTA DE EVENTOS
         List<Evento> eventos = eventoService.getAllEventos();
@@ -212,42 +219,6 @@ public class UsuarioController {
         eventosEmAlta = eventos.subList(0, Math.min(eventos.size(), 5));
 
         return "home";
-    }
-
-    //Atualizar Dados
-    @PutMapping("/update")
-    public ResponseEntity<String> editarUsuario(
-        @RequestParam(name = "usuarioNome", required = false) String novoUsuarioNome,
-        @RequestParam(name = "email", required = false) String novoEmail,
-        @RequestParam(name = "descricao", required = false) String novaDescricao,
-        @RequestParam(name = "idade", required = false) String novaIdade,
-        @RequestParam(name = "senha", required = false) String novaSenha,
-        HttpSession session
-    ) {
-        try {
-            Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
- 
-            Integer userId = sessionUsuario.getId();
-
-            Usuario usuarioNoBanco = usuarioService.encontrarId(userId);
-
-            if (novoUsuarioNome != null && !novoUsuarioNome.isEmpty()) {
-                usuarioNoBanco.setUsername(novoUsuarioNome);
-            }
-            if (novoEmail != null && !novoEmail.isEmpty()) {
-                usuarioNoBanco.setEmail(novoEmail);
-            }
-            if (novaSenha != null && !novaSenha.isEmpty()) {
-                String senhaCriptografada = passwordEncoder.encode(novaSenha);
-                usuarioNoBanco.setSenha(senhaCriptografada);
-            }
-            usuarioService.atualizarUsuario(usuarioNoBanco); 
-
-            return ResponseEntity.ok("Usuário atualizado com sucesso!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao atualizar usuário.");
-        }
     }
 
     @DeleteMapping("/deletar")
@@ -337,38 +308,6 @@ public class UsuarioController {
     }
 
 
-    @GetMapping("/notifications")
-    public String notificacoes(Model model, HttpSession session, HttpServletRequest request) {
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-    
-        if (sessionUsuario != null) {
-            // Obtenha as notificações do usuário logado
-            List<Notification> notifications = notificationRepository.findNotificationsByUserIdOrderByDateDesc(sessionUsuario.getId());
-            List<String> temposDecorridos = new ArrayList<>();
-
-            // Marque as notificações como visualizadas
-            for (Notification notification : notifications) {
-                notification.setVisualizado(true);
-                String tempoDecorrido = notificationService.calcularTempoDecorrido(notification.getDate());
-                temposDecorridos.add(tempoDecorrido);
-            }
-            notificationRepository.saveAll(notifications);
-    
-            model.addAttribute("notifications", notifications);
-            model.addAttribute("temposDecorridos", temposDecorridos);
-            model.addAttribute("sessionUsuario", sessionUsuario);
-
-            //model.addAttribute("calcularTempoDecorrido", notificationService.calcularTempoDecorrido(ontemInicioDoDia));
-    
-            List<Evento> eventos = eventoService.getAllEventos();
-            model.addAttribute("eventos", eventos);
-    
-            return "notificacoes"; // Redirecione o usuário para a página de notificações
-        } else {
-            return "redirect:/loginValida";
-        }
-    }
-
     @DeleteMapping("/notifications/delete")
     public ResponseEntity<String> excluirNotificacao(@RequestParam("id") Long id) {
         try {
@@ -397,7 +336,7 @@ public class UsuarioController {
 
         try {
             // Supondo que você tem um serviço para salvar a mensagem
-            mensagemService.salvarMensagem(usuarioIdReceiver, message, idUsuarioSessao.getId());
+            //mensagemService.salvarMensagem(usuarioIdReceiver, message, idUsuarioSessao.getId());
             
             return ResponseEntity.ok("Mensagem enviada com sucesso!");
         } catch (Exception e) {
@@ -448,8 +387,8 @@ public class UsuarioController {
             responseData.put("eventos", eventosDoUsuario);
 
             //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
-            int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
-            responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
+            //int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
+            //responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
 
             return ResponseEntity.ok(responseData);
         } else {
@@ -463,7 +402,7 @@ public class UsuarioController {
 
         if (sessionUsuario != null) {
             //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
-            int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
+           // int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
 
             // Obtem a lista de todos os usuários do sistema
             List<Usuario> usuariosSistema = usuarioService.findAll();
@@ -485,7 +424,7 @@ public class UsuarioController {
 
             // Monta a resposta
             Map<String, Object> responseData = new HashMap<>();
-            responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
+            //responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
             responseData.put("usuarios", usuariosResponse);
 
             return ResponseEntity.ok(responseData);
@@ -513,10 +452,10 @@ public class UsuarioController {
 
         if (sessionUsuario != null) {
             //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
-            int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
+            //int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
             // Montar a resposta
             Map<String, Object> responseData = new HashMap<>();
-            responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
+            //responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
             responseData.put("usuarios", usuarios);
             responseData.put("sessionUser", sessionUsuario);
 

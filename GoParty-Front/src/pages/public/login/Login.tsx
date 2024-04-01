@@ -4,7 +4,6 @@ import { useUser } from '../../../components/UserContext/UserContext';
 
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
-import { Footer } from '../../../components/Footer/Footer';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 
@@ -108,7 +107,12 @@ export default function Login(){
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                <img src="/imagens/Foto 1.png" className="rounded btn-"/>
+                <img
+                  data-aos="fade-up"
+                  data-aos-delay="50"
+                  data-aos-duration="0"
+                src="/imagens/enjoyingParty.png" className="rounded btn-"/>
+                
                 </div>
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
@@ -118,7 +122,7 @@ export default function Login(){
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                     <div className="relative">
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Username</label>
+                          absolute">Nome de Usuário</label>
                       <input placeholder="John" 
                               type="text" 
                               onChange={handleChange}
@@ -131,7 +135,7 @@ export default function Login(){
                     </div>
                     <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Password</label>
+                          absolute">Senha</label>
                             <input placeholder="Password"
                             id='senha'
                             onChange={handleChange}
@@ -255,49 +259,7 @@ export default function Login(){
               </div>
             </div>
           </div>
-                   {/* Div de Tela Laranja na Parte de Baixo */}
-              <div className="bg-indigo-500 py-8 flex items-center justify-center rounded">
-               <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <a href="#">
-                    <img className="rounded-t-lg" src="/imagens/LoginLaranja.png" alt="" />
-                </a>
-                <div className="p-5">
-                    <a href="#">
-                        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Por quê utilizar a plataforma GoParty?</h5>
-                    </a>
-                    <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">O GoParty é uma nova ferramenta de organização, divulgação e planejamento para seus eventos, que busca trazer além de mais controle, engajamento para seus eventos públicos e privados.</p>
-                    <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        Saber mais
-                        <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-
-                </div>
-                <div className="bg-pink-500 py-8 flex items-center justify-center">
-
-            <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-                <a href="#">
-                    <img className="rounded-t-lg" src="/imagens/LoginAzul.png" alt="" />
-                </a>
-                <div className="p-5">
-                    <a href="#">
-                        <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Segurança de Ponta a Ponta.</h5>
-                    </a>
-                    <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">O GoParty possui uma tecnologia aprovada que busca a segurança total de seus eventos.</p>
-                    <a href="#" className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                        Read more
-                        <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                        </svg>
-                    </a>
-                </div>
-            </div>
-         </div>
         </div> 
-        <Footer/>
       </form>
     )
 }
