@@ -13,6 +13,8 @@ export default function Notifications () {
    useEffect(() => {
     setIsLoading(true)
     const fetchEvents = async () => {
+        setIsLoading(true)
+
         try {
             const response = await fetch('http://localhost:8081/v1/eventos/buscar-eventos');
             if (!response.ok) {
@@ -33,7 +35,10 @@ export default function Notifications () {
         <div>
                      <TrendEvents/>
                        {isLoading ? (
+                         <div className="flex justify-center items-center h-screen">
                               <Loading/>
+                              </div>
+                              
                         ) : (
                             <div>
             {notifications.length === 0 ? (

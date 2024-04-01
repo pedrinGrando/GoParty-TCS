@@ -1,7 +1,7 @@
-import { Sidebar } from "../../../components/sidebar/Sidebar";
-import { useUser } from "../../../components/UserContext/UserContext";
-import { RenderIf } from "../../../components/RenderIf/RenderIf";
 import { useState } from "react";
+import { RenderIf } from "../../../components/RenderIf/RenderIf";
+import { useUser } from "../../../components/UserContext/UserContext";
+import { Sidebar } from "../../../components/sidebar/Sidebar";
 
 export default function Profile () {
    
@@ -43,7 +43,7 @@ export default function Profile () {
 
                            {/* Upload da foto condicional*/}
                            {user?.fotoCaminho == null ?  (
-                             <div className='mt-0 flex justify-center rounded-full border border-dashed border-gray-900/25 px-6 py-10'>
+                             <div className='mt-0 flex justify-center rounded-full h-36 w-36 border border-dashed border-gray-900/25 px-6 py-10'>
                             
                             
                           <div className='text-center'>
