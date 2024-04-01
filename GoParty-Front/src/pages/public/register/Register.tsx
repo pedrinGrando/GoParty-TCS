@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
-import { RenderIf } from '../../../components/RenderIf/RenderIf';
 
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
 import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
-import { Footer } from '../../../components/Footer/Footer';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 
@@ -313,7 +311,7 @@ export default function Register(){
                     </div>
                     <div className="relative">
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Username</label>
+                          absolute">Nome de usuário</label>
                             <input 
                             placeholder="Username"
                             id='username'
