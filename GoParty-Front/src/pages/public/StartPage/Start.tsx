@@ -29,7 +29,7 @@ export default function StartPage() {
                 </Link>
             </div>
             <div className=" hidden lg:mt-0 lg:col-span-5 lg:flex">
-                <img src="/imagens/EnjoyingParty2.webp" alt="mockup"/>
+                <img src="/imagens/EnjoyingPartyStartPage.webp" alt="mockup"/>
             </div>                
         </div>
     </section>
