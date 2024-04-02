@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import go.party.tcs.model.Usuario;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
@@ -22,6 +23,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByNomeContaining(String query);
 
-    Optional<Usuario> findByUsername(String username);
+    UserDetails findByUsername(String username);
+
+    boolean existsByUsername(String username);
 
 }
