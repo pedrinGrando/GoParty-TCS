@@ -32,19 +32,6 @@ public class UsuarioService {
         return usuarioRepository.findByNome(usuarioNome);
     }
 
-    public Usuario findByUsername(String username){
-
-        Optional<Usuario> usuarioOptional = usuarioRepository.findByUsername(username);
-
-        Usuario usuario = usuarioOptional.get(); 
-
-        if (usuario != null && usuario.getUsername().equals(username)){
-            return usuario;
-        } else {
-            return null;
-        } 
-    }
-
     public Usuario encontrarId(Integer userId){
         return usuarioRepository.getById(userId);
     }
@@ -83,9 +70,7 @@ public class UsuarioService {
     }
 
     public boolean checkUsernameExists(String username) {
-        // Verifica se o username existe no banco de dados
-        Optional<Usuario> userOptional = usuarioRepository.findByUsername(username);
-        return userOptional.isPresent();
+        return usuarioRepository.existsByUsername(username);
     }
    
 }

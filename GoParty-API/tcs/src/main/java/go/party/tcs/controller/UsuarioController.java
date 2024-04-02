@@ -104,28 +104,9 @@ public class UsuarioController {
 
     private String photoPath;
 
-   @PostMapping("/cadastro")
-    public ResponseEntity<String> cadastrarUsuario(@RequestBody Usuario usuario) {
-        try {
-            // Criptrografia de Senha
-            String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
-            usuario.setSenha(senhaCriptografada);
-            usuario.setTipoUsuario(TipoUsuario.User);
-            usuario.setFotoCaminho(photoPath);
-
-            // Servico de cadastro de usuarios 
-            usuarioService.cadastrarUsuario(usuario);
-            usuarioCadastro = usuario;
-
-            return ResponseEntity.ok("Usuário cadastrado com sucesso!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar usuário.");
-        }
-    }
-
     @PostMapping("/{userId}/upload-profile-image")
     public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId, @RequestParam("file") MultipartFile file) {
+
         try {
             Optional<Usuario> userOptional = usuarioRepository.findById(userId);
             if (!userOptional.isPresent()) {
@@ -143,29 +124,6 @@ public class UsuarioController {
             return ResponseEntity.ok("Profile image uploaded successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile image");
-        }
-    }
-
-    //Autenticação
-    @PostMapping("/auth")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> requestBody) {
-        
-        String username = requestBody.get("username");
-        String senha = requestBody.get("senha");
-
-        try {
-            Usuario usuario = usuarioService.findByUsername(username);
-
-            if (usuario != null) {
-                if (passwordEncoder.matches(senha, usuario.getSenha())) {
-                    // Autenticação bem-sucedida
-                    return ResponseEntity.ok(usuario);
-                }
-            }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuário ou senha inválidos.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar a solicitação de login.");
         }
     }
 
