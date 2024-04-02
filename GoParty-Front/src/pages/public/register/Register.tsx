@@ -66,15 +66,15 @@ export default function Register(){
       }
 
       try {
-        const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
+        // const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
 
-        if (response.ok){
-          setIsUsernameUnique(false)
-          console.log(response)
-        } else {
-          setIsUsernameUnique(true)
-          console.log(response)
-        }
+        // if (response.ok){
+        //   setIsUsernameUnique(false)
+        //   console.log(response)
+        // } else {
+        //   setIsUsernameUnique(true)
+        //   console.log(response)
+        // }
         
       } catch (error) {
           console.error('Error checking username uniqueness:', error);
@@ -94,15 +94,15 @@ export default function Register(){
       }
 
       try {
-        const response = await fetch(`http://localhost:8081/v1/usuarios/check-email?email=${formData.email}`);
+        // const response = await fetch(`http://localhost:8081/v1/usuarios/check-email?email=${formData.email}`);
 
-        if (response.ok){
-          setIsEmailUnique(false)
-          console.log(response)
-        } else {
-          setIsEmailUnique(true)
-          console.log(response)
-        }
+        // if (response.ok){
+        //   setIsEmailUnique(false)
+        //   console.log(response)
+        // } else {
+        //   setIsEmailUnique(true)
+        //   console.log(response)
+        // }
         
     } catch (error) {
         console.error('Error checking email uniqueness:', error);
@@ -249,7 +249,7 @@ export default function Register(){
 
             setIsLoading(false);
             console.log('Formulário enviado com sucesso!');
-            navigate('/home');
+            navigate('/login');
 
           } else {
             setIsLoading(false);
@@ -319,8 +319,7 @@ export default function Register(){
                             <input 
                             placeholder="Username"
                             id='username'
-                            name='username'
-                            onBlur={handleBlurUserName}
+                            name='username'                           
                             value={formData.username}
                             onChange={handleChange}
                             type="text" 

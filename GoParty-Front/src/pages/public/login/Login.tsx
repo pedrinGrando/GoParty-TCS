@@ -68,11 +68,17 @@ export default function Login(){
         });
         
         if (response.ok) {
-          // Limpar o formulário após o envio bem-sucedido, se necessário
+          // Limpa o formulário após o envio bem-sucedido, se necessário
           setFormData({
             username: '',
             senha: '',
           });
+
+          //Token de autenticação do back
+          const data = await response.json(); 
+          const token = data.token; 
+          console.log(token)
+          localStorage.setItem('token', token); 
 
           const userData = await response.json();
 

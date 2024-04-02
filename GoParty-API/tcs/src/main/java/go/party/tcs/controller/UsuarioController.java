@@ -104,6 +104,7 @@ public class UsuarioController {
 
     private String photoPath;
 
+    
     @PostMapping("/{userId}/upload-profile-image")
     public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId, @RequestParam("file") MultipartFile file) {
 

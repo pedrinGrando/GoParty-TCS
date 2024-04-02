@@ -1,9 +1,5 @@
 package go.party.tcs.controller;
 
-import go.party.tcs.Enums.TipoUsuario;
-import go.party.tcs.model.Usuario;
-import go.party.tcs.service.JWTService;
-import go.party.tcs.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +10,16 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/v1/auth")
+import go.party.tcs.Enums.TipoUsuario;
+import go.party.tcs.model.Usuario;
+import go.party.tcs.service.JWTService;
+import go.party.tcs.service.UsuarioService;
+
+@RestController
+@RequestMapping("/v1/auth") 
 public class AuthController {
 
     @Autowired

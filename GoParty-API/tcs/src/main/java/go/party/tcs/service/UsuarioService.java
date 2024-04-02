@@ -16,7 +16,7 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public void cadastrarUsuario(Usuario usuario) throws java.security.NoSuchProviderException {
+    public void cadastrarUsuario(Usuario usuario) {
          usuarioRepository.save(usuario);
     }
 
