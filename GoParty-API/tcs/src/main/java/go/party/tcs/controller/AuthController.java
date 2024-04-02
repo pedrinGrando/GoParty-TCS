@@ -1,11 +1,13 @@
 package go.party.tcs.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,10 +36,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Usuario usuario) {
         try{
-            UsernamePasswordAuthenticationToken userPassword = new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getSenha());
-            Authentication authenticate = this.manager.authenticate(userPassword);
+            UsernamePasswordAuthenticationToken userPassword = new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword());
+            var authenticate = manager.authenticate(userPassword);
             String jwt = jwtService.generateToken((Usuario) authenticate.getPrincipal());
-            return ResponseEntity.ok(jwt);
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", jwt);
+            return ResponseEntity.ok().body(response);
         } catch (AuthenticationException exception) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuario e senha inválidos");
         }
@@ -48,7 +52,7 @@ public class AuthController {
         try {
             String password = new BCryptPasswordEncoder().encode(usuario.getSenha());
             usuario.setSenha(password);
-            usuario.setTipoUsuario(TipoUsuario.User);
+            usuario.setTipoUsuario(TipoUsuario.USER);
             service.cadastrarUsuario(usuario);
             return  ResponseEntity.ok("Usuario cadastrado com sucesso!");
         } catch (RuntimeException exception) {
