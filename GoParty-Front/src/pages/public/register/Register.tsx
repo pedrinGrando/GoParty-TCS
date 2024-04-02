@@ -226,7 +226,7 @@ export default function Register(){
      }
 
         try {
-          const response = await fetch('http://localhost:8081/v1/usuarios/cadastro', {
+          const response = await fetch('http://localhost:8081/v1/auth/cadastro', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
