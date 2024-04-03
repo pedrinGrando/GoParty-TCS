@@ -13,16 +13,19 @@ export default function PostEvent () {
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
 
+    const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
+    const token = localStorage.getItem('token');
+
     const [formData, setFormData] = useState({
         titulo: '',
         descricao: '',
         estado: '',
         dataPrevista: '',
-        metaArrecad: '',
+        valor: '',
         cidade: '',
         bairro: '',
         rua: '',
-        fotoFormatura: null
+        fotoEvento: null
       });
 
       const [errors, setErrors] = useState({
@@ -30,7 +33,7 @@ export default function PostEvent () {
         descricao: false,
         estado: false,
         dataPrevista: false,
-        metaArrecad: false,
+        valor: false,
         cidade: false,
         bairro: false,
         rua: false
@@ -81,7 +84,7 @@ export default function PostEvent () {
         rua: formData.rua.trim() === '',
         bairro: formData.bairro.trim() === '',
         dataPrevista: formData.dataPrevista.trim() === '',
-        metaArrecad: formData.metaArrecad.trim() === '',
+        valor: formData.valor.trim() === '',
     };
 
     setErrors(newErrors);
@@ -94,10 +97,10 @@ export default function PostEvent () {
   }
 
       try {
-        const response = await fetch('http://localhost:8081/v1/fomaturas/ser-adm', {
+        const response = await fetch('http://localhost:8081/v1/eventos/criar-evento', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify(formData),
         });
@@ -109,11 +112,11 @@ export default function PostEvent () {
             descricao: '',
             estado: '',
             dataPrevista: '',
-            metaArrecad: '',
+            valor: '',
             cidade: '',
             bairro: '',
             rua: '',
-            fotoFormatura: null
+            fotoEvento: null
           });
 
           setIsLoading(false);
@@ -140,13 +143,13 @@ export default function PostEvent () {
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img src="/imagens/Lead Form.png" className="rounded btn- mb-[500px]"/>
+                  <img src="/imagens/PostEvento.webp" className="rounded btn- mb-[500px]"/>
                 </div>
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10">
-                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Preencha para se tornar GoParty ADM</p>
+                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Crie seu evento para o público</p>
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                    <div className="relative">
                       <label htmlFor='titulo' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -210,9 +213,9 @@ export default function PostEvent () {
                           </label>
                           <CurrencyInput
                             placeholder="R$ 0,00"
-                            id='metaArrecad'
-                            name='metaArrecad'
-                            value={formData.metaArrecad}
+                            id='valor'
+                            name='valor'
+                            value={formData.valor}
                             onChange={handleChange}
                             className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
                         />
@@ -241,7 +244,7 @@ export default function PostEvent () {
                                         </svg>
                                     </RenderIf>
                                     <div className='mt-2 flex text-sm leading-6 text-gray-600'>
-                                        <label htmlFor='fotoFormatura' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
+                                        <label htmlFor='fotoEvento' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
                                             
                                             <RenderIf condition={!imagePreview}>
                                                 <span>Foto para o evento</span>
@@ -251,7 +254,7 @@ export default function PostEvent () {
                                                 <img src={imagePreview} width={250} className='rounded-full' />
                                             </RenderIf>
 
-                                            <input accept="image/*" onChange={onFileUpload} id='fotoFormatura' name='fotoFormatura' type='file' className='sr-only' />
+                                            <input accept="image/*" onChange={onFileUpload} id='fotoFofotoEventormatura' name='fotoEvento' type='file' className='sr-only' />
                                         </label>
                                     </div>   
                                 </div>

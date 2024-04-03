@@ -46,62 +46,53 @@ export default function Login(){
     const handleSubmit = async (event: any) => {
       event.preventDefault();
       setIsLoading(true);
-
-         
-        if (formData.username.trim() === "" || formData.senha.trim() === "") {
+  
+      if (formData.username.trim() === "" || formData.senha.trim() === "") {
           setError(true);
           setIsLoading(false);
           setMessage("Preencha todos os campos!")
           return;
-        }
-
-      try {
-        const response = await fetch('http://localhost:8081/v1/auth/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: formData.username,
-            senha: formData.senha,
-          }),
-        });
-        
-        if (response.ok) {
-          // Limpa o formulário após o envio bem-sucedido, se necessário
-          setFormData({
-            username: '',
-            senha: '',
-          });
-
-          //Token de autenticação do back
-          const data = await response.json(); 
-          const token = data.token; 
-          console.log(token)
-          localStorage.setItem('token', token); 
-
-          const userData = await response.json();
-
-          setUser({ username: formData.username, senha: formData.senha, email: userData.email, dataNasci: userData.dataNasci, 
-          tipoUsuario: userData.tipoUsuario, id: userData.id, nome: userData.nome, fotoCaminho: userData.fotoCaminho, cpf: userData.cpf});
-
-          setIsLoading(false);
-          navigate('/home');
-          console.log('Login efetuado com sucesso!');
-          
-        } else {
-          setIsLoading(false);
-          setMessage("Usuário ou senha inválidos!")
-          setError(true);
-          console.error('Erro ao efetuar o login:', response.statusText);
-        }
-      } catch (error) {
-        setIsLoading(false);
-        setMessage("Usuário ou senha inválidos!")
-        setError(true);
-        console.error('Erro ao efetuar o login:', error);
       }
-    };
+  
+      try {
+          const response = await fetch('http://localhost:8081/v1/auth/login', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  username: formData.username,
+                  senha: formData.senha,
+              }),
+          });
+  
+          if (response.ok) {
+              // Login bem sucedido
+              const data = await response.json(); 
+              const token = data.token; 
+              const sessionUser = data.usuario; 
+  
+              console.log(token);
+              localStorage.setItem('token', token); 
+              localStorage.setItem('sessionUser', JSON.stringify(sessionUser)); 
+  
+              setIsLoading(false);
+              navigate('/home');
+              console.log('Login efetuado com sucesso!');
+          } else {
+              setIsLoading(false);
+              setMessage("Usuário ou senha inválidos!");
+              setError(true);
+              console.error('Erro ao efetuar o login:', response.statusText);
+          }
+      } catch (error) {
+          setIsLoading(false);
+          setMessage("Usuário ou senha inválidos!");
+          setError(true);
+          console.error('Erro ao efetuar o login:', error);
+      }
+  };
+  
 
     return (
         

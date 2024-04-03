@@ -42,7 +42,6 @@ function App() {
     <Router>
       <UserProvider>
         <Routes>
-          
           <Route path='/' element={<StartPage />} />
           <Route path='/about' element={<StartPage />} />
           <Route path='/login' element={<Login />} />
@@ -56,8 +55,7 @@ function App() {
           <Route path='/your-messages' element={isAuthenticated() ? <Messages /> : <Navigate to="/login" />} />
           <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />
-          <Route path='/create-event' element={isAuthenticated() ? <PostEvent /> : <Navigate to="/login" />} />
-          
+          <Route path='/create-event' element={isAuthenticated() ? <PostEvent /> : <Navigate to="/login" />} />  
         </Routes>
       </UserProvider>
     </Router>

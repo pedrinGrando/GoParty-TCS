@@ -11,7 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -32,7 +31,7 @@ public class Evento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "titulo")
     private String titulo;
@@ -63,13 +62,12 @@ public class Evento {
     @JoinColumn(name = "formatura_id")
     private Formatura formatura;
 
-    @Lob
-    @Column(name = "foto_evento", columnDefinition = "LONGBLOB")
-    private byte[] fotoEvento;
-
     @ManyToOne
     @JoinColumn(name = "comentario_id")
     private Comentario comentario;
+
+    @Column(name = "eventoCaminho")
+    private String eventoCaminho;
 
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
     private List<Comentario> comentarios = new ArrayList<>();
