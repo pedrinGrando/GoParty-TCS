@@ -22,15 +22,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import go.party.tcs.Enums.TipoUsuario;
-import go.party.tcs.model.Curtida;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Notification;
 import go.party.tcs.model.Usuario;
@@ -101,31 +97,10 @@ public class UsuarioController {
     Usuario usuarioCadastro = new Usuario();
 
     Usuario usuarioPerfilVisitado = new Usuario();
-
-    private String photoPath;
-
-   @PostMapping("/cadastro")
-    public ResponseEntity<String> cadastrarUsuario(@RequestBody Usuario usuario) {
-        try {
-            // Criptrografia de Senha
-            String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
-            usuario.setSenha(senhaCriptografada);
-            usuario.setTipoUsuario(TipoUsuario.User);
-            usuario.setFotoCaminho(photoPath);
-
-            // Servico de cadastro de usuarios 
-            usuarioService.cadastrarUsuario(usuario);
-            usuarioCadastro = usuario;
-
-            return ResponseEntity.ok("Usuário cadastrado com sucesso!");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar usuário.");
-        }
-    }
-
+   
     @PostMapping("/{userId}/upload-profile-image")
     public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId, @RequestParam("file") MultipartFile file) {
+
         try {
             Optional<Usuario> userOptional = usuarioRepository.findById(userId);
             if (!userOptional.isPresent()) {
@@ -146,80 +121,6 @@ public class UsuarioController {
         }
     }
 
-    //Autenticação
-    @PostMapping("/auth")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> requestBody) {
-        
-        String username = requestBody.get("username");
-        String senha = requestBody.get("senha");
-
-        try {
-            Usuario usuario = usuarioService.findByUsername(username);
-
-            if (usuario != null) {
-                if (passwordEncoder.matches(senha, usuario.getSenha())) {
-                    // Autenticação bem-sucedida
-                    return ResponseEntity.ok(usuario);
-                }
-            }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuário ou senha inválidos.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao processar a solicitação de login.");
-        }
-    }
-
-    //Método para atribuir uma sessão ao usuario que fizer login
-    @GetMapping("/home")
-    public String paginaHome(Model model, HttpSession session, HttpServletRequest request) {
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-
-        if (sessionUsuario == null) {
-            return "redirect:/loginValida";
-        }
-
-        // Lista de Notificações do usuário(Sessão)
-        //List<Notification> notifications = notificationRepository.findByUserId(sessionUsuario.getId());
-
-        // CONTADOR DE NOTIFICAÇÕES NÃO VISUALIZADAS
-        //int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
-
-        // LISTA DE EVENTOS
-        List<Evento> eventos = eventoService.getAllEventos();
-
-        // Crie um mapa para armazenar a quantidade de curtidas por evento
-        Map<Integer, Integer> quantidadeCurtidasPorEvento = new HashMap<>();
-
-        // Crie um mapa para armazenar se o usuário já curtiu cada evento
-        Map<Integer, Boolean> usuarioJaCurtiuEventoMap = new HashMap<>();
-
-        for (Evento evento : eventos) {
-            int numeroCurtidas = curtidaRepository.quantidadeCurtidasPorEvento(evento.getId());
-            boolean usuarioJaCurtiuEvento = curtidaService.usuarioJaCurtiuEvento(evento.getId(), sessionUsuario);
-            quantidadeCurtidasPorEvento.put(evento.getId(), numeroCurtidas);
-            usuarioJaCurtiuEventoMap.put(evento.getId(), usuarioJaCurtiuEvento);
-        }
-
-        //EVENTOS EM ALTA(MAIS CURTIDOS)
-       List<Curtida> curtidas = curtidaService.getAllCurtidas(); // Lista para buscar todos as curtidas do sistema
-       List<Evento> eventosEmAlta = eventoService.getAllEventos(); // onde será armazenado os eventos em alta
-
-       Map<Integer, Integer> curtidasPorEvento = new HashMap<>();
-
-       for (Curtida curtida : curtidas) {
-        Integer eventoId = curtida.getEvento().getId();
-        curtidasPorEvento.put(eventoId, curtidasPorEvento.getOrDefault(eventoId, 0) + 1);
-     }
-
-        eventos.sort((evento1, evento2) -> Integer.compare(
-            curtidasPorEvento.getOrDefault(evento2.getId(), 0),
-            curtidasPorEvento.getOrDefault(evento1.getId(), 0)
-        ));
-
-        eventosEmAlta = eventos.subList(0, Math.min(eventos.size(), 5));
-
-        return "home";
-    }
 
     @DeleteMapping("/deletar")
     public ResponseEntity<String> deletarUsuario(HttpSession session) {

@@ -1,12 +1,16 @@
 package go.party.tcs.controller;
 
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,11 +29,11 @@ import go.party.tcs.model.Comentario;
 import go.party.tcs.model.Curtida;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Usuario;
+import go.party.tcs.repository.EventoRepository;
 import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EventoService;
 import go.party.tcs.service.NotificationService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
@@ -44,42 +48,54 @@ public class EventoController {
     private ComentarioService comentarioService;
 
     @Autowired
+    private EventoRepository eventoRepository;
+
+    @Autowired
     private CurtidaService curtidaService;
 
     @Autowired
     private NotificationService notificationService;
 
-    private Usuario usuarioLogado = new Usuario();
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     
     // Método para Criar um Evento
-
-     @CrossOrigin(origins = "http://http:/localhost:5173/")   
-     @PostMapping("/criar-evento")
-    public ResponseEntity<String> criarEvento(@RequestParam("titulo") String titulo,
-                              @RequestParam("descricao") String descricao,
-                              @RequestParam("imagemEvento") MultipartFile imagemEvento,
-                              @RequestParam("estado") String estado,
-                              @RequestParam("cidade") String cidade,
-                              @RequestParam("bairro") String bairro,
-                              @RequestParam("valor") String valor,
-                              @RequestParam("horario") String horario,
-                              HttpSession session) throws IOException {
-
-        // Recupere o usuário da sessão
-        // chave "usuario"
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        usuarioLogado = usuario;
-
-        if (!imagemEvento.isEmpty()) {
-            byte[] imagemBytes = imagemEvento.getBytes();
-           // evento.setFotoEvento(imagemBytes); 
+    @PostMapping("/criar-evento")
+    public ResponseEntity<?> cadastrarEvento(@RequestBody Evento evento) {
+        try {
+            Evento eventoSalvo = eventoRepository.save(evento);
+            // Considerando que você tem um DTO ou um Map para retornar apenas o necessário
+            return ResponseEntity.ok(Map.of("id", eventoSalvo.getId(), "mensagem", "Evento criado com sucesso"));
+        } catch (RuntimeException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar evento.");
         }
-
-       // eventoService.criarEvento(evento, null);
-        return ResponseEntity.ok("Evento criado com sucesso");
     }
 
-    @CrossOrigin(origins = "http://http:/localhost:5173/") // Especifique aqui os domínios permitidos
+
+    @PostMapping("/upload-event-image/{eventoId}")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Long eventoId, @RequestParam("file") MultipartFile file) {
+        try {
+            Optional<Evento> eventoOpcional = eventoRepository.findById(eventoId);
+            if (!eventoOpcional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found");
+            }
+    
+            Evento evento = eventoOpcional.get();
+            String filename = eventoId + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, filename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+    
+            evento.setEventoCaminho("/uploads/" + filename);
+            eventoRepository.save(evento);
+    
+            return ResponseEntity.ok("Event image uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload event image");
+        }
+    }
+    
+
+    @CrossOrigin(origins = "http://http:/localhost:5173/") 
     @GetMapping("/buscar-eventos")
     public ResponseEntity<List<Evento>> getAllEvents() {
         List<Evento> events = eventoService.getAllEventos();
@@ -113,53 +129,6 @@ public class EventoController {
         }
     }
 
-    
-    //Método para mostrar os eventos do Usuario no seu perfil
-    @GetMapping("/perfil")
-    public String mostrarPerfil(Model model, HttpSession session, HttpServletRequest request) {
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-
-        //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
-        //int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
-       // model.addAttribute("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
-
-        if (sessionUsuario != null) {
-
-            // ... outras atribuições ao modelo
-            model.addAttribute("sessionUsuario", sessionUsuario);
-            // ...
-
-            return "perfil";
-        } else {
-            // O usuário não está autenticado, redirecione para a página de login
-            return "redirect:/login";
-        }
-    }
-    
-    //Metodo para adicionar imagem no post Evento
-    @GetMapping("/evento-imagem/{eventoId}")
-    public ResponseEntity<byte[]> getImagemEvento(@PathVariable Integer eventoId) {
-        // Recupere os detalhes do evento com base no ID do evento
-        Evento evento = eventoService.encontrarPorId(eventoId);
-
-        // Verifique se o evento foi encontrado
-        if (evento != null) {
-            // Recupere a imagem do evento
-            byte[] imagemEvento = evento.getFotoEvento();
-
-            if (imagemEvento != null && imagemEvento.length > 0) {
-                // Defina os cabeçalhos de resposta
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_JPEG); // ou MediaType.IMAGE_PNG, dependendo do tipo de imagem
-
-                // Retorna a imagem como uma resposta HTTP
-                return new ResponseEntity<>(imagemEvento, headers, HttpStatus.OK);
-            }
-        }
-
-        // Se o evento não for encontrado ou não tiver uma imagem, retorne uma resposta vazia ou um erro
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
 
     //Metodo para Excluir o Post Evento
     @DeleteMapping("/excluir-evento/{id}")
@@ -203,16 +172,7 @@ public class EventoController {
         if (novaDescricao != null && !novaDescricao.isEmpty()) {
             eventoNoBanco.setDescricao(novaDescricao);
         }
-        if (novaImagemEvento != null && !novaImagemEvento.isEmpty()) {
-            try {
-                // Lógica para salvar a nova imagem do evento no seu sistema de arquivos ou banco de dados.
-                byte[] novaImagemBytes = novaImagemEvento.getBytes();
-                eventoNoBanco.setFotoEvento(novaImagemBytes);;
-            } catch (IOException e) {
-                
-                e.printStackTrace();
-            }
-        }
+       
         // Passo 3: Atualize as alterações no banco de dados.
         eventoService.atualizarEvento(eventoNoBanco); 
 

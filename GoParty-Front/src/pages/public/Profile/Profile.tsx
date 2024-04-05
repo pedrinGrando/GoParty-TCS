@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { RenderIf } from "../../../components/RenderIf/RenderIf";
-import { useUser } from "../../../components/UserContext/UserContext";
 import { Sidebar } from "../../../components/sidebar/Sidebar";
 
 export default function Profile () {
    
     const [imagePreview, setImagePreview] = useState<string>('');
-    const { user } = useUser();
+    const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
+    const token = localStorage.getItem('token');
 
     const onFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
       if(event.target.files){
@@ -17,9 +17,12 @@ export default function Profile () {
           setImagePreview(imageURL)
 
           try {
-           const response =  await fetch(`http://localhost:8081/v1/usuarios/${user?.id}/upload-profile-image`, {
+           const response =  await fetch(`http://localhost:8081/v1/usuarios/${user.principal.id}/upload-profile-image`, {
                 method: 'POST',
                 body: fileData,
+                headers: {
+                  'Authorization': `Bearer ${token}`
+              },
             });
 
             if(response.ok){
@@ -42,7 +45,7 @@ export default function Profile () {
                 <div className="w-full px-4 flex justify-center">
 
                            {/* Upload da foto condicional*/}
-                           {user?.fotoCaminho == null ?  (
+                           {user.principal.fotoCaminho == null ?  (
                              <div className='mt-0 flex justify-center rounded-full h-36 w-36 border border-dashed border-gray-900/25 px-6 py-10'>
                             
                             
@@ -75,7 +78,7 @@ export default function Profile () {
         
                             ) : (
                              
-                              <img alt="..." src={`http://localhost:8081${user?.fotoCaminho}`} className="h-36 w-36 rounded-full border-4 border-white dark:border-indigo-400 mx-auto my-4"></img>
+                              <img alt="..." src={`http://localhost:8081${user.principal.fotoCaminho}`} className="h-36 w-36 rounded-full border-4 border-white dark:border-indigo-400 mx-auto my-4"></img>
                             )}
 
                
@@ -106,26 +109,26 @@ export default function Profile () {
               </div>
               <div className="text-center mt-12">
                 <h3 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
-                  @{user?.username}
+                  @{user.principal.username}
                 </h3>
                 <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
                   Florianópolis, Santa Catarina
                 </div>
                 <div className="mb-2 text-green-600 mt-10">
-                  GoParty {user?.tipoUsuario}
+                  GoParty {user.principal.tipoUsuario}
                 </div>
 
                    <div className="flex items-center mb-2 text-blueGray-600 mt-10">
                     <img src="/imagens/id-card.png" className="mr-2" alt="id-card"></img>
-                    <span>{user?.nome}</span>
+                    <span>{user.principal.nome}</span>
                     </div>
                     <div className="flex items-center mb-2 text-blueGray-600">
                     <img src="/imagens/envelopes (1).png" className="mr-2" alt="envelopes"></img>
-                    <span>{user?.email}</span>
+                    <span>{user.principal.email}</span>
                     </div>
                     <div className="flex items-center mb-2 text-blueGray-600">
                     <img src="/imagens/calendar-lines.png" className="mr-2" alt="calendar-lines"></img>
-                    <span>{user?.email}</span>
+                    <span>{user.principal.dataNasci}</span>
                     </div>
               </div>
               <div className="mt-10 py-10 border-t border-blueGray-200 text-center">

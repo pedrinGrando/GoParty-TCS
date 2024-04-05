@@ -1,24 +1,23 @@
 package go.party.tcs.controller;
 
+import java.util.Random;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.MailSendException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.Random;
 
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.EmailService;
 import go.party.tcs.service.UsuarioService;
-import jakarta.mail.MessagingException;
+
 
 @RestController
 @RequestMapping("/v1/resetpassword")
@@ -34,12 +33,15 @@ public class SenhaResetController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @Autowired
-    private BCryptPasswordEncoder passwordEncoder;
-
     private String codigoRecuperacao;
 
-    private String emailRecuperado;
+    private final BCryptPasswordEncoder passwordEncoder;
+
+    @Autowired
+    public SenhaResetController(BCryptPasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
+    }
+
 
     @PostMapping("/passwordrecovery")
     public ResponseEntity<String> enviarEmailDeRecuperacao(@RequestParam("email") String email) {

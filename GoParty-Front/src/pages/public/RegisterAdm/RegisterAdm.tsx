@@ -140,7 +140,7 @@ export default function RegisterAdm () {
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img src="/imagens/Lead Form.png" className="rounded btn- mb-[500px]"/>
+                  <img src="/imagens/BEGoPartyADM.webp" className="rounded btn- mb-[500px]"/>
                 </div>
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">

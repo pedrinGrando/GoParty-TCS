@@ -1,5 +1,7 @@
 package go.party.tcs.config;
 
+import java.io.IOException;
+
 import jakarta.servlet.Filter;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,7 +10,6 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @WebFilter("/*")
 public class Autentication implements Filter {
@@ -18,12 +19,12 @@ public class Autentication implements Filter {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        // Verifique se o usuário está autenticado (verifique a sessão)
+        // Verifica se o usuário está autenticado (Verifica a sessão)
         if (request.getSession().getAttribute("usuario") != null) {
-            // Usuário autenticado, continue a cadeia de filtros
+            // Usuário autenticado, continua a cadeia de filtros
             chain.doFilter(req, res);
         } else {
-            // Usuário não autenticado, redirecione para a página de login
+            // Usuário não autenticado, redireciona para a página de login
             response.sendRedirect(request.getContextPath() + "/login");
         }
     }

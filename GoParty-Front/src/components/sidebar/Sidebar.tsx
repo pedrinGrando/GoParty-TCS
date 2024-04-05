@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
-import { useUser } from "../UserContext/UserContext";
 
 interface SidebarProps {
   userName?: string
@@ -10,7 +9,9 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
-    const { user } = useUser();
+
+    const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
+    const token = localStorage.getItem('token');
   
     const toggleSidebar = () => {
       setIsOpen(!isOpen);
@@ -65,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
                   <div className="text-sm font-light tracking-wide text-gray-500">Eventos</div>
                 </div>
               </li>
-              {user?.tipoUsuario === 'Member' && (
+              {user?.principal.tipoUsuario === 'MEMBER' && (
                 <li>
                   <Link to='/create-event'>
                     <div className={location.pathname === '/register-adm' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6'}>
@@ -78,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
                 </li>
               )}
 
-            {user?.tipoUsuario === 'Team' && (
+            {user?.principal.tipoUsuario === 'TEAM' && (
               <li>
                 <Link to='/register-adm'>
                 <div className={location.pathname === '/register-adm' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6"' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"'}>
@@ -91,7 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
               </li>
              )}
 
-             {user?.tipoUsuario === 'User' && (
+             {user?.principal.tipoUsuario === 'USER' && (
               <li>
                 <Link to='/register-adm'>
                 <div className={location.pathname === '/register-adm' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6"' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"'}>

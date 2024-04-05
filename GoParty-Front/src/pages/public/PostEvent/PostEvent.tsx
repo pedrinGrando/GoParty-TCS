@@ -6,23 +6,27 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 import { Loading } from '../../../components/Loading/Loading';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 
-
 export default function PostEvent () {
 
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
+    const token = localStorage.getItem('token');
 
     const [formData, setFormData] = useState({
         titulo: '',
-        descricao: '',
+        descricao: 'Teste descrição',
         estado: '',
         dataPrevista: '',
-        metaArrecad: '',
+        
+        valor: '',
         cidade: '',
         bairro: '',
         rua: '',
-        fotoFormatura: null
+        fotoEvento: null
       });
 
       const [errors, setErrors] = useState({
@@ -30,7 +34,7 @@ export default function PostEvent () {
         descricao: false,
         estado: false,
         dataPrevista: false,
-        metaArrecad: false,
+        valor: false,
         cidade: false,
         bairro: false,
         rua: false
@@ -46,6 +50,7 @@ export default function PostEvent () {
             const file = event.target.files[0]
             const imageURL = URL.createObjectURL(file)
             setImagePreview(imageURL)
+            setSelectedFile(file);
         }
     }
 
@@ -72,63 +77,93 @@ export default function PostEvent () {
     const handleSubmit = async (event: any) => {
       event.preventDefault();
       setIsLoading(true);
-
-       const newErrors = {
-        titulo: formData.titulo.trim() === '',
-        descricao: formData.descricao.trim() === '',
-        estado: formData.estado.trim() === '',
-        cidade: formData.cidade.trim() === '',
-        rua: formData.rua.trim() === '',
-        bairro: formData.bairro.trim() === '',
-        dataPrevista: formData.dataPrevista.trim() === '',
-        metaArrecad: formData.metaArrecad.trim() === '',
-    };
-
-    setErrors(newErrors);
-
-    // Verificar se há erros
-    if (Object.values(newErrors).some(error => error)) {
-
-      setIsLoading(false)
-      return;
-  }
-
+  
       try {
-        const response = await fetch('http://localhost:8081/v1/fomaturas/ser-adm', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
-        });
-        
-        if (response.ok) {
-          // Limpar o formulário após o envio bem-sucedido, se necessário
-          setFormData({
-            titulo: '',
-            descricao: '',
-            estado: '',
-            dataPrevista: '',
-            metaArrecad: '',
-            cidade: '',
-            bairro: '',
-            rua: '',
-            fotoFormatura: null
+          const responseEvento = await fetch('http://localhost:8081/v1/eventos/criar-evento', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify(formData),
           });
+  
+          const eventData = await responseEvento.json();
+  
+          if (responseEvento.ok) {
+              console.log("Evento criado com sucesso. ID:", eventData.id);
+  
+              if (selectedFile) {
+                  const formDataImage = new FormData();
+                  formDataImage.append('file', selectedFile);
+  
+                  const responseImage = await fetch(`http://localhost:8081/v1/eventos/upload-event-image/${eventData.id}`, {
+                      method: 'POST',
+                      headers: {
+                          'Authorization': `Bearer ${token}`,
+                      },
+                      body: formDataImage,
+                  });
+  
+                  if (responseImage.ok) {
+                      console.log("Imagem do evento enviada com sucesso.");
 
-          setIsLoading(false);
-          setImagePreview('');
-          console.log('Formulário enviado com sucesso!');
-          
-        } else {
-          setIsLoading(false);
-          console.error('Erro ao enviar formulário:', response.statusText);
-        }
+                      setFormData({
+                        titulo: '',
+                        descricao: '',
+                        estado: '',
+                        dataPrevista: '',
+                        valor: '',
+                        cidade: '',
+                        bairro: '',
+                        rua: '',
+                        fotoEvento: null
+                    });
+                    setImagePreview('');
+                    setIsLoading(false);
+                  } else {
+                      console.error("Falha ao enviar imagem do evento.");
+                      setFormData({
+                        titulo: '',
+                        descricao: '',
+                        estado: '',
+                        dataPrevista: '',
+                        valor: '',
+                        cidade: '',
+                        bairro: '',
+                        rua: '',
+                        fotoEvento: null
+                    });
+                    setImagePreview('');
+                    setIsLoading(false);
+                  }
+              }
+  
+              // Limpa o formulário após o envio bem-sucedido
+              setFormData({
+                  titulo: '',
+                  descricao: '',
+                  estado: '',
+                  dataPrevista: '',
+                  valor: '',
+               
+                  cidade: '',
+                  bairro: '',
+                  rua: '',
+                  fotoEvento: null
+              });
+              setImagePreview('');
+              setIsLoading(false);
+          } else {
+              setIsLoading(false);
+              console.error("Erro ao criar evento:", eventData.mensagem);
+          }
       } catch (error) {
-        setIsLoading(false);
-        console.error('Erro ao enviar formulário:', error);
+          setIsLoading(false);
+          console.error("Erro na requisição:", error);
       }
-    };
+  };
+  
 
     return (
 
@@ -140,13 +175,13 @@ export default function PostEvent () {
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img src="/imagens/Lead Form.png" className="rounded btn- mb-[500px]"/>
+                  <img src="/imagens/PostEvento.webp" className="rounded btn- mb-[500px]"/>
                 </div>
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10">
-                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Preencha para se tornar GoParty ADM</p>
+                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Crie seu evento para o público</p>
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                    <div className="relative">
                       <label htmlFor='titulo' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -210,12 +245,12 @@ export default function PostEvent () {
                           </label>
                           <CurrencyInput
                             placeholder="R$ 0,00"
-                            id='metaArrecad'
-                            name='metaArrecad'
-                            value={formData.metaArrecad}
+                            id='valor'
+                            name='valor'
+                            value={formData.valor}
                             onChange={handleChange}
                             className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
-                        />
+                          />
                     </div>
                     <div className="relative">
                       <label htmlFor='dataPrevista' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -241,7 +276,7 @@ export default function PostEvent () {
                                         </svg>
                                     </RenderIf>
                                     <div className='mt-2 flex text-sm leading-6 text-gray-600'>
-                                        <label htmlFor='fotoFormatura' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
+                                        <label htmlFor='fotoEvento' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
                                             
                                             <RenderIf condition={!imagePreview}>
                                                 <span>Foto para o evento</span>
@@ -251,7 +286,7 @@ export default function PostEvent () {
                                                 <img src={imagePreview} width={250} className='rounded-full' />
                                             </RenderIf>
 
-                                            <input accept="image/*" onChange={onFileUpload} id='fotoFormatura' name='fotoFormatura' type='file' className='sr-only' />
+                                            <input accept="image/*" onChange={onFileUpload} id='fotoEvento' name='fotoEvento' type='file' className='sr-only' />
                                         </label>
                                     </div>   
                                 </div>
