@@ -6,21 +6,22 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 import { Loading } from '../../../components/Loading/Loading';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 
-
 export default function PostEvent () {
 
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
 
     const [formData, setFormData] = useState({
         titulo: '',
-        descricao: '',
+        descricao: 'Teste descrição',
         estado: '',
         dataPrevista: '',
+        
         valor: '',
         cidade: '',
         bairro: '',
@@ -49,6 +50,7 @@ export default function PostEvent () {
             const file = event.target.files[0]
             const imageURL = URL.createObjectURL(file)
             setImagePreview(imageURL)
+            setSelectedFile(file);
         }
     }
 
@@ -75,63 +77,93 @@ export default function PostEvent () {
     const handleSubmit = async (event: any) => {
       event.preventDefault();
       setIsLoading(true);
-
-       const newErrors = {
-        titulo: formData.titulo.trim() === '',
-        descricao: formData.descricao.trim() === '',
-        estado: formData.estado.trim() === '',
-        cidade: formData.cidade.trim() === '',
-        rua: formData.rua.trim() === '',
-        bairro: formData.bairro.trim() === '',
-        dataPrevista: formData.dataPrevista.trim() === '',
-        valor: formData.valor.trim() === '',
-    };
-
-    setErrors(newErrors);
-
-    // Verificar se há erros
-    if (Object.values(newErrors).some(error => error)) {
-
-      setIsLoading(false)
-      return;
-  }
-
+  
       try {
-        const response = await fetch('http://localhost:8081/v1/eventos/criar-evento', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`
-          },
-          body: JSON.stringify(formData),
-        });
-        
-        if (response.ok) {
-          // Limpar o formulário após o envio bem-sucedido, se necessário
-          setFormData({
-            titulo: '',
-            descricao: '',
-            estado: '',
-            dataPrevista: '',
-            valor: '',
-            cidade: '',
-            bairro: '',
-            rua: '',
-            fotoEvento: null
+          const responseEvento = await fetch('http://localhost:8081/v1/eventos/criar-evento', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify(formData),
           });
+  
+          const eventData = await responseEvento.json();
+  
+          if (responseEvento.ok) {
+              console.log("Evento criado com sucesso. ID:", eventData.id);
+  
+              if (selectedFile) {
+                  const formDataImage = new FormData();
+                  formDataImage.append('file', selectedFile);
+  
+                  const responseImage = await fetch(`http://localhost:8081/v1/eventos/upload-event-image/${eventData.id}`, {
+                      method: 'POST',
+                      headers: {
+                          'Authorization': `Bearer ${token}`,
+                      },
+                      body: formDataImage,
+                  });
+  
+                  if (responseImage.ok) {
+                      console.log("Imagem do evento enviada com sucesso.");
 
-          setIsLoading(false);
-          setImagePreview('');
-          console.log('Formulário enviado com sucesso!');
-          
-        } else {
-          setIsLoading(false);
-          console.error('Erro ao enviar formulário:', response.statusText);
-        }
+                      setFormData({
+                        titulo: '',
+                        descricao: '',
+                        estado: '',
+                        dataPrevista: '',
+                        valor: '',
+                        cidade: '',
+                        bairro: '',
+                        rua: '',
+                        fotoEvento: null
+                    });
+                    setImagePreview('');
+                    setIsLoading(false);
+                  } else {
+                      console.error("Falha ao enviar imagem do evento.");
+                      setFormData({
+                        titulo: '',
+                        descricao: '',
+                        estado: '',
+                        dataPrevista: '',
+                        valor: '',
+                        cidade: '',
+                        bairro: '',
+                        rua: '',
+                        fotoEvento: null
+                    });
+                    setImagePreview('');
+                    setIsLoading(false);
+                  }
+              }
+  
+              // Limpa o formulário após o envio bem-sucedido
+              setFormData({
+                  titulo: '',
+                  descricao: '',
+                  estado: '',
+                  dataPrevista: '',
+                  valor: '',
+               
+                  cidade: '',
+                  bairro: '',
+                  rua: '',
+                  fotoEvento: null
+              });
+              setImagePreview('');
+              setIsLoading(false);
+          } else {
+              setIsLoading(false);
+              console.error("Erro ao criar evento:", eventData.mensagem);
+          }
       } catch (error) {
-        setIsLoading(false);
-        console.error('Erro ao enviar formulário:', error);
+          setIsLoading(false);
+          console.error("Erro na requisição:", error);
       }
-    };
+  };
+  
 
     return (
 
@@ -218,7 +250,7 @@ export default function PostEvent () {
                             value={formData.valor}
                             onChange={handleChange}
                             className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
-                        />
+                          />
                     </div>
                     <div className="relative">
                       <label htmlFor='dataPrevista' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -254,7 +286,7 @@ export default function PostEvent () {
                                                 <img src={imagePreview} width={250} className='rounded-full' />
                                             </RenderIf>
 
-                                            <input accept="image/*" onChange={onFileUpload} id='fotoFofotoEventormatura' name='fotoEvento' type='file' className='sr-only' />
+                                            <input accept="image/*" onChange={onFileUpload} id='fotoEvento' name='fotoEvento' type='file' className='sr-only' />
                                         </label>
                                     </div>   
                                 </div>

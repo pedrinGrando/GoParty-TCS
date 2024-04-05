@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,43 +60,40 @@ public class EventoController {
     private String uploadDir;
     
     // Método para Criar um Evento
-     @CrossOrigin(origins = "http://http:/localhost:5173/")   
-     @PostMapping("/criar-evento")
-     public ResponseEntity<String> cadastrarUsuario(@RequestBody Evento evento, @RequestParam("file") MultipartFile file) {
-
-        //Cadastra dados do evento
-         try{
-            eventoRepository.save(evento);
-            uploadEventImage(evento.getId(), file);
-            
-             return ResponseEntity.ok("Evento criado com sucesso");
-         } catch (RuntimeException exception){
+    @PostMapping("/criar-evento")
+    public ResponseEntity<?> cadastrarEvento(@RequestBody Evento evento) {
+        try {
+            Evento eventoSalvo = eventoRepository.save(evento);
+            // Considerando que você tem um DTO ou um Map para retornar apenas o necessário
+            return ResponseEntity.ok(Map.of("id", eventoSalvo.getId(), "mensagem", "Evento criado com sucesso"));
+        } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar evento.");
-         }
+        }
     }
 
-   //Metodo privado de upload de fotos de eventos
-    private ResponseEntity<String> uploadEventImage(Long eventoId, MultipartFile file) {
 
+    @PostMapping("/upload-event-image/{eventoId}")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Long eventoId, @RequestParam("file") MultipartFile file) {
         try {
-            Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
-            if (!eventoOptional.isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento not found");
+            Optional<Evento> eventoOpcional = eventoRepository.findById(eventoId);
+            if (!eventoOpcional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found");
             }
-
-            Evento evento = eventoOptional.get();
+    
+            Evento evento = eventoOpcional.get();
             String filename = eventoId + "_" + file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
+    
             evento.setEventoCaminho("/uploads/" + filename);
             eventoRepository.save(evento);
-
+    
             return ResponseEntity.ok("Event image uploaded successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload event image");
         }
     }
+    
 
     @CrossOrigin(origins = "http://http:/localhost:5173/") 
     @GetMapping("/buscar-eventos")
