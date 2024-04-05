@@ -51,8 +51,11 @@ public class Formatura {
     @Column(name = "meta_arrecad")
     private String metaArrecad;
 
-    @Column(name = "pendente_aprovacao")
+    @Column(name = "pendente_aprovacao") // True = O pedido esta pendente False = o pedido já vou resolvido
     private boolean pendenteAprovacao;
+
+    @Column(name = "aprovado") //True = o Adm esta aprovado False = O Adm foi negado
+    private boolean aprovado;
 
     @Column(name = "data_prevista")
     private LocalDate dataPrevista;
