@@ -1,5 +1,6 @@
 package go.party.tcs.controller;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +54,8 @@ public class AuthController {
         try {
             String password = new BCryptPasswordEncoder().encode(usuario.getSenha());
             usuario.setSenha(password);
-            usuario.setTipoUsuario(TipoUsuario.USER);
+            //Momento de cadastro do user
+            usuario.setDataCadastro(LocalDateTime.now());
             service.cadastrarUsuario(usuario);
             return  ResponseEntity.ok("Usuario cadastrado com sucesso!");
         } catch (RuntimeException exception) {

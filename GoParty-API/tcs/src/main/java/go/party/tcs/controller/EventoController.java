@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,6 +31,7 @@ import go.party.tcs.model.Curtida;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.EventoRepository;
+import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EventoService;
@@ -40,6 +42,9 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/v1/eventos")
 @CrossOrigin(origins = "http://localhost:5173/") 
 public class EventoController {
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
     
     @Autowired
     private EventoService eventoService;
@@ -60,11 +65,21 @@ public class EventoController {
     private String uploadDir;
     
     // Método para Criar um Evento
-    @PostMapping("/criar-evento")
-    public ResponseEntity<?> cadastrarEvento(@RequestBody Evento evento) {
+    @PostMapping("/criar-evento/{userId}")
+    public ResponseEntity<?> cadastrarEvento(@PathVariable Long userId, @RequestBody Evento evento) {
         try {
+
+              //encontrar usuario que fez a postagem
+              Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+              if (!userOptional.isPresent()) {
+                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+              }
+ 
+              Usuario usuarioAutor = userOptional.get();
+              evento.setAutor(usuarioAutor);
+            //Momento da Postagem
+            evento.setDataPostagem(LocalDateTime.now());
             Evento eventoSalvo = eventoRepository.save(evento);
-            // Considerando que você tem um DTO ou um Map para retornar apenas o necessário
             return ResponseEntity.ok(Map.of("id", eventoSalvo.getId(), "mensagem", "Evento criado com sucesso"));
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar evento.");

@@ -1,6 +1,7 @@
 package go.party.tcs.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,13 +61,15 @@ public class Formatura {
     @Column(name = "data_prevista")
     private LocalDate dataPrevista;
 
+    @Column(name = "data_solicitacao")
+    private LocalDateTime dataSolicitacao;
+
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario adm;
 
-    @Lob
-    @Column(name = "foto_formatura", columnDefinition = "LONGBLOB")
-    private byte[] fotoEvento;
+    @Column(name = "formatura_caminho")
+    private String formaturaCaminho;
 
     @ManyToMany
     @JoinTable(name = "formatura_grupo",

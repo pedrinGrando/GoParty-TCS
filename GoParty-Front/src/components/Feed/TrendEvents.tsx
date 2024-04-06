@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Event from '../../types/Event';
 import { LoadingTrends } from '../Loading/LoadingTrends';
+import { Link } from 'react-router-dom';
 
 const TrendEvents: React.FC = () => {
   const [events, setEvents] = useState<Event[]>([]);
@@ -34,6 +35,7 @@ const TrendEvents: React.FC = () => {
         
      <ul role="list" className="hidden md:block absolute top-14 right-0 w-max max-w-sm mt-4 mr-4 divide-y divide-gray-300 dark:divide-gray-300">
           {/* {events.map((event) => ( */}
+          <Link to=''>
           <li className="py-3 sm:py-4">
             <h1>Eventos em alta</h1>
               <div className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -54,6 +56,8 @@ const TrendEvents: React.FC = () => {
                   </span>
               </div>
           </li>
+          </Link>
+          <Link to=''>
             <li className="py-3 sm:py-4">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
                     <div className="flex-shrink-0">
@@ -73,6 +77,8 @@ const TrendEvents: React.FC = () => {
                     </span>
                 </div>
             </li>
+            </Link>
+            <Link to=''>
             <li className="py-3 sm:py-4">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
                     <div className="flex-shrink-0">
@@ -92,6 +98,8 @@ const TrendEvents: React.FC = () => {
                     </span>
                 </div>
             </li>
+            </Link>
+            <Link to=''>
             <li className="py-3 sm:py-4">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">
                     <div className="flex-shrink-0">
@@ -111,6 +119,7 @@ const TrendEvents: React.FC = () => {
                     </span>
                 </div>
             </li>
+            </Link>
             {/* ))} */}
         </ul>
         )}
