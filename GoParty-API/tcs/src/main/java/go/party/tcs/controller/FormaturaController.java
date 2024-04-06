@@ -68,7 +68,7 @@ public class FormaturaController {
     }
 
 
-     @PostMapping("/upload-event-image/{formaturaId}")
+     @PostMapping("/upload-grad-image/{formaturaId}")
      public ResponseEntity<String> uploadProfileImage(@PathVariable Long formaturaId, @RequestParam("file") MultipartFile file) {
          try {
              Optional<Formatura> formaturaOpcional = formaturaRepository.findById(formaturaId);
@@ -90,6 +90,8 @@ public class FormaturaController {
          }
      }
 
-    }
+
+
+}
 
 

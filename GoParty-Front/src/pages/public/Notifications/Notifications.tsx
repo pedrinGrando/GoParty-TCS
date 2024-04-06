@@ -43,12 +43,12 @@ export default function Notifications () {
                             <div>
             {notifications.length === 0 ? (
                 <div className="flex justify-center items-center h-screen">
-                    <div id="toast-notification" className="w-full max-w-xs p-4 text-gray-900 bg-white rounded-lg shadow dark:bg-gray-800 dark:text-gray-300" role="alert">
+                    <div id="toast-notification" className="w-full max-w-xs p-4 text-gray-900 bg-white rounded-lg shadow dark:bg-white dark:text-black" role="alert">
                         <div className="flex items-center mb-3">
-                            <span className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">New notification</span>
-                            <button type="button" className="ms-auto -mx-1.5 -my-1.5 bg-white justify-center items-center flex-shrink-0 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-notification" aria-label="Close">
+                            <span className="mb-1 text-sm font-semibold text-gray-900 dark:text-black">New notification</span>
+                            <button type="button" className="ms-auto -mx-1.5 -my-1.5 bg-white justify-center items-center flex-shrink-0 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-white dark:hover:bg-white" data-dismiss-target="#toast-notification" aria-label="Close">
                                 <span className="sr-only">Close</span>
-                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <svg className="w-3 h-3 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"/>
                                 </svg>
                             </button>
@@ -65,7 +65,7 @@ export default function Notifications () {
                                 </span>
                             </div>
                             <div className="ms-3 text-sm font-normal">
-                                <div className="text-sm font-semibold text-gray-900 dark:text-white">Bonnie Green</div>
+                                <div className="text-sm font-semibold text-gray-900 dark:text-black">Bonnie Green</div>
                                 <div className="text-sm font-normal">commented on your photo</div> 
                                 <span className="text-xs font-medium text-blue-600 dark:text-blue-500">a few seconds ago</span>   
                             </div>
