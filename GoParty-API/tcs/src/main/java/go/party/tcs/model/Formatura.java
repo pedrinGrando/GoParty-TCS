@@ -71,6 +71,9 @@ public class Formatura {
     @Column(name = "formatura_caminho")
     private String formaturaCaminho;
 
+    @Column(name = "matricula_caminho")
+    private String matriculaCaminho;
+
     @ManyToMany
     @JoinTable(name = "formatura_grupo",
                joinColumns = @JoinColumn(name = "formatura_id"),

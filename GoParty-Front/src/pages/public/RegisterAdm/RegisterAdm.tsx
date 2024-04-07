@@ -13,6 +13,7 @@ export default function RegisterAdm () {
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFileMatri, setSelectedFileMatri] = useState<File | null>(null);
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
@@ -53,6 +54,12 @@ export default function RegisterAdm () {
             setSelectedFile(file);
         }
     }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files && event.target.files.length > 0) {
+        setSelectedFileMatri(event.target.files[0]); 
+      }
+    };
 
       const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = event.target;
@@ -110,7 +117,7 @@ export default function RegisterAdm () {
         const formaturaData = await responseSerAdm.json();
   
         if (responseSerAdm.ok) {
-            console.log("Formatura criado com sucesso. ID:", formaturaData.id);
+            console.log("Solicitacao criada com sucesso. ID:", formaturaData.id);
 
             if (selectedFile) {
                 const formDataImage = new FormData();
@@ -158,6 +165,57 @@ export default function RegisterAdm () {
                 }
             }
 
+            if (selectedFileMatri) {
+
+              const formDataPdf = new FormData();
+              formDataPdf.append('file', selectedFileMatri);
+              const uploadMatriculaUrl = `http://localhost:8081/v1/fomaturas/upload-matricula-pdf/${formaturaData.id}`;
+        
+              const responsePdf = await fetch(uploadMatriculaUrl, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                },
+                body: formDataPdf,
+              });
+        
+              if (responsePdf.ok) {
+                console.log("Comprovante de matrícula enviado com sucesso.");
+
+                setFormData({
+                  titulo: '',
+                  descricao: '',
+                  estado: '',
+                  dataPrevista: '',
+                  metaArrecad: '',
+                  cidade: '',
+                  bairro: '',
+                  rua: '',
+                  fotoFormatura: null
+              });
+
+              setImagePreview('');
+              setIsLoading(false);
+              } else {
+                console.error("Falha ao enviar comprovante de matrícula.");
+                
+                setFormData({
+                  titulo: '',
+                  descricao: '',
+                  estado: '',
+                  dataPrevista: '',
+                  metaArrecad: '',
+                  cidade: '',
+                  bairro: '',
+                  rua: '',
+                  fotoFormatura: null
+              });
+              
+              setImagePreview('');
+              setIsLoading(false);
+              }
+            }
+  
             // Limpa o formulário após o envio bem-sucedido
             setFormData({
               titulo: '',
@@ -180,6 +238,7 @@ export default function RegisterAdm () {
         setIsLoading(false);
         console.error("Erro na requisição:", error);
     }
+
     };
 
     return (
@@ -225,14 +284,6 @@ export default function RegisterAdm () {
                       placeholder="Grupo de arrecadacao para formatura UFS...">
 
                       </textarea>
-
-                      <input placeholder="Grupo de arrecadacao para formatura UFSC" 
-                              type="text"
-                              name='descricao'
-                              value={formData.descricao}
-                              id='descricao'
-                              onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
                     </div>
 
                     <div className="relative">
@@ -309,7 +360,10 @@ export default function RegisterAdm () {
                   <div className="relative">
                       <label htmlFor='comprovanteMatricula' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Seu comprovante de matrícula</label>
-                        <input  className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}
+                         <input 
+                        onChange={handleFileChange}
+                        id='comprovanteMatricula'
+                        className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}
                         type='file'
                         />
                   </div>
