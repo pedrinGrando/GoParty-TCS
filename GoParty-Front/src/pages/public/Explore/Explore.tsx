@@ -1,12 +1,10 @@
-import React from "react"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
-import { Link } from "react-router-dom"
 
 export default function Explore () {
    
     return (
               <div>
-                 <div className="px-4 mx-auto text-center max-w-xl mt-5">
+                <div className="px-4 mx-auto text-center max-w-xl mt-5">
                  {/*campo de pesquisa*/}
                  <form className="max-w-md mx-auto">   
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Pesquisar</label>
@@ -22,7 +20,6 @@ export default function Explore () {
                  </form>
               </div>
             <Sidebar />
-        </div>
-     
+         </div>
     )
 }
