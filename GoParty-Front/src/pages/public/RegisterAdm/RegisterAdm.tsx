@@ -5,6 +5,7 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 //Pages/components
 import { Loading } from '../../../components/Loading/Loading';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
+import { ModalMessage } from '../../../components/modal/ModalMessage';
 
 
 export default function RegisterAdm () {
@@ -14,6 +15,12 @@ export default function RegisterAdm () {
     const [isChecked, setIsChecked] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [selectedFileMatri, setSelectedFileMatri] = useState<File | null>(null);
+
+    const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+    const [mensagemModal, setMensagemModal] = useState<string>('');
+    const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
+
+    const handleClose = () => setMostrarModal(false);
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
@@ -194,6 +201,9 @@ export default function RegisterAdm () {
                   fotoFormatura: null
               });
 
+              setMensagemModal("Solicitação para ser um GoParty ADM foi realizada com sucesso!");
+              setImagemSrcModal("imagens/SolicitMadePic.webp");
+              setMostrarModal(true);
               setImagePreview('');
               setIsLoading(false);
               } else {
@@ -244,16 +254,26 @@ export default function RegisterAdm () {
     return (
 
    <div>
+     
     <form onSubmit={handleSubmit}>
        <div className="bg-white relative lg:py-20">
+       
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img src="/imagens/BEGoPartyADM.webp" className="rounded btn- mb-[500px]"/>
+                  <img src="/imagens/BEGoPartyADM.webp" className="rounded lg:mt-500 sm:mb-20"/>
                 </div>
               </div>
+
+              {/* Modal de confirmação*/}
+              <ModalMessage
+              mensagem={mensagemModal}
+              imagemSrc={imagemSrcModal}
+              mostrarModal={mostrarModal}
+              onClose={handleClose}
+             />
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10">

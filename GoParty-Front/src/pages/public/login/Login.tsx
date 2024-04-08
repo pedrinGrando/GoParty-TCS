@@ -108,7 +108,7 @@ export default function Login(){
                   data-aos="fade-up"
                   data-aos-delay="50"
                   data-aos-duration="0"
-                src="/imagens/enjoyingParty.png" className="rounded btn-"/>
+                src="/imagens/enjoyingParty.png" className="rounded mb-100 sm:mb-20"/>
                 
                 </div>
               </div>

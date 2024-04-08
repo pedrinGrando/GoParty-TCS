@@ -68,7 +68,6 @@ public class EventoController {
     @PostMapping("/criar-evento/{userId}")
     public ResponseEntity<?> cadastrarEvento(@PathVariable Long userId, @RequestBody Evento evento) {
         try {
-
               //encontrar usuario que fez a postagem
               Optional<Usuario> userOptional = usuarioRepository.findById(userId);
               if (!userOptional.isPresent()) {

@@ -5,6 +5,7 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 //Pages/components
 import { Loading } from '../../../components/Loading/Loading';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
+import { ModalMessage } from '../../../components/modal/ModalMessage';
 
 export default function PostEvent () {
 
@@ -13,15 +14,20 @@ export default function PostEvent () {
     const [isChecked, setIsChecked] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
+    const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+    const [mensagemModal, setMensagemModal] = useState<string>('');
+    const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
+
+    const handleClose = () => setMostrarModal(false);
+
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
 
     const [formData, setFormData] = useState({
         titulo: '',
-        descricao: 'Teste descrição',
+        descricao: '',
         estado: '',
         dataPrevista: '',
-        
         valor: '',
         cidade: '',
         bairro: '',
@@ -119,6 +125,9 @@ export default function PostEvent () {
                         rua: '',
                         fotoEvento: null
                     });
+                    setMensagemModal("Evento criado com sucesso!");
+                    setImagemSrcModal("imagens/EventCreatedSucess.webp");
+                    setMostrarModal(true);
                     setImagePreview('');
                     setIsLoading(false);
                   } else {
@@ -175,9 +184,16 @@ export default function PostEvent () {
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img src="/imagens/PostEvento.webp" className="rounded btn- mb-[500px]"/>
+                <img src="/imagens/PostEvento.webp" className="rounded mb-100 sm:mb-20"/>
                 </div>
               </div>
+              {/* Modal de confirmação*/}
+              <ModalMessage
+              mensagem={mensagemModal}
+              imagemSrc={imagemSrcModal}
+              mostrarModal={mostrarModal}
+              onClose={handleClose}
+            />
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10">
@@ -193,6 +209,21 @@ export default function PostEvent () {
                               id='titulo'
                               onChange={handleChange}
                               className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                    </div>
+
+                    <div className="relative">
+                      <label htmlFor='descricao' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Descricao para a formatura</label>
+                          
+                      <textarea 
+                      onChange={handleChange}
+                      value={formData.descricao}
+                      name='descricao'
+                      id='descricao'
+                      className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md" 
+                      placeholder="Grupo de arrecadacao para formatura UFS...">
+
+                      </textarea>
                     </div>
                     <div className="relative">
                       <label htmlFor='estado' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600

@@ -278,7 +278,7 @@ export default function Register(){
                    data-aos="fade-down"
                    data-aos-delay="50"
                    data-aos-duration="0"
-                  src="/imagens/EnjoyingParty2.webp" className="rounded btn- mb-[500px]"/>
+                  src="/imagens/EnjoyingParty2.webp" className="rounded mb-100 sm:mb-20"/>
                 </div>
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
