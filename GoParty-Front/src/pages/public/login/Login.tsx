@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useUser } from '../../../components/UserContext/UserContext';
+import { Link, useNavigate } from 'react-router-dom';
 
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
@@ -10,7 +9,6 @@ import { NavBar } from '../../../components/NavBar/NavBar';
 export default function Login(){
 
     const [isLoading, setIsLoading] = useState(false);
-    const { setUser } = useUser();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -77,7 +75,7 @@ export default function Login(){
               localStorage.setItem('sessionUser', JSON.stringify(sessionUser)); 
   
               setIsLoading(false);
-              navigate('/home');
+              navigate('/type-your-code');
               console.log('Login efetuado com sucesso!');
           } else {
               setIsLoading(false);
@@ -108,7 +106,7 @@ export default function Login(){
                   data-aos="fade-up"
                   data-aos-delay="50"
                   data-aos-duration="0"
-                src="/imagens/enjoyingParty.png" className="rounded mb-100 sm:mb-20"/>
+                src="/imagens/enjoyingParty.png" className="rounded mt-20 lg:mt-0"/>
                 
                 </div>
               </div>
@@ -153,10 +151,14 @@ export default function Login(){
                         <img src="imagens/hide.png" alt="" />
                     )}
                 </button>
-
+ 
+                        {/*Leva para a troca de senha */}
+                       <Link to='/reset-password-email'>
                         <div className="text-sm ml-auto">
-                          <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Esqueceu a senha?</a>
+                          <div className="font-semibold text-indigo-600 hover:text-indigo-500">Esqueceu a senha?</div>
                         </div>
+                        </Link>
+
                     </div>
                             <Error
                               error={error}

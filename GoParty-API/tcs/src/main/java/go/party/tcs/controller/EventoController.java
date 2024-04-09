@@ -68,6 +68,7 @@ public class EventoController {
     @PostMapping("/criar-evento/{userId}")
     public ResponseEntity<?> cadastrarEvento(@PathVariable Long userId, @RequestBody Evento evento) {
         try {
+
               //encontrar usuario que fez a postagem
               Optional<Usuario> userOptional = usuarioRepository.findById(userId);
               if (!userOptional.isPresent()) {
@@ -119,7 +120,7 @@ public class EventoController {
     @PostMapping("/comments/{eventoId}/comment")
     public ResponseEntity<String> criarComentario(@PathVariable Integer eventoId,
                                                    @RequestBody Comentario comentario,
-                                                   HttpSession session) {
+                                                    HttpSession session) {
         try {
             // Recupera o usuário da sessão
             Usuario usuario = (Usuario) session.getAttribute("usuario");

@@ -182,33 +182,6 @@ public class UsuarioController {
         }
     }
 
-    //Metodo para mostrar a foto do Perfil do Usuario que fez a notificação 
-    @GetMapping("/perfil-imagem-notification/{id}")
-    public ResponseEntity<byte[]> getImagemPerfilNotification(@PathVariable Long id) {
-
-        Notification notification = notificationRepository.findById(id).orElse(null);
-       
-        // Verifica se a notificação foi encontrada
-        if (notification == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        // Recupera o usuário com o id especificado
-        Usuario usuario = usuarioRepository.findById(notification.getUserId()).orElse(null);
-
-        // Verifica se o usuário foi encontrado
-        if (usuario == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        // Recupera a imagem de perfil do usuário
-        byte[] imagemPerfil = notification.getFotoPerfil();
-
-        // Retorna a imagem de perfil
-        return new ResponseEntity<>(imagemPerfil, HttpStatus.OK);
-    }
-
-
     @DeleteMapping("/notifications/delete")
     public ResponseEntity<String> excluirNotificacao(@RequestParam("id") Long id) {
         try {
@@ -227,22 +200,6 @@ public class UsuarioController {
             return ResponseEntity.ok(usuarioOptional.get());
         } else {
             return ResponseEntity.notFound().build();
-        }
-    }
-
-    @PostMapping("/enviarMensagem/{usuarioIdReceiver}/{message}")
-    public ResponseEntity<String> enviarMensagem(@PathVariable Integer usuarioIdReceiver, @PathVariable String message, HttpSession session, HttpServletRequest request) {
-
-        Usuario idUsuarioSessao = (Usuario) session.getAttribute("usuario");
-
-        try {
-            // Supondo que você tem um serviço para salvar a mensagem
-            //mensagemService.salvarMensagem(usuarioIdReceiver, message, idUsuarioSessao.getId());
-            
-            return ResponseEntity.ok("Mensagem enviada com sucesso!");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Ocorreu um erro ao enviar a mensagem: " + e.getMessage());
         }
     }
 
@@ -270,31 +227,6 @@ public class UsuarioController {
         }
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
-    }
-
-    @GetMapping("/profile/{id}")
-    public ResponseEntity<?> exibirPerfil(@PathVariable Integer id, HttpSession session) {
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        // Buscar o usuário com o ID especificado no banco de dados
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(id);
-        if (usuarioOptional.isPresent()) {
-            Usuario usuario = usuarioOptional.get();
-            
-            // Buscar os eventos criados por esse usuário com base no ID do usuário
-            List<Evento> eventosDoUsuario = eventoService.buscarEventosPorAutor(id);
-
-            Map<String, Object> responseData = new HashMap<>();
-            responseData.put("usuario", usuario);
-            responseData.put("eventos", eventosDoUsuario);
-
-            //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
-            //int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
-            //responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
-
-            return ResponseEntity.ok(responseData);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
-        }
     }
 
     @GetMapping("/usuarios")

@@ -14,6 +14,8 @@ import Notifications from './pages/public/Notifications/Notifications';
 import PostEvent from './pages/public/PostEvent/PostEvent';
 import Profile from './pages/public/Profile/Profile';
 import RegisterAdm from './pages/public/RegisterAdm/RegisterAdm';
+import ResetPassword from './pages/public/ResetPassword/ResetPassword';
+import TypeYourCode from './pages/public/ResetPassword/TypeYourCode';
 import StartPage from './pages/public/StartPage/Start';
 import Tickets from './pages/public/Tickets/Tickets';
 import Home from './pages/public/home/Home';
@@ -44,6 +46,8 @@ function App() {
         <Routes>
           <Route path='/' element={<StartPage />} />
           <Route path='/about' element={<StartPage />} />
+          <Route path='/reset-password-email' element={<ResetPassword />} />
+          <Route path='/type-your-code' element={<TypeYourCode />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/home' element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />

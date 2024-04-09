@@ -273,13 +273,16 @@ export default function Register(){
               xl:px-5 lg:flex-row">
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
-                <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img
-                   data-aos="fade-down"
-                   data-aos-delay="50"
-                   data-aos-duration="0"
-                  src="/imagens/EnjoyingParty2.webp" className="rounded mb-100 sm:mb-20"/>
-                </div>
+              <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
+  <img
+    data-aos="fade-down"
+    data-aos-delay="50"
+    data-aos-duration="0"
+    src="/imagens/EnjoyingParty2.webp"
+    className="rounded mt-20 lg:mt-0" // Ajuste conforme necessário
+  />
+</div>
+
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
