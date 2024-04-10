@@ -1,7 +1,9 @@
 package go.party.tcs.controller;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
@@ -82,6 +84,32 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/cadastro-usuario-estudante")
+    public ResponseEntity<String> cadastrarUsuarioEstudante(@RequestBody Usuario usuario) {
+        try {
+            // Verifica se o e-mail é educacional
+            if (!isEmailEducacional(usuario.getEmail())) {
+                return ResponseEntity.badRequest().body("O e-mail fornecido não é de uma instituição educacional.");
+            }
+    
+            String password = new BCryptPasswordEncoder().encode(usuario.getSenha());
+            usuario.setSenha(password);
+            //Momento de cadastro do usuário
+            usuario.setDataCadastro(LocalDateTime.now());
+            service.cadastrarUsuario(usuario);
+            return ResponseEntity.ok("Estudante cadastrado com sucesso!");
+        } catch (RuntimeException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar usuário.");
+        }
+    }
+    
+    // Método para verificar se o e-mail é educacional
+    private boolean isEmailEducacional(String email) {
+        // Lista de domínios educacionais válidos
+        List<String> dominiosEducacionais = Arrays.asList(".edu", ".edu.br", "@alunos"); 
+        return dominiosEducacionais.stream().anyMatch(dominio -> email.endsWith(dominio));
+    }
+    
     //Verificação para troca de senha
     @GetMapping("/check-email-change")
     public ResponseEntity<String> checkEmailExistsTroca(@RequestParam String emailDigitado) throws MessagingException {

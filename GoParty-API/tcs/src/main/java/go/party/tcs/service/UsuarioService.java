@@ -23,6 +23,12 @@ public class UsuarioService {
          usuarioRepository.save(usuario);
     }
 
+    public void cadastrarUsuarioEstudante(Usuario usuario) {  
+        //Regra de permissao
+        usuario.setTipoUsuario(TipoUsuario.STUDENT);
+        usuarioRepository.save(usuario);
+       }
+
     public void atualizarUsuario(Usuario usuario){
         usuarioRepository.save(usuario);
     }
@@ -75,6 +81,7 @@ public class UsuarioService {
     public boolean checkUsernameExists(String username) {
         return usuarioRepository.existsByUsername(username);
     }
+
    
 }
 
