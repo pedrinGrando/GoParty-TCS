@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +18,8 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
     public void cadastrarUsuario(Usuario usuario) {
+          //Regra de permissao
+         usuario.setTipoUsuario(TipoUsuario.USER);
          usuarioRepository.save(usuario);
     }
 

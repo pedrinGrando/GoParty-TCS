@@ -1,6 +1,7 @@
 package go.party.tcs.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -53,11 +54,14 @@ public class Usuario implements UserDetails {
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;
 
-    @Column(name = "cpf")
+    @Column(name = "cpf", unique = true, nullable = false)
     private String cpf;
 
     @Column(name = "fotoCaminho")
     private String fotoCaminho;
+
+    @Column(name = "data_cadastro")
+    private LocalDateTime dataCadastro;
 
     @Column(name = "senha")
     private String senha;

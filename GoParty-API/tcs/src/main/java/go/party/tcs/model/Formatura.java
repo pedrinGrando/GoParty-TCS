@@ -1,6 +1,7 @@
 package go.party.tcs.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -51,19 +52,27 @@ public class Formatura {
     @Column(name = "meta_arrecad")
     private String metaArrecad;
 
-    @Column(name = "pendente_aprovacao")
+    @Column(name = "pendente_aprovacao") // True = O pedido esta pendente False = o pedido já vou resolvido
     private boolean pendenteAprovacao;
+
+    @Column(name = "aprovado") //True = o Adm esta aprovado False = O Adm foi negado
+    private boolean aprovado;
 
     @Column(name = "data_prevista")
     private LocalDate dataPrevista;
+
+    @Column(name = "data_solicitacao")
+    private LocalDateTime dataSolicitacao;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     private Usuario adm;
 
-    @Lob
-    @Column(name = "foto_formatura", columnDefinition = "LONGBLOB")
-    private byte[] fotoEvento;
+    @Column(name = "formatura_caminho")
+    private String formaturaCaminho;
+
+    @Column(name = "matricula_caminho")
+    private String matriculaCaminho;
 
     @ManyToMany
     @JoinTable(name = "formatura_grupo",

@@ -12,9 +12,12 @@ public class FormaturaService {
     @Autowired
     private FormaturaRepository formaturaRepository;
 
-    public void cadastrarSolicitacaoAdm(Formatura formatura){
-        //Insere como pendente a solicitação do usuário
-        formatura.setPendenteAprovacao(true);
-        formaturaRepository.save(formatura);
+    public Formatura cadastrarSolicitacaoAdm(Formatura formatura){
+           //Regra de aprovacao
+           formatura.setAprovado(false);
+           formatura.setPendenteAprovacao(true);
+           formaturaRepository.save(formatura);
+
+           return formatura;
     }
 }

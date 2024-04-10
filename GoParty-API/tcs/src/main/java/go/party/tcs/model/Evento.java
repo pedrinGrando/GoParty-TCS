@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.cglib.core.Local;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,6 +55,9 @@ public class Evento {
 
     @Column(name = "data_evento")
     private LocalDateTime dataEvento;
+
+    @Column(name = "data_postagem")
+    private LocalDateTime dataPostagem;
 
     @ManyToOne
     @JoinColumn(name = "autor_id")

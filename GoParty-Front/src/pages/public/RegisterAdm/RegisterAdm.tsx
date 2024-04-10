@@ -5,6 +5,7 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 //Pages/components
 import { Loading } from '../../../components/Loading/Loading';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
+import { ModalMessage } from '../../../components/modal/ModalMessage';
 
 
 export default function RegisterAdm () {
@@ -12,6 +13,17 @@ export default function RegisterAdm () {
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFileMatri, setSelectedFileMatri] = useState<File | null>(null);
+
+    const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+    const [mensagemModal, setMensagemModal] = useState<string>('');
+    const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
+
+    const handleClose = () => setMostrarModal(false);
+
+    const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
+    const token = localStorage.getItem('token');
 
     const [formData, setFormData] = useState({
         titulo: '',
@@ -46,8 +58,15 @@ export default function RegisterAdm () {
             const file = event.target.files[0]
             const imageURL = URL.createObjectURL(file)
             setImagePreview(imageURL)
+            setSelectedFile(file);
         }
     }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files && event.target.files.length > 0) {
+        setSelectedFileMatri(event.target.files[0]); 
+      }
+    };
 
       const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = event.target;
@@ -94,7 +113,7 @@ export default function RegisterAdm () {
   }
 
       try {
-        const response = await fetch('http://localhost:8081/v1/fomaturas/ser-adm', {
+        const responseSerAdm = await fetch(`http://localhost:8081/v1/fomaturas/ser-adm/${user.principal.id}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -102,47 +121,159 @@ export default function RegisterAdm () {
           body: JSON.stringify(formData),
         });
         
-        if (response.ok) {
-          // Limpar o formulário após o envio bem-sucedido, se necessário
-          setFormData({
-            titulo: '',
-            descricao: '',
-            estado: '',
-            dataPrevista: '',
-            metaArrecad: '',
-            cidade: '',
-            bairro: '',
-            rua: '',
-            fotoFormatura: null
-          });
+        const formaturaData = await responseSerAdm.json();
+  
+        if (responseSerAdm.ok) {
+            console.log("Solicitacao criada com sucesso. ID:", formaturaData.id);
 
-          setIsLoading(false);
-          setImagePreview('');
-          console.log('Formulário enviado com sucesso!');
-          
+            if (selectedFile) {
+                const formDataImage = new FormData();
+                formDataImage.append('file', selectedFile);
+
+                const responseImage = await fetch(`http://localhost:8081/v1/fomaturas/upload-grad-image/${formaturaData.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formDataImage,
+                });
+
+                if (responseImage.ok) {
+                    console.log("Imagem do evento enviada com sucesso.");
+
+                    setFormData({
+                      titulo: '',
+                      descricao: '',
+                      estado: '',
+                      dataPrevista: '',
+                      metaArrecad: '',
+                      cidade: '',
+                      bairro: '',
+                      rua: '',
+                      fotoFormatura: null
+                  });
+                  setImagePreview('');
+                  setIsLoading(false);
+                } else {
+                    console.error("Falha ao enviar imagem do evento.");
+                    setFormData({
+                      titulo: '',
+                      descricao: '',
+                      estado: '',
+                      dataPrevista: '',
+                      metaArrecad: '',
+                      cidade: '',
+                      bairro: '',
+                      rua: '',
+                      fotoFormatura: null
+                  });
+                  setImagePreview('');
+                  setIsLoading(false);
+                }
+            }
+
+            if (selectedFileMatri) {
+
+              const formDataPdf = new FormData();
+              formDataPdf.append('file', selectedFileMatri);
+              const uploadMatriculaUrl = `http://localhost:8081/v1/fomaturas/upload-matricula-pdf/${formaturaData.id}`;
+        
+              const responsePdf = await fetch(uploadMatriculaUrl, {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${token}`,
+                },
+                body: formDataPdf,
+              });
+        
+              if (responsePdf.ok) {
+                console.log("Comprovante de matrícula enviado com sucesso.");
+
+                setFormData({
+                  titulo: '',
+                  descricao: '',
+                  estado: '',
+                  dataPrevista: '',
+                  metaArrecad: '',
+                  cidade: '',
+                  bairro: '',
+                  rua: '',
+                  fotoFormatura: null
+              });
+
+              setMensagemModal("Solicitação para ser um GoParty ADM foi realizada com sucesso!");
+              setImagemSrcModal("imagens/SolicitMadePic.webp");
+              setMostrarModal(true);
+              setImagePreview('');
+              setIsLoading(false);
+              } else {
+                console.error("Falha ao enviar comprovante de matrícula.");
+                
+                setFormData({
+                  titulo: '',
+                  descricao: '',
+                  estado: '',
+                  dataPrevista: '',
+                  metaArrecad: '',
+                  cidade: '',
+                  bairro: '',
+                  rua: '',
+                  fotoFormatura: null
+              });
+              
+              setImagePreview('');
+              setIsLoading(false);
+              }
+            }
+  
+            // Limpa o formulário após o envio bem-sucedido
+            setFormData({
+              titulo: '',
+              descricao: '',
+              estado: '',
+              dataPrevista: '',
+              metaArrecad: '',
+              cidade: '',
+              bairro: '',
+              rua: '',
+              fotoFormatura: null
+            });
+            setImagePreview('');
+            setIsLoading(false);
         } else {
-          setIsLoading(false);
-          console.error('Erro ao enviar formulário:', response.statusText);
+            setIsLoading(false);
+            console.error("Erro ao criar formatura:", formaturaData.mensagem);
         }
-      } catch (error) {
+    } catch (error) {
         setIsLoading(false);
-        console.error('Erro ao enviar formulário:', error);
-      }
+        console.error("Erro na requisição:", error);
+    }
+
     };
 
     return (
 
    <div>
+     
     <form onSubmit={handleSubmit}>
        <div className="bg-white relative lg:py-20">
+       
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img src="/imagens/BEGoPartyADM.webp" className="rounded btn- mb-[500px]"/>
+                  <img src="/imagens/BEGoPartyADM.webp" className="rounded lg:mt-500 sm:mb-20"/>
                 </div>
               </div>
+
+              {/* Modal de confirmação*/}
+              <ModalMessage
+              mensagem={mensagemModal}
+              imagemSrc={imagemSrcModal}
+              mostrarModal={mostrarModal}
+              onClose={handleClose}
+             />
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10">
@@ -150,7 +281,7 @@ export default function RegisterAdm () {
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                    <div className="relative">
                       <label htmlFor='titulo' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Nome completo para a formatura</label>
+                          absolute">Nome para a formatura</label>
                       <input placeholder="Festa de formatura UFSC" 
                               type="text"
                               name='titulo'
@@ -159,6 +290,22 @@ export default function RegisterAdm () {
                               onChange={handleChange}
                               className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
                     </div>
+
+                    <div className="relative">
+                      <label htmlFor='descricao' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Descricao para a formatura</label>
+                          
+                      <textarea 
+                      onChange={handleChange}
+                      value={formData.descricao}
+                      name='descricao'
+                      id='descricao'
+                      className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md" 
+                      placeholder="Grupo de arrecadacao para formatura UFS...">
+
+                      </textarea>
+                    </div>
+
                     <div className="relative">
                       <label htmlFor='estado' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Estado</label>
@@ -233,7 +380,10 @@ export default function RegisterAdm () {
                   <div className="relative">
                       <label htmlFor='comprovanteMatricula' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Seu comprovante de matrícula</label>
-                        <input  className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}
+                         <input 
+                        onChange={handleFileChange}
+                        id='comprovanteMatricula'
+                        className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}
                         type='file'
                         />
                   </div>

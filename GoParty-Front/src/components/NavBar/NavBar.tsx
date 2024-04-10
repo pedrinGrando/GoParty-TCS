@@ -6,11 +6,11 @@ export const NavBar: React.FC = () => {
         <div>
         <nav className="bg-white -500 mb-[0px] fixed top-0 w-full z-50">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-                <a href="https://goparty.com/" className="flex items-center space-x-3 rtl:space-x-reverse">
+                <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
                 <div className="inline-block">
                     <img src="/imagens/Logo GoPartyIcon.webp" className="h-20" alt="GoParty Logo" />
                     </div>
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-black text-indigo-500 shadow-text">|  GoParty</span>
+                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-black text-black shadow-text">|  GoParty</span>
 
                 </a>
                 <button data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
