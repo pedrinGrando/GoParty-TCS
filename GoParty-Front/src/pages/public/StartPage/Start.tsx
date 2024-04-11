@@ -1,38 +1,69 @@
-import { Link } from "react-router-dom"
-import { NavBar } from "../../../components/NavBar/NavBar"
+import { useEffect, useState } from "react";
+import { NavBar } from "../../../components/NavBar/NavBar";
+import { ModalChoose } from "../../../components/modal/ModalChoose";
 
 export default function StartPage() {
    
+    const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+    const [mensagemModal, setMensagemModal] = useState<string>('');
+    const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
+
+    const handleClose = () => setMostrarModal(false);
+
+    const handleButtonClick = () =>{
+        setMostrarModal(true);
+        setMensagemModal('Seja bem vindo ao GoParty, Escolha seu cadastro!');
+        setImagemSrcModal('/imagens/choosePic.webp')
+    }
+
+    useEffect(() => {
+        if (mostrarModal) {
+          document.body.classList.add('overflow-hidden');
+        } else {
+          document.body.classList.remove('overflow-hidden');
+        }
+      }, [mostrarModal]);
+
      return (
-    <div>
 
-    <body>
-    <header>
-       <NavBar/>
-    </header>
+      <div>
+         {/* Modal de escolha*/}
+         <ModalChoose
+              mensagem={mensagemModal}
+              imagemSrc={imagemSrcModal}
+              mostrarModal={mostrarModal}
+              onClose={handleClose}
+             />
 
+        <body>
+        <header>
+        <NavBar/>
+        </header>
+      
     <section 
-    
+
     data-aos="fade-up"
     data-aos-delay="50"
     data-aos-duration="0"
-    className="bg-white">
-        <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+    className={`${mostrarModal ? 'backdrop-blur-lg' : ''}`}>
+    <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
             <div className="mr-auto place-self-center lg:col-span-7">
                 <h1 className="max-w-2xl mb-4 text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl dark:text-black">Festas e Formaturas</h1>
                 <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Eleve a experiência de seus eventos com ingressos personalizados e garanta uma formatura inesquecível com nosso apoio especializado. O GoParty é seu parceiro na criação e aquisição de ingressos exclusivos, facilitando o acesso a uma celebração memorável. Junte-se a nós e transforme momentos importantes em eventos extraordinários.</p>
-                <Link to='/register'>
-                <a className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
+               
+                <button onClick={handleButtonClick} className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
                     Comece a usar
                     <svg className="w-5 h-5 ml-2 -mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                </a>
-                </Link>
+                    </button>
+               
             </div>
             <div className=" hidden lg:mt-0 lg:col-span-5 lg:flex">
                 <img src="/imagens/EnjoyingPartyStartPage.webp" alt="mockup"/>
             </div>                
         </div>
     </section>
+
+   
 
     <section className="bg-gray-50 dark:bg-gray-800">
         <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">

@@ -96,7 +96,7 @@ public class AuthController {
             usuario.setSenha(password);
             //Momento de cadastro do usuário
             usuario.setDataCadastro(LocalDateTime.now());
-            service.cadastrarUsuario(usuario);
+            service.cadastrarUsuarioEstudante(usuario);
             return ResponseEntity.ok("Estudante cadastrado com sucesso!");
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar usuário.");

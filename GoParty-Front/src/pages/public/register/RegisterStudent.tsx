@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
 
@@ -21,6 +21,7 @@ export default function RegisterStudent(){
     const navigate = useNavigate();
     const [senhaNotEqual, setSenhaNotEqual] = useState(false);
     const [isEducational, setIsEducational] = useState(false);
+    const [mostrarModal, setMostrarModal] = useState<boolean>(false);
 
 
     const togglePasswordVisibility = () => {
@@ -47,6 +48,15 @@ export default function RegisterStudent(){
       
       return true;
     };
+
+    useEffect(() => {
+      if (mostrarModal) {
+        document.body.classList.add('overflow-hidden');
+      } else {
+        document.body.classList.remove('overflow-hidden');
+      }
+    }, [mostrarModal]);
+
 
     const handleCloseFooter = () => {
       setError(false); 
@@ -286,7 +296,7 @@ export default function RegisterStudent(){
                   data-aos="fade-down"
                   data-aos-delay="50"
                   data-aos-duration="0"
-                  src="/imagens/EnjoyingParty2.webp"
+                  src="/imagens/registerStudent.webp"
                   className="rounded mt-20 lg:mt-0"
                 />
               </div>

@@ -75,7 +75,7 @@ export default function Login(){
               localStorage.setItem('sessionUser', JSON.stringify(sessionUser)); 
   
               setIsLoading(false);
-              navigate('/type-your-code');
+              navigate('/home');
               console.log('Login efetuado com sucesso!');
           } else {
               setIsLoading(false);

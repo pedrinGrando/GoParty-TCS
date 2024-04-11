@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
 
@@ -20,6 +20,7 @@ export default function Register(){
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [senhaNotEqual, setSenhaNotEqual] = useState(false);
+    const [mostrarModal, setMostrarModal] = useState<boolean>(false);
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
@@ -49,6 +50,14 @@ export default function Register(){
     const handleCloseFooter = () => {
       setError(false); 
     };
+
+    useEffect(() => {
+      if (mostrarModal) {
+        document.body.classList.add('overflow-hidden');
+      } else {
+        document.body.classList.remove('overflow-hidden');
+      }
+    }, [mostrarModal]);
     
     const validateEmail = (email: string): boolean => {
       // Expressão regular para verificar se o e-mail é válido
