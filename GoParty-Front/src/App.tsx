@@ -22,6 +22,7 @@ import Login from './pages/public/login/Login';
 import Register from './pages/public/register/Register';
 import RegisterAdm from './pages/public/register/RegisterAdm';
 import RegisterStudent from './pages/public/register/RegisterStudent';
+import ChooseStep from './pages/public/register/ChooseStep';
 
 
 function App() {
@@ -50,6 +51,7 @@ function App() {
           <Route path='/about' element={<StartPage />} />
           <Route path='/reset-password-email' element={<ResetPassword />} />
           <Route path='/type-your-code' element={<TypeYourCode />} />
+          <Route path='/choose-account' element={<ChooseStep />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/register-student' element={<RegisterStudent />} />
