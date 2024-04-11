@@ -4,7 +4,6 @@ public enum TipoUsuario {
 
     USER("user"),
     ADM("adm"),
-    MEMBER("member"),
     TEAM("team"),
     STUDENT("student");
 
