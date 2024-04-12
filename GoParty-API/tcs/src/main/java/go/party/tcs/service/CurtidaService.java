@@ -26,13 +26,13 @@ public class CurtidaService {
 
     public void curtirEvento(Usuario usuario, Evento evento) {
 
-        if (evento != null && !this.usuarioJaCurtiuEvento(evento.getId(), usuario)) {
-                Curtida curtida = new Curtida();
-                curtida.setUsuario(usuario);
-                curtida.setEvento(evento);
+        // if (evento != null && !this.usuarioJaCurtiuEvento(evento.getId(), usuario)) {
+        //         Curtida curtida = new Curtida();
+        //         curtida.setUsuario(usuario);
+        //         curtida.setEvento(evento);
 
-                curtidaRepository.save(curtida);
-        }
+        //         curtidaRepository.save(curtida);
+        // }
     }
 
     
@@ -69,5 +69,4 @@ public class CurtidaService {
         return curtidaRepository.findAll();
     }
 
-   
 }

@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
@@ -32,11 +33,8 @@ public class EventoService {
     @Autowired CurtidaService curtidaService;
 
     public List<Evento> getAllEventos() {
-        return eventoRepository.findAll();
-    }
-
-    public void criarEvento(Evento evento, Model model){
-        eventoRepository.save(evento);
+        //Ordena pela data/horario da postagem
+        return eventoRepository.findAll(Sort.by(Sort.Direction.DESC, "dataPostagem"));
     }
 
     public void atualizarEvento(Evento evento){
@@ -44,7 +42,6 @@ public class EventoService {
     }
 
     public List<Evento> buscarEventosPorAutor(Integer userId) {
-        // Utilize o método personalizado do seu repositório para buscar eventos por autor
         return eventoRepository.findByAutorId(userId);
     }
 

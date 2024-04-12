@@ -1,6 +1,13 @@
 package go.party.tcs.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import go.party.tcs.Enums.TipoUsuario;
 import jakarta.persistence.Column;
@@ -10,7 +17,6 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,12 +29,12 @@ import lombok.NoArgsConstructor;
 @Builder
 @Entity
 @Table(name ="usuarios")
-public class Usuario {
+public class Usuario implements UserDetails {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "nome")
     private String nome;
@@ -48,51 +54,59 @@ public class Usuario {
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;
 
-    @Column(name = "cpf")
+    @Column(name = "cpf", unique = true, nullable = false)
     private String cpf;
 
-    @Column(name = "url")
-    private String url;
+    @Column(name = "fotoCaminho")
+    private String fotoCaminho;
+
+    @Column(name = "data_cadastro")
+    private LocalDateTime dataCadastro;
 
     @Column(name = "senha")
     private String senha;
 
-    @Lob
-    @Column(name = "fotoPerfil", columnDefinition = "LONGBLOB")
-    private byte[] fotoPerfil;
-
-    //SEGUIDORES E SEGUINDO
-    private int seguidores;
-
-    private int seguindo;
-
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private byte[] chavePrivada;
-
-    @Lob
-    @Column(columnDefinition = "BLOB")
-    private byte[] chavePublica;
-
-    public byte[] getChavePrivada() {
-        return chavePrivada;
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.tipoUsuario == TipoUsuario.TEAM) {
+            return List.of(new SimpleGrantedAuthority("ROLE_TEAM"));
+        }
+        if(this.tipoUsuario == TipoUsuario.ADM) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADM"));
+        }
+        else {
+            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+        }
     }
 
-    public void setChavePrivada(byte[] chavePrivada) {
-        this.chavePrivada = chavePrivada;
+    @Override
+    public String getUsername() {
+        return this.username;
     }
 
-    public byte[] getChavePublica() {
-        return chavePublica;
+    @Override
+    public String getPassword() {
+        return this.senha;
     }
 
-    public void setChavePublica(byte[] chavePublica) {
-        this.chavePublica = chavePublica;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
-    
-    //METODO PARA VERIFICAR SE EXISTE FOTO DE PERFIL
-    public boolean temImagemPerfil() {
-        return fotoPerfil != null && fotoPerfil.length > 0;
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
   
 }

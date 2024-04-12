@@ -3,11 +3,15 @@ interface Event {
     id: number;
     titulo: string;
     descricao: string;
+    eventoCaminho: string;
+    cep: string;
     estado: string;
+    valor: string;
     cidade: string ;
     bairro: string;
     foto: Blob | string;
-    date: Date;
+    dataEvento: Date;
+    dataPostagem: Date;
 }
 
 export default Event;

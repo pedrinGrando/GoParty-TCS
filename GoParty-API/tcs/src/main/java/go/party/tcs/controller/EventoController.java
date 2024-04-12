@@ -1,12 +1,17 @@
 package go.party.tcs.controller;
 
-import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -25,17 +30,21 @@ import go.party.tcs.model.Comentario;
 import go.party.tcs.model.Curtida;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Usuario;
+import go.party.tcs.repository.EventoRepository;
+import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EventoService;
 import go.party.tcs.service.NotificationService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/v1/eventos")
 @CrossOrigin(origins = "http://localhost:5173/") 
 public class EventoController {
+
+    @Autowired
+    private UsuarioRepository usuarioRepository;
     
     @Autowired
     private EventoService eventoService;
@@ -44,42 +53,62 @@ public class EventoController {
     private ComentarioService comentarioService;
 
     @Autowired
+    private EventoRepository eventoRepository;
+
+    @Autowired
     private CurtidaService curtidaService;
 
     @Autowired
     private NotificationService notificationService;
 
-    private Usuario usuarioLogado = new Usuario();
+    @Value("${file.upload-dir}")
+    private String uploadDir;
     
     // Método para Criar um Evento
+    @PostMapping("/criar-evento/{userId}")
+    public ResponseEntity<?> cadastrarEvento(@PathVariable Long userId, @RequestBody Evento evento) {
+        try {
 
-     @CrossOrigin(origins = "http://http:/localhost:5173/")   
-     @PostMapping("/criar-evento")
-    public ResponseEntity<String> criarEvento(@RequestParam("titulo") String titulo,
-                              @RequestParam("descricao") String descricao,
-                              @RequestParam("imagemEvento") MultipartFile imagemEvento,
-                              @RequestParam("estado") String estado,
-                              @RequestParam("cidade") String cidade,
-                              @RequestParam("bairro") String bairro,
-                              @RequestParam("valor") String valor,
-                              @RequestParam("horario") String horario,
-                              HttpSession session) throws IOException {
-
-        // Recupere o usuário da sessão
-        // chave "usuario"
-        Usuario usuario = (Usuario) session.getAttribute("usuario");
-        usuarioLogado = usuario;
-
-        if (!imagemEvento.isEmpty()) {
-            byte[] imagemBytes = imagemEvento.getBytes();
-           // evento.setFotoEvento(imagemBytes); 
+              //encontrar usuario que fez a postagem
+              Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+              if (!userOptional.isPresent()) {
+                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+              }
+ 
+              Usuario usuarioAutor = userOptional.get();
+              evento.setAutor(usuarioAutor);
+            //Momento da Postagem
+            evento.setDataPostagem(LocalDateTime.now());
+            Evento eventoSalvo = eventoRepository.save(evento);
+            return ResponseEntity.ok(Map.of("id", eventoSalvo.getId(), "mensagem", "Evento criado com sucesso"));
+        } catch (RuntimeException exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar evento.");
         }
-
-       // eventoService.criarEvento(evento, null);
-        return ResponseEntity.ok("Evento criado com sucesso");
     }
 
-    @CrossOrigin(origins = "http://http:/localhost:5173/") // Especifique aqui os domínios permitidos
+
+    @PostMapping("/upload-event-image/{eventoId}")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Long eventoId, @RequestParam("file") MultipartFile file) {
+        try {
+            Optional<Evento> eventoOpcional = eventoRepository.findById(eventoId);
+            if (!eventoOpcional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found");
+            }
+    
+            Evento evento = eventoOpcional.get();
+            String filename = eventoId + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, filename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+    
+            evento.setEventoCaminho("/uploads/" + filename);
+            eventoRepository.save(evento);
+    
+            return ResponseEntity.ok("Event image uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload event image");
+        }
+    }
+    
     @GetMapping("/buscar-eventos")
     public ResponseEntity<List<Evento>> getAllEvents() {
         List<Evento> events = eventoService.getAllEventos();
@@ -89,7 +118,7 @@ public class EventoController {
     @PostMapping("/comments/{eventoId}/comment")
     public ResponseEntity<String> criarComentario(@PathVariable Integer eventoId,
                                                    @RequestBody Comentario comentario,
-                                                   HttpSession session) {
+                                                    HttpSession session) {
         try {
             // Recupera o usuário da sessão
             Usuario usuario = (Usuario) session.getAttribute("usuario");
@@ -104,16 +133,8 @@ public class EventoController {
             // Salva o comentário no banco de dados
             comentarioService.save(comentario);
 
-            // NOTIFICAR O USUÀRIO
-            // Crie uma notificação
-            byte[] fotoPerfil = usuario.getFotoPerfil();
             String message = usuario.getUsername() + " fez um comentário no seu post: " + comentario.getTexto();
-            Integer userIdToNotify = evento.getAutor().getId();
-
-            if (userIdToNotify != usuario.getId()) {
-                notificationService.createNotification(message, userIdToNotify, fotoPerfil);
-            }
-
+          
             return ResponseEntity.ok("Comentário criado com sucesso.");
         } catch (Exception e) {
             e.printStackTrace();
@@ -121,61 +142,6 @@ public class EventoController {
         }
     }
 
-    
-    //Método para mostrar os eventos do Usuario no seu perfil
-    @GetMapping("/perfil")
-    public String mostrarPerfil(Model model, HttpSession session, HttpServletRequest request) {
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-
-        //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
-        int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
-        model.addAttribute("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
-
-        if (sessionUsuario != null) {
-            // Obtenha o ID do usuário da sessão
-            Integer userId = sessionUsuario.getId();
-
-            // Use o ID do usuário para buscar eventos criados por esse usuário no banco de dados
-            List<Evento> eventosDoUsuario = eventoService.buscarEventosPorAutor(userId);
-
-            // Adicione a lista de eventos ao modelo para exibição na página
-            model.addAttribute("eventos", eventosDoUsuario);
-
-            // ... outras atribuições ao modelo
-            model.addAttribute("sessionUsuario", sessionUsuario);
-            // ...
-
-            return "perfil";
-        } else {
-            // O usuário não está autenticado, redirecione para a página de login
-            return "redirect:/login";
-        }
-    }
-    
-    //Metodo para adicionar imagem no post Evento
-    @GetMapping("/evento-imagem/{eventoId}")
-    public ResponseEntity<byte[]> getImagemEvento(@PathVariable Integer eventoId) {
-        // Recupere os detalhes do evento com base no ID do evento
-        Evento evento = eventoService.encontrarPorId(eventoId);
-
-        // Verifique se o evento foi encontrado
-        if (evento != null) {
-            // Recupere a imagem do evento
-            byte[] imagemEvento = evento.getFotoEvento();
-
-            if (imagemEvento != null && imagemEvento.length > 0) {
-                // Defina os cabeçalhos de resposta
-                HttpHeaders headers = new HttpHeaders();
-                headers.setContentType(MediaType.IMAGE_JPEG); // ou MediaType.IMAGE_PNG, dependendo do tipo de imagem
-
-                // Retorna a imagem como uma resposta HTTP
-                return new ResponseEntity<>(imagemEvento, headers, HttpStatus.OK);
-            }
-        }
-
-        // Se o evento não for encontrado ou não tiver uma imagem, retorne uma resposta vazia ou um erro
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
 
     //Metodo para Excluir o Post Evento
     @DeleteMapping("/excluir-evento/{id}")
@@ -219,16 +185,7 @@ public class EventoController {
         if (novaDescricao != null && !novaDescricao.isEmpty()) {
             eventoNoBanco.setDescricao(novaDescricao);
         }
-        if (novaImagemEvento != null && !novaImagemEvento.isEmpty()) {
-            try {
-                // Lógica para salvar a nova imagem do evento no seu sistema de arquivos ou banco de dados.
-                byte[] novaImagemBytes = novaImagemEvento.getBytes();
-                eventoNoBanco.setFotoEvento(novaImagemBytes);;
-            } catch (IOException e) {
-                
-                e.printStackTrace();
-            }
-        }
+       
         // Passo 3: Atualize as alterações no banco de dados.
         eventoService.atualizarEvento(eventoNoBanco); 
 
@@ -244,13 +201,8 @@ public class EventoController {
         Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
         curtidaService.curtirEvento(sessionUsuario, evento);
         //Pega a Foto de perfil de quem fez a curtida
-        byte[] fotoPerfil = sessionUsuario.getFotoPerfil();
         String message = sessionUsuario.getUsername()+" curtiu a sua publicação: "+ evento.getTitulo();
-        Integer userIdToNotify =  evento.getAutor().getId();
-
-        if(userIdToNotify != sessionUsuario.getId()){
-            notificationService.createNotification(message, userIdToNotify, fotoPerfil);
-         }
+    
 
         return "redirect:/home";
     }

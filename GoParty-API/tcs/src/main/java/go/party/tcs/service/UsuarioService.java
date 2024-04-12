@@ -1,20 +1,14 @@
 package go.party.tcs.service;
 
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
-import go.party.tcs.config.RSAKeyGenerator;
+import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.UsuarioRepository;
-
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
@@ -23,23 +17,17 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public void cadastrarUsuario(Usuario usuario) throws java.security.NoSuchProviderException {
-       
-       try {
-            KeyPair keyPair = RSAKeyGenerator.generateKeyPair();
-            byte[] chavePublica = keyPair.getPublic().getEncoded();
-            byte[] chavePrivada = keyPair.getPrivate().getEncoded();
-
-            usuario.setChavePublica(chavePublica);
-            usuario.setChavePrivada(chavePrivada);
-
-             usuarioRepository.save(usuario);
-
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            // Trate exceções adequadamente
-            e.printStackTrace();
-        }
+    public void cadastrarUsuario(Usuario usuario) {
+          //Regra de permissao
+         usuario.setTipoUsuario(TipoUsuario.USER);
+         usuarioRepository.save(usuario);
     }
+
+    public void cadastrarUsuarioEstudante(Usuario usuario) {  
+        //Regra de permissao
+        usuario.setTipoUsuario(TipoUsuario.STUDENT);
+        usuarioRepository.save(usuario);
+       }
 
     public void atualizarUsuario(Usuario usuario){
         usuarioRepository.save(usuario);
@@ -51,19 +39,6 @@ public class UsuarioService {
     
     public Usuario findByUsuario(String usuarioNome){
         return usuarioRepository.findByNome(usuarioNome);
-    }
-
-    public Usuario findByUsername(String username){
-
-        Optional<Usuario> usuarioOptional = usuarioRepository.findByUsername(username);
-
-        Usuario usuario = usuarioOptional.get(); 
-
-        if (usuario != null && usuario.getUsername().equals(username)){
-            return usuario;
-        } else {
-            return null;
-        } 
     }
 
     public Usuario encontrarId(Integer userId){
@@ -104,10 +79,9 @@ public class UsuarioService {
     }
 
     public boolean checkUsernameExists(String username) {
-        // Verifica se o username existe no banco de dados
-        Optional<Usuario> userOptional = usuarioRepository.findByUsername(username);
-        return userOptional.isPresent();
+        return usuarioRepository.existsByUsername(username);
     }
+
    
 }
 

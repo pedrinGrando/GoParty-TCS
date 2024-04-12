@@ -1,29 +1,53 @@
 import { useState } from 'react';
-import MaskedInput from 'react-text-mask';
+import CurrencyInput from 'react-currency-input-field';
 import { RenderIf } from '../../../components/RenderIf/RenderIf';
 
 //Pages/components
-import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { Loading } from '../../../components/Loading/Loading';
+import { Sidebar } from '../../../components/sidebar/Sidebar';
+import { ModalMessage } from '../../../components/modal/ModalMessage';
+import ReactInputMask from 'react-input-mask';
 
-
-export default function RegisterAdm () {
+export default function PostEvent () {
 
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+    const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+    const [mensagemModal, setMensagemModal] = useState<string>('');
+    const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
+
+    const handleClose = () => setMostrarModal(false);
+
+    const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
+    const token = localStorage.getItem('token');
 
     const [formData, setFormData] = useState({
-        nome: '',
-        email: '',
-        username: '',
-        idade: '',
-        senha: '',
-        cpf: '',
-        fotoPerfil: null,
-        senhaConfirm: '',
-        senhaRegras: '',
+        titulo: '',
+        descricao: '',
+        estado: '',
+        dataPrevista: '',
+        cep: '',
+        valor: '',
+        cidade: '',
+        bairro: '',
+        rua: '',
+        fotoEvento: null
       });
+
+      const [errors, setErrors] = useState({
+        titulo: false,
+        descricao: false,
+        estado: false,
+        cep: false,
+        dataPrevista: false,
+        valor: false,
+        cidade: false,
+        bairro: false,
+        rua: false
+     });
 
       const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(e.target.checked);
@@ -35,6 +59,7 @@ export default function RegisterAdm () {
             const file = event.target.files[0]
             const imageURL = URL.createObjectURL(file)
             setImagePreview(imageURL)
+            setSelectedFile(file);
         }
     }
 
@@ -56,69 +81,261 @@ export default function RegisterAdm () {
                   [name]: value,
               });
         }
+
+        if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
+          buscarEndereco(value);
+        }
     };
+
+     //checar endereços por CEP (api ViaCEP)
+     const buscarEndereco = async (cep: string) => {
+      try {
+        const url = `https://viacep.com.br/ws/${cep}/json/`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Erro na requisição do CEP');
+        const data = await response.json();
+    
+        if (data.erro) {
+          console.error('CEP não encontrado.');
+          return;
+        }
+    
+        setFormData(prevState => ({
+          ...prevState,
+          cep
+        }));
+    
+        const { logradouro, bairro, localidade, uf } = data;
+        setFormData(prevState => ({
+          ...prevState,
+          rua: logradouro,
+          bairro: bairro,
+          cidade: localidade,
+          estado: uf
+        }));
+      } catch (error) {
+        console.error('Erro ao buscar CEP:', error);
+      }
+    };
+
+    const handleSubmit = async (event: any) => {
+      event.preventDefault();
+      setIsLoading(true);
+  
+      try {
+          const responseEvento = await fetch(`http://localhost:8081/v1/eventos/criar-evento/${user.principal.id}`, {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify(formData),
+          });
+  
+          const eventData = await responseEvento.json();
+  
+          if (responseEvento.ok) {
+              console.log("Evento criado com sucesso. ID:", eventData.id);
+  
+              if (selectedFile) {
+                  const formDataImage = new FormData();
+                  formDataImage.append('file', selectedFile);
+  
+                  const responseImage = await fetch(`http://localhost:8081/v1/eventos/upload-event-image/${eventData.id}`, {
+                      method: 'POST',
+                      headers: {
+                          'Authorization': `Bearer ${token}`,
+                      },
+                      body: formDataImage,
+                  });
+  
+                  if (responseImage.ok) {
+                      console.log("Imagem do evento enviada com sucesso.");
+
+                      setFormData({
+                        titulo: '',
+                        descricao: '',
+                        estado: '',
+                        dataPrevista: '',
+                        cep: '',
+                        valor: '',
+                        cidade: '',
+                        bairro: '',
+                        rua: '',
+                        fotoEvento: null
+                    });
+                    setMensagemModal("Evento criado com sucesso!");
+                    setImagemSrcModal("imagens/EventCreatedSucess.webp");
+                    setMostrarModal(true);
+                    setImagePreview('');
+                    setIsLoading(false);
+                  } else {
+                      console.error("Falha ao enviar imagem do evento.");
+                      setFormData({
+                        titulo: '',
+                        descricao: '',
+                        estado: '',
+                        dataPrevista: '',
+                        cep: '',
+                        valor: '',
+                        cidade: '',
+                        bairro: '',
+                        rua: '',
+                        fotoEvento: null
+                    });
+                    setImagePreview('');
+                    setIsLoading(false);
+                  }
+              }
+  
+              // Limpa o formulário após o envio bem-sucedido
+              setFormData({
+                  titulo: '',
+                  descricao: '',
+                  estado: '',
+                  dataPrevista: '',
+                  valor: '',
+                  cep: '',
+                  cidade: '',
+                  bairro: '',
+                  rua: '',
+                  fotoEvento: null
+              });
+              setImagePreview('');
+              setIsLoading(false);
+          } else {
+              setIsLoading(false);
+              console.error("Erro ao criar evento:", eventData.mensagem);
+          }
+      } catch (error) {
+          setIsLoading(false);
+          console.error("Erro na requisição:", error);
+      }
+  };
+  
 
     return (
 
    <div>
+    <form onSubmit={handleSubmit}>
        <div className="bg-white relative lg:py-20">
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                  <img src="/imagens/Lead Form.png" className="rounded btn- mb-[500px]"/>
+                <img src="/imagens/PostEvento.webp" className="rounded mb-100 sm:mb-20"/>
                 </div>
               </div>
+              {/* Modal de confirmação*/}
+              <ModalMessage
+              mensagem={mensagemModal}
+              imagemSrc={imagemSrcModal}
+              mostrarModal={mostrarModal}
+              onClose={handleClose}
+            />
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10">
-                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Preencha para se tornar GoParty ADM</p>
+                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Crie seu evento para o público</p>
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                    <div className="relative">
-                      <label htmlFor='nome' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Nome completo para a formatura</label>
-                      <input placeholder="Festa de  formatura UFSC" 
+                      <label htmlFor='titulo' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Título do evento</label>
+                      <input placeholder="Festa universitária" 
                               type="text"
-                              name='nome'
-                              id='nome'
+                              name='titulo'
+                              value={formData.titulo}
+                              id='titulo'
+                              onChange={handleChange}
+                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                    </div>
+
+                    <div className="relative">
+                      <label htmlFor='descricao' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Descricao para a formatura</label>
+                          
+                      <textarea 
+                      onChange={handleChange}
+                      value={formData.descricao}
+                      name='descricao'
+                      id='descricao'
+                      className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md" 
+                      placeholder="Grupo de arrecadacao para formatura UFS...">
+
+                      </textarea>
+                    </div>
+                    <div className="relative">
+                      <label htmlFor='cep' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">CEP</label>
+                      <ReactInputMask
+                        placeholder='CEP'
+                        mask="99999-999"
+                        value={formData.cep}
+                        onChange={handleChange}
+                        className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                        type="text"
+                        name="cep"
+                        id="cep"
+                      />
+                    </div>
+                    <div className="relative">
+                      <label htmlFor='cidade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Cidade</label>
+                      <input placeholder="Florianópolis" 
+                              type="text"
+                              name='cidade'
+                              value={formData.cidade}
+                              id='cidade'
+                              onChange={handleChange}
+                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                    </div>
+                    <div className="relative">
+                      <label htmlFor='bairro' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Bairro</label>
+                      <input placeholder="Capoeiras" 
+                              type="text"
+                              name='bairro'
+                              value={formData.bairro}
+                              id='bairro'
+                              onChange={handleChange}
+                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                    </div>
+                    <div className="relative">
+                      <label htmlFor='rua' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Rua</label>
+                      <input placeholder="Rua major costa 291" 
+                              type="text"
+                              value={formData.rua}
+                              name='rua'
+                              id='rua'
                               onChange={handleChange}
                               className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
                     </div>
                     <div></div>
                     <div className="relative">
-                      <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Meta de Arrecadação
+                      <label htmlFor='metaArrecad' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Valor do Ingresso
                           </label>
-                            <input 
+                          <CurrencyInput
                             placeholder="R$ 0,00"
-                            id='username'
-                            name='username'
-                            value={formData.username}
+                            id='valor'
+                            name='valor'
+                            value={formData.valor}
                             onChange={handleChange}
-                            type="number" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
-                     
+                            className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
+                          />
                     </div>
                     <div className="relative">
-                      <label htmlFor='idade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Data Prevista</label>
+                      <label htmlFor='dataPrevista' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Data do Evento</label>
                             <input 
                             placeholder="Data"
-                            id='idade'
-                            name='idade'
-                            value={formData.idade}
+                            id='dataPrevista'
+                            name='dataPrevista'
+                            value={formData.dataPrevista}
                             onChange={handleChange}
                             type="date" 
                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}/>
-                  </div>
-
-                  <div className="relative">
-                      <label htmlFor='idade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Seu comprovante de matrícula</label>
-                        <input  className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}
-                        type='file'
-                        />
                   </div>
                    
                     <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
@@ -132,7 +349,7 @@ export default function RegisterAdm () {
                                         </svg>
                                     </RenderIf>
                                     <div className='mt-2 flex text-sm leading-6 text-gray-600'>
-                                        <label htmlFor='fotoPerfil' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
+                                        <label htmlFor='fotoEvento' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
                                             
                                             <RenderIf condition={!imagePreview}>
                                                 <span>Foto para o evento</span>
@@ -142,7 +359,7 @@ export default function RegisterAdm () {
                                                 <img src={imagePreview} width={250} className='rounded-full' />
                                             </RenderIf>
 
-                                            <input accept="image/*" onChange={onFileUpload} id='fotoPerfil' name='fotoPerfil' type='file' className='sr-only' />
+                                            <input accept="image/*" onChange={onFileUpload} id='fotoEvento' name='fotoEvento' type='file' className='sr-only' />
                                         </label>
                                     </div>   
                                 </div>
@@ -196,22 +413,22 @@ export default function RegisterAdm () {
                            {isLoading ? (
                              <Loading/>
                             ) : (
-                              'Cadastrar'
+                              'Criar'
                             )}
                           </button>
                     </div>
 
                     {/* AQUI*/}
                     <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
-                    Já possui conta?
+                    Está esperando por aprovação?
                     <button className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
-                     Faça o login 
+                     ver meus pedidos
                    </button>
                    </p>
 
                     {/*AQUI*/}
                     <div className="w-full p-1 text-center">
-                        © 2023 Pedro e Caue direitos reservados
+                      © 2023 GoParty direitos reservados
                         <a className="text-white" href="https://tw-elements.com/"></a>
                     </div>
                    
@@ -281,8 +498,8 @@ export default function RegisterAdm () {
             </div>
           </div>
          <Sidebar/>
-        </div>      
+        </div>  
+        </form>    
       </div>
-
      )
 }

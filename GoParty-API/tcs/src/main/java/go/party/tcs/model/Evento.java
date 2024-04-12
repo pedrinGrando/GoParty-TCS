@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.cglib.core.Local;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,9 +13,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,13 +33,16 @@ public class Evento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "titulo")
     private String titulo;
 
     @Column(name = "descricao")
     private String descricao;
+
+    @Column(name = "cep")
+    private String cep;
 
     @Column(name = "estado")
     private String estado;
@@ -54,21 +59,23 @@ public class Evento {
     @Column(name = "data_evento")
     private LocalDateTime dataEvento;
 
+    @Column(name = "data_postagem")
+    private LocalDateTime dataPostagem;
+
     @ManyToOne
     @JoinColumn(name = "autor_id")
     private Usuario autor;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "formatura_id")
     private Formatura formatura;
-
-    @Lob
-    @Column(name = "foto_evento", columnDefinition = "LONGBLOB")
-    private byte[] fotoEvento;
 
     @ManyToOne
     @JoinColumn(name = "comentario_id")
     private Comentario comentario;
+
+    @Column(name = "eventoCaminho")
+    private String eventoCaminho;
 
     @OneToMany(mappedBy = "evento", cascade = CascadeType.ALL)
     private List<Comentario> comentarios = new ArrayList<>();

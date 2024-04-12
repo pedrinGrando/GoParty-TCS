@@ -74,10 +74,10 @@ public class NotificationService {
         // Certifique-se de que o usuário não é nulo.
         if (user != null) {
             // Encontre todas as notificações associadas a esse usuário.
-            List<Notification> userNotifications = notificationRepository.findByUserId(user.getId());
+            //List<Notification> userNotifications = notificationRepository.findByUserId(user.getId());
 
             // Apague as notificações encontradas.
-            notificationRepository.deleteAll(userNotifications);
+            //notificationRepository.deleteAll(userNotifications);
         }
     }
 
