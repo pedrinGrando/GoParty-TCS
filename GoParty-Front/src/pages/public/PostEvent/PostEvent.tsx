@@ -6,6 +6,7 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 import { Loading } from '../../../components/Loading/Loading';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { ModalMessage } from '../../../components/modal/ModalMessage';
+import ReactInputMask from 'react-input-mask';
 
 export default function PostEvent () {
 
@@ -28,6 +29,7 @@ export default function PostEvent () {
         descricao: '',
         estado: '',
         dataPrevista: '',
+        cep: '',
         valor: '',
         cidade: '',
         bairro: '',
@@ -39,6 +41,7 @@ export default function PostEvent () {
         titulo: false,
         descricao: false,
         estado: false,
+        cep: false,
         dataPrevista: false,
         valor: false,
         cidade: false,
@@ -78,6 +81,41 @@ export default function PostEvent () {
                   [name]: value,
               });
         }
+
+        if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
+          buscarEndereco(value);
+        }
+    };
+
+     //checar endereços por CEP (api ViaCEP)
+     const buscarEndereco = async (cep: string) => {
+      try {
+        const url = `https://viacep.com.br/ws/${cep}/json/`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Erro na requisição do CEP');
+        const data = await response.json();
+    
+        if (data.erro) {
+          console.error('CEP não encontrado.');
+          return;
+        }
+    
+        setFormData(prevState => ({
+          ...prevState,
+          cep
+        }));
+    
+        const { logradouro, bairro, localidade, uf } = data;
+        setFormData(prevState => ({
+          ...prevState,
+          rua: logradouro,
+          bairro: bairro,
+          cidade: localidade,
+          estado: uf
+        }));
+      } catch (error) {
+        console.error('Erro ao buscar CEP:', error);
+      }
     };
 
     const handleSubmit = async (event: any) => {
@@ -119,6 +157,7 @@ export default function PostEvent () {
                         descricao: '',
                         estado: '',
                         dataPrevista: '',
+                        cep: '',
                         valor: '',
                         cidade: '',
                         bairro: '',
@@ -137,6 +176,7 @@ export default function PostEvent () {
                         descricao: '',
                         estado: '',
                         dataPrevista: '',
+                        cep: '',
                         valor: '',
                         cidade: '',
                         bairro: '',
@@ -155,7 +195,7 @@ export default function PostEvent () {
                   estado: '',
                   dataPrevista: '',
                   valor: '',
-               
+                  cep: '',
                   cidade: '',
                   bairro: '',
                   rua: '',
@@ -226,15 +266,17 @@ export default function PostEvent () {
                       </textarea>
                     </div>
                     <div className="relative">
-                      <label htmlFor='estado' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Estado</label>
-                      <input placeholder="Santa Catarina" 
-                              type="text"
-                              name='estado'
-                              value={formData.estado}
-                              id='estado'
-                              onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                      <label htmlFor='cep' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">CEP</label>
+                      <ReactInputMask
+                        placeholder='CEP'
+                        mask="99999-999"
+                        value={formData.cep}
+                        onChange={handleChange}
+                        className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                        type="text"
+                        name="cep"
+                        id="cep"
+                      />
                     </div>
                     <div className="relative">
                       <label htmlFor='cidade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600

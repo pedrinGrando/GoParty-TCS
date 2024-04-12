@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import { RenderIf } from '../../../components/RenderIf/RenderIf';
+import InputMask from 'react-input-mask';
 
 //Pages/components
 import { Loading } from '../../../components/Loading/Loading';
@@ -31,6 +32,7 @@ export default function RegisterAdm () {
         estado: '',
         dataPrevista: '',
         metaArrecad: '',
+        cep: '',
         cidade: '',
         bairro: '',
         rua: '',
@@ -41,6 +43,7 @@ export default function RegisterAdm () {
         titulo: false,
         descricao: false,
         estado: false,
+        cep: false,
         dataPrevista: false,
         metaArrecad: false,
         cidade: false,
@@ -86,8 +89,43 @@ export default function RegisterAdm () {
                   [name]: value,
               });
         }
+
+        if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
+          buscarEndereco(value);
+        }
     };
 
+    //checar endereços por CEP (api ViaCEP)
+    const buscarEndereco = async (cep: string) => {
+      try {
+        const url = `https://viacep.com.br/ws/${cep}/json/`;
+        const response = await fetch(url);
+        if (!response.ok) throw new Error('Erro na requisição do CEP');
+        const data = await response.json();
+    
+        if (data.erro) {
+          console.error('CEP não encontrado.');
+          return;
+        }
+    
+        setFormData(prevState => ({
+          ...prevState,
+          cep
+        }));
+    
+        const { logradouro, bairro, localidade, uf } = data;
+        setFormData(prevState => ({
+          ...prevState,
+          rua: logradouro,
+          bairro: bairro,
+          cidade: localidade,
+          estado: uf
+        }));
+      } catch (error) {
+        console.error('Erro ao buscar CEP:', error);
+      }
+    };
+    
     const handleSubmit = async (event: any) => {
       event.preventDefault();
       setIsLoading(true);
@@ -98,6 +136,7 @@ export default function RegisterAdm () {
         estado: formData.estado.trim() === '',
         cidade: formData.cidade.trim() === '',
         rua: formData.rua.trim() === '',
+        cep: formData.cep.trim() === '',
         bairro: formData.bairro.trim() === '',
         dataPrevista: formData.dataPrevista.trim() === '',
         metaArrecad: formData.metaArrecad.trim() === '',
@@ -147,6 +186,7 @@ export default function RegisterAdm () {
                       estado: '',
                       dataPrevista: '',
                       metaArrecad: '',
+                      cep: '',
                       cidade: '',
                       bairro: '',
                       rua: '',
@@ -162,6 +202,7 @@ export default function RegisterAdm () {
                       estado: '',
                       dataPrevista: '',
                       metaArrecad: '',
+                      cep: '',
                       cidade: '',
                       bairro: '',
                       rua: '',
@@ -171,60 +212,6 @@ export default function RegisterAdm () {
                   setIsLoading(false);
                 }
             }
-
-            if (selectedFileMatri) {
-
-              const formDataPdf = new FormData();
-              formDataPdf.append('file', selectedFileMatri);
-              const uploadMatriculaUrl = `http://localhost:8081/v1/fomaturas/upload-matricula-pdf/${formaturaData.id}`;
-        
-              const responsePdf = await fetch(uploadMatriculaUrl, {
-                method: 'POST',
-                headers: {
-                  'Authorization': `Bearer ${token}`,
-                },
-                body: formDataPdf,
-              });
-        
-              if (responsePdf.ok) {
-                console.log("Comprovante de matrícula enviado com sucesso.");
-
-                setFormData({
-                  titulo: '',
-                  descricao: '',
-                  estado: '',
-                  dataPrevista: '',
-                  metaArrecad: '',
-                  cidade: '',
-                  bairro: '',
-                  rua: '',
-                  fotoFormatura: null
-              });
-
-              setMensagemModal("Solicitação para ser um GoParty ADM foi realizada com sucesso!");
-              setImagemSrcModal("imagens/SolicitMadePic.webp");
-              setMostrarModal(true);
-              setImagePreview('');
-              setIsLoading(false);
-              } else {
-                console.error("Falha ao enviar comprovante de matrícula.");
-                
-                setFormData({
-                  titulo: '',
-                  descricao: '',
-                  estado: '',
-                  dataPrevista: '',
-                  metaArrecad: '',
-                  cidade: '',
-                  bairro: '',
-                  rua: '',
-                  fotoFormatura: null
-              });
-              
-              setImagePreview('');
-              setIsLoading(false);
-              }
-            }
   
             // Limpa o formulário após o envio bem-sucedido
             setFormData({
@@ -233,6 +220,7 @@ export default function RegisterAdm () {
               estado: '',
               dataPrevista: '',
               metaArrecad: '',
+              cep: '',
               cidade: '',
               bairro: '',
               rua: '',
@@ -287,7 +275,7 @@ export default function RegisterAdm () {
                       <input placeholder="Festa de formatura UFSC" 
                               type="text"
                               name='titulo'
-                              value={formData.titulo}
+                              value={formData.titulo} 
                               id='titulo'
                               onChange={handleChange}
                               className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
@@ -307,17 +295,18 @@ export default function RegisterAdm () {
 
                       </textarea>
                     </div>
-
                     <div className="relative">
-                      <label htmlFor='estado' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Estado</label>
-                      <input placeholder="Santa Catarina" 
-                              type="text"
-                              name='estado'
-                              value={formData.estado}
-                              id='estado'
-                              onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                      <label htmlFor='cep' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">CEP</label>
+                      <InputMask
+                        placeholder='CEP'
+                        mask="99999-999"
+                        value={formData.cep}
+                        onChange={handleChange}
+                        className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                        type="text"
+                        name="cep"
+                        id="cep"
+                      />
                     </div>
                     <div className="relative">
                       <label htmlFor='cidade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -377,17 +366,6 @@ export default function RegisterAdm () {
                             onChange={handleChange}
                             type="date" 
                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}/>
-                  </div>
-
-                  <div className="relative">
-                      <label htmlFor='comprovanteMatricula' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Seu comprovante de matrícula</label>
-                         <input 
-                        onChange={handleFileChange}
-                        id='comprovanteMatricula'
-                        className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}
-                        type='file'
-                        />
                   </div>
                    
                     <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
