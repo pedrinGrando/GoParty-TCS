@@ -109,8 +109,6 @@ public class EventoController {
         }
     }
     
-
-    @CrossOrigin(origins = "http://http:/localhost:5173/") 
     @GetMapping("/buscar-eventos")
     public ResponseEntity<List<Evento>> getAllEvents() {
         List<Evento> events = eventoService.getAllEventos();

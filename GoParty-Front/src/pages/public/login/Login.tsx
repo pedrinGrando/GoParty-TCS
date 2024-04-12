@@ -74,8 +74,8 @@ export default function Login(){
               localStorage.setItem('token', token); 
               localStorage.setItem('sessionUser', JSON.stringify(sessionUser)); 
   
-              setIsLoading(false);
               navigate('/home');
+              setIsLoading(false);
               console.log('Login efetuado com sucesso!');
           } else {
               setIsLoading(false);

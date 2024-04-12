@@ -10,7 +10,7 @@ import { Sidebar } from '../../../components/sidebar/Sidebar';
 import Event from '../../../types/Event';
 
 export default function Home () {
-    const { user } = useUser();
+
     const [events, setEvents] = useState<Event[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -25,6 +25,7 @@ export default function Home () {
                 }
                 setIsLoading(false)
                 const data = await response.json();
+                console.log(data);
                 setEvents(data);
             } catch (error) {
                 console.error(error);

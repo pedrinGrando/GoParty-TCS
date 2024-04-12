@@ -31,6 +31,7 @@ import jakarta.mail.MessagingException;
 
 @RestController
 @RequestMapping("/v1/auth") 
+
 public class AuthController {
 
     @Autowired
@@ -50,6 +51,8 @@ public class AuthController {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
+
+    private Usuario usuarioValidarCadastro;
 
     private String codigoGeradoEmail;
 
@@ -71,21 +74,46 @@ public class AuthController {
     }
 
     @PostMapping("/cadastro")
-    public ResponseEntity<String> cadastrarUsuario(@RequestBody Usuario usuario) {
+    public ResponseEntity<String> cadastrarUsuario(@RequestBody Usuario usuario) throws MessagingException{
         try {
             String password = new BCryptPasswordEncoder().encode(usuario.getSenha());
             usuario.setSenha(password);
             //Momento de cadastro do user
             usuario.setDataCadastro(LocalDateTime.now());
-            service.cadastrarUsuario(usuario);
-            return  ResponseEntity.ok("Usuario cadastrado com sucesso!");
+            usuarioValidarCadastro = usuario;
+
+            //Validar o cadastro
+            emailUsuario = usuarioValidarCadastro.getEmail();
+            codigoGeradoEmail = gerarCodigoRecuperacao();
+            String assunto = "Olá "+ usuarioValidarCadastro.getUsername() + " bem vindo ao GoParty";
+            String mensagem = "Use o código a seguir para validar sua conta: " + codigoGeradoEmail;
+            emailService.sendEmailToClient(emailUsuario, assunto, mensagem);
+
+            return  ResponseEntity.ok("Validacao solicitada com sucesso!");
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar usuário.");
         }
     }
 
+    //Verificação para troca de senha
+    @GetMapping("/validar-email-cadastro")
+    public ResponseEntity<String> validarEmailCadastro(@RequestParam String codigoDigitado) throws MessagingException {
+
+       if(codigoDigitado.equals(codigoGeradoEmail)){
+           if(!isEmailEducacional(usuarioValidarCadastro.getEmail())){
+                service.cadastrarUsuario(usuarioValidarCadastro);
+                return ResponseEntity.ok("Usuario cadastrado com sucesso!");
+           } else {
+                 service.cadastrarUsuarioEstudante(usuarioValidarCadastro);
+                 return ResponseEntity.ok("Usuario cadastrado com sucesso!");
+           }  
+       } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Codigo Invalido!");
+       }
+    }
+
     @PostMapping("/cadastro-usuario-estudante")
-    public ResponseEntity<String> cadastrarUsuarioEstudante(@RequestBody Usuario usuario) {
+    public ResponseEntity<String> cadastrarUsuarioEstudante(@RequestBody Usuario usuario) throws MessagingException {
         try {
             // Verifica se o e-mail é educacional
             if (!isEmailEducacional(usuario.getEmail())) {
@@ -96,8 +124,16 @@ public class AuthController {
             usuario.setSenha(password);
             //Momento de cadastro do usuário
             usuario.setDataCadastro(LocalDateTime.now());
-            service.cadastrarUsuarioEstudante(usuario);
-            return ResponseEntity.ok("Estudante cadastrado com sucesso!");
+            usuarioValidarCadastro = usuario;
+
+            //Validar o cadastro
+            emailUsuario = usuarioValidarCadastro.getEmail();
+            codigoGeradoEmail = gerarCodigoRecuperacao();
+            String assunto = "Olá "+ usuarioValidarCadastro.getUsername() + " bem vindo ao GoParty";
+            String mensagem = "Use o código a seguir para validar sua conta: " + codigoGeradoEmail;
+            emailService.sendEmailToClient(emailUsuario, assunto, mensagem);
+         
+            return ResponseEntity.ok("Validacao solicitada com sucesso!");
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar usuário.");
         }
@@ -134,7 +170,7 @@ public class AuthController {
     public ResponseEntity<String> verificarCodigoDigitado(@RequestParam String codigoDigitado) throws MessagingException {
 
         if (codigoDigitado.equals(codigoGeradoEmail)){
-            return ResponseEntity.ok("codigo verificado com sucessoQ!");
+            return ResponseEntity.ok("codigo verificado com sucesso!");
         } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("Código digitado incorreto!");
         }
@@ -144,13 +180,13 @@ public class AuthController {
 
     //Troca de Senha
     @PostMapping("/change-password")
-    public ResponseEntity<String> trocaDeSenha(@RequestParam String novaSenha) throws MessagingException {
+    public ResponseEntity<String> trocaDeSenha(@RequestParam String senha) throws MessagingException {
 
         Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(emailUsuario);
 
         if (usuarioOptional.isPresent()){
             Usuario usuario = usuarioOptional.get();
-            String novaSenhaEncode = passwordEncoder.encode(novaSenha);
+            String novaSenhaEncode = passwordEncoder.encode(senha);
             usuario.setSenha(novaSenhaEncode);
             usuarioRepository.save(usuario);
             return ResponseEntity.ok("Senha alterada com sucesso!");
@@ -172,6 +208,5 @@ public class AuthController {
         }
         return codigo.toString();
     }
-
 
 }
