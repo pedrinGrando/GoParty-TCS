@@ -13,7 +13,6 @@ import Messages from './pages/public/Mensagens/Mensagens';
 import Notifications from './pages/public/Notifications/Notifications';
 import PostEvent from './pages/public/PostEvent/PostEvent';
 import Profile from './pages/public/Profile/Profile';
-import RegisterAdm from './pages/public/RegisterAdm/RegisterAdm';
 import ResetPassword from './pages/public/ResetPassword/ResetPassword';
 import TypeYourCode from './pages/public/ResetPassword/TypeYourCode';
 import StartPage from './pages/public/StartPage/Start';
@@ -21,6 +20,10 @@ import Tickets from './pages/public/Tickets/Tickets';
 import Home from './pages/public/home/Home';
 import Login from './pages/public/login/Login';
 import Register from './pages/public/register/Register';
+import RegisterAdm from './pages/public/register/RegisterAdm';
+import RegisterStudent from './pages/public/register/RegisterStudent';
+import ChangePassword from './pages/public/ResetPassword/ChangePassword';
+
 
 function App() {
 
@@ -44,19 +47,25 @@ function App() {
     <Router>
       <UserProvider>
         <Routes>
+         {/*Public pages*/}  
           <Route path='/' element={<StartPage />} />
           <Route path='/about' element={<StartPage />} />
-          <Route path='/reset-password-email' element={<ResetPassword />} />
-          <Route path='/type-your-code' element={<TypeYourCode />} />
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
+          <Route path='/register-student' element={<RegisterStudent />} />
+
+          {/* Reset Password Page */} 
+          <Route path='/reset-password-email' element={<ResetPassword />} />
+          <Route path='/type-your-code' element={<TypeYourCode />} />
+          <Route path='/change-password' element={<ChangePassword/>} />
+          
+          {/* Private Pages */} 
           <Route path='/home' element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
           <Route path='/explore' element={isAuthenticated() ? <Explore /> : <Navigate to="/login" />} />
           <Route path='/register-adm' element={isAuthenticated() ? <RegisterAdm /> : <Navigate to="/login" />} />
           <Route path='/account-config' element={isAuthenticated() ? <Configs /> : <Navigate to="/login" />} />
           <Route path='/your-groups' element={isAuthenticated() ? <Groups /> : <Navigate to="/login" />} />
           <Route path='/your-tickets' element={isAuthenticated() ? <Tickets /> : <Navigate to="/login" />} />
-          <Route path='/your-messages' element={isAuthenticated() ? <Messages /> : <Navigate to="/login" />} />
           <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />
           <Route path='/create-event' element={isAuthenticated() ? <PostEvent /> : <Navigate to="/login" />} />  

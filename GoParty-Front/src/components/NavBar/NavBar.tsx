@@ -1,9 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { ModalChoose } from "../modal/ModalChoose";
 
 export const NavBar: React.FC = () => {
+ 
+    const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+    const [mensagemModal, setMensagemModal] = useState<string>('');
+    const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
+
+    const handleClose = () => setMostrarModal(false);
+
+    const handleButtonClick = () =>{
+        setMostrarModal(true);
+        setMensagemModal('Olá novamente, Mude seu cadastro!');
+        setImagemSrcModal('/imagens/choosePic.webp')
+    }
+
     return (
         <div>
+             {/* Modal de escolha*/}
+         <ModalChoose
+              mensagem={mensagemModal}
+              imagemSrc={imagemSrcModal}
+              mostrarModal={mostrarModal}
+              onClose={handleClose}
+             />
         <nav className="bg-white -500 mb-[0px] fixed top-0 w-full z-50">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
@@ -25,12 +46,17 @@ export const NavBar: React.FC = () => {
                             <Link to='/about'>
                             <a href="#" className="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-black md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent">Sobre</a>
                             </Link>
-                        </li>
+                        </li>                       
                         <li>
-                            <a href="#" className="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-black md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent">Serviços</a>
+                           <button type="button" onClick={handleButtonClick} className={location.pathname === '/register-student' ? 'block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-black md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent"' : 'block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-black md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent"'}>Comece</button>
                         </li>
                         <li>
                             <a href="#" className="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-black md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent">Suporte</a>
+                        </li>
+                        <li>
+                            <Link to='/login'>
+                            <button type="button" className="mb-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button>
+                            </Link>
                         </li>
                     </ul>
                 </div>

@@ -41,6 +41,9 @@ public class Evento {
     @Column(name = "descricao")
     private String descricao;
 
+    @Column(name = "cep")
+    private String cep;
+
     @Column(name = "estado")
     private String estado;
 

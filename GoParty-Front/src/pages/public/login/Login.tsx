@@ -74,8 +74,8 @@ export default function Login(){
               localStorage.setItem('token', token); 
               localStorage.setItem('sessionUser', JSON.stringify(sessionUser)); 
   
+              navigate('/home');
               setIsLoading(false);
-              navigate('/type-your-code');
               console.log('Login efetuado com sucesso!');
           } else {
               setIsLoading(false);
@@ -106,7 +106,7 @@ export default function Login(){
                   data-aos="fade-up"
                   data-aos-delay="50"
                   data-aos-duration="0"
-                src="/imagens/enjoyingParty.png" className="rounded mt-20 lg:mt-0"/>
+                 src="/imagens/enjoyingParty.png" className="rounded mt-20 lg:mt-0"/>
                 
                 </div>
               </div>

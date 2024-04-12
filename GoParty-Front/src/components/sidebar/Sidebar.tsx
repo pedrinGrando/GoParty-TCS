@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
+import { ModalLogout } from "../modal/ModalLogout";
 
 interface SidebarProps {
   userName?: string
@@ -9,6 +10,9 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
 
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
+    const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+
+   const handleClose = () => setMostrarModal(false);
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
@@ -16,8 +20,18 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
     const toggleSidebar = () => {
       setIsOpen(!isOpen);
     }
+
+    const handleLogout = () =>{
+      setMostrarModal(true);
+    }
+
   
     return (
+      <div>
+        <ModalLogout
+        mostrarModal={mostrarModal}
+        onClose={handleClose}
+        />
       <div className="min-h-screen flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
        <div className={`fixed flex flex-col top-0 left-0 w-64 bg-white h-full border-r transition-all duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`} style={{ zIndex: 999 }}> {/* Adicionando estilo zIndex */}
         <div className="flex items-center justify-center h-14">
@@ -92,7 +106,7 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
               </li>
              )}
 
-             {user?.principal.tipoUsuario === 'USER' && (
+             {user?.principal.tipoUsuario === 'STUDENT' && (
               <li>
                 <Link to='/register-adm'>
                 <div className={location.pathname === '/register-adm' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6"' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"'}>
@@ -143,7 +157,7 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
               </li>
               <li>
                 <Link to='/your-profile'>
-                <div className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
+                <div className={location.pathname === '/your-profile' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6"' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"'}>
                   <span className="inline-flex justify-center items-center ml-4">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
                   </span>
@@ -165,14 +179,16 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
                 </Link>
               </li>
               <li>
-              <Link to="/login">
-                <a href="#" className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6">
+             
+             {/* Ao fazer o logout */}
+
+             <div onClick={handleLogout} className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6 cursor-pointer">
                   <span className="inline-flex justify-center items-center ml-4">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">Sair</span>
-                </a>
-                </Link>
+                </div>
+               
               </li>
               <li>
          <footer className="shadow dark:bg-gray-300 rounded m-4">
@@ -222,6 +238,6 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
         <span className="sr-only">{isOpen ? 'Close sidebar' : 'Open sidebar'}</span>
       </button>
       </div>
-      
+      </div>
     )
   }

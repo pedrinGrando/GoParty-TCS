@@ -8,7 +8,7 @@ import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 
-export default function Register(){
+export default function RegisterStudent(){
 
     const [isLoading, setIsLoading] = useState(false);
     const [isChecked, setIsChecked] = useState(false);
@@ -20,7 +20,9 @@ export default function Register(){
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [senhaNotEqual, setSenhaNotEqual] = useState(false);
+    const [isEducational, setIsEducational] = useState(false);
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
@@ -47,10 +49,6 @@ export default function Register(){
       return true;
     };
 
-    const handleCloseFooter = () => {
-      setError(false); 
-    };
-
     useEffect(() => {
       if (mostrarModal) {
         document.body.classList.add('overflow-hidden');
@@ -58,12 +56,16 @@ export default function Register(){
         document.body.classList.remove('overflow-hidden');
       }
     }, [mostrarModal]);
-    
-    const validateEmail = (email: string): boolean => {
-      // Expressão regular para verificar se o e-mail é válido
-      const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      return emailRegex.test(email);
+
+
+    const handleCloseFooter = () => {
+      setError(false); 
     };
+
+    function isEmailEducational(email: string): boolean {
+        const educationalDomains = ['.edu', '.edu.br', '@alunos']; 
+        return educationalDomains.some(domain => email.endsWith(domain));
+      }
 
     const handleBlurUserName = async () => {
 
@@ -93,7 +95,6 @@ export default function Register(){
 
     const handleBlur = async () => {
       setIsLoading(false);
-      setIsValidEmail(validateEmail(formData.email));
 
       if (formData.email.trim() === "") {
         setError(true);
@@ -159,6 +160,10 @@ export default function Register(){
           });
 
         }
+
+        if (name === 'email') {
+            setIsEducational(isEmailEducational(value)) ;
+          }
       
           if (type === 'file' && event.target instanceof HTMLInputElement) {
               const file = event.target.files && event.target.files[0];
@@ -232,7 +237,7 @@ export default function Register(){
      }
 
         try {
-          const response = await fetch('http://localhost:8081/v1/auth/cadastro', {
+          const response = await fetch('http://localhost:8081/v1/auth/cadastro-usuario-estudante', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -281,9 +286,9 @@ export default function Register(){
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
             <div 
-            data-aos="fade-left"
-            data-aos-delay="50"
-            data-aos-duration="0"
+              data-aos="fade-right"
+              data-aos-delay="50"
+              data-aos-duration="0"
             className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
               <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
@@ -291,7 +296,7 @@ export default function Register(){
                   data-aos="fade-down"
                   data-aos-delay="50"
                   data-aos-duration="0"
-                  src="/imagens/EnjoyingParty2.webp"
+                  src="/imagens/registerStudent.webp"
                   className="rounded mt-20 lg:mt-0"
                 />
               </div>
@@ -300,7 +305,7 @@ export default function Register(){
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10">
-                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Crie uma nova conta</p>
+                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Cadastre-se como Estudante</p>
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                     <div className="relative">
                       <label htmlFor='nome' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -315,9 +320,9 @@ export default function Register(){
                     </div>
                     <div className="relative">
                       <label htmlFor='email' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">E-mail</label>
+                          absolute">E-mail institucional</label>
                             <input 
-                            placeholder="Seu E-mail"
+                            placeholder="Seu E-mail institucional"
                             id='email'
                             name='email'
                             value={formData.email}
@@ -327,6 +332,7 @@ export default function Register(){
                       className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.email
                     || !isValidEmail || !isEmailUnique  ? 'border-red-500' : ''}`}/>
                    {!isValidEmail && <p style={{ color: 'red' }}>Por favor, insira um e-mail válido.</p>}
+                   {!isEducational && <p style={{ color: 'red' }}>Por favor, insira um e-mail institucional.</p>}
                    {!isEmailUnique && <p style={{ color: 'red' }}>Este e-mail já está cadastrado no GoParty!</p>}
                     </div>
                     <div className="relative">

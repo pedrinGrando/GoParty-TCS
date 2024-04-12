@@ -38,40 +38,29 @@ export default function TypeYourCode () {
         }
     
         try {
-            const response = await fetch('http://localhost:8081/v1/usuarios/check-email', {
-                method: 'POST',
+          const response = await fetch(`http://localhost:8081/v1/auth/check-code?codigoDigitado=${encodeURIComponent(formData.codigoDigitado)}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    codigoDigitado: formData.codigoDigitado
-                }),
             });
     
             if (response.ok) {
-                // Login bem sucedido
-                const data = await response.json(); 
-                const token = data.token; 
-                const sessionUser = data.usuario; 
-    
-                console.log(token);
-                localStorage.setItem('token', token); 
-                localStorage.setItem('sessionUser', JSON.stringify(sessionUser)); 
-    
+                // Codigo Validado  
                 setIsLoading(false);
-                navigate('/reset-password');
-                console.log('Login efetuado com sucesso!');
+                navigate('/change-password');
+                console.log('Codigo validado com sucesso!');
             } else {
                 setIsLoading(false);
-                setMessage("Usuário ou senha inválidos!");
+                setMessage("Codigo digitado invalido!");
                 setError(true);
-                console.error('Erro ao efetuar o login:', response.statusText);
+                console.error('Erro ao validar o codigo:', response.statusText);
             }
         } catch (error) {
             setIsLoading(false);
-            setMessage("Usuário ou senha inválidos!");
+            setMessage("Codigo digitado invalido!");
             setError(true);
-            console.error('Erro ao efetuar o login:', error);
+            console.error('Erro ao validar o codigo:', error);
         }
     };
 
@@ -122,7 +111,7 @@ export default function TypeYourCode () {
                      {isLoading ? (
                          <Loading/>
                     ) : (
-                      'Entrar'
+                      'Verificar'
                     )}
                       </button>
                 </div>

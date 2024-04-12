@@ -50,7 +50,7 @@ export default function Notifications () {
                         {notifications.length === 0 ? (
                            //Notificacao exemplo
 
-                            <div className="flex justify-center my-8"> 
+                            <div className="flex justify-center my-8">
                                 <div id="toast-notification" className="w-full max-w-xs p-4 text-gray-900 bg-white rounded-lg shadow dark:bg-white dark:text-black" role="alert">
                                     <div className="flex items-center mb-3">
                                         <span className="mb-1 text-sm font-semibold text-gray-900 dark:text-black">New notification</span>

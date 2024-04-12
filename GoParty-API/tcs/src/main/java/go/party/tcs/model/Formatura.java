@@ -49,6 +49,9 @@ public class Formatura {
     @Column(name = "bairro")
     private String bairro;
 
+    @Column(name = "cep")
+    private String cep;
+
     @Column(name = "meta_arrecad")
     private String metaArrecad;
 

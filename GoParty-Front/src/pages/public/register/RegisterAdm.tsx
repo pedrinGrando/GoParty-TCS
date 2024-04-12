@@ -1,19 +1,21 @@
 import { useState } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import { RenderIf } from '../../../components/RenderIf/RenderIf';
+import InputMask from 'react-input-mask';
 
 //Pages/components
 import { Loading } from '../../../components/Loading/Loading';
-import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { ModalMessage } from '../../../components/modal/ModalMessage';
-import ReactInputMask from 'react-input-mask';
+import { Sidebar } from '../../../components/sidebar/Sidebar';
 
-export default function PostEvent () {
+
+export default function RegisterAdm () {
 
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [selectedFileMatri, setSelectedFileMatri] = useState<File | null>(null);
 
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
     const [mensagemModal, setMensagemModal] = useState<string>('');
@@ -29,12 +31,12 @@ export default function PostEvent () {
         descricao: '',
         estado: '',
         dataPrevista: '',
+        metaArrecad: '',
         cep: '',
-        valor: '',
         cidade: '',
         bairro: '',
         rua: '',
-        fotoEvento: null
+        fotoFormatura: null
       });
 
       const [errors, setErrors] = useState({
@@ -43,7 +45,7 @@ export default function PostEvent () {
         estado: false,
         cep: false,
         dataPrevista: false,
-        valor: false,
+        metaArrecad: false,
         cidade: false,
         bairro: false,
         rua: false
@@ -62,6 +64,12 @@ export default function PostEvent () {
             setSelectedFile(file);
         }
     }
+
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files && event.target.files.length > 0) {
+        setSelectedFileMatri(event.target.files[0]); 
+      }
+    };
 
       const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = event.target;
@@ -87,8 +95,8 @@ export default function PostEvent () {
         }
     };
 
-     //checar endereços por CEP (api ViaCEP)
-     const buscarEndereco = async (cep: string) => {
+    //checar endereços por CEP (api ViaCEP)
+    const buscarEndereco = async (cep: string) => {
       try {
         const url = `https://viacep.com.br/ws/${cep}/json/`;
         const response = await fetch(url);
@@ -117,135 +125,157 @@ export default function PostEvent () {
         console.error('Erro ao buscar CEP:', error);
       }
     };
-
+    
     const handleSubmit = async (event: any) => {
       event.preventDefault();
       setIsLoading(true);
-  
-      try {
-          const responseEvento = await fetch(`http://localhost:8081/v1/eventos/criar-evento/${user.principal.id}`, {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`,
-              },
-              body: JSON.stringify(formData),
-          });
-  
-          const eventData = await responseEvento.json();
-  
-          if (responseEvento.ok) {
-              console.log("Evento criado com sucesso. ID:", eventData.id);
-  
-              if (selectedFile) {
-                  const formDataImage = new FormData();
-                  formDataImage.append('file', selectedFile);
-  
-                  const responseImage = await fetch(`http://localhost:8081/v1/eventos/upload-event-image/${eventData.id}`, {
-                      method: 'POST',
-                      headers: {
-                          'Authorization': `Bearer ${token}`,
-                      },
-                      body: formDataImage,
-                  });
-  
-                  if (responseImage.ok) {
-                      console.log("Imagem do evento enviada com sucesso.");
 
-                      setFormData({
-                        titulo: '',
-                        descricao: '',
-                        estado: '',
-                        dataPrevista: '',
-                        cep: '',
-                        valor: '',
-                        cidade: '',
-                        bairro: '',
-                        rua: '',
-                        fotoEvento: null
-                    });
-                    setMensagemModal("Evento criado com sucesso!");
-                    setImagemSrcModal("imagens/EventCreatedSucess.webp");
-                    setMostrarModal(true);
-                    setImagePreview('');
-                    setIsLoading(false);
-                  } else {
-                      console.error("Falha ao enviar imagem do evento.");
-                      setFormData({
-                        titulo: '',
-                        descricao: '',
-                        estado: '',
-                        dataPrevista: '',
-                        cep: '',
-                        valor: '',
-                        cidade: '',
-                        bairro: '',
-                        rua: '',
-                        fotoEvento: null
-                    });
-                    setImagePreview('');
-                    setIsLoading(false);
-                  }
-              }
+       const newErrors = {
+        titulo: formData.titulo.trim() === '',
+        descricao: formData.descricao.trim() === '',
+        estado: formData.estado.trim() === '',
+        cidade: formData.cidade.trim() === '',
+        rua: formData.rua.trim() === '',
+        cep: formData.cep.trim() === '',
+        bairro: formData.bairro.trim() === '',
+        dataPrevista: formData.dataPrevista.trim() === '',
+        metaArrecad: formData.metaArrecad.trim() === '',
+    };
+
+    setErrors(newErrors);
+
+    // Verificar se há erros
+    if (Object.values(newErrors).some(error => error)) {
+
+      setIsLoading(false)
+      return;
+  }
+
+      try {
+        const responseSerAdm = await fetch(`http://localhost:8081/v1/fomaturas/ser-adm/${user.principal.id}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
+        });
+        
+        const formaturaData = await responseSerAdm.json();
   
-              // Limpa o formulário após o envio bem-sucedido
-              setFormData({
-                  titulo: '',
-                  descricao: '',
-                  estado: '',
-                  dataPrevista: '',
-                  valor: '',
-                  cep: '',
-                  cidade: '',
-                  bairro: '',
-                  rua: '',
-                  fotoEvento: null
-              });
-              setImagePreview('');
-              setIsLoading(false);
-          } else {
-              setIsLoading(false);
-              console.error("Erro ao criar evento:", eventData.mensagem);
-          }
-      } catch (error) {
-          setIsLoading(false);
-          console.error("Erro na requisição:", error);
-      }
-  };
+        if (responseSerAdm.ok) {
+            console.log("Solicitacao criada com sucesso. ID:", formaturaData.id);
+
+            if (selectedFile) {
+                const formDataImage = new FormData();
+                formDataImage.append('file', selectedFile);
+
+                const responseImage = await fetch(`http://localhost:8081/v1/fomaturas/upload-grad-image/${formaturaData.id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                    body: formDataImage,
+                });
+
+                if (responseImage.ok) {
+                    console.log("Imagem do evento enviada com sucesso.");
+
+                    setFormData({
+                      titulo: '',
+                      descricao: '',
+                      estado: '',
+                      dataPrevista: '',
+                      metaArrecad: '',
+                      cep: '',
+                      cidade: '',
+                      bairro: '',
+                      rua: '',
+                      fotoFormatura: null
+                  });
+                  setImagePreview('');
+                  setIsLoading(false);
+                } else {
+                    console.error("Falha ao enviar imagem do evento.");
+                    setFormData({
+                      titulo: '',
+                      descricao: '',
+                      estado: '',
+                      dataPrevista: '',
+                      metaArrecad: '',
+                      cep: '',
+                      cidade: '',
+                      bairro: '',
+                      rua: '',
+                      fotoFormatura: null
+                  });
+                  setImagePreview('');
+                  setIsLoading(false);
+                }
+            }
   
+            // Limpa o formulário após o envio bem-sucedido
+            setFormData({
+              titulo: '',
+              descricao: '',
+              estado: '',
+              dataPrevista: '',
+              metaArrecad: '',
+              cep: '',
+              cidade: '',
+              bairro: '',
+              rua: '',
+              fotoFormatura: null
+            });
+            setImagePreview('');
+            setIsLoading(false);
+        } else {
+            setIsLoading(false);
+            console.error("Erro ao criar formatura:", formaturaData.mensagem);
+        }
+    } catch (error) {
+        setIsLoading(false);
+        console.error("Erro na requisição:", error);
+    }
+
+    };
 
     return (
 
    <div>
+     
     <form onSubmit={handleSubmit}>
        <div className="bg-white relative lg:py-20">
+       
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                <img src="/imagens/PostEvento.webp" className="rounded mb-100 sm:mb-20"/>
+                  <img src="/imagens/BEGoPartyADM.webp" className="rounded lg:mt-500 sm:mb-20"/>
                 </div>
               </div>
+
               {/* Modal de confirmação*/}
               <ModalMessage
               mensagem={mensagemModal}
               imagemSrc={imagemSrcModal}
               mostrarModal={mostrarModal}
               onClose={handleClose}
-            />
+             />
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
-                <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
+                <div 
+                className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10">
-                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Crie seu evento para o público</p>
-                  <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
+                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Preencha para se tornar GoParty ADM</p>
+                  <div 
+                  className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                    <div className="relative">
                       <label htmlFor='titulo' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Título do evento</label>
-                      <input placeholder="Festa universitária" 
+                          absolute">Nome para a formatura</label>
+                      <input placeholder="Festa de formatura UFSC" 
                               type="text"
                               name='titulo'
-                              value={formData.titulo}
+                              value={formData.titulo} 
                               id='titulo'
                               onChange={handleChange}
                               className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
@@ -267,7 +297,7 @@ export default function PostEvent () {
                     </div>
                     <div className="relative">
                       <label htmlFor='cep' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">CEP</label>
-                      <ReactInputMask
+                      <InputMask
                         placeholder='CEP'
                         mask="99999-999"
                         value={formData.cep}
@@ -314,20 +344,20 @@ export default function PostEvent () {
                     <div></div>
                     <div className="relative">
                       <label htmlFor='metaArrecad' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Valor do Ingresso
+                          absolute">Meta de Arrecadação
                           </label>
                           <CurrencyInput
                             placeholder="R$ 0,00"
-                            id='valor'
-                            name='valor'
-                            value={formData.valor}
+                            id='metaArrecad'
+                            name='metaArrecad'
+                            value={formData.metaArrecad}
                             onChange={handleChange}
                             className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
-                          />
+                        />
                     </div>
                     <div className="relative">
                       <label htmlFor='dataPrevista' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Data do Evento</label>
+                          absolute">Data Prevista</label>
                             <input 
                             placeholder="Data"
                             id='dataPrevista'
@@ -349,7 +379,7 @@ export default function PostEvent () {
                                         </svg>
                                     </RenderIf>
                                     <div className='mt-2 flex text-sm leading-6 text-gray-600'>
-                                        <label htmlFor='fotoEvento' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
+                                        <label htmlFor='fotoFormatura' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
                                             
                                             <RenderIf condition={!imagePreview}>
                                                 <span>Foto para o evento</span>
@@ -359,7 +389,7 @@ export default function PostEvent () {
                                                 <img src={imagePreview} width={250} className='rounded-full' />
                                             </RenderIf>
 
-                                            <input accept="image/*" onChange={onFileUpload} id='fotoEvento' name='fotoEvento' type='file' className='sr-only' />
+                                            <input accept="image/*" onChange={onFileUpload} id='fotoFormatura' name='fotoFormatura' type='file' className='sr-only' />
                                         </label>
                                     </div>   
                                 </div>
@@ -413,7 +443,7 @@ export default function PostEvent () {
                            {isLoading ? (
                              <Loading/>
                             ) : (
-                              'Criar'
+                              'Cadastrar'
                             )}
                           </button>
                     </div>

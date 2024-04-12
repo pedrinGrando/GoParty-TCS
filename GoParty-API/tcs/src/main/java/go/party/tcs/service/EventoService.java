@@ -34,7 +34,7 @@ public class EventoService {
 
     public List<Evento> getAllEventos() {
         //Ordena pela data/horario da postagem
-        return eventoRepository.findAll(Sort.by(Sort.Direction.DESC, "data_postagem"));
+        return eventoRepository.findAll(Sort.by(Sort.Direction.DESC, "dataPostagem"));
     }
 
     public void atualizarEvento(Evento evento){
