@@ -240,8 +240,6 @@ export default function Register(){
             body: JSON.stringify(formData),
           });
 
-
-          
           if (response.ok) {
             // Limpar o formulário após o envio bem-sucedido, se necessário
             setFormData({
@@ -258,7 +256,7 @@ export default function Register(){
 
             setIsLoading(false);
             console.log('Formulário enviado com sucesso!');
-            navigate('/login');
+            navigate('/validate-email');
 
           } else {
             setIsLoading(false);
@@ -292,7 +290,7 @@ export default function Register(){
                   data-aos-delay="50"
                   data-aos-duration="0"
                   src="/imagens/EnjoyingParty2.webp"
-                  className="rounded mt-20 lg:mt-0"
+                  className="rounded lg:-mt-60 sm:mb-36 sm:mt-16 mt-36"
                 />
               </div>
 
