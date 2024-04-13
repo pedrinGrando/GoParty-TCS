@@ -68,22 +68,22 @@ export default function Register(){
     const handleBlurUserName = async () => {
 
       if (formData.username.trim() === "") {
-        setError(true);
-        setIsLoading(false);
-        setMessage("Preencha todos os campos!")
-        return;
+          setError(true);
+          setIsLoading(false);
+          setMessage("Preencha todos os campos!")
+          return;
       }
 
       try {
-        // const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
+         const response = await fetch(`http:localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
 
-        // if (response.ok){
-        //   setIsUsernameUnique(false)
-        //   console.log(response)
-        // } else {
-        //   setIsUsernameUnique(true)
-        //   console.log(response)
-        // }
+         if (response.ok){
+           setIsUsernameUnique(false)
+           console.log(response)
+         } else {
+           setIsUsernameUnique(true)
+           console.log(response)
+         }
         
       } catch (error) {
           console.error('Error checking username uniqueness:', error);
@@ -103,15 +103,15 @@ export default function Register(){
       }
 
       try {
-        // const response = await fetch(`http://localhost:8081/v1/usuarios/check-email?email=${formData.email}`);
+        const response = await fetch(`http://localhost:8081/v1/usuarios/check-email?email=${formData.email}`);
 
-        // if (response.ok){
-        //   setIsEmailUnique(false)
-        //   console.log(response)
-        // } else {
-        //   setIsEmailUnique(true)
-        //   console.log(response)
-        // }
+        if (response.ok){
+          setIsEmailUnique(false)
+          console.log(response)
+        } else {
+          setIsEmailUnique(true)
+          console.log(response)
+        }
         
     } catch (error) {
         console.error('Error checking email uniqueness:', error);
@@ -336,6 +336,7 @@ export default function Register(){
                             name='username'                           
                             value={formData.username}
                             onChange={handleChange}
+                            onBlur={handleBlurUserName}
                             type="text" 
                       className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
                       {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}

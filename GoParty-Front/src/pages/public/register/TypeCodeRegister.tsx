@@ -94,7 +94,11 @@ export default function TypeCodeRegister () {
                  className="relative">
                   <label htmlFor='codigoDigitado' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                       absolute">Digite seu código</label>
-                  <input placeholder="" 
+                  <input  minLength={5}
+                          maxLength={5}
+                          max={5}
+                          min={5}
+                          placeholder="" 
                           type="text" 
                           onChange={handleChange}
                           id='codigoDigitado'
@@ -105,7 +109,6 @@ export default function TypeCodeRegister () {
                       border-gray-300 rounded-md"/>
                 </div>
                 <div className="relative">
-
                   <button type='submit' className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                       rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                      
