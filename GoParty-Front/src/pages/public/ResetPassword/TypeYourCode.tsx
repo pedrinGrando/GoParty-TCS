@@ -93,7 +93,12 @@ export default function TypeYourCode () {
                  className="relative">
                   <label htmlFor='codigoDigitado' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                       absolute">Digite seu código</label>
-                  <input placeholder="" 
+                  <input 
+                          minLength={5}
+                          maxLength={5}
+                          max={5}
+                          min={5}
+                          placeholder="" 
                           type="text" 
                           onChange={handleChange}
                           id='codigoDigitado'

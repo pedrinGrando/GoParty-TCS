@@ -63,9 +63,9 @@ export default function RegisterStudent(){
     };
 
     function isEmailEducational(email: string): boolean {
-        const educationalDomains = ['.edu', '.edu.br', '@alunos']; 
-        return educationalDomains.some(domain => email.endsWith(domain));
-      }
+      const educationalDomains = ['.edu', '.edu.br', '@alunos'];
+      return educationalDomains.some(domain => email.includes(domain));
+  }
 
     const handleBlurUserName = async () => {
 
@@ -77,15 +77,15 @@ export default function RegisterStudent(){
       }
 
       try {
-        // const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
+         const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
 
-        // if (response.ok){
-        //   setIsUsernameUnique(false)
-        //   console.log(response)
-        // } else {
-        //   setIsUsernameUnique(true)
-        //   console.log(response)
-        // }
+         if (response.ok){
+           setIsUsernameUnique(false)
+           console.log(response)
+         } else {
+           setIsUsernameUnique(true)
+           console.log(response)
+         }
         
       } catch (error) {
           console.error('Error checking username uniqueness:', error);
@@ -104,15 +104,15 @@ export default function RegisterStudent(){
       }
 
       try {
-        // const response = await fetch(`http://localhost:8081/v1/usuarios/check-email?email=${formData.email}`);
+       const response = await fetch(`http://localhost:8081/v1/usuarios/check-email?email=${formData.email}`);
 
-        // if (response.ok){
-        //   setIsEmailUnique(false)
-        //   console.log(response)
-        // } else {
-        //   setIsEmailUnique(true)
-        //   console.log(response)
-        // }
+       if (response.ok){
+         setIsEmailUnique(false)
+         console.log(response)
+       } else {
+         setIsEmailUnique(true)
+         console.log(response)
+       }
         
     } catch (error) {
         console.error('Error checking email uniqueness:', error);
@@ -263,7 +263,7 @@ export default function RegisterStudent(){
 
             setIsLoading(false);
             console.log('Formulário enviado com sucesso!');
-            navigate('/login');
+            navigate('/validate-email');
 
           } else {
             setIsLoading(false);
@@ -297,7 +297,7 @@ export default function RegisterStudent(){
                   data-aos-delay="50"
                   data-aos-duration="0"
                   src="/imagens/registerStudent.webp"
-                  className="rounded mt-20 lg:mt-0"
+                  className="rounded lg:-mt-60 sm:mb-36 sm:mt-16 mt-36"
                 />
               </div>
 
@@ -343,7 +343,7 @@ export default function RegisterStudent(){
                             id='username'
                             name='username'                           
                             value={formData.username}
-                            onChange={handleChange}
+                            onChange={handleBlurUserName}
                             type="text" 
                       className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
                       {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}

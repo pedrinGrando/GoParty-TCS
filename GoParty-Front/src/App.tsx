@@ -23,6 +23,7 @@ import Register from './pages/public/register/Register';
 import RegisterAdm from './pages/public/register/RegisterAdm';
 import RegisterStudent from './pages/public/register/RegisterStudent';
 import ChangePassword from './pages/public/ResetPassword/ChangePassword';
+import TypeCodeRegister from './pages/public/register/TypeCodeRegister';
 
 
 function App() {
@@ -53,6 +54,7 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/register-student' element={<RegisterStudent />} />
+          <Route path='/validate-email' element={<TypeCodeRegister />} />
 
           {/* Reset Password Page */} 
           <Route path='/reset-password-email' element={<ResetPassword />} />
