@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ModalChoose } from "../modal/ModalChoose";
+import DarkModeToggle from "../DarkMode/DarkModeToggle";
 
 export const NavBar: React.FC = () => {
  
@@ -25,13 +26,13 @@ export const NavBar: React.FC = () => {
               mostrarModal={mostrarModal}
               onClose={handleClose}
              />
-        <nav className="bg-white -500 mb-[0px] fixed top-0 w-full z-50">
+        <nav className="bg-white -500 mb-[0px] fixed top-0 w-full z-50 dark:bg-gray-900">
             <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
                 <a href="#" className="flex items-center space-x-3 rtl:space-x-reverse">
                 <div className="inline-block">
-                    <img src="/imagens/Logo GoPartyIcon.webp" className="h-20" alt="GoParty Logo" />
+                    <img src="/imagens/GoParty_Icon_200px_NoBG.png" className="h-20" alt="GoParty Logo" />
                     </div>
-                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-black text-black shadow-text">|  GoParty</span>
+                    <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">|  GoParty</span>
 
                 </a>
                 <button data-collapse-toggle="navbar-default" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="navbar-default" aria-expanded="false">
@@ -44,20 +45,25 @@ export const NavBar: React.FC = () => {
                     <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg text-black md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0">
                         <li>
                             <Link to='/about'>
-                            <a href="#" className="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-black md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent">Sobre</a>
+                            <a className={location.pathname === '/about' ? 'block py-2 px-3 text-blue-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"' : 'block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"'}>Sobre</a>
                             </Link>
                         </li>                       
                         <li>
-                           <button type="button" onClick={handleButtonClick} className={location.pathname === '/register-student' ? 'block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-black md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent"' : 'block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-black md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent"'}>Comece</button>
+                           <button type="button" onClick={handleButtonClick} className={location.pathname === '/register' || location.pathname === '/register-student'  ? 'block py-2 px-3 text-blue-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"' : 'block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"'}>Comece</button>
                         </li>
                         <li>
-                            <a href="#" className="block py-2 px-3 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-black md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-black md:dark:hover:bg-transparent">Suporte</a>
+                            <Link to='/terms-and-conditions'> 
+                            <a className={location.pathname === '/terms-and-conditions' ? 'block py-2 px-3 text-blue-700 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"' : 'block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"'}>Termos</a>
+                            </Link>
                         </li>
                         <li>
                             <Link to='/login'>
                             <button type="button" className="mb-6 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Login</button>
                             </Link>
                         </li>
+                        <div>
+                        <DarkModeToggle />
+                        </div>
                     </ul>
                 </div>
             </div>

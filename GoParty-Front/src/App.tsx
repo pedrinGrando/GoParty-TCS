@@ -6,24 +6,24 @@ import './index.css';
 
 // Componente/Page
 import { UserProvider } from './components/UserContext/UserContext';
-import Configs from './pages/public/Configs/Configs';
-import Explore from './pages/public/Explore/Explore';
-import Groups from './pages/public/Groups/Groups';
-import Messages from './pages/public/Mensagens/Mensagens';
-import Notifications from './pages/public/Notifications/Notifications';
-import PostEvent from './pages/public/PostEvent/PostEvent';
-import Profile from './pages/public/Profile/Profile';
+import Configs from './pages/private/Configs/Configs';
+import Explore from './pages/private/Explore/Explore';
+import Groups from './pages/private/Groups/Groups';
+import Notifications from './pages/private/Notifications/Notifications';
+import PostEvent from './pages/private/PostEvent/PostEvent';
+import Profile from './pages/private/Profile/Profile';
 import ResetPassword from './pages/public/ResetPassword/ResetPassword';
 import TypeYourCode from './pages/public/ResetPassword/TypeYourCode';
 import StartPage from './pages/public/StartPage/Start';
-import Tickets from './pages/public/Tickets/Tickets';
-import Home from './pages/public/home/Home';
+import Tickets from './pages/private/Tickets/Tickets';
+import Home from './pages/private/home/Home';
 import Login from './pages/public/login/Login';
 import Register from './pages/public/register/Register';
 import RegisterAdm from './pages/public/register/RegisterAdm';
 import RegisterStudent from './pages/public/register/RegisterStudent';
 import ChangePassword from './pages/public/ResetPassword/ChangePassword';
 import TypeCodeRegister from './pages/public/register/TypeCodeRegister';
+import Terms from './pages/public/Terms/Terms';
 
 
 function App() {
@@ -55,6 +55,7 @@ function App() {
           <Route path='/register' element={<Register />} />
           <Route path='/register-student' element={<RegisterStudent />} />
           <Route path='/validate-email' element={<TypeCodeRegister />} />
+          <Route path='/terms-and-conditions' element={<Terms/>} />
 
           {/* Reset Password Page */} 
           <Route path='/reset-password-email' element={<ResetPassword />} />

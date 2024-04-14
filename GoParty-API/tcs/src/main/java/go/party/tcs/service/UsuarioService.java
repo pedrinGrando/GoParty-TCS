@@ -81,7 +81,6 @@ public class UsuarioService {
     public boolean checkUsernameExists(String username) {
         return usuarioRepository.existsByUsername(username);
     }
-
    
 }
 

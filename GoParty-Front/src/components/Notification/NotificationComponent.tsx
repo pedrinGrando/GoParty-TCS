@@ -10,6 +10,8 @@ interface Notification {
 
 export const NotificationComponent: React.FC<{ notification: Notification }> = ({ notification }) => {
   return (
-   
+   <div>
+    
+   </div>
   );
 };
