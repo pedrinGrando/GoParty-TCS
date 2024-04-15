@@ -8,6 +8,7 @@ import { Loading } from '../../../components/Loading/Loading';
 import { ModalMessage } from '../../../components/modal/ModalMessage';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { Link } from 'react-router-dom';
+import { Error } from '../../../components/Error/Error';
 
 
 export default function RegisterAdm () {
@@ -17,6 +18,8 @@ export default function RegisterAdm () {
     const [isChecked, setIsChecked] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [selectedFileMatri, setSelectedFileMatri] = useState<File | null>(null);
+    const [error, setError] = useState(false);
+    const [message, setMessage] = useState(""); 
 
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
     const [mensagemModal, setMensagemModal] = useState<string>('');
@@ -55,14 +58,27 @@ export default function RegisterAdm () {
       const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(e.target.checked);
       };
-  
+
+      const handleCloseFooter = () => {
+        setError(false); 
+      };
 
       function onFileUpload(event: React.ChangeEvent<HTMLInputElement>){
+
         if(event.target.files){
-            const file = event.target.files[0]
+
+          const file = event.target.files[0];
+          const maxFileSize = 2 * 1024 * 1024; // 2MB
+      
+          if (file.size > maxFileSize) {
+              setError(true);
+              setMessage("Imagem excedeu o limite de 2 MB")
+          } else {
             const imageURL = URL.createObjectURL(file)
             setImagePreview(imageURL)
             setSelectedFile(file);
+          }
+            
         }
     }
 
@@ -101,7 +117,7 @@ export default function RegisterAdm () {
       try {
         const url = `https://viacep.com.br/ws/${cep}/json/`;
         const response = await fetch(url);
-        if (!response.ok) throw new Error('Erro na requisição do CEP');
+        if (!response.ok) console.log('Erro ao fazer requisicao CEP');
         const data = await response.json();
     
         if (data.erro) {
@@ -395,6 +411,15 @@ export default function RegisterAdm () {
                                     </div>   
                                 </div>
                             </div>
+
+                            {error && (
+                                 <Error
+                                 error={error}
+                                 message={message}
+                                 onClose={handleCloseFooter}
+                               />
+                                )}  
+
                             <div className="inline-flex items-center">
                     <label
                     className="relative -ml-2.5 flex cursor-pointer items-center rounded-full p-3"

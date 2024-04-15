@@ -15,19 +15,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import go.party.tcs.model.Comentario;
-import go.party.tcs.model.Curtida;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.EventoRepository;
@@ -35,7 +31,6 @@ import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EventoService;
-import go.party.tcs.service.NotificationService;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
