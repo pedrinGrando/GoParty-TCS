@@ -58,22 +58,6 @@ public class IngressoController {
         return "perfil";
     }
 
-    @PutMapping("/atualizarStatus") 
-    public String atualizarStatus(@RequestParam(name ="ingressoId") Integer id, Model model, HttpSession session) {
-        Ingresso ingresso = ingressoService.encontra(id);
-        
-        if (ingresso != null) {
-            ingresso.setStatus("Inativo");
-            ingressoService.save(ingresso);
-            
-            Usuario sessionUsuario = (Usuario) session.getAttribute("sessionUsuario");
-            if (sessionUsuario != null) {
-                session.setAttribute("sessionUsuario", sessionUsuario);
-            }
-        }
-        
-        return "redirect:/perfil"; 
-    }
 
 }
 

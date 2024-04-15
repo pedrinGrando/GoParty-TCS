@@ -24,7 +24,5 @@ public class Notification {
     private LocalDateTime date;
     private Integer userId; // O ID do usuário que receberá a notificação
     private Boolean visualizado;
-    @Column(name = "foto_perfil", columnDefinition = "LONGBLOB")
-    private byte[] fotoPerfil;
 
 }

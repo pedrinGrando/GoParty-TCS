@@ -38,7 +38,6 @@ import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EmailService;
 import go.party.tcs.service.EventoService;
-import go.party.tcs.service.MensagemService;
 import go.party.tcs.service.NotificationService;
 import go.party.tcs.service.UsuarioService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,10 +52,6 @@ public class UsuarioController {
     public UsuarioController(UsuarioService usuarioService){
         this.usuarioService = usuarioService;
     }
-
-     //CADASTRAR UMA MENSAGEM 
-     @Autowired
-    private MensagemService mensagemService;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -120,7 +115,6 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile image");
         }
     }
-
 
     @DeleteMapping("/deletar")
     public ResponseEntity<String> deletarUsuario(HttpSession session) {

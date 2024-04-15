@@ -54,7 +54,7 @@ public class Evento {
     private String bairro;
 
     @Column(name = "valor")
-    private String valor;
+    private double valor;
 
     @Column(name = "data_evento")
     private LocalDateTime dataEvento;

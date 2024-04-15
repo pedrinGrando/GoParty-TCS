@@ -24,7 +24,6 @@ public class NotificationService {
         notification.setDate(LocalDateTime.now()); 
         notification.setUserId(userId);
         notification.setVisualizado(false);
-        notification.setFotoPerfil(fotoPerfil);
         notificationRepository.save(notification);
 
     }

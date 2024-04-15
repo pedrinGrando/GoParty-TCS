@@ -133,7 +133,7 @@ public class EventoController {
             // Salva o comentário no banco de dados
             comentarioService.save(comentario);
 
-            String message = usuario.getUsername() + " fez um comentário no seu post: " + comentario.getTexto();
+            String message = usuario.getUsername() + " fez um comentário no seu post: " + comentario.getMensagem();
           
             return ResponseEntity.ok("Comentário criado com sucesso.");
         } catch (Exception e) {
