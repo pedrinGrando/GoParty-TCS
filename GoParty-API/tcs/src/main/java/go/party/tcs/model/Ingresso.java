@@ -1,5 +1,6 @@
 package go.party.tcs.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import go.party.tcs.Enums.TipoStatus;
@@ -26,29 +27,23 @@ public class Ingresso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
+    private Long id;
 
-    @Column(name = "codigo")
-    private String codigo;
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario autor;
 
-    @Column(name = "cpfComprador")
-    private String cpfComprador;
+    @ManyToOne
+    @JoinColumn(name = "evento_id")
+    private Evento evento;
 
+    @Column(name = "codigoEvento")
+    private String codigoEvento;
+     
     @Column(name = "status")
     private TipoStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "id_usuario")
-    private Usuario idUsuario;
-
-    @ManyToOne
-    @JoinColumn(name = "id_evento")
-    private Evento evento;
-
-    public static String gerarCodigoAleatorio() {
-        // Gerando um UUID aleatório e pegando os 10 primeiros caracteres
-        String uuid = UUID.randomUUID().toString().replaceAll("[^a-zA-Z0-9]", "").substring(0, 10);
-        return uuid;
-    }
+    @Column(name = "dataCompra")
+    private LocalDateTime dataCompra;
+    
 }

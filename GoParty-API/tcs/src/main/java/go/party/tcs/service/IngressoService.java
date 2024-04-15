@@ -20,13 +20,8 @@ public class IngressoService {
         return ingressoRepository.findByEventoId(eventoId);
     }
 
-    public Ingresso encontra(Integer id) {
-        return ingressoRepository.findById(id).orElse(null);
-    }
-
     public void save(Ingresso ingresso) {
         ingressoRepository.save(ingresso);
     }
 
-    
 }
