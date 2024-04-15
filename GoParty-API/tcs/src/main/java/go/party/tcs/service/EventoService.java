@@ -41,27 +41,9 @@ public class EventoService {
         eventoRepository.save(evento);
     }
 
-    public List<Evento> buscarEventosPorAutor(Integer userId) {
-        return eventoRepository.findByAutorId(userId);
-    }
-
-    public String getNomeAutorPorId(Integer autorId) {
-        Optional<Usuario> autorOptional = usuarioRepository.findById(autorId);
-        return autorOptional.map(Usuario::getUsername).orElse("Autor Desconhecido");
-    }
-
-    public Evento encontrarPorId(Integer eventoId) {
-        return eventoRepository.getById(eventoId);
-    }
-
     public EventoService(EventoRepository eventoRepository, CurtidaService curtidaService) {
         this.eventoRepository = eventoRepository;
         this.curtidaService = curtidaService;
-    }
-
-    public void excluirEvento(Integer id) {
-        // Excluir o evento
-        eventoRepository.deleteById(id);
     }
 
     public void editarEvento(Integer id) {

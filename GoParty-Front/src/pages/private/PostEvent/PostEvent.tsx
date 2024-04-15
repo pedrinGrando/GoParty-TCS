@@ -7,6 +7,7 @@ import { Loading } from '../../../components/Loading/Loading';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { ModalMessage } from '../../../components/modal/ModalMessage';
 import ReactInputMask from 'react-input-mask';
+import { Error } from '../../../components/Error/Error';
 
 export default function PostEvent () {
 
@@ -14,12 +15,18 @@ export default function PostEvent () {
     const [imagePreview, setImagePreview] = useState<string>('');
     const [isChecked, setIsChecked] = useState(false);
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    const [error, setError] = useState(false);
+    const [message, setMessage] = useState(""); 
 
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
     const [mensagemModal, setMensagemModal] = useState<string>('');
     const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
 
     const handleClose = () => setMostrarModal(false);
+
+    const handleCloseFooter = () => {
+      setError(false); 
+    };
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
@@ -55,11 +62,21 @@ export default function PostEvent () {
   
 
       function onFileUpload(event: React.ChangeEvent<HTMLInputElement>){
+
         if(event.target.files){
-            const file = event.target.files[0]
+
+          const file = event.target.files[0];
+          const maxFileSize = 2 * 1024 * 1024; // 2MB
+      
+          if (file.size > maxFileSize) {
+              setError(true);
+              setMessage("Imagem excedeu o limite de 2 MB")
+          } else {
             const imageURL = URL.createObjectURL(file)
             setImagePreview(imageURL)
             setSelectedFile(file);
+          }
+            
         }
     }
 
@@ -92,7 +109,7 @@ export default function PostEvent () {
       try {
         const url = `https://viacep.com.br/ws/${cep}/json/`;
         const response = await fetch(url);
-        if (!response.ok) throw new Error('Erro na requisição do CEP');
+        if (!response.ok) console.log('Erro ao fazer requisicao viaCEP');
         const data = await response.json();
     
         if (data.erro) {
@@ -224,7 +241,7 @@ export default function PostEvent () {
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-                <img src="/imagens/PostEvento.webp" className="rounded mb-100 sm:mb-20"/>
+                <img src="/imagens/PostEvento.webp" className="rounded lg:-mt-60 sm:mb-36 sm:mt-16 mt-36"/>
                 </div>
               </div>
               {/* Modal de confirmação*/}
@@ -362,8 +379,16 @@ export default function PostEvent () {
                                             <input accept="image/*" onChange={onFileUpload} id='fotoEvento' name='fotoEvento' type='file' className='sr-only' />
                                         </label>
                                     </div>   
-                                </div>
+                                </div> 
+
                             </div>
+                            {error && (
+                                 <Error
+                                 error={error}
+                                 message={message}
+                                 onClose={handleCloseFooter}
+                               />
+                                )}  
                             <div className="inline-flex items-center">
                     <label
                     className="relative -ml-2.5 flex cursor-pointer items-center rounded-full p-3"

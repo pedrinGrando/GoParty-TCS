@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 
-interface FooterProps {
+interface ErrorProps {
   error: boolean;
   message: string;
   onClose: () => void;
 }
 
-export const Error: React.FC<FooterProps> = ({ error, message, onClose }) => {
+export const Error: React.FC<ErrorProps> = ({ error, message, onClose }) => {
   if (!error) {
     return null;
   }

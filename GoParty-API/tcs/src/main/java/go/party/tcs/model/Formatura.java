@@ -53,7 +53,10 @@ public class Formatura {
     private String cep;
 
     @Column(name = "meta_arrecad")
-    private String metaArrecad;
+    private double metaArrecad;
+
+    @Column(name = "arrecacado")
+    private double arrecacado;
 
     @Column(name = "pendente_aprovacao") // True = O pedido esta pendente False = o pedido já vou resolvido
     private boolean pendenteAprovacao;
