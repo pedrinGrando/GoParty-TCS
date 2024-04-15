@@ -59,6 +59,7 @@ public class IngressoController {
             ingresso.setEvento(evento);
             ingresso.setStatus(TipoStatus.PENDENTE);
             ingresso.setDataCompra(LocalDateTime.now());
+            ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
             ingressoRepository.save(ingresso);
             return new ResponseEntity<>(ingresso, HttpStatus.CREATED);
             }
