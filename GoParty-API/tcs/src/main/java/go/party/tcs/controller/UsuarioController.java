@@ -205,6 +205,7 @@ public class UsuarioController {
 
     @GetMapping("/check-username")
     public ResponseEntity<String> checkUsernameExists(@RequestParam String username) {
+        
         boolean exists = usuarioService.checkUsernameExists(username);
        
         if (exists){

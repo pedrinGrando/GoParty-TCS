@@ -45,10 +45,10 @@ export default function StartPage() {
     data-aos="fade-up"
     data-aos-delay="50"
     data-aos-duration="0"
-    className={`${mostrarModal ? 'backdrop-blur-lg' : ''}`}>
-    <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
+    className={`${mostrarModal ? 'backdrop-blur-lg' : 'dark:bg-gray-900'}`}>
+    <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 dark:bg-gray-900">
             <div className="mr-auto place-self-center lg:col-span-7">
-                <h1 className="max-w-2xl mb-4 text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl dark:text-black">Festas e Formaturas</h1>
+                <h1 className="max-w-2xl mb-4 text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl dark:text-white">Festas e Formaturas</h1>
                 <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Eleve a experiência de seus eventos com ingressos personalizados e garanta uma formatura inesquecível com nosso apoio especializado. O GoParty é seu parceiro na criação e aquisição de ingressos exclusivos, facilitando o acesso a uma celebração memorável. Junte-se a nós e transforme momentos importantes em eventos extraordinários.</p>
                
                 <button onClick={handleButtonClick} className="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
@@ -58,7 +58,7 @@ export default function StartPage() {
                
             </div>
             <div className=" hidden lg:mt-0 lg:col-span-5 lg:flex">
-                <img src="/imagens/EnjoyingPartyStartPage.webp" alt="mockup"/>
+                <img src="/imagens/EnjoyingPartyStartPage.png" alt="mockup"/>
             </div>                
         </div>
     </section>
@@ -166,20 +166,17 @@ export default function StartPage() {
         </div>
     </section>
  
-      <section className="bg-white dark:bg-gray-900">
-       
-    </section>
-
+      <section className="bg-white dark:bg-gray-800">
     <div 
     data-aos="fade-up"
     data-aos-delay="50"
     data-aos-duration="0"
-    className="relative px-8 py-10 bg-white border-t border-gray-200 md:py-16 lg:py-24 xl:py-40 xl:px-0">
+    className="relative px-8 py-10 bg-white border-t border-gray-200 md:py-16 lg:py-24 xl:py-40 xl:px-0 dark:bg-gray-800">
 
         <div id="pricing" className="container flex flex-col items-center h-full max-w-6xl mx-auto">
             <h2 className="my-5 text-base font-medium tracking-tight text-indigo-500 uppercase">Tipos de Contas</h2>
             <h3
-                className="w-full max-w-2xl px-5 px-8 mt-2 text-2xl font-black leading-tight text-center text-gray-900 sm:mt-0 sm:px-0 sm:text-6xl md:px-0">
+                className="w-full max-w-2xl px-5 px-8 mt-2 text-2xl font-black leading-tight text-center text-gray-900 sm:mt-0 sm:px-0 sm:text-6xl md:px-0 dark:text-white">
                 Trazemos uma forma simples de diferencias suas permissoes dentro do GoParty.</h3>
 
             <div className="max-w-full mx-auto md:max-w-6xl sm:px-8">
@@ -352,13 +349,14 @@ export default function StartPage() {
         </div>
 
     </div>
+    </section>
 
-    <footer className="p-4 bg-gray-50 sm:p-6 dark:bg-white">
+    <footer className="bg-white p-4 sm:p-6 dark:bg-gray-800">
         <div className="mx-auto max-w-screen-xl">
             <div className="md:flex md:justify-between">
                 <div className="mb-6 md:mb-0">
-                    <a href="https://flowbite.com" className="flex items-center">
-                        <img src="/imagens/Logo GoPartyIcon.webp" className="mr-3 h-8" alt="FlowBite Logo" />
+                    <a href="" className="flex items-center">
+                        <img src="/imagens/GoParty_Icon_128px_NoBG (1).png" className="mr-3 h-8" alt="FlowBite Logo" />
                         <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-gray-400">GoParty</span>
                     </a>
                 </div>

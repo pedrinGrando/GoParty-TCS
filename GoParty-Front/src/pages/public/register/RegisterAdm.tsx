@@ -7,6 +7,7 @@ import InputMask from 'react-input-mask';
 import { Loading } from '../../../components/Loading/Loading';
 import { ModalMessage } from '../../../components/modal/ModalMessage';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
+import { Link } from 'react-router-dom';
 
 
 export default function RegisterAdm () {
@@ -427,12 +428,14 @@ export default function RegisterAdm () {
                     >
                     <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
                         Eu concordo com 
+                        <Link to='/terms-and-conditions'>
                         <a
                         className="font-semibold transition-colors hover:text-pink-500"
                         href="#"
                         >
                         &nbsp;Termos e Condições
                         </a>
+                      </Link>
                     </p>
                     </label>
                 </div>

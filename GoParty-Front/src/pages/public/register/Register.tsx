@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
 
 //Componentes/Pages
@@ -75,7 +75,7 @@ export default function Register(){
       }
 
       try {
-         const response = await fetch(`http:localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
+         const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
 
          if (response.ok){
            setIsUsernameUnique(false)
@@ -449,12 +449,15 @@ export default function Register(){
                     >
                     <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
                         Eu concordo com 
+                      <Link to='/terms-and-conditions'>
                         <a
                         className="font-semibold transition-colors hover:text-pink-500"
                         href="#"
                         >
                         &nbsp;Termos e Condições
                         </a>
+                        </Link>
+                        
                     </p>
                     </label>
                 </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
 
 //Componentes/Pages
@@ -20,7 +20,7 @@ export default function RegisterStudent(){
     const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const [senhaNotEqual, setSenhaNotEqual] = useState(false);
-    const [isEducational, setIsEducational] = useState(false);
+    const [isEducational, setIsEducational] = useState(true);
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
 
 
@@ -67,31 +67,31 @@ export default function RegisterStudent(){
       return educationalDomains.some(domain => email.includes(domain));
   }
 
-    const handleBlurUserName = async () => {
+  const handleBlurUserName = async () => {
 
-      if (formData.username.trim() === "") {
+    if (formData.username.trim() === "") {
         setError(true);
         setIsLoading(false);
         setMessage("Preencha todos os campos!")
         return;
-      }
-
-      try {
-         const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
-
-         if (response.ok){
-           setIsUsernameUnique(false)
-           console.log(response)
-         } else {
-           setIsUsernameUnique(true)
-           console.log(response)
-         }
-        
-      } catch (error) {
-          console.error('Error checking username uniqueness:', error);
-          setIsUsernameUnique(false);
-      }
     }
+
+    try {
+       const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
+
+       if (response.ok){
+         setIsUsernameUnique(false)
+         console.log(response)
+       } else {
+         setIsUsernameUnique(true)
+         console.log(response)
+       }
+      
+    } catch (error) {
+        console.error('Error checking username uniqueness:', error);
+        setIsUsernameUnique(false);
+    }
+  }
 
     const handleBlur = async () => {
       setIsLoading(false);
@@ -343,7 +343,8 @@ export default function RegisterStudent(){
                             id='username'
                             name='username'                           
                             value={formData.username}
-                            onChange={handleBlurUserName}
+                            onChange={handleChange}
+                            onBlur={handleBlurUserName}
                             type="text" 
                       className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
                       {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
@@ -456,18 +457,20 @@ export default function RegisterStudent(){
                     >
                     <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
                         Eu concordo com 
+                        <Link to='/terms-and-conditions'> 
                         <a
                         className="font-semibold transition-colors hover:text-pink-500"
                         href="#"
                         >
                         &nbsp;Termos e Condições
                         </a>
+                        </Link>
                     </p>
                     </label>
                 </div>
                     <div className="relative">
                       <button type='submit' 
-                      disabled={!isChecked || errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique}
+                      disabled={errors.username || !isChecked || errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || !isEducational}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                            {isLoading ? (
