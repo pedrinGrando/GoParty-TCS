@@ -63,8 +63,8 @@ public class Evento {
     private LocalDateTime dataPostagem;
 
     @ManyToOne
-    @JoinColumn(name = "autor_id")
-    private Usuario autor;
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
     @OneToOne
     @JoinColumn(name = "formatura_id")

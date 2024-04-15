@@ -115,37 +115,7 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile image");
         }
     }
-
-    @DeleteMapping("/deletar")
-    public ResponseEntity<String> deletarUsuario(HttpSession session) {
-        try {
-            Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-            
-            if (sessionUsuario != null) {
-                // Exclui todos os eventos associados ao usuário
-                eventoRepository.deleteByAutor(sessionUsuario);
-                comentarioRepository.deleteByAutor(sessionUsuario);
-
-                // Em seguida, excluir o usuário
-                usuarioRepository.delete(sessionUsuario);
-                
-                session.removeAttribute("usuario");
-                
-                //ENVIO DE EMAIL QUANDO O USUÁRIO EXCLUI CONTA
-                String assunto = "Exclusão de conta | GoParty";
-                String mensagem = "Você deletou sua conta no GoParty! Esperamos que você volte em breve.";
-                emailService.sendEmailToClient(sessionUsuario.getEmail(), assunto, mensagem);       
-                
-                return ResponseEntity.ok("Conta de usuário excluída com sucesso.");
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não autenticado.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao excluir conta de usuário.");
-        }
-    }
-    
+        
     //Metodo para adicionar foto do Perfil
     @PostMapping("/upload")
     public String uploadFotoPerfil(@RequestParam("fotoPerfil") MultipartFile fotoPerfil, Model model, HttpSession session) {

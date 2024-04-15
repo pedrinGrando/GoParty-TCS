@@ -58,9 +58,6 @@ public class EventoController {
     @Autowired
     private CurtidaService curtidaService;
 
-    @Autowired
-    private NotificationService notificationService;
-
     @Value("${file.upload-dir}")
     private String uploadDir;
     
@@ -76,7 +73,7 @@ public class EventoController {
               }
  
               Usuario usuarioAutor = userOptional.get();
-              evento.setAutor(usuarioAutor);
+              evento.setUsuario(usuarioAutor);
             //Momento da Postagem
             evento.setDataPostagem(LocalDateTime.now());
             Evento eventoSalvo = eventoRepository.save(evento);
@@ -113,107 +110,6 @@ public class EventoController {
     public ResponseEntity<List<Evento>> getAllEvents() {
         List<Evento> events = eventoService.getAllEventos();
         return new ResponseEntity<>(events, HttpStatus.OK);
-    }
-
-    @PostMapping("/comments/{eventoId}/comment")
-    public ResponseEntity<String> criarComentario(@PathVariable Integer eventoId,
-                                                   @RequestBody Comentario comentario,
-                                                    HttpSession session) {
-        try {
-            // Recupera o usuário da sessão
-            Usuario usuario = (Usuario) session.getAttribute("usuario");
-
-            // Recupera o evento pelo ID
-            Evento evento = eventoService.encontrarPorId(eventoId); // Substitua eventoService pelo serviço apropriado
-
-            // Associa o usuário e o evento ao comentário
-            comentario.setAutor(usuario);
-            comentario.setEvento(evento);
-
-            // Salva o comentário no banco de dados
-            comentarioService.save(comentario);
-
-            String message = usuario.getUsername() + " fez um comentário no seu post: " + comentario.getMensagem();
-          
-            return ResponseEntity.ok("Comentário criado com sucesso.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao criar comentário.");
-        }
-    }
-
-
-    //Metodo para Excluir o Post Evento
-    @DeleteMapping("/excluir-evento/{id}")
-    public String excluirEvento(@PathVariable Integer id, HttpSession session) {
-        Evento evento = eventoService.encontrarPorId(id);
-        // Lógica para excluir o evento com base no ID
-        if (evento != null) {
-            // Exclua as curtidas associadas ao evento
-            List<Curtida> curtidas = evento.getCurtidas();
-            for (Curtida curtida : curtidas) {
-                curtidaService.excluirCurtida(curtida);
-            }
-            
-            // Exclua o evento
-            eventoService.excluirEvento(id);
-        }
-        // Obtém o usuário da sessão atual
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        // Reinsira o usuário na sessão (isso pode ser ajustado com base na lógica da sua aplicação)
-        session.setAttribute("usuario", sessionUsuario);
-        // Redirecione para a página perfil
-        return "redirect:/perfil";
-    }
-
-    //Metodo para Editar o Post Evento
-    @PutMapping("/editar-evento/{id}")
-    public String editarEvento(@PathVariable Integer id, Model model,
-                               @RequestParam(name = "titulo", required = false) String novoTitulo,
-                               @RequestParam(name = "descricao", required = false) String novaDescricao,
-                               @RequestParam(name = "imagemEvento", required = false) MultipartFile novaImagemEvento,
-                               HttpSession session) {
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-
-        // Passo 1: Recupere o evento com base no ID.
-        Evento eventoNoBanco = eventoService.encontrarPorId(id);
-
-        // Passo 2: Atualize as informações do evento com os novos valores.
-        if (novoTitulo != null && !novoTitulo.isEmpty()) {
-            eventoNoBanco.setTitulo(novoTitulo);
-        }
-        if (novaDescricao != null && !novaDescricao.isEmpty()) {
-            eventoNoBanco.setDescricao(novaDescricao);
-        }
-       
-        // Passo 3: Atualize as alterações no banco de dados.
-        eventoService.atualizarEvento(eventoNoBanco); 
-
-        // Passo 4: Atualizar a sessão com o Post atualizado 
-        session.setAttribute("usuario", sessionUsuario);
-
-        return "redirect:/perfil";  
-    }
-
-    @PostMapping("/curtirEvento/{eventoId}")
-    public String curtirEvento(@PathVariable Integer eventoId, HttpSession session) {
-        Evento evento = eventoService.encontrarPorId(eventoId);
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        curtidaService.curtirEvento(sessionUsuario, evento);
-        //Pega a Foto de perfil de quem fez a curtida
-        String message = sessionUsuario.getUsername()+" curtiu a sua publicação: "+ evento.getTitulo();
-    
-
-        return "redirect:/home";
-    }
-
-    @PostMapping("/descurtiEvento/{eventoId}")
-    public String descurtirEvento(@PathVariable Integer eventoId, HttpSession session) {
-        Evento evento = eventoService.encontrarPorId(eventoId);
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        curtidaService.descurtirEvento(sessionUsuario, evento);
-
-        return "redirect:/home";
     }
 
     @GetMapping("/curtidas/{eventoId}")
