@@ -261,7 +261,7 @@ export default function RegisterAdm () {
    <div>
      
     <form onSubmit={handleSubmit}>
-       <div className="bg-white relative lg:py-20">
+       <div className="bg-white relative lg:py-20 dark:bg-gray-900">
        
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
@@ -282,8 +282,8 @@ export default function RegisterAdm () {
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div 
                 className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
-                    relative z-10">
-                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Preencha para se tornar GoParty ADM</p>
+                    relative z-10 dark:bg-gray-700">
+                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif dark:text-white">Preencha para se tornar GoParty ADM</p>
                   <div 
                   className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                    <div className="relative">
@@ -451,11 +451,11 @@ export default function RegisterAdm () {
                     <label
                     className="mt-px cursor-pointer select-none font-light text-gray-700"
                     >
-                    <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
+                    <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased dark:text-white">
                         Eu concordo com 
                         <Link to='/terms-and-conditions'>
                         <a
-                        className="font-semibold transition-colors hover:text-pink-500"
+                        className="font-semibold transition-colors hover:text-pink-500 dark:text-white"
                         href="#"
                         >
                         &nbsp;Termos e Condições
@@ -477,15 +477,15 @@ export default function RegisterAdm () {
                     </div>
 
                     {/* AQUI*/}
-                    <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
+                    <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
                     Está esperando por aprovação?
-                    <button className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
+                    <button className="font-semibold text-pink-500 transition-colors hover:text-blue-700 dark:text-white">
                      ver meus pedidos
                    </button>
                    </p>
 
                     {/*AQUI*/}
-                    <div className="w-full p-1 text-center">
+                    <div className="w-full p-1 text-center dark:text-white">
                       © 2023 GoParty direitos reservados
                         <a className="text-white" href="https://tw-elements.com/"></a>
                     </div>
