@@ -64,6 +64,9 @@ public class Formatura {
     @Column(name = "aprovado") //True = o Adm esta aprovado False = O Adm foi negado
     private boolean aprovado;
 
+    @Column(name = "chave_pix")
+    private String chavePix;
+
     @Column(name = "data_prevista")
     private LocalDate dataPrevista;
 

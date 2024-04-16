@@ -282,7 +282,7 @@ export default function RegisterStudent(){
     return (
       <form onSubmit={handleSubmit}>
         <NavBar/>
-        <div className="bg-white relative lg:py-20">
+        <div className="bg-white relative lg:py-20 dark:bg-gray-900">
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
             <div 
@@ -296,7 +296,7 @@ export default function RegisterStudent(){
                   data-aos="fade-down"
                   data-aos-delay="50"
                   data-aos-duration="0"
-                  src="/imagens/registerStudent.webp"
+                  src="/imagens/registerStudent-removebg-preview.png"
                   className="rounded lg:-mt-60 sm:mb-36 sm:mt-16 mt-36"
                 />
               </div>
@@ -304,23 +304,23 @@ export default function RegisterStudent(){
               </div>
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
-                    relative z-10">
-                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Cadastre-se como Estudante</p>
+                    relative z-10 dark:bg-gray-700">
+                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif dark:text-white">Cadastre-se como Estudante</p>
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                     <div className="relative">
                       <label htmlFor='nome' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Seu nome completo</label>
+                          absolute dark:bg-gray-700 dark:text-white">Seu nome completo</label>
                       <input placeholder="John" 
                               type="text"
                               name='nome'
                               id='nome'
                               value={formData.nome}
                               onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.nome ? 'border-red-500' : ''}`}/>
+                              className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.nome ? 'border-red-500' : ''}`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='email' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">E-mail institucional</label>
+                          absolute dark:bg-gray-700 dark:text-white">E-mail institucional</label>
                             <input 
                             placeholder="Seu E-mail institucional"
                             id='email'
@@ -329,7 +329,7 @@ export default function RegisterStudent(){
                             onChange={handleChange}
                             onBlur={handleBlur} 
                             type="text" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.email
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.email
                     || !isValidEmail || !isEmailUnique  ? 'border-red-500' : ''}`}/>
                    {!isValidEmail && <p style={{ color: 'red' }}>Por favor, insira um e-mail válido.</p>}
                    {!isEducational && <p style={{ color: 'red' }}>Por favor, insira um e-mail institucional.</p>}
@@ -337,7 +337,7 @@ export default function RegisterStudent(){
                     </div>
                     <div className="relative">
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Nome de usuário</label>
+                          absolute dark:bg-gray-700 dark:text-white">Nome de usuário</label>
                             <input 
                             placeholder="Username"
                             id='username'
@@ -346,12 +346,12 @@ export default function RegisterStudent(){
                             onChange={handleChange}
                             onBlur={handleBlurUserName}
                             type="text" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
                       {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
                     </div>
                     <div className="relative">
                       <label htmlFor='idade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Data de Nascimento</label>
+                          absolute dark:bg-gray-700 dark:text-white">Data de Nascimento</label>
                             <input 
                             placeholder="Data"
                             id='idade'
@@ -359,14 +359,15 @@ export default function RegisterStudent(){
                             value={formData.idade}
                             onChange={handleChange}
                             type="date" 
-                     className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.idade
+                     className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.idade
                     ? 'border-red-500' : ''}`}/>
                    {errors.idade && <p style={{ color: 'red' }}>Você deve ter pelo menos 16 anos de idade.</p>}
 
                   </div>
 
                   <div className="relative">
-                        <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">Seu CPF</label>
+                        <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute dark:bg-gray-700 dark:text-white">Seu CPF</label>
                         <MaskedInput
                           mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
                           placeholder="Digite seu CPF"
@@ -374,12 +375,12 @@ export default function RegisterStudent(){
                           name='cpf'
                           value={formData.cpf}
                           onChange={handleChange}
-                          className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.cpf ? 'border-red-500' : ''}`}
+                          className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
                         />
                       </div>
-                   <div className="relative">
+                      <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Crie uma senha</label>
+                          absolute dark:text-white dark:bg-gray-700">Crie uma senha</label>
                             <input 
                               placeholder="Password"
                               name='senha'
@@ -387,7 +388,7 @@ export default function RegisterStudent(){
                               value={formData.senha}
                               onChange={handleChange}
                               type='password'
-                     className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}/>
+                     className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}/>
                   
                   {errors.senha && (
                         <ErrorPassword />
@@ -397,14 +398,14 @@ export default function RegisterStudent(){
                     </div>
                     <div className="relative">
                       <label htmlFor='senhaConfirm' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Confirmar senha</label>
+                          absolute dark:bg-gray-700 dark:text-white">Confirmar senha</label>
                             <input placeholder="Password"
                             id='senhaConfirm'
                             name='senhaConfirm'
                             onChange={handleChange}
                             value={formData.senhaConfirm}
                             type={showPassword ? 'text' : 'password'}
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}/>
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}/>
                  {senhaNotEqual && <p style={{ color: 'red' }}>As senhas não coincidem!</p>}
                 <button
                     type="button"
@@ -455,9 +456,9 @@ export default function RegisterStudent(){
                     <label
                     className="mt-px cursor-pointer select-none font-light text-gray-700"
                     >
-                    <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
+                    <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased dark:text-white">
                         Eu concordo com 
-                        <Link to='/terms-and-conditions'> 
+                      <Link to='/terms-and-conditions'>
                         <a
                         className="font-semibold transition-colors hover:text-pink-500"
                         href="#"
@@ -481,8 +482,8 @@ export default function RegisterStudent(){
                           </button>
                     </div>
 
-                    {/* AQUI*/}
-                    <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
+                      {/* AQUI*/}
+                      <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
                     Já possui conta?
                     <button onClick={handleButtonClick} className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
                      Faça o login 
