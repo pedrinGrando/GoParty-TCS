@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Error } from '../../../components/Error/Error';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
+import { ModalChoose } from '../../../components/modal/ModalChoose';
 
 export default function Login(){
 
@@ -13,6 +14,11 @@ export default function Login(){
     const [error, setError] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [message, setMessage] = useState("");
+    const [mostrarModalEscolha, setModalEscolha] = useState<boolean>(false);
+    const [mensagemModal, setMensagemModal] = useState<string>('');
+    const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
+
+    const handleClose = () => setModalEscolha(false);
   
     const [formData, setFormData] = useState({
       username: '',
@@ -24,7 +30,9 @@ export default function Login(){
     };
 
     const handleButtonClick = () => {
-      navigate('/register');
+      setModalEscolha(true);
+      setMensagemModal('Seja bem vindo ao GoParty, Escolha seu cadastro!');
+      setImagemSrcModal('/imagens/choosePic.webp')
     };
 
     const handleCloseFooter = () => {
@@ -91,15 +99,22 @@ export default function Login(){
   
 
     return (
-        
-        <form onSubmit={handleSubmit} className='bg-white dark:bg-gray-900'>
+        <div className='min-h-screen dark:bg-gray-900'>
+          {/* Modal de escolha*/}
+         <ModalChoose
+              mensagem={mensagemModal}
+              imagemSrc={imagemSrcModal}
+              mostrarModal={mostrarModalEscolha}
+              onClose={handleClose}
+             />
+        <form onSubmit={handleSubmit}>
          <NavBar/>
          <div className="bg-white relative lg:py-20 mt-[-1px] dark:bg-gray-900">
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
-            <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row dark:bg-gray-900">
+            <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
-                <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10 dark:bg-gray-900">
+                <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
                 <img
                   data-aos="fade-up"
                   data-aos-delay="50"
@@ -107,7 +122,7 @@ export default function Login(){
                  src="/imagens/enjoyingParty-removebg-preview.png" className="rounded mt-20 lg:mt-0"/>
                 </div>
               </div>
-              <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12 dark:bg-gray-900">
+              <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10 dark:bg-gray-700">
                   <p className="w-full text-4xl font-medium text-center leading-snug font-serif dark:text-white">Entre em sua conta</p>
@@ -122,7 +137,7 @@ export default function Login(){
                             value={formData.username}
                             onChange={handleChange}
                             type="text" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700`}/>
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -133,7 +148,7 @@ export default function Login(){
                             value={formData.senha}
                             name='senha'
                             type={showPassword ? 'text' : 'password'}
-                      className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700"/>
+                      className="border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700"/>
                  <button
                     type="button"
                     onClick={togglePasswordVisibility}
@@ -183,7 +198,7 @@ export default function Login(){
                    
                    </p>
 
-                    <div className="w-full p-1 text-center">
+                    <div className="w-full p-1 text-center ">
                          © 2023 GoParty direitos reservados
                         <a className="text-white" href="https://tw-elements.com/"></a>
                     </div>
@@ -254,5 +269,6 @@ export default function Login(){
           </div>
         </div> 
       </form>
+      </div>
     )
 }
