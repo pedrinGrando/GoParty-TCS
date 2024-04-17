@@ -7,6 +7,7 @@ interface Event {
     cep: string;
     estado: string;
     valor: number;
+    rua: string;
     cidade: string ;
     bairro: string;
     foto: Blob | string;

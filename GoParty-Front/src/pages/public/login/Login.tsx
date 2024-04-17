@@ -72,6 +72,7 @@ export default function Login(){
   
           if (response.ok) {
               // Login bem sucedido
+              navigate('/home');
               const data = await response.json(); 
               const token = data.token; 
               const sessionUser = data.usuario; 
@@ -80,7 +81,6 @@ export default function Login(){
               localStorage.setItem('token', token); 
               localStorage.setItem('sessionUser', JSON.stringify(sessionUser)); 
   
-              navigate('/home');
               setIsLoading(false);
               console.log('Login efetuado com sucesso!');
           } else {

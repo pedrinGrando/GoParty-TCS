@@ -8,6 +8,7 @@ import { LoadingHome } from '../../../components/Loading/LoadingHome';
 import { useUser } from "../../../components/UserContext/UserContext";
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import Event from '../../../types/Event';
+import { Link } from 'react-router-dom';
 
 export default function Home () {
 
@@ -51,7 +52,9 @@ export default function Home () {
             ) : (
                 events.map(evento => (
                   
-                            <div key={evento.id} className="mt-8 mb-8"> 
+                      //Link que leva para o evento
+                      
+                            <Link to={`/event/${evento.id}`} key={evento.id} className="block mt-8 mb-8">
                                 <div className="max-w-sm mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg"> 
                                     <img className="w-full" src={`http://localhost:8081${evento.eventoCaminho}`} alt="fotoEvento" />
                                     <div className="px-6 py-4 dark:bg-gray-500">
@@ -60,9 +63,17 @@ export default function Home () {
                                         {evento.descricao}
                                     </p>
                                   
-                                    
                                     </div>
+
                                     <div className="px-6 py-4 dark:bg-gray-500">
+                                    <div className="px-6 py-4 dark:bg-gray-500">
+                                        <p className='text-gray-500'>
+                                        {evento.cidade}/{evento.estado}
+                                        </p>
+                                        <p className='text-gray-500'>
+                                        {/* {evento.rua} */} Rua professor egidio
+                                        </p>
+                                    </div>
 
                                     <hr className="my-5 border-gray-300 dark:border-gray-300 lg:my-5" />
                                     {/* curtir e Comentar evento  */}
@@ -88,10 +99,10 @@ export default function Home () {
                                             </div>
 
                                     {/* comprar ingresso */}
-                                    <button type="button" className="mt-6 text-white bg-indigo-500 hover:bg-grey-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-indigo-500 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    <div className="mt-6 text-white bg-indigo-500 hover:bg-grey-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-indigo-500 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                                     <img src="/imagens/tickets.png" alt="ticketBuy" />
-                                    <span className='px-2'>R${evento.valor}</span>
-                                    </button>
+                                    <span className='px-2'>R$ {evento.valor}</span>
+                                    </div>
 
                                     </div>
                                     <div className="px-6 pt-4 pb-2">
@@ -99,7 +110,7 @@ export default function Home () {
                                     </div>
                                     
                                 </div>
-                                </div>
+                            </Link>
 
                 ))
             )}
