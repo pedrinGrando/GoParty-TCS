@@ -54,7 +54,7 @@ export default function Home () {
                   
                       //Link que leva para o evento
                       
-                            <Link to={`/event/${evento.id}`} key={evento.id} className="block mt-8 mb-8">
+                            <Link to={`/event/${evento.id}`} key={evento.id} className="block mt-16 mb-8">
                                 <div className="max-w-sm mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg"> 
                                     <img className="w-full" src={`http://localhost:8081${evento.eventoCaminho}`} alt="fotoEvento" />
                                     <div className="px-6 py-4 dark:bg-gray-500">
