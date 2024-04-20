@@ -1,6 +1,7 @@
 import React from "react"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
 import { Link } from "react-router-dom"
+import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar"
 
 export default function Groups () {
    
@@ -21,6 +22,7 @@ export default function Groups () {
                             </div>
                         </div>
                <Sidebar />
+               <ResponsiveNavBar/>
            </div>
     )
 }

@@ -27,8 +27,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import go.party.tcs.model.Evento;
-import go.party.tcs.model.Notification;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.ComentarioRepository;
 import go.party.tcs.repository.CurtidaRepository;
@@ -40,12 +38,11 @@ import go.party.tcs.service.EmailService;
 import go.party.tcs.service.EventoService;
 import go.party.tcs.service.NotificationService;
 import go.party.tcs.service.UsuarioService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/v1/usuarios")
-@CrossOrigin(origins = "http://localhost:5173/") // Permitindo requisições apenas do localhost:3000
+@CrossOrigin(origins = "http://localhost:5173/")
 public class UsuarioController {
 
     @Autowired

@@ -34,10 +34,7 @@ export const FormsTrends: React.FC = () => {
         <LoadingFormsTrends/>
        ) : (
 
-        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow">
-        <div className="relative me-4">
-          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-        </div>
+      <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow dark:bg-gray-900">
         <div className="relative me-4">
           <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
         </div>

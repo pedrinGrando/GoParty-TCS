@@ -17,14 +17,29 @@ const EventDetails: React.FC = () => {
 
   interface EventoDTO {
     id: number;
-   } 
+    titulo: string;
+    descricao: string;
+    eventoCaminho: string;
+    cidade: string;
+    estado: string;
+    dataEvento: Date; 
+    valor: number;
+    nomeUsuario?: string; 
+}
 
-   interface UsuarioDTO {
-    id: number;
-   }
 
-   async function comprarIngresso(userId: number, eventoId: number): Promise<void> {
-    const eventoDTO: EventoDTO = { id: eventoId };
+   async function comprarIngresso(userId: number): Promise<void> {
+    const eventoDTO: EventoDTO = { 
+        id: evento.id,
+        titulo: evento.titulo,
+        descricao: evento.descricao,
+        eventoCaminho: evento.eventoCaminho,
+        cidade: evento.cidade,
+        estado: evento.estado,
+        dataEvento: evento.dataEvento,
+        valor: evento.valor,
+        nomeUsuario: "Pedro Aluisio Scuissiatto"
+     };
 
     try {
         const response = await fetch(`http://localhost:8081/v1/ingressos/comprar-ingresso?userId=${userId}`, {
@@ -37,15 +52,24 @@ const EventDetails: React.FC = () => {
         });
 
         if (response.ok) {
-            const ingresso = await response.json();
-            console.log('Ingresso criado com sucesso:', ingresso);
+           //const ingresso = await response.json();
+            //console.log('Ingresso criado com sucesso:', ingresso);
         } else {
             throw new Error('Falha ao comprar ingresso');
         }
     } catch (error) {
-        console.error('Erro ao comprar ingresso:', error);
+        //console.error('Erro ao comprar ingresso:', error);
     }
-}
+  }
+
+
+   const handlePurchase = (userId: number, ) => {
+    comprarIngresso(userId).then(() => {
+        alert('Compra realizada com sucesso!');
+    }).catch(error => {
+        alert('Erro ao realizar a compra: ' + error.message);
+    });
+  };
 
   useEffect(() => {
     const fetchEvento = async () => {
@@ -63,7 +87,7 @@ const EventDetails: React.FC = () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data: Event = await response.json();
+            const data: EventoDTO = await response.json();
             setEvento(data);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
@@ -74,6 +98,7 @@ const EventDetails: React.FC = () => {
 
     fetchEvento();
 }, [eventId]);
+
   return (
    
     <div>
@@ -89,7 +114,7 @@ const EventDetails: React.FC = () => {
                             </div>
                             <div className="flex -mx-2 mb-4">
                                 <div className="w-1/2 px-2">
-                                    <button onClick={() => comprarIngresso(user.principal.id, evento.id)} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
+                                    <button onClick={() => handlePurchase(user.principal.id)} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
                                     {isLoading ? (
                                         <Loading/>
                                         ) : (

@@ -8,6 +8,7 @@ import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { ModalMessage } from '../../../components/modal/ModalMessage';
 import ReactInputMask from 'react-input-mask';
 import { Error } from '../../../components/Error/Error';
+import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 
 export default function PostEvent () {
 
@@ -523,6 +524,7 @@ export default function PostEvent () {
             </div>
           </div>
          <Sidebar/>
+         <ResponsiveNavBar/>
         </div>  
         </form>    
       </div>

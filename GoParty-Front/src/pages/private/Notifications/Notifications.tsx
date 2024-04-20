@@ -3,6 +3,7 @@ import TrendEvents from "../../../components/Feed/TrendEvents";
 import { Loading } from "../../../components/Loading/Loading";
 import { Sidebar } from "../../../components/sidebar/Sidebar";
 import Notification from "../../../types/Notification";
+import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
 
 export default function Notifications () {
 
@@ -37,7 +38,7 @@ export default function Notifications () {
     return (
            <div>
              <TrendEvents/>
-                 <section className="pt-16 bg-blueGray-50">
+                 <section className="pt-16 bg-blueGray-50 dark:bg-gray-900">
                     <div className="w-full lg:w-4/12 px-4 mx-auto">
                     <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
                                 {isLoading ? (
@@ -50,7 +51,7 @@ export default function Notifications () {
                         {notifications.length === 0 ? (
                            //Notificacao exemplo
 
-                            <div className="flex justify-center my-8">
+                            <div className="flex justify-center my-8  dark:bg-gray-900">
                                 <div id="toast-notification" className="w-full max-w-xs p-4 text-gray-900 bg-white rounded-lg shadow dark:bg-white dark:text-black" role="alert">
                                     <div className="flex items-center mb-3">
                                         <span className="mb-1 text-sm font-semibold text-gray-900 dark:text-black">New notification</span>
@@ -130,6 +131,7 @@ export default function Notifications () {
                  </div>
         </section>
      <Sidebar />
+     <ResponsiveNavBar/>
    </div>
     )
 }

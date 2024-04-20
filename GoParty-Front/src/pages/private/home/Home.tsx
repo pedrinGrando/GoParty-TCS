@@ -8,6 +8,7 @@ import { LoadingHome } from '../../../components/Loading/LoadingHome';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import Event from '../../../types/Event';
 import { Link } from 'react-router-dom';
+import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 
 interface EventoDTO {
     id: number;
@@ -58,9 +59,9 @@ export default function Home () {
                         ) : (
                             <div>
              <FormsTrends/>
-             <hr className="my-5 border-gray-300 dark:border-gray-300 lg:my-5" />
+             <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
             {eventos.length === 0 ? (
-                <div className="flex justify-center items-center h-screen">
+                <div className="flex justify-center dark:bg-gray-900 items-center h-screen">
                     <NoEvent/>
                 </div>
             ) : (
@@ -131,6 +132,7 @@ export default function Home () {
         </div>
        )}
      <Sidebar />
+     <ResponsiveNavBar/>
    </div>
      )
 }

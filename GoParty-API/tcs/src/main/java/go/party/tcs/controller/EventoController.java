@@ -112,19 +112,13 @@ public class EventoController {
                       .collect(Collectors.toList());
     }
 
-    //Busca pelo id
+    //Id evento
     @GetMapping("/buscar-evento/{eventoId}")
-    public ResponseEntity<Evento> buscarEventoPeloId(@PathVariable Long eventoId) {
-        
-        Optional<Evento> eventoOptional =  eventoRepository.findById(eventoId);
-        if (eventoOptional.isPresent()){
-            Evento evento = eventoOptional.get();
-            return new ResponseEntity<>(evento, HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        
-    }
+    public ResponseEntity<?> buscarEventoPeloId(@PathVariable Long eventoId) {
+    return eventoRepository.findById(eventoId)
+        .map(evento -> new ResponseEntity<>(new EventoDTO(evento), HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }       
 
     @GetMapping("/curtidas/{eventoId}")
     public int obterQuantidadeCurtidas(@PathVariable Integer eventoId, Model model, HttpSession session) {
