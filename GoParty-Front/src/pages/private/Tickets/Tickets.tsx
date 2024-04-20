@@ -5,6 +5,7 @@ import { Loading } from "../../../components/Loading/Loading";
 import Ingresso from "../../../types/Ingresso";
 import TrendEvents from "../../../components/Feed/TrendEvents";
 import { LoadingHome } from "../../../components/Loading/LoadingHome";
+import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
 
 export default function Tickets () {
 
@@ -168,6 +169,7 @@ export default function Tickets () {
         </div>
        )}
      <Sidebar />
+     <ResponsiveNavBar/>
    </div>
 
     )

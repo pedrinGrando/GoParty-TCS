@@ -15,27 +15,61 @@ const EventDetails: React.FC = () => {
   const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
   const token = localStorage.getItem('token');
 
-  function comprarIngresso(userId: any, evento: any) {
-    const url = `http://localhost:8081/v1/ingressos/comprar-ingresso/?userId=${userId}`; 
-    setIsLoading(true);
-
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` 
-        },
-        body: JSON.stringify(evento) 
-    })
-    .then(response => {
-        if (response.ok) 
-            setIsLoading(false);
-            return response.json();
-    })
-    
-    .catch(error => console.error('Erro ao comprar ingresso:', error));
-    setIsLoading(false);
+  interface EventoDTO {
+    id: number;
+    titulo: string;
+    descricao: string;
+    eventoCaminho: string;
+    cidade: string;
+    estado: string;
+    dataEvento: Date; 
+    valor: number;
+    nomeUsuario?: string; 
 }
+
+
+   async function comprarIngresso(userId: number): Promise<void> {
+    const eventoDTO: EventoDTO = { 
+        id: evento.id,
+        titulo: evento.titulo,
+        descricao: evento.descricao,
+        eventoCaminho: evento.eventoCaminho,
+        cidade: evento.cidade,
+        estado: evento.estado,
+        dataEvento: evento.dataEvento,
+        valor: evento.valor,
+        nomeUsuario: "Pedro Aluisio Scuissiatto"
+     };
+
+    try {
+        const response = await fetch(`http://localhost:8081/v1/ingressos/comprar-ingresso?userId=${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(eventoDTO)
+        });
+
+        if (response.ok) {
+           //const ingresso = await response.json();
+            //console.log('Ingresso criado com sucesso:', ingresso);
+        } else {
+            throw new Error('Falha ao comprar ingresso');
+        }
+    } catch (error) {
+        //console.error('Erro ao comprar ingresso:', error);
+    }
+  }
+
+
+   const handlePurchase = (userId: number, ) => {
+    comprarIngresso(userId).then(() => {
+        alert('Compra realizada com sucesso!');
+    }).catch(error => {
+        alert('Erro ao realizar a compra: ' + error.message);
+    });
+  };
 
   useEffect(() => {
     const fetchEvento = async () => {
@@ -53,7 +87,7 @@ const EventDetails: React.FC = () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
-            const data: Event = await response.json();
+            const data: EventoDTO = await response.json();
             setEvento(data);
         } catch (e) {
             setError(e instanceof Error ? e.message : String(e));
@@ -64,6 +98,7 @@ const EventDetails: React.FC = () => {
 
     fetchEvento();
 }, [eventId]);
+
   return (
    
     <div>
@@ -79,7 +114,7 @@ const EventDetails: React.FC = () => {
                             </div>
                             <div className="flex -mx-2 mb-4">
                                 <div className="w-1/2 px-2">
-                                    <button onClick={() => comprarIngresso(user.principal.id, evento)} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
+                                    <button onClick={() => handlePurchase(user.principal.id)} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
                                     {isLoading ? (
                                         <Loading/>
                                         ) : (

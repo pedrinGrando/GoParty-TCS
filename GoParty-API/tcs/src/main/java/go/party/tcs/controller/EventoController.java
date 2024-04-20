@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.EventoRepository;
@@ -103,24 +105,20 @@ public class EventoController {
     }
     
     @GetMapping("/buscar-eventos")
-    public ResponseEntity<List<Evento>> getAllEvents() {
-        List<Evento> events = eventoService.getAllEventos();
-        return new ResponseEntity<>(events, HttpStatus.OK);
+    public List<EventoDTO> getAllEventos() {
+        List<Evento> eventos = eventoRepository.findAll();
+        return eventos.stream()
+                      .map(EventoDTO::new)
+                      .collect(Collectors.toList());
     }
 
-    //Busca pelo id
+    //Id evento
     @GetMapping("/buscar-evento/{eventoId}")
-    public ResponseEntity<Evento> buscarEventoPeloId(@PathVariable Long eventoId) {
-        
-        Optional<Evento> eventoOptional =  eventoRepository.findById(eventoId);
-        if (eventoOptional.isPresent()){
-            Evento evento = eventoOptional.get();
-            return new ResponseEntity<>(evento, HttpStatus.OK);
-        } else{
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        
-    }
+    public ResponseEntity<?> buscarEventoPeloId(@PathVariable Long eventoId) {
+    return eventoRepository.findById(eventoId)
+        .map(evento -> new ResponseEntity<>(new EventoDTO(evento), HttpStatus.OK))
+        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }       
 
     @GetMapping("/curtidas/{eventoId}")
     public int obterQuantidadeCurtidas(@PathVariable Integer eventoId, Model model, HttpSession session) {

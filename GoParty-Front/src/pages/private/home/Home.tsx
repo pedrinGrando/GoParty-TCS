@@ -5,35 +5,50 @@ import { FormsTrends } from '../../../components/Feed/FormsTrend';
 import { NoEvent } from '../../../components/Feed/NoEvent';
 import TrendEvents from '../../../components/Feed/TrendEvents';
 import { LoadingHome } from '../../../components/Loading/LoadingHome';
-import { useUser } from "../../../components/UserContext/UserContext";
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import Event from '../../../types/Event';
 import { Link } from 'react-router-dom';
+import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
+
+interface EventoDTO {
+    id: number;
+    titulo: string;
+    descricao: string;
+    eventoCaminho: string;
+    cidade: string;
+    estado: string;
+    dataEvento: Date; 
+    valor: number;
+    nomeUsuario?: string; 
+}
 
 export default function Home () {
 
-    const [events, setEvents] = useState<Event[]>([]);
+    const [eventos, setEventos] = useState<EventoDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
-
-    //Busca os eventos postados
-    useEffect(() => {
-        setIsLoading(true)
-        const fetchEvents = async () => {
-            try {
-                const response = await fetch('http://localhost:8081/v1/eventos/buscar-eventos');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch events');
-                }
-                setIsLoading(false)
-                const data = await response.json();
-                console.log(data);
-                setEvents(data);
-            } catch (error) {
-                console.error(error);
-                setIsLoading(false)
+    
+    const fetchTodosEventos = async (): Promise<EventoDTO[]> => {
+        setIsLoading(true);
+        try {
+            const response = await fetch('http://localhost:8081/v1/eventos/buscar-eventos');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        };
-        fetchEvents();
+            setIsLoading(false);
+            const eventos: EventoDTO[] = await response.json();
+            return eventos;
+        } catch (error) {
+            console.error('Error fetching events:', error);
+            return [];
+        }
+    }
+    
+    //Busca os eventos criados
+    useEffect(() => {
+        fetchTodosEventos().then(data => {
+            setEventos(data);
+            setIsLoading(false);
+        });
     }, []);
 
            return (
@@ -44,13 +59,13 @@ export default function Home () {
                         ) : (
                             <div>
              <FormsTrends/>
-             <hr className="my-5 border-gray-300 dark:border-gray-300 lg:my-5" />
-            {events.length === 0 ? (
-                <div className="flex justify-center items-center h-screen">
+             <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
+            {eventos.length === 0 ? (
+                <div className="flex justify-center dark:bg-gray-900 items-center h-screen">
                     <NoEvent/>
                 </div>
             ) : (
-                events.map(evento => (
+                eventos.map(evento => (
                   
                       //Link que leva para o evento
                       
@@ -117,6 +132,7 @@ export default function Home () {
         </div>
        )}
      <Sidebar />
+     <ResponsiveNavBar/>
    </div>
      )
 }

@@ -32,11 +32,11 @@ export const Sidebar: React.FC<SidebarProps> = ({userName}) => {
         mostrarModal={mostrarModal}
         onClose={handleClose}
         />
-      <div className="flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800">
+      <div className="flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800 dark:bg-gray-700">
        <div className={`fixed flex flex-col top-0 left-0 w-64 bg-white h-full border-r transition-all duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`} style={{ zIndex: 999 }}> {/* Adicionando estilo zIndex */}
-        <div className="flex items-center justify-center h-14">
+        <div className="flex items-center justify-center h-14 dark:bg-gray-700">
         </div>
-        <div className="overflow-y-auto overflow-x-hidden flex-grow">
+        <div className="overflow-y-auto overflow-x-hidden flex-grow dark:bg-gray-700">
           <ul className="flex flex-col py-4 space-y-1">
             <li className="px-5">
               <div className="flex flex-row items-center h-8">

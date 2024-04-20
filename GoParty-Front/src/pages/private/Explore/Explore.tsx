@@ -1,3 +1,4 @@
+import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
 
 export default function Explore () {
@@ -20,6 +21,7 @@ export default function Explore () {
                  </form>
               </div>
             <Sidebar />
+            <ResponsiveNavBar/>
          </div>
     )
 }
