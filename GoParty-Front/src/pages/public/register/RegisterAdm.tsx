@@ -36,6 +36,7 @@ export default function RegisterAdm () {
         estado: '',
         dataPrevista: '',
         metaArrecad: '',
+        chavePix: '',
         cep: '',
         cidade: '',
         bairro: '',
@@ -48,6 +49,7 @@ export default function RegisterAdm () {
         descricao: false,
         estado: false,
         cep: false,
+        chavePix: false,
         dataPrevista: false,
         metaArrecad: false,
         cidade: false,
@@ -151,6 +153,7 @@ export default function RegisterAdm () {
         titulo: formData.titulo.trim() === '',
         descricao: formData.descricao.trim() === '',
         estado: formData.estado.trim() === '',
+        chavePix: formData.chavePix.trim() === '',
         cidade: formData.cidade.trim() === '',
         rua: formData.rua.trim() === '',
         cep: formData.cep.trim() === '',
@@ -203,6 +206,7 @@ export default function RegisterAdm () {
                       estado: '',
                       dataPrevista: '',
                       metaArrecad: '',
+                      chavePix: '',
                       cep: '',
                       cidade: '',
                       bairro: '',
@@ -219,6 +223,7 @@ export default function RegisterAdm () {
                       estado: '',
                       dataPrevista: '',
                       metaArrecad: '',
+                      chavePix: '',
                       cep: '',
                       cidade: '',
                       bairro: '',
@@ -237,6 +242,7 @@ export default function RegisterAdm () {
               estado: '',
               dataPrevista: '',
               metaArrecad: '',
+              chavePix: '',
               cep: '',
               cidade: '',
               bairro: '',
@@ -295,7 +301,7 @@ export default function RegisterAdm () {
                               value={formData.titulo} 
                               id='titulo'
                               onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                              className={`border placeholder-gray-400 text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
                     </div>
 
                     <div className="relative">
@@ -307,7 +313,7 @@ export default function RegisterAdm () {
                       value={formData.descricao}
                       name='descricao'
                       id='descricao'
-                      className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md" 
+                      className="border placeholder-gray-400 text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md" 
                       placeholder="Grupo de arrecadacao para formatura UFS...">
 
                       </textarea>
@@ -319,7 +325,7 @@ export default function RegisterAdm () {
                         mask="99999-999"
                         value={formData.cep}
                         onChange={handleChange}
-                        className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                        className="border placeholder-gray-400 text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
                         type="text"
                         name="cep"
                         id="cep"
@@ -334,7 +340,7 @@ export default function RegisterAdm () {
                               value={formData.cidade}
                               id='cidade'
                               onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                              className={`border placeholder-gray-400 text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='bairro' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -345,7 +351,7 @@ export default function RegisterAdm () {
                               value={formData.bairro}
                               id='bairro'
                               onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                              className={`border placeholder-gray-400 text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='rua' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -356,7 +362,18 @@ export default function RegisterAdm () {
                               name='rua'
                               id='rua'
                               onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                              className={`border placeholder-gray-400 text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
+                    </div>
+                    <div className="relative">
+                      <label htmlFor='chavePix' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Sua chave pix</label>
+                      <input placeholder="Rua major costa 291" 
+                              type="text"
+                              value={formData.chavePix}
+                              name='chavePix'
+                              id='chavePix'
+                              onChange={handleChange}
+                              className={`border placeholder-gray-400 text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
                     </div>
                     <div></div>
                     <div className="relative">
@@ -369,7 +386,7 @@ export default function RegisterAdm () {
                             name='metaArrecad'
                             value={formData.metaArrecad}
                             onChange={handleChange}
-                            className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
+                            className={`border placeholder-gray-400 text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
                         />
                     </div>
                     <div className="relative">
@@ -382,7 +399,7 @@ export default function RegisterAdm () {
                             value={formData.dataPrevista}
                             onChange={handleChange}
                             type="date" 
-                     className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}/>
+                     className={`border placeholder-gray-400 text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}/>
                   </div>
                    
                     <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>

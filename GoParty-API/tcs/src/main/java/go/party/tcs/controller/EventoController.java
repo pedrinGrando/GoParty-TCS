@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -79,7 +80,7 @@ public class EventoController {
     }
 
 
-    @PostMapping("/upload-event-image/{eventoId}")
+    @PutMapping("/upload-event-image/{eventoId}")
     public ResponseEntity<String> uploadProfileImage(@PathVariable Long eventoId, @RequestParam("file") MultipartFile file) {
         try {
             Optional<Evento> eventoOpcional = eventoRepository.findById(eventoId);
@@ -105,6 +106,20 @@ public class EventoController {
     public ResponseEntity<List<Evento>> getAllEvents() {
         List<Evento> events = eventoService.getAllEventos();
         return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    //Busca pelo id
+    @GetMapping("/buscar-evento/{eventoId}")
+    public ResponseEntity<Evento> buscarEventoPeloId(@PathVariable Long eventoId) {
+        
+        Optional<Evento> eventoOptional =  eventoRepository.findById(eventoId);
+        if (eventoOptional.isPresent()){
+            Evento evento = eventoOptional.get();
+            return new ResponseEntity<>(evento, HttpStatus.OK);
+        } else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        
     }
 
     @GetMapping("/curtidas/{eventoId}")

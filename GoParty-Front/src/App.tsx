@@ -24,6 +24,7 @@ import RegisterStudent from './pages/public/register/RegisterStudent';
 import ChangePassword from './pages/public/ResetPassword/ChangePassword';
 import TypeCodeRegister from './pages/public/register/TypeCodeRegister';
 import Terms from './pages/public/Terms/Terms';
+import EventDetails from './pages/private/EventDetails/EventDetails';
 
 
 function App() {
@@ -64,6 +65,7 @@ function App() {
           
           {/* Private Pages */} 
           <Route path='/home' element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
+          <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
           <Route path='/explore' element={isAuthenticated() ? <Explore /> : <Navigate to="/login" />} />
           <Route path='/register-adm' element={isAuthenticated() ? <RegisterAdm /> : <Navigate to="/login" />} />
           <Route path='/account-config' element={isAuthenticated() ? <Configs /> : <Navigate to="/login" />} />

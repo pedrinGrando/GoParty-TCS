@@ -7,6 +7,7 @@ import { Error } from '../../../components/Error/Error';
 import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
+import { ModalChoose } from '../../../components/modal/ModalChoose';
 
 export default function Register(){
 
@@ -309,7 +310,7 @@ export default function Register(){
                               id='nome'
                               value={formData.nome}
                               onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.nome ? 'border-red-500' : ''}`}/>
+                              className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.nome ? 'border-red-500' : ''}`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='email' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -322,7 +323,7 @@ export default function Register(){
                             onChange={handleChange}
                             onBlur={handleBlur} 
                             type="text" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.email
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.email
                     || !isValidEmail || !isEmailUnique  ? 'border-red-500' : ''}`}/>
                    {!isValidEmail && <p style={{ color: 'red' }}>Por favor, insira um e-mail válido.</p>}
                    {!isEmailUnique && <p style={{ color: 'red' }}>Este e-mail já está cadastrado no GoParty!</p>}
@@ -338,7 +339,7 @@ export default function Register(){
                             onChange={handleChange}
                             onBlur={handleBlurUserName}
                             type="text" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
                       {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
                     </div>
                     <div className="relative">
@@ -351,7 +352,7 @@ export default function Register(){
                             value={formData.idade}
                             onChange={handleChange}
                             type="date" 
-                     className={`border text-gray-400 placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.idade
+                     className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.idade
                     ? 'border-red-500' : ''}`}/>
                    {errors.idade && <p style={{ color: 'red' }}>Você deve ter pelo menos 16 anos de idade.</p>}
 
@@ -366,7 +367,7 @@ export default function Register(){
                           name='cpf'
                           value={formData.cpf}
                           onChange={handleChange}
-                          className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
+                          className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
                         />
                       </div>
                    <div className="relative">
@@ -379,7 +380,7 @@ export default function Register(){
                               value={formData.senha}
                               onChange={handleChange}
                               type='password'
-                     className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}/>
+                     className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}/>
                   
                   {errors.senha && (
                         <ErrorPassword />
@@ -396,7 +397,7 @@ export default function Register(){
                             onChange={handleChange}
                             value={formData.senhaConfirm}
                             type={showPassword ? 'text' : 'password'}
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}/>
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}/>
                  {senhaNotEqual && <p style={{ color: 'red' }}>As senhas não coincidem!</p>}
                 <button
                     type="button"

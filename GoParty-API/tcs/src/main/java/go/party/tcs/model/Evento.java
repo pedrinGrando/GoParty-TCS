@@ -53,6 +53,9 @@ public class Evento {
     @Column(name = "bairro")
     private String bairro;
 
+    @Column(name = "rua")
+    private String rua;
+
     @Column(name = "valor")
     private double valor;
 
