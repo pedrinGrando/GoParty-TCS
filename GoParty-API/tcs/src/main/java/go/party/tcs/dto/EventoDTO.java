@@ -15,6 +15,8 @@ public class EventoDTO {
     private double valor;
     private String nomeUsuario;
 
+    public EventoDTO() {}
+
     public EventoDTO(Evento evento) {
         if (evento != null) {
             this.id = evento.getId();

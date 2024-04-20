@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import go.party.tcs.Enums.TipoStatus;
+import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Ingresso;
 import go.party.tcs.model.Usuario;
@@ -41,13 +42,18 @@ public class IngressoController {
     private UsuarioRepository usuarioRepository;
 
     // Endpoint para criar um ingresso
-    @PostMapping("/comprar-ingresso/")
-    public ResponseEntity<Ingresso> criarIngresso(@RequestParam Long userId, @RequestBody Evento evento) {
-        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-        Ingresso ingresso = new Ingresso();
-        try {
-            if(userOptional.isPresent()){
+    @PostMapping("/comprar-ingresso")
+    public ResponseEntity<Ingresso> criarIngresso(@RequestParam Long userId, @RequestBody EventoDTO eventoDTO) {
+
+    Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+    Optional<Evento> eventoOptional = eventoRepository.findById(eventoDTO.getId()); 
+    Ingresso ingresso = new Ingresso();
+
+    try {
+        if (userOptional.isPresent() && eventoOptional.isPresent()) {
             Usuario usuario = userOptional.get();
+            Evento evento = eventoOptional.get();
+            
             ingresso.setAutor(usuario);
             ingresso.setEvento(evento);
             ingresso.setStatus(TipoStatus.PENDENTE);
@@ -55,13 +61,12 @@ public class IngressoController {
             ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
             ingressoRepository.save(ingresso);
             return new ResponseEntity<>(ingresso, HttpStatus.CREATED);
-            }
-        
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    } catch (Exception e) {
         return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+}
 
     @GetMapping("/seus-ingressos/{usuarioId}")
     public ResponseEntity<List<Ingresso>> listarIngressosDoUsuario(@PathVariable Long usuarioId) {

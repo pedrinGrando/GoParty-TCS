@@ -15,26 +15,36 @@ const EventDetails: React.FC = () => {
   const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
   const token = localStorage.getItem('token');
 
-  function comprarIngresso(userId: any, evento: any) {
-    const url = `http://localhost:8081/v1/ingressos/comprar-ingresso/?userId=${userId}`; 
-    setIsLoading(true);
+  interface EventoDTO {
+    id: number;
+   } 
 
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem('token')}` 
-        },
-        body: JSON.stringify(evento) 
-    })
-    .then(response => {
-        if (response.ok) 
-            setIsLoading(false);
-            return response.json();
-    })
-    
-    .catch(error => console.error('Erro ao comprar ingresso:', error));
-    setIsLoading(false);
+   interface UsuarioDTO {
+    id: number;
+   }
+
+   async function comprarIngresso(userId: number, eventoId: number): Promise<void> {
+    const eventoDTO: EventoDTO = { id: eventoId };
+
+    try {
+        const response = await fetch(`http://localhost:8081/v1/ingressos/comprar-ingresso?userId=${userId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify(eventoDTO)
+        });
+
+        if (response.ok) {
+            const ingresso = await response.json();
+            console.log('Ingresso criado com sucesso:', ingresso);
+        } else {
+            throw new Error('Falha ao comprar ingresso');
+        }
+    } catch (error) {
+        console.error('Erro ao comprar ingresso:', error);
+    }
 }
 
   useEffect(() => {
@@ -79,7 +89,7 @@ const EventDetails: React.FC = () => {
                             </div>
                             <div className="flex -mx-2 mb-4">
                                 <div className="w-1/2 px-2">
-                                    <button onClick={() => comprarIngresso(user.principal.id, evento)} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
+                                    <button onClick={() => comprarIngresso(user.principal.id, evento.id)} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
                                     {isLoading ? (
                                         <Loading/>
                                         ) : (
