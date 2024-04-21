@@ -154,6 +154,24 @@ export default function PostEvent () {
   
           if (responseEvento.ok) {
               console.log("Evento criado com sucesso. ID:", eventData.id);
+
+              setFormData({
+                titulo: '',
+                descricao: '',
+                estado: '',
+                dataPrevista: '',
+                cep: '',
+                valor: '',
+                cidade: '',
+                bairro: '',
+                rua: '',
+                fotoEvento: null
+            });
+            setMensagemModal("Evento criado com sucesso!");
+            setImagemSrcModal("imagens/EventCreatedSucess.webp");
+            setMostrarModal(true);
+            setImagePreview('');
+            setIsLoading(false);
   
               if (selectedFile) {
                   const formDataImage = new FormData();
@@ -523,10 +541,10 @@ export default function PostEvent () {
               </div>
             </div>
           </div>
-         <Sidebar/>
-         <ResponsiveNavBar/>
         </div>  
         </form>    
+        <Sidebar/>
+         <ResponsiveNavBar/>
       </div>
      )
 }

@@ -9,6 +9,7 @@ import { ModalMessage } from '../../../components/modal/ModalMessage';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { Link } from 'react-router-dom';
 import { Error } from '../../../components/Error/Error';
+import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 
 
 export default function RegisterAdm () {
@@ -572,9 +573,10 @@ export default function RegisterAdm () {
               </div>
             </div>
           </div>
-         <Sidebar/>
         </div>  
-        </form>    
+        </form>   
+        <Sidebar/> 
+        <ResponsiveNavBar/>
       </div>
      )
 }
