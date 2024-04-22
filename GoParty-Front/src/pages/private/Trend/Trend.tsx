@@ -46,9 +46,8 @@ export default function TrendPage () {
               ) : (
                 <section className="flex items-center justify-center min-h-screen bg-blueGray-50 dark:bg-gray-900">
                 <div className="px-4 mx-auto max-w-4xl">
-                    <div className="relative flex flex-col min-w-0 break-words bg-white w-full shadow-xl rounded-lg">
-                        <ul role="list" className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-max max-w-sm mt-4 mr-4 divide-y divide-gray-300 dark:divide-gray-300">
-                  {/* Exemplo de link para um evento */}
+                    <div className="mt-36 relative flex flex-col min-w-0 break-words bg-white w-full shadow-xl rounded-lg">
+                        <ul role="list" className="mt-20 fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-max max-w-sm divide-y divide-gray-300 dark:divide-gray-300">
                   <Link to=''>
                     <li className="py-3 sm:py-4">
                       <h1>Eventos em alta</h1>
