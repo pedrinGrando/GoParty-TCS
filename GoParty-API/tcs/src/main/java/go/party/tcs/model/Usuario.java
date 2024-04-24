@@ -67,11 +67,14 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.tipoUsuario == TipoUsuario.TEAM) {
+        if(this.getTipoUsuario() == TipoUsuario.TEAM) {
             return List.of(new SimpleGrantedAuthority("ROLE_TEAM"));
         }
-        if(this.tipoUsuario == TipoUsuario.ADM) {
-            return List.of(new SimpleGrantedAuthority("ROLE_ADM"));
+        if(this.getTipoUsuario() == TipoUsuario.ADM) {
+            return List.of(new SimpleGrantedAuthority("ROLE_ADM"), new SimpleGrantedAuthority("ROLE_STUDENT"), new SimpleGrantedAuthority("ROLE_USER"));
+        }
+        if (this.getTipoUsuario() == TipoUsuario.STUDENT) {
+            return List.of(new SimpleGrantedAuthority("ROLE_STUDENT"), new SimpleGrantedAuthority("ROLE_USER"));
         }
         else {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));
