@@ -32,7 +32,7 @@ A GoParty é a próxima evolução em plataformas de eventos, permitindo aos usu
 - MySQL
 
   - Como Executar o banco de dados
-      - Após instalar o MySQL, crie a database goparty
+      - Após instalar o MySQL, crie o database goparty
 
 ## Politicas de Privacidade
 <table width="200px" border="1">
