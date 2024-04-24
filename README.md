@@ -15,7 +15,6 @@ A GoParty é a próxima evolução em plataformas de eventos, permitindo aos usu
 ## Tecnologias Utilizadas no Backend 
 - Java
 - Spring Boot
-- MySQL
 
   - Como executar o backend
      - Executar com o Java o Arquivo TcsApplication
@@ -27,6 +26,12 @@ A GoParty é a próxima evolução em plataformas de eventos, permitindo aos usu
 
    - Como Executar o Frontend
       - Abrir o scr com o terminal e digitar o comando "npm run dev"
+
+## Sistema de gerenciamento de banco de dados
+- MySQL
+
+  - Como Executar o banco de dados
+      - Após instalar o MySQL, crie a database goparty
 
 ## Politicas de Privacidade
 <table width="200px" border="1">
