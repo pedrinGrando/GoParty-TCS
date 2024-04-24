@@ -2,10 +2,10 @@ package go.party.tcs.Enums;
 
 public enum TipoUsuario {
 
-    USER("user"),
-    ADM("adm"),
-    TEAM("team"),
-    STUDENT("student");
+    USER("USER"),
+    ADM("ADM"),
+    TEAM("TEAM"),
+    STUDENT("STUDENT");
 
     private String tipo;
 
@@ -14,6 +14,6 @@ public enum TipoUsuario {
     }
 
     public String getRole() {
-        return tipo;
+        return this.tipo;
     }
 }
