@@ -20,7 +20,8 @@ A GoParty é a próxima evolução em plataformas de eventos, permitindo aos usu
      - Executar com o Java o Arquivo TcsApplication
 
 
-## FrameWork para o Frontend
+## Tecnologias utilizadas no Frontend
+- TypeScript
 - React.js
 - Tailwind(CSS)
 
