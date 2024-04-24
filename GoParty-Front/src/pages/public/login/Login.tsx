@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import ReCAPTCHA from "react-google-recaptcha";
 
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 import { ModalChoose } from '../../../components/modal/ModalChoose';
+import config from '../../../../config.json';
+
 
 export default function Login(){
 
@@ -17,6 +20,7 @@ export default function Login(){
     const [mostrarModalEscolha, setModalEscolha] = useState<boolean>(false);
     const [mensagemModal, setMensagemModal] = useState<string>('');
     const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
+    const [captcha, setCaptcha] = useState<boolean>(false);
 
     const handleClose = () => setModalEscolha(false);
   
@@ -24,6 +28,10 @@ export default function Login(){
       username: '',
       senha: '',
     });
+
+    const handleCaptchaChange = (value: any) => {
+      setCaptcha(value);
+    };
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
@@ -51,10 +59,10 @@ export default function Login(){
       event.preventDefault();
       setIsLoading(true);
   
-      if (formData.username.trim() === "" || formData.senha.trim() === "") {
+      if ((formData.username.trim() === "" || formData.senha.trim() === "") || !captcha) {
           setError(true);
           setIsLoading(false);
-          setMessage("Preencha todos os campos!")
+          setMessage("Preencha todos os campos e resolva o captcha!")
           return;
       }
   
@@ -131,7 +139,6 @@ export default function Login(){
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Nome de usuário</label>
                             <input 
-                            placeholder="Username"
                             id='username'
                             name='username'                           
                             value={formData.username}
@@ -142,7 +149,7 @@ export default function Login(){
                     <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Senha</label>
-                            <input placeholder="Password"
+                            <input
                             id='senha'
                             onChange={handleChange}
                             value={formData.senha}
@@ -160,7 +167,7 @@ export default function Login(){
                         <img src="imagens/hide.png" alt="" />
                     )}
                 </button>
- 
+                
                         {/*Leva para a troca de senha */}
                        <Link to='/reset-password-email'>
                         <div className="text-sm ml-auto">
@@ -186,6 +193,12 @@ export default function Login(){
                           'Entrar'
                         )}
                           </button>
+                    </div>
+                    <div className='relative'>
+                      <ReCAPTCHA
+                        sitekey={config.REACT_APP_SITE_KEY}
+                        onChange={handleCaptchaChange}
+                      />
                     </div>
 
                     {/* AQUI*/}
