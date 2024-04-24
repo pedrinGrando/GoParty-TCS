@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
+import ReCAPTCHA from "react-google-recaptcha";
+
 
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
@@ -8,6 +10,8 @@ import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 import { ModalChoose } from '../../../components/modal/ModalChoose';
+import config from '../../../../config.json';
+
 
 export default function Register(){
 
@@ -22,10 +26,15 @@ export default function Register(){
     const navigate = useNavigate();
     const [senhaNotEqual, setSenhaNotEqual] = useState(false);
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+    const [captcha, setCaptcha] = useState<boolean>(false);
+
+    const handleCaptchaChange = (value: any) => {
+      setCaptcha(value);
+    };
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
-  };
+    };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setIsChecked(e.target.checked);
@@ -472,6 +481,12 @@ export default function Register(){
                               'Cadastrar'
                             )}
                           </button>
+                    </div>
+                    <div className='relative'>
+                      <ReCAPTCHA
+                        sitekey={config.REACT_APP_SITE_KEY}
+                        onChange={handleCaptchaChange}
+                      />
                     </div>
 
                     {/* AQUI*/}
