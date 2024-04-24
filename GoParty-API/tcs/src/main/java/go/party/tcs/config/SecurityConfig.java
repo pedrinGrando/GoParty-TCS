@@ -3,8 +3,10 @@ package go.party.tcs.config;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties.Http;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -31,17 +33,24 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            // Configuração de CORS
-            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            // Desabilitar CSRF
-            .csrf(csrf -> csrf.disable())
-            // Configuração de sessão STATELESS
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            // Adicionar filtro antes do filtro de autenticação
-            .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+        return http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .csrf(csrf -> csrf.disable())
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.POST, "/v1/auth/**").permitAll()
+                        .requestMatchers(HttpMethod.POST ,"/v1/eventos/criar-evento/**").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.POST, "/v1/eventos/upload-event-image/**").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.GET, "/v1/eventos/buscar-eventos/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/v1/eventos/curtidas/**").hasRole("USER")
+                        .requestMatchers(HttpMethod.POST, "/v1/fomaturas/ser-adm/**").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.POST, "/v1/fomaturas/upload-grad-image/**").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.POST, "/v1/fomaturas/upload-matricula-pdf/**").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.GET, "/v1/fomaturas/uploads/**").hasRole("STUDENT")
+                        .requestMatchers(HttpMethod.POST, "/v1/ingressos/comprar-ingresso").hasRole("USER")
+                        .requestMatchers(HttpMethod.GET, "/v1/ingressos/seus-ingressos/**").hasRole("USER")
+                        .requestMatchers("/v1/usuarios/**").hasRole("USER"))
+                .addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class).build();
     }
 
     @Bean
