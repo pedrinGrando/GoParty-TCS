@@ -40,7 +40,6 @@ export default function Tickets () {
 
                   <div>
                  
-                     <TrendEvents/>
                        {isLoading ? (
                               <LoadingHome/>
                         ) : (

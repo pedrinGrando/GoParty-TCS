@@ -16,6 +16,7 @@ interface EventoDTO {
     descricao: string;
     eventoCaminho: string;
     cidade: string;
+    rua: string;
     estado: string;
     dataEvento: Date; 
     valor: number;
@@ -86,7 +87,7 @@ export default function Home () {
                                         {evento.cidade}/{evento.estado}
                                         </p>
                                         <p className='text-gray-500'>
-                                        {/* {evento.rua} */} Rua professor egidio
+                                        {evento.rua}
                                         </p>
                                     </div>
 

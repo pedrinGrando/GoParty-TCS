@@ -3,8 +3,10 @@ package go.party.tcs.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +17,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -83,9 +86,6 @@ public class Formatura {
     @Column(name = "matricula_caminho")
     private String matriculaCaminho;
 
-    @ManyToMany
-    @JoinTable(name = "formatura_grupo",
-               joinColumns = @JoinColumn(name = "formatura_id"),
-               inverseJoinColumns = @JoinColumn(name = "usuario_id"))
-    private Set<Usuario> grupo = new HashSet<>();
+    @OneToMany(mappedBy = "formatura", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Usuario> usuarios;
 }

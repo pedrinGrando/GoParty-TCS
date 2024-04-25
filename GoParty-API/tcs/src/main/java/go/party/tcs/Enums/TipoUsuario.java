@@ -5,7 +5,8 @@ public enum TipoUsuario {
     USER("user"),
     ADM("adm"),
     TEAM("team"),
-    STUDENT("student");
+    STUDENT("student"),
+    MEMBER("member");
 
     private String tipo;
 
