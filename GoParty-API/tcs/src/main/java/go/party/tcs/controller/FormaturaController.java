@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.model.Formatura;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.FormaturaRepository;
@@ -61,13 +63,19 @@ public class FormaturaController {
              if (!userOptional.isPresent()) {
                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
              }
-
              Usuario usuarioAdm = userOptional.get();
-             formatura.setAdm(usuarioAdm);
-             formatura.setDataSolicitacao(LocalDateTime.now());
-             Formatura formaturaSalva = formaturaService.cadastrarSolicitacaoAdm(formatura);
+             if (usuarioAdm.getTipoUsuario().equals(TipoUsuario.ADM)){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario já é ADM!");
+             } else {
+                usuarioAdm.setTipoUsuario(TipoUsuario.ADM);
+                usuarioRepository.save(usuarioAdm);
+                formatura.setAdm(usuarioAdm);
+                formatura.setDataSolicitacao(LocalDateTime.now());
+                Formatura formaturaSalva = formaturaService.cadastrarSolicitacaoAdm(formatura);
+
+                return ResponseEntity.ok(Map.of("id", formaturaSalva.getId(), "mensagem", "Solicitação para adm realizada com sucesso!"));
+             }
              
-             return ResponseEntity.ok(Map.of("id", formaturaSalva.getId(), "mensagem", "Solicitação para adm realizada com sucesso!"));
          } catch (Exception e) {
              e.printStackTrace();
              return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao realizar a solicitação usuário.");
@@ -135,6 +143,24 @@ public class FormaturaController {
                     "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
         } else {
             return ResponseEntity.notFound().build();
+        }
+    }
+
+    @PutMapping("/adicionar-membro/{userId}")
+    public ResponseEntity<String> adicionarMembros(@PathVariable Long userId, @RequestBody Long formaturaId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Optional<Formatura> formOptional = formaturaRepository.findById(formaturaId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } else if (!formOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } else {
+            Formatura formatura = formOptional.get();
+            Usuario usuario = userOptional.get();
+            usuario.setFormatura(formatura);
+            usuario.setTipoUsuario(TipoUsuario.MEMBER);
+            usuarioRepository.save(usuario);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Membro adicionado com sucesso!");
         }
     }
 

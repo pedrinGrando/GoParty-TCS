@@ -464,14 +464,6 @@ export default function RegisterAdm() {
                       </button>
                     </div>
 
-                    {/* AQUI*/}
-                    <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
-                      Está esperando por aprovação?
-                      <button className="font-semibold text-pink-500 transition-colors hover:text-blue-700 dark:text-white">
-                        ver meus pedidos
-                      </button>
-                    </p>
-
                     {/*AQUI*/}
                     <div className="w-full p-1 text-center dark:text-white">
                       © 2023 GoParty direitos reservados

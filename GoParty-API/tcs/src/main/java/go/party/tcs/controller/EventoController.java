@@ -26,10 +26,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.model.Evento;
+import go.party.tcs.model.Formatura;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.EventoRepository;
+import go.party.tcs.repository.FormaturaRepository;
 import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
@@ -38,12 +41,12 @@ import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/v1/eventos")
-@CrossOrigin(origins = "http://localhost:5173/") 
+@CrossOrigin(origins = "http://localhost:5173/")
 public class EventoController {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
-    
+
     @Autowired
     private EventoService eventoService;
 
@@ -54,77 +57,86 @@ public class EventoController {
     private EventoRepository eventoRepository;
 
     @Autowired
+    private FormaturaRepository formaturaRepository;
+
+    @Autowired
     private CurtidaService curtidaService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
-    
+
     // Método para Criar um Evento
     @PostMapping("/criar-evento/{userId}")
     public ResponseEntity<?> cadastrarEvento(@PathVariable Long userId, @RequestBody Evento evento) {
         try {
 
-              //encontrar usuario que fez a postagem
-              Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-              if (!userOptional.isPresent()) {
-                  return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-              }
- 
-              Usuario usuarioAutor = userOptional.get();
-              evento.setUsuario(usuarioAutor);
-            //Momento da Postagem
-            evento.setDataPostagem(LocalDateTime.now());
-            Evento eventoSalvo = eventoRepository.save(evento);
-            return ResponseEntity.ok(Map.of("id", eventoSalvo.getId(), "mensagem", "Evento criado com sucesso"));
+            // encontrar usuario que fez a postagem
+            Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+            if (!userOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+            Usuario usuarioAutor = userOptional.get();
+
+            if (!usuarioAutor.getTipoUsuario().equals(TipoUsuario.MEMBER)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Formatura não encontrada!");
+            } else {
+                evento.setFormatura(usuarioAutor.getFormatura());
+                evento.setUsuario(usuarioAutor);
+                // Momento da Postagem
+                evento.setDataPostagem(LocalDateTime.now());
+                Evento eventoSalvo = eventoRepository.save(evento);
+                return ResponseEntity.ok(Map.of("id", eventoSalvo.getId(), "mensagem", "Evento criado com sucesso"));
+            }
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar evento.");
         }
     }
 
-
     @PutMapping("/upload-event-image/{eventoId}")
-    public ResponseEntity<String> uploadProfileImage(@PathVariable Long eventoId, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Long eventoId,
+            @RequestParam("file") MultipartFile file) {
         try {
             Optional<Evento> eventoOpcional = eventoRepository.findById(eventoId);
             if (!eventoOpcional.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found");
             }
-    
+
             Evento evento = eventoOpcional.get();
             String filename = eventoId + "_" + file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-    
+
             evento.setEventoCaminho("/uploads/" + filename);
             eventoRepository.save(evento);
-    
+
             return ResponseEntity.ok("Event image uploaded successfully");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload event image");
         }
     }
-    
+
     @GetMapping("/buscar-eventos")
     public List<EventoDTO> getAllEventos() {
         List<Evento> eventos = eventoRepository.findAll();
         return eventos.stream()
-                      .map(EventoDTO::new)
-                      .collect(Collectors.toList());
+                .map(EventoDTO::new)
+                .collect(Collectors.toList());
     }
 
-    //Id evento
+    // Id evento
     @GetMapping("/buscar-evento/{eventoId}")
     public ResponseEntity<?> buscarEventoPeloId(@PathVariable Long eventoId) {
-    return eventoRepository.findById(eventoId)
-        .map(evento -> new ResponseEntity<>(new EventoDTO(evento), HttpStatus.OK))
-        .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }       
+        return eventoRepository.findById(eventoId)
+                .map(evento -> new ResponseEntity<>(new EventoDTO(evento), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
     @GetMapping("/curtidas/{eventoId}")
     public int obterQuantidadeCurtidas(@PathVariable Integer eventoId, Model model, HttpSession session) {
 
         Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        // Aqui você deve implementar a lógica para obter a quantidade de curtidas do evento com o ID fornecido
+        // Aqui você deve implementar a lógica para obter a quantidade de curtidas do
+        // evento com o ID fornecido
         // Substitua o código abaixo pela lógica real de obtenção de curtidas
         int quantidadeCurtidas = eventoService.obterQuantidadeCurtidas(eventoId);
         model.addAttribute("quantidadeCurtidas", quantidadeCurtidas);
