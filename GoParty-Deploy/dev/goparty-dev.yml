@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  app:
+    image: <img-backend>
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  front:
+    image: <img-frontend>
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+  db:
+    image: <img-db>
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+      MYSQL_DATABASE: goparty
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
