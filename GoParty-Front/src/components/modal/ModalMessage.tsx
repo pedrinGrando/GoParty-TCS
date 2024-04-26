@@ -22,7 +22,7 @@ export const ModalMessage: React.FC<ModalProps> = ({ mensagem, imagemSrc, mostra
 
             <div className="flex justify-between items-center p-5 border-b dark:border-gray-600">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Solicitação Realizada!
+               
               </h3>
               <button type="button" onClick={onClose} className="text-black bg-transparent hover:bg-gray-200 rounded-lg text-sm p-1.5 dark:hover:bg-gray-600">
                 {/* Ícone de fechar */}

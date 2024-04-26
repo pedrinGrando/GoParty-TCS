@@ -17,6 +17,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -65,6 +67,10 @@ public class Usuario implements UserDetails {
     @Column(name = "senha")
     private String senha;
 
+    @ManyToOne
+    @JoinColumn(name = "formatura_id")
+    private Formatura formatura;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.tipoUsuario == TipoUsuario.TEAM) {
@@ -72,6 +78,9 @@ public class Usuario implements UserDetails {
         }
         if(this.tipoUsuario == TipoUsuario.ADM) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADM"));
+        }
+        if(this.tipoUsuario == TipoUsuario.MEMBER) {
+            return List.of(new SimpleGrantedAuthority("ROLE_MEMBER"));
         }
         else {
             return List.of(new SimpleGrantedAuthority("ROLE_USER"));

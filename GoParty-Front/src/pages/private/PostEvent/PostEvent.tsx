@@ -154,13 +154,31 @@ export default function PostEvent () {
   
           if (responseEvento.ok) {
               console.log("Evento criado com sucesso. ID:", eventData.id);
+
+              setFormData({
+                titulo: '',
+                descricao: '',
+                estado: '',
+                dataPrevista: '',
+                cep: '',
+                valor: '',
+                cidade: '',
+                bairro: '',
+                rua: '',
+                fotoEvento: null
+            });
+            setMensagemModal("Evento criado com sucesso!");
+            setImagemSrcModal("imagens/EventCreatedSucess.webp");
+            setMostrarModal(true);
+            setImagePreview('');
+            setIsLoading(false);
   
               if (selectedFile) {
                   const formDataImage = new FormData();
                   formDataImage.append('file', selectedFile);
   
                   const responseImage = await fetch(`http://localhost:8081/v1/eventos/upload-event-image/${eventData.id}`, {
-                      method: 'POST',
+                      method: 'PUT',
                       headers: {
                           'Authorization': `Bearer ${token}`,
                       },
@@ -251,7 +269,7 @@ export default function PostEvent () {
               imagemSrc={imagemSrcModal}
               mostrarModal={mostrarModal}
               onClose={handleClose}
-            />
+              />
               <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
                     relative z-10">
@@ -523,10 +541,10 @@ export default function PostEvent () {
               </div>
             </div>
           </div>
-         <Sidebar/>
-         <ResponsiveNavBar/>
         </div>  
         </form>    
+        <Sidebar/>
+         <ResponsiveNavBar/>
       </div>
      )
 }

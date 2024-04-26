@@ -25,6 +25,7 @@ import ChangePassword from './pages/public/ResetPassword/ChangePassword';
 import TypeCodeRegister from './pages/public/register/TypeCodeRegister';
 import Terms from './pages/public/Terms/Terms';
 import EventDetails from './pages/private/EventDetails/EventDetails';
+import TrendPage from './pages/private/Trend/Trend';
 
 
 function App() {
@@ -74,6 +75,7 @@ function App() {
           <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />
           <Route path='/create-event' element={isAuthenticated() ? <PostEvent /> : <Navigate to="/login" />} />  
+          <Route path='/trending-events' element={isAuthenticated() ? <TrendPage /> : <Navigate to="/login" />} />  
         </Routes>
       </UserProvider>
     </Router>

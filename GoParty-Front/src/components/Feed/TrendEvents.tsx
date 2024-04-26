@@ -28,7 +28,7 @@ const TrendEvents: React.FC = () => {
   }, []);
 
   return (
-    <div>
+               <div>
                   {isLoading ? (
                               <LoadingTrends/>
                         ) : (
