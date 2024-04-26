@@ -134,7 +134,8 @@ export default function RegisterStudent(){
       senha: false,
       cpf: false,
       senhaConfirm: false,
-      senhaRegras: false
+      senhaRegras: false,
+      captcha: false
    });
 
       const [formData, setFormData] = useState({
@@ -212,6 +213,10 @@ export default function RegisterStudent(){
                     setErrors({ ...errors, idade: age < 16 });
                 }
             }
+
+            if (!isCaptchaValid) {
+              setErrors({ ...errors, captcha: isCaptchaValid });
+            }
         }
     };
       
@@ -227,7 +232,8 @@ export default function RegisterStudent(){
           senha: formData.senha.trim() === '',
           cpf: formData.senha.trim() === '',
           senhaConfirm: formData.senhaConfirm.trim() === '',
-          senhaRegras: formData.senhaConfirm.trim() === ''
+          senhaRegras: formData.senhaConfirm.trim() === '',
+          captcha: !isCaptchaValid
       };
 
       setErrors(newErrors);
@@ -236,7 +242,7 @@ export default function RegisterStudent(){
       if (Object.values(newErrors).some(error => error)) {
 
         setIsLoading(false)
-        setMessage('Preencha todos os campos obrigatórios!')
+        setMessage('Preencha todos os campos obrigatórios e resolva o captcha!')
         setError(true)
         return;
      }
