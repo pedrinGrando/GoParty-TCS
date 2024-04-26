@@ -9,6 +9,8 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -30,6 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.Enums.TipoUsuario;
+import go.party.tcs.dto.EventoDTO;
+import go.party.tcs.dto.FormaturaDTO;
+import go.party.tcs.dto.UsuarioDTO;
 import go.party.tcs.model.Formatura;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.FormaturaRepository;
@@ -67,6 +72,7 @@ public class FormaturaController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario já é ADM!");
             } else {
                 usuarioAdm.setTipoUsuario(TipoUsuario.ADM);
+                usuarioAdm.setFormatura(formatura);
                 usuarioRepository.save(usuarioAdm);
                 formatura.setAdm(usuarioAdm);
                 formatura.setDataSolicitacao(LocalDateTime.now());
@@ -148,22 +154,37 @@ public class FormaturaController {
         }
     }
 
-    @PutMapping("/adicionar-membro/{userId}")
-    public ResponseEntity<String> adicionarMembros(@PathVariable Long userId, @RequestBody Long formId) {
-        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-        Optional<Formatura> formOptional = formaturaRepository.findById(formId);
-        if (!userOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        } else if (!formOptional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-        } else {
-            Formatura formatura = formOptional.get();
-            Usuario usuario = userOptional.get();
-            usuario.setFormatura(formatura);
-            usuario.setTipoUsuario(TipoUsuario.MEMBER);
-            usuarioRepository.save(usuario);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Membro adicionado com sucesso!");
+    @GetMapping("/listar-grupo/{userId}")
+    public ResponseEntity<?> listarGrupoPorId(@PathVariable Long userId) {
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(userId);
+        if (!optionalUsuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found!");
         }
+        Usuario usuario = optionalUsuario.get();
+
+        if (usuario.getFormatura() == null) {
+            return ResponseEntity.badRequest().body("User is not in any group!");
+        }
+        Optional<Formatura> formaturaOptional = formaturaRepository.findById(usuario.getFormatura().getId());
+        if (!formaturaOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Formatura not found!");
+        }
+
+        List<Usuario> grupoFormatura = formaturaOptional.get().getUsuarios();
+
+        List<UsuarioDTO> usuariosDTO = grupoFormatura.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(usuariosDTO);
+    }
+
+    private UsuarioDTO convertToDTO(Usuario usuario) {
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.setId(usuario.getId());
+        dto.setNome(usuario.getNome());
+        dto.setUsuarioCaminho(usuario.getFotoCaminho());
+        return dto;
     }
 
 }
