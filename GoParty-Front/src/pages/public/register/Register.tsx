@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
 
+
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
 import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 import { ModalChoose } from '../../../components/modal/ModalChoose';
+import { Recaptcha } from '../../../components/recaptcha/Recaptcha';
 
 export default function Register(){
 
@@ -22,10 +24,15 @@ export default function Register(){
     const navigate = useNavigate();
     const [senhaNotEqual, setSenhaNotEqual] = useState(false);
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+    const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+
+    const handleCaptchaChange = (isValid: boolean) => {
+      setIsCaptchaValid(isValid);
+    };
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
-  };
+    };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setIsChecked(e.target.checked);
@@ -95,7 +102,6 @@ export default function Register(){
     const handleBlur = async () => {
       setIsLoading(false);
       setIsValidEmail(validateEmail(formData.email));
-
       if (formData.email.trim() === "") {
         setError(true);
         setIsLoading(false);
@@ -129,7 +135,8 @@ export default function Register(){
       senha: false,
       cpf: false,
       senhaConfirm: false,
-      senhaRegras: false
+      senhaRegras: false,
+      captcha: false
    });
 
       const [formData, setFormData] = useState({
@@ -203,6 +210,9 @@ export default function Register(){
                     setErrors({ ...errors, idade: age < 16 });
                 }
             }
+            if (!isCaptchaValid) {
+              setErrors({ ...errors, captcha: isCaptchaValid });
+            }
         }
     };
       
@@ -218,7 +228,8 @@ export default function Register(){
           senha: formData.senha.trim() === '',
           cpf: formData.senha.trim() === '',
           senhaConfirm: formData.senhaConfirm.trim() === '',
-          senhaRegras: formData.senhaConfirm.trim() === ''
+          senhaRegras: formData.senhaConfirm.trim() === '',
+          captcha: !isCaptchaValid
       };
 
       setErrors(newErrors);
@@ -227,7 +238,7 @@ export default function Register(){
       if (Object.values(newErrors).some(error => error)) {
 
         setIsLoading(false)
-        setMessage('Preencha todos os campos obrigatórios!')
+        setMessage('Preencha todos os campos obrigatórios e resolva o captcha!')
         setError(true)
         return;
      }
@@ -304,7 +315,7 @@ export default function Register(){
                     <div className="relative">
                       <label htmlFor='nome' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:bg-gray-700 dark:text-white">Seu nome completo</label>
-                      <input placeholder="John" 
+                      <input placeholder="Pedro" 
                               type="text"
                               name='nome'
                               id='nome'
@@ -316,7 +327,7 @@ export default function Register(){
                       <label htmlFor='email' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:bg-gray-700 dark:text-white">E-mail</label>
                             <input 
-                            placeholder="Seu E-mail"
+                            placeholder="example@gmail.com"
                             id='email'
                             name='email'
                             value={formData.email}
@@ -332,7 +343,7 @@ export default function Register(){
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Nome de usuário</label>
                             <input 
-                            placeholder="Username"
+                            placeholder="PedroAluisio12"
                             id='username'
                             name='username'                           
                             value={formData.username}
@@ -362,7 +373,7 @@ export default function Register(){
                         <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700">Seu CPF</label>
                         <MaskedInput
                           mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
-                          placeholder="Digite seu CPF"
+                          placeholder="112.112.112-12"
                           id='cpf'
                           name='cpf'
                           value={formData.cpf}
@@ -374,7 +385,7 @@ export default function Register(){
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Crie uma senha</label>
                             <input 
-                              placeholder="Password"
+                              placeholder="Wp@12p@12"
                               name='senha'
                               id='senha'
                               value={formData.senha}
@@ -391,7 +402,7 @@ export default function Register(){
                     <div className="relative">
                       <label htmlFor='senhaConfirm' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Confirmar senha</label>
-                            <input placeholder="Password"
+                            <input placeholder="Wp@12p@12"
                             id='senhaConfirm'
                             name='senhaConfirm'
                             onChange={handleChange}
@@ -472,6 +483,9 @@ export default function Register(){
                               'Cadastrar'
                             )}
                           </button>
+                    </div>
+                    <div>
+                      <Recaptcha onCaptchaChange={handleCaptchaChange} />
                     </div>
 
                     {/* AQUI*/}

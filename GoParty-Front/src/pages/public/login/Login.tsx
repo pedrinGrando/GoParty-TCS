@@ -6,6 +6,8 @@ import { Error } from '../../../components/Error/Error';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 import { ModalChoose } from '../../../components/modal/ModalChoose';
+import { Recaptcha } from '../../../components/recaptcha/Recaptcha';
+
 
 export default function Login(){
 
@@ -17,6 +19,11 @@ export default function Login(){
     const [mostrarModalEscolha, setModalEscolha] = useState<boolean>(false);
     const [mensagemModal, setMensagemModal] = useState<string>('');
     const [imagemSrcModal, setImagemSrcModal] = useState<string>('');
+    const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+
+    const handleCaptchaChange = (isValid: boolean) => {
+        setIsCaptchaValid(isValid);
+    };
 
     const handleClose = () => setModalEscolha(false);
   
@@ -51,10 +58,10 @@ export default function Login(){
       event.preventDefault();
       setIsLoading(true);
   
-      if (formData.username.trim() === "" || formData.senha.trim() === "") {
+      if ((formData.username.trim() === "" || formData.senha.trim() === "" || !isCaptchaValid)) {
           setError(true);
           setIsLoading(false);
-          setMessage("Preencha todos os campos!")
+          setMessage("Preencha todos os campos e resolva o captcha!")
           return;
       }
   
@@ -131,7 +138,7 @@ export default function Login(){
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Nome de usuário</label>
                             <input 
-                            placeholder="Username"
+                            placeholder='PedroAluisio12'
                             id='username'
                             name='username'                           
                             value={formData.username}
@@ -142,7 +149,8 @@ export default function Login(){
                     <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Senha</label>
-                            <input placeholder="Password"
+                            <input
+                            placeholder='Wp@12p@12'
                             id='senha'
                             onChange={handleChange}
                             value={formData.senha}
@@ -160,7 +168,7 @@ export default function Login(){
                         <img src="imagens/hide.png" alt="" />
                     )}
                 </button>
- 
+                
                         {/*Leva para a troca de senha */}
                        <Link to='/reset-password-email'>
                         <div className="text-sm ml-auto">
@@ -186,6 +194,9 @@ export default function Login(){
                           'Entrar'
                         )}
                           </button>
+                    </div>
+                    <div>
+                      <Recaptcha onCaptchaChange={handleCaptchaChange} />
                     </div>
 
                     {/* AQUI*/}
