@@ -1,28 +1,97 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
 import { Link } from "react-router-dom"
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar"
 
-export default function Groups () {
-   
+export default function Groups() {
+
+    interface UsuarioDTO {
+
+    }
+
+    const [usuarios, setUsuarios] = useState<UsuarioDTO[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const fetchGroup = async (): Promise<UsuarioDTO[]> => {
+        setIsLoading(true);
+        try {
+            const response = await fetch('');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            setIsLoading(false);
+            const usuarios: UsuarioDTO[] = await response.json();
+            return usuarios;
+        } catch (error) {
+            setIsLoading(false);
+            console.error('Error fetching users:', error);
+            return [];
+        }
+    }
+
+    useEffect(() => {
+        fetchGroup().then(data => {
+            setUsuarios(data);
+            setIsLoading(false);
+        });
+    }, []);
+
     return (
-              <div>
-                 <div className="px-4 mx-auto text-center max-w-xl">
-                    <h1 className="mb-4 text-2xl font-semibold text-black md:text-3xl lg:text-4xl">PAGE GROUPS EM CONSTRUCAO.</h1>
-                        <p className="mb-6 text-base text-gray-300 lg:text-lg sm:px-6 lg:px-12">Mas não se preocupe, você pode criar seu primeiro próprio evento e atrair o público correto para a busca de fundos necessários. Seja um GoParty Adm agora!</p>
-                        <div className="flex justify-center">
-                            <Link to='/register-adm'>
-                                <div className="inline-flex justify-center items-center py-2 px-4 text-base font-medium text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
-                                    GoParty ADM
-                                    <svg className="w-3 h-3 ms-2 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                                    </svg>
+        <div>
+            <div className="max-w-2xl mx-auto">
+                <div className="p-4 max-w-md bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700">
+                    <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Seu grupo</h3>
+                        <a href="#" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
+                            Ver todos
+                        </a>
+                    </div>
+                    <div className="flow-root">
+                        <ul role="list" className="divide-y divide-gray-200 dark:divide-gray-700">
+                            {usuarios.map((usuario) => (
+                                <li className="py-3 sm:py-4">
+                                    <div className="flex items-center space-x-4">
+                                        <div className="flex-shrink-0">
+                                            {/* <img className="w-8 h-8 rounded-full" src={`http://localhost:8081${usuario.usuarioCaminho}`} alt="Neil image" /> */}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                                {/* {usuario.username} */}
+                                            </p>
+                                            <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                                {/* {usuario.nome} */}
+                                            </p>
+                                        </div>
+                                        <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                            Teste
+                                        </div>
+                                    </div>
+                                </li>
+                            ))}
+                            <li className="py-3 sm:py-4">
+                                <div className="flex items-center space-x-4">
+                                    <div className="flex-shrink-0">
+                                        <img className="w-8 h-8 rounded-full" src="https://flowbite.com/docs/images/people/profile-picture-3.jpg" alt="Bonnie image" />
+                                    </div>
+                                    <div className="flex-1 min-w-0">
+                                        <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
+                                            Bonnie Green
+                                        </p>
+                                        <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                            email@windster.com
+                                        </p>
+                                    </div>
+                                    <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+                                        $3467
+                                    </div>
                                 </div>
-                                </Link>
-                            </div>
-                        </div>
-               <Sidebar />
-               <ResponsiveNavBar/>
-           </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <Sidebar />
+            <ResponsiveNavBar />
+        </div>
     )
 }

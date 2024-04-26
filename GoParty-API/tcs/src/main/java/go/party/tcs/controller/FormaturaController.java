@@ -12,7 +12,6 @@ import java.util.Optional;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.model.Formatura;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.FormaturaRepository;
@@ -37,7 +38,7 @@ import go.party.tcs.service.FormaturaService;
 import go.party.tcs.service.UsuarioService;
 
 @RestController
-@RequestMapping("/v1/fomaturas")
+@RequestMapping("/v1/formaturas")
 @CrossOrigin(origins = "http://localhost:5173/")
 public class FormaturaController {
 
@@ -53,78 +54,87 @@ public class FormaturaController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
- @PostMapping("/ser-adm/{userId}")
-     public ResponseEntity<?> cadastrarSolicitacaoAdm(@PathVariable Long userId, @RequestBody Formatura formatura) {
-         try {
-             //encontrar usuario que fez a solicitação
+    @PostMapping("/ser-adm/{userId}")
+    public ResponseEntity<?> cadastrarSolicitacaoAdm(@PathVariable Long userId, @RequestBody Formatura formatura) {
+        try {
+            // encontrar usuario que fez a solicitação
             Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-             if (!userOptional.isPresent()) {
-                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-             }
+            if (!userOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+            }
+            Usuario usuarioAdm = userOptional.get();
+            if (usuarioAdm.getTipoUsuario().equals(TipoUsuario.ADM)) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario já é ADM!");
+            } else {
+                usuarioAdm.setTipoUsuario(TipoUsuario.ADM);
+                usuarioRepository.save(usuarioAdm);
+                formatura.setAdm(usuarioAdm);
+                formatura.setDataSolicitacao(LocalDateTime.now());
+                Formatura formaturaSalva = formaturaService.cadastrarSolicitacaoAdm(formatura);
 
-             Usuario usuarioAdm = userOptional.get();
-             formatura.setAdm(usuarioAdm);
-             formatura.setDataSolicitacao(LocalDateTime.now());
-             Formatura formaturaSalva = formaturaService.cadastrarSolicitacaoAdm(formatura);
-             
-             return ResponseEntity.ok(Map.of("id", formaturaSalva.getId(), "mensagem", "Solicitação para adm realizada com sucesso!"));
-         } catch (Exception e) {
-             e.printStackTrace();
-             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao realizar a solicitação usuário.");
-         }
+                return ResponseEntity.ok(Map.of("id", formaturaSalva.getId(), "mensagem",
+                        "Solicitação para adm realizada com sucesso!"));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao realizar a solicitação usuário.");
+        }
     }
 
+    @PostMapping("/upload-grad-image/{formaturaId}")
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Long formaturaId,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            Optional<Formatura> formaturaOpcional = formaturaRepository.findById(formaturaId);
+            if (!formaturaOpcional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("formatura not found");
+            }
 
-     @PostMapping("/upload-grad-image/{formaturaId}")
-     public ResponseEntity<String> uploadProfileImage(@PathVariable Long formaturaId, @RequestParam("file") MultipartFile file) {
-         try {
-             Optional<Formatura> formaturaOpcional = formaturaRepository.findById(formaturaId);
-             if (!formaturaOpcional.isPresent()) {
-                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("formatura not found");
-             }
-    
-             Formatura formatura = formaturaOpcional.get();
-             String filename = formaturaId + "_" + file.getOriginalFilename();
-             Path filePath = Paths.get(uploadDir, filename);
-             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-    
-             formatura.setFormaturaCaminho("/uploads/" + filename);
-             formaturaRepository.save(formatura);
-    
-             return ResponseEntity.ok("Formatura image uploaded successfully");
-         } catch (Exception e) {
-             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload formatura image");
-         }
-     }
+            Formatura formatura = formaturaOpcional.get();
+            String filename = formaturaId + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, filename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-     //Upload da matricula
-     @PostMapping("/upload-matricula-pdf/{fomaturaId}")
-     public ResponseEntity<String> uploadMatriculaPdf(@PathVariable Long fomaturaId, @RequestParam("file") MultipartFile file) {
-    try {
-        Optional<Formatura> formaturaOpcional = formaturaRepository.findById(fomaturaId);
-        if (!formaturaOpcional.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Formatura not found");
+            formatura.setFormaturaCaminho("/uploads/" + filename);
+            formaturaRepository.save(formatura);
+
+            return ResponseEntity.ok("Formatura image uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload formatura image");
         }
-
-        if (!file.getContentType().equals("application/pdf")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid file type. Only PDFs are allowed.");
-        }
-
-        Formatura formatura = formaturaOpcional.get();
-        String filename = "matricula_" + fomaturaId + "_" + file.getOriginalFilename();
-        Path filePath = Paths.get(uploadDir, filename);
-        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-        formatura.setMatriculaCaminho("/uploads/" + filename); 
-        formaturaRepository.save(formatura);
-
-        return ResponseEntity.ok("Matricula PDF uploaded successfully");
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload matricula PDF");
     }
-  }
 
-   //Acessar Matricula
+    // Upload da matricula
+    @PostMapping("/upload-matricula-pdf/{fomaturaId}")
+    public ResponseEntity<String> uploadMatriculaPdf(@PathVariable Long fomaturaId,
+            @RequestParam("file") MultipartFile file) {
+        try {
+            Optional<Formatura> formaturaOpcional = formaturaRepository.findById(fomaturaId);
+            if (!formaturaOpcional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Formatura not found");
+            }
+
+            if (!file.getContentType().equals("application/pdf")) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid file type. Only PDFs are allowed.");
+            }
+
+            Formatura formatura = formaturaOpcional.get();
+            String filename = "matricula_" + fomaturaId + "_" + file.getOriginalFilename();
+            Path filePath = Paths.get(uploadDir, filename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            formatura.setMatriculaCaminho("/uploads/" + filename);
+            formaturaRepository.save(formatura);
+
+            return ResponseEntity.ok("Matricula PDF uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload matricula PDF");
+        }
+    }
+
+    // Acessar Matricula
     @GetMapping("/uploads/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws MalformedURLException {
@@ -138,6 +148,22 @@ public class FormaturaController {
         }
     }
 
+    @PutMapping("/adicionar-membro/{userId}")
+    public ResponseEntity<String> adicionarMembros(@PathVariable Long userId, @RequestBody Long formId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Optional<Formatura> formOptional = formaturaRepository.findById(formId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } else if (!formOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } else {
+            Formatura formatura = formOptional.get();
+            Usuario usuario = userOptional.get();
+            usuario.setFormatura(formatura);
+            usuario.setTipoUsuario(TipoUsuario.MEMBER);
+            usuarioRepository.save(usuario);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Membro adicionado com sucesso!");
+        }
+    }
+
 }
-
-
