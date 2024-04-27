@@ -30,7 +30,7 @@ import go.party.tcs.service.IngressoService;
 public class IngressoController {
 
     @Autowired
-    EventoRepository eventoRepository; 
+    EventoRepository eventoRepository;
 
     @Autowired
     IngressoService ingressoService;
@@ -45,28 +45,28 @@ public class IngressoController {
     @PostMapping("/comprar-ingresso")
     public ResponseEntity<Ingresso> criarIngresso(@RequestParam Long userId, @RequestBody EventoDTO eventoDTO) {
 
-    Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-    Optional<Evento> eventoOptional = eventoRepository.findById(eventoDTO.getId()); 
-    Ingresso ingresso = new Ingresso();
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoDTO.getId());
+        Ingresso ingresso = new Ingresso();
 
-    try {
-        if (userOptional.isPresent() && eventoOptional.isPresent()) {
-            Usuario usuario = userOptional.get();
-            Evento evento = eventoOptional.get();
-            
-            ingresso.setAutor(usuario);
-            ingresso.setEvento(evento);
-            ingresso.setStatus(TipoStatus.PENDENTE);
-            ingresso.setDataCompra(LocalDateTime.now());
-            ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
-            ingressoRepository.save(ingresso);
-            return new ResponseEntity<>(ingresso, HttpStatus.CREATED);
+        try {
+            if (userOptional.isPresent() && eventoOptional.isPresent()) {
+                Usuario usuario = userOptional.get();
+                Evento evento = eventoOptional.get();
+
+                ingresso.setAutor(usuario);
+                ingresso.setEvento(evento);
+                ingresso.setStatus(TipoStatus.PENDENTE);
+                ingresso.setDataCompra(LocalDateTime.now());
+                ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
+                ingressoRepository.save(ingresso);
+                return new ResponseEntity<>(ingresso, HttpStatus.CREATED);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-    } catch (Exception e) {
-        return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
-    return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-}
 
     @GetMapping("/seus-ingressos/{usuarioId}")
     public ResponseEntity<List<Ingresso>> listarIngressosDoUsuario(@PathVariable Long usuarioId) {
@@ -81,7 +81,4 @@ public class IngressoController {
         }
     }
 
-
 }
-
-

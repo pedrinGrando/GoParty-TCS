@@ -181,7 +181,7 @@ export default function RegisterAdm() {
     }
 
     try {
-      const responseSerAdm = await fetch(`http://localhost:8081/v1/fomaturas/ser-adm/${user.principal.id}`, {
+      const responseSerAdm = await fetch(`http://localhost:8081/v1/formaturas/ser-adm/${user.principal.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -198,7 +198,7 @@ export default function RegisterAdm() {
           const formDataImage = new FormData();
           formDataImage.append('file', selectedFile);
 
-          const responseImage = await fetch(`http://localhost:8081/v1/fomaturas/upload-grad-image/${formaturaData.id}`, {
+          const responseImage = await fetch(`http://localhost:8081/v1/formaturas/upload-grad-image/${formaturaData.id}`, {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,

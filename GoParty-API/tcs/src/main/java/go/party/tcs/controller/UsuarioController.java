@@ -46,7 +46,7 @@ import jakarta.servlet.http.HttpSession;
 public class UsuarioController {
 
     @Autowired
-    public UsuarioController(UsuarioService usuarioService){
+    public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
@@ -70,7 +70,7 @@ public class UsuarioController {
 
     @Autowired
     private EventoRepository eventoRepository;
-    
+
     @Autowired
     private EventoService eventoService;
 
@@ -89,9 +89,10 @@ public class UsuarioController {
     Usuario usuarioCadastro = new Usuario();
 
     Usuario usuarioPerfilVisitado = new Usuario();
-   
+
     @PostMapping("/{userId}/upload-profile-image")
-    public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId, @RequestParam("file") MultipartFile file) {
+    public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId,
+            @RequestParam("file") MultipartFile file) {
 
         try {
             Optional<Usuario> userOptional = usuarioRepository.findById(userId);
@@ -113,17 +114,6 @@ public class UsuarioController {
         }
     }
 
-    @DeleteMapping("/notifications/delete")
-    public ResponseEntity<String> excluirNotificacao(@RequestParam("id") Long id) {
-        try {
-            notificationService.excluirNotificacao(id);
-            return ResponseEntity.ok("Notificação excluída com sucesso.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao excluir notificação.");
-        }
-    }
-    
     @GetMapping("/find/{usuarioId}")
     public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Integer usuarioId) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioId);
@@ -136,12 +126,12 @@ public class UsuarioController {
 
     @GetMapping("/check-username")
     public ResponseEntity<String> checkUsernameExists(@RequestParam String username) {
-        
+
         boolean exists = usuarioService.checkUsernameExists(username);
-       
-        if (exists){
+
+        if (exists) {
             return ResponseEntity.ok("Username já cadastrado!");
-        }else{
+        } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("Username não cadastrado!");
         }
 
@@ -152,7 +142,7 @@ public class UsuarioController {
     public ResponseEntity<String> checkEmailExists(@RequestParam String email) {
 
         boolean exists = usuarioRepository.existsByEmail(email);
-        if (exists){
+        if (exists) {
             return ResponseEntity.ok("Email já cadastrado!");
         } else {
             ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
@@ -161,73 +151,8 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
     }
 
-    @GetMapping("/usuarios")
-    public ResponseEntity<?> listarUsuarios(HttpSession session) {
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-
-        if (sessionUsuario != null) {
-            //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
-           // int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
-
-            // Obtem a lista de todos os usuários do sistema
-            List<Usuario> usuariosSistema = usuarioService.findAll();
-
-            // Remove o usuário da sessão da lista
-            usuariosSistema.remove(sessionUsuario);
-
-            // Cria uma lista de usuários para retornar
-            List<Map<String, Object>> usuariosResponse = new ArrayList<>();
-
-            // Preenche a lista de resposta com informações sobre cada usuário
-            for (Usuario usuario : usuariosSistema) {
-                Map<String, Object> usuarioInfo = new HashMap<>();
-                usuarioInfo.put("id", usuario.getId());
-                usuarioInfo.put("username", usuario.getUsername());
-               
-                usuariosResponse.add(usuarioInfo);
-            }
-
-            // Monta a resposta
-            Map<String, Object> responseData = new HashMap<>();
-            //responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
-            responseData.put("usuarios", usuariosResponse);
-
-            return ResponseEntity.ok(responseData);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não autenticado");
-        }
-    }
-
-
     @GetMapping("/search")
     public List<Usuario> searchUsers(@RequestParam String query) {
-        // Realiza a pesquisa com base na consulta e retorne os resultados
         return usuarioRepository.findByNomeContaining(query);
     }
-
-    @GetMapping("/explorar")
-    public ResponseEntity<?> pesquisarUsuarios(@RequestParam("nomeDigitado") String nomeDigitado, HttpSession session) {
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        List<Usuario> usuarios;
-        if (nomeDigitado == null || nomeDigitado.isEmpty()) {
-            usuarios = usuarioService.findAll();
-        } else {
-            usuarios = usuarioRepository.findByNomeContaining(nomeDigitado);
-        }
-
-        if (sessionUsuario != null) {
-            //CONTADOR DE NOTIFICACOES NAO VISUALIZADAS
-            //int notificacoesNaoVisualizadas = notificationService.contarNotificacoesNaoVisualizadas(sessionUsuario.getId());
-            // Montar a resposta
-            Map<String, Object> responseData = new HashMap<>();
-            //responseData.put("notificacoesNaoVisualizadas", notificacoesNaoVisualizadas);
-            responseData.put("usuarios", usuarios);
-            responseData.put("sessionUser", sessionUsuario);
-
-            return ResponseEntity.ok(responseData);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não autenticado");
-        }
-    }
-
 }
