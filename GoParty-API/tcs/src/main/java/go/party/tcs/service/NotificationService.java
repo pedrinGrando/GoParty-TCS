@@ -18,30 +18,43 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    public void createNotification(String message, Integer userId, byte[] fotoPerfil) {
+    public void createNotification(String message, Long userId) {
         Notification notification = new Notification();
         notification.setMessage(message);
-        notification.setDate(LocalDateTime.now()); 
+        notification.setDate(LocalDateTime.now());
         notification.setUserId(userId);
         notification.setVisualizado(false);
         notificationRepository.save(notification);
-
     }
 
-    public void marcarNotificacoesComoVisualizadas(Integer userId) {
-        List<Notification> notificacoes = notificationRepository.findByUserId(userId);
-        for (Notification notification : notificacoes) {
-            notification.setVisualizado(true);
-        }
-        notificationRepository.saveAll(notificacoes);
+    public void criarNotificacaoCurtida(String message, Long userId){
+        Notification notification = new Notification();
+        notification.setMessage(message);
+        notification.setDate(LocalDateTime.now());
+        notification.setUserId(userId);
+        notification.setVisualizado(false);
+        notificationRepository.save(notification);
+        notificationRepository.save(notification);
     }
 
-    public int contarNotificacoesNaoVisualizadas(Integer userId) {
-        return notificationRepository.countByUserIdAndVisualizadoFalse(userId);
+    public void criarNotificacaoComentario(String message, Long userId){
+        Notification notification = new Notification();
+        notification.setMessage(message);
+        notification.setDate(LocalDateTime.now());
+        notification.setUserId(userId);
+        notification.setVisualizado(false);
+        notificationRepository.save(notification);
+        notificationRepository.save(notification);
     }
 
-    public Optional<Notification> findById(Long id) {
-        return notificationRepository.findById(id);
+    public void criarNotificacaoCompra(String message, Long userId){
+        Notification notification = new Notification();
+        notification.setMessage(message);
+        notification.setDate(LocalDateTime.now());
+        notification.setUserId(userId);
+        notification.setVisualizado(false);
+        notificationRepository.save(notification);
+        notificationRepository.save(notification);
     }
 
     // METODO PARA CALCULAR O TEMPO DA ANOTIFICAÇÃO
@@ -50,7 +63,7 @@ public class NotificationService {
         Duration duration = Duration.between(notificationDate, now);
 
         long segundos = duration.toSeconds();
-        if (segundos < 60){
+        if (segundos < 60) {
             return "agora";
         }
 
@@ -68,22 +81,4 @@ public class NotificationService {
         return days + " d";
     }
 
-    //LIMPAR AS NOTIFICACOES DO USUARIO
-    public void apagarTodasNotificacoes(Usuario user) {
-        // Certifique-se de que o usuário não é nulo.
-        if (user != null) {
-            // Encontre todas as notificações associadas a esse usuário.
-            //List<Notification> userNotifications = notificationRepository.findByUserId(user.getId());
-
-            // Apague as notificações encontradas.
-            //notificationRepository.deleteAll(userNotifications);
-        }
-    }
-
-    //LIMPAR AS NOTIFICACOES POR ID 
-    public void excluirNotificacao(Long id) {
-        notificationRepository.deleteById(id);
-    }
-
-    }
-
+}

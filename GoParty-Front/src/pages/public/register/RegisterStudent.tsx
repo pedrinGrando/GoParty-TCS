@@ -321,7 +321,7 @@ export default function RegisterStudent(){
                     <div className="relative">
                       <label htmlFor='nome' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:bg-gray-700 dark:text-white">Seu nome completo</label>
-                      <input placeholder="Pedro" 
+                      <input placeholder="Seu nome completo" 
                               type="text"
                               name='nome'
                               id='nome'
@@ -333,7 +333,7 @@ export default function RegisterStudent(){
                       <label htmlFor='email' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:bg-gray-700 dark:text-white">E-mail institucional</label>
                             <input 
-                            placeholder="example@alunos.sc.senac.br"
+                            placeholder="example@alunos.sc.edu.br"
                             id='email'
                             name='email'
                             value={formData.email}
@@ -350,7 +350,7 @@ export default function RegisterStudent(){
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:bg-gray-700 dark:text-white">Nome de usuário</label>
                             <input 
-                            placeholder="PedroAluisio12"
+                            placeholder="jhon12"
                             id='username'
                             name='username'                           
                             value={formData.username}
@@ -393,7 +393,7 @@ export default function RegisterStudent(){
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Crie uma senha</label>
                             <input 
-                              placeholder="Wp@12p@12"
+                              placeholder="●●●●●●●●●●●●"
                               name='senha'
                               id='senha'
                               value={formData.senha}
@@ -410,7 +410,7 @@ export default function RegisterStudent(){
                     <div className="relative">
                       <label htmlFor='senhaConfirm' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:bg-gray-700 dark:text-white">Confirmar senha</label>
-                            <input placeholder="Wp@12p@12"
+                            <input placeholder="●●●●●●●●●●●●"
                             id='senhaConfirm'
                             name='senhaConfirm'
                             onChange={handleChange}
