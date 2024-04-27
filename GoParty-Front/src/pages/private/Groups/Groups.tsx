@@ -6,7 +6,7 @@ import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar"
 export default function Groups() {
 
     interface UsuarioDTO {
-
+        id: string;
     }
 
     const [usuarios, setUsuarios] = useState<UsuarioDTO[]>([]);
