@@ -154,6 +154,24 @@ public class FormaturaController {
         }
     }
 
+    @PutMapping("/adicionar-membro/{userId}")
+    public ResponseEntity<String> adicionarMembros(@PathVariable Long userId, @RequestBody Long formId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Optional<Formatura> formOptional = formaturaRepository.findById(formId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } else if (!formOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        } else {
+            Formatura formatura = formOptional.get();
+            Usuario usuario = userOptional.get();
+            usuario.setFormatura(formatura);
+            usuario.setTipoUsuario(TipoUsuario.MEMBER);
+            usuarioRepository.save(usuario);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Membro adicionado com sucesso!");
+        }
+    }
+
     @GetMapping("/listar-grupo/{userId}")
     public ResponseEntity<?> listarGrupoPorId(@PathVariable Long userId) {
         Optional<Usuario> optionalUsuario = usuarioRepository.findById(userId);

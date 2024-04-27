@@ -112,36 +112,6 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile image");
         }
     }
-        
-    //Metodo para adicionar foto do Perfil
-    @PostMapping("/upload")
-    public String uploadFotoPerfil(@RequestParam("fotoPerfil") MultipartFile fotoPerfil, Model model, HttpSession session) {
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        
-        if (sessionUsuario != null) {
-            try {
-                // validação da imagem, se necessário
-                if (!fotoPerfil.isEmpty()) {
-                    // Converte a imagem para um array de bytes
-                    byte[] fotoBytes = fotoPerfil.getBytes();
-                    
-                    // Salva o usuário no banco de dados
-                    usuarioService.atualizarUsuario(sessionUsuario);;
-                    
-                    // Atualiza a sessão com o usuário atualizado
-                    session.setAttribute("usuario", sessionUsuario);
-                }
-                
-                model.addAttribute("sessionUsuario", sessionUsuario);
-                return "perfil";
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "redirect:/error";
-            }
-        } else {
-            return "redirect:/loginValida";
-        }
-    }
 
     @DeleteMapping("/notifications/delete")
     public ResponseEntity<String> excluirNotificacao(@RequestParam("id") Long id) {
