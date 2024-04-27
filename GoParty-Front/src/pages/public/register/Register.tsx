@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
+
 
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
 import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
+import { ModalChoose } from '../../../components/modal/ModalChoose';
+import { Recaptcha } from '../../../components/recaptcha/Recaptcha';
 
 export default function Register(){
 
@@ -21,10 +24,15 @@ export default function Register(){
     const navigate = useNavigate();
     const [senhaNotEqual, setSenhaNotEqual] = useState(false);
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+    const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+
+    const handleCaptchaChange = (isValid: boolean) => {
+      setIsCaptchaValid(isValid);
+    };
 
     const togglePasswordVisibility = () => {
       setShowPassword(!showPassword);
-  };
+    };
 
     const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setIsChecked(e.target.checked);
@@ -68,22 +76,22 @@ export default function Register(){
     const handleBlurUserName = async () => {
 
       if (formData.username.trim() === "") {
-        setError(true);
-        setIsLoading(false);
-        setMessage("Preencha todos os campos!")
-        return;
+          setError(true);
+          setIsLoading(false);
+          setMessage("Preencha todos os campos!")
+          return;
       }
 
       try {
-        // const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
+         const response = await fetch(`http://localhost:8081/v1/usuarios/check-username?username=${formData.username}`);
 
-        // if (response.ok){
-        //   setIsUsernameUnique(false)
-        //   console.log(response)
-        // } else {
-        //   setIsUsernameUnique(true)
-        //   console.log(response)
-        // }
+         if (response.ok){
+           setIsUsernameUnique(false)
+           console.log(response)
+         } else {
+           setIsUsernameUnique(true)
+           console.log(response)
+         }
         
       } catch (error) {
           console.error('Error checking username uniqueness:', error);
@@ -94,7 +102,6 @@ export default function Register(){
     const handleBlur = async () => {
       setIsLoading(false);
       setIsValidEmail(validateEmail(formData.email));
-
       if (formData.email.trim() === "") {
         setError(true);
         setIsLoading(false);
@@ -103,15 +110,15 @@ export default function Register(){
       }
 
       try {
-        // const response = await fetch(`http://localhost:8081/v1/usuarios/check-email?email=${formData.email}`);
+        const response = await fetch(`http://localhost:8081/v1/usuarios/check-email?email=${formData.email}`);
 
-        // if (response.ok){
-        //   setIsEmailUnique(false)
-        //   console.log(response)
-        // } else {
-        //   setIsEmailUnique(true)
-        //   console.log(response)
-        // }
+        if (response.ok){
+          setIsEmailUnique(false)
+          console.log(response)
+        } else {
+          setIsEmailUnique(true)
+          console.log(response)
+        }
         
     } catch (error) {
         console.error('Error checking email uniqueness:', error);
@@ -128,7 +135,8 @@ export default function Register(){
       senha: false,
       cpf: false,
       senhaConfirm: false,
-      senhaRegras: false
+      senhaRegras: false,
+      captcha: false
    });
 
       const [formData, setFormData] = useState({
@@ -202,6 +210,9 @@ export default function Register(){
                     setErrors({ ...errors, idade: age < 16 });
                 }
             }
+            if (!isCaptchaValid) {
+              setErrors({ ...errors, captcha: isCaptchaValid });
+            }
         }
     };
       
@@ -217,7 +228,8 @@ export default function Register(){
           senha: formData.senha.trim() === '',
           cpf: formData.senha.trim() === '',
           senhaConfirm: formData.senhaConfirm.trim() === '',
-          senhaRegras: formData.senhaConfirm.trim() === ''
+          senhaRegras: formData.senhaConfirm.trim() === '',
+          captcha: !isCaptchaValid
       };
 
       setErrors(newErrors);
@@ -226,7 +238,7 @@ export default function Register(){
       if (Object.values(newErrors).some(error => error)) {
 
         setIsLoading(false)
-        setMessage('Preencha todos os campos obrigatórios!')
+        setMessage('Preencha todos os campos obrigatórios e resolva o captcha!')
         setError(true)
         return;
      }
@@ -240,8 +252,6 @@ export default function Register(){
             body: JSON.stringify(formData),
           });
 
-
-          
           if (response.ok) {
             // Limpar o formulário após o envio bem-sucedido, se necessário
             setFormData({
@@ -258,7 +268,7 @@ export default function Register(){
 
             setIsLoading(false);
             console.log('Formulário enviado com sucesso!');
-            navigate('/login');
+            navigate('/validate-email');
 
           } else {
             setIsLoading(false);
@@ -277,7 +287,7 @@ export default function Register(){
     return (
       <form onSubmit={handleSubmit}>
         <NavBar/>
-        <div className="bg-white relative lg:py-20">
+        <div className="bg-white relative lg:py-20 dark:bg-gray-900">
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
             <div 
@@ -291,60 +301,61 @@ export default function Register(){
                   data-aos="fade-down"
                   data-aos-delay="50"
                   data-aos-duration="0"
-                  src="/imagens/EnjoyingParty2.webp"
-                  className="rounded mt-20 lg:mt-0"
+                  src="/imagens/registerPicNoBG.png"
+                  className="rounded lg:-mt-60 sm:mb-36 sm:mt-16 mt-36"
                 />
               </div>
 
               </div>
-              <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
+              <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12 dark:bg-gray-900">
                 <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
-                    relative z-10">
-                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif">Crie uma nova conta</p>
+                    relative z-10 dark:bg-gray-700">
+                  <p className="w-full text-4xl font-medium text-center leading-snug font-serif dark:text-white">Crie uma nova conta</p>
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                     <div className="relative">
                       <label htmlFor='nome' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Seu nome completo</label>
-                      <input placeholder="John" 
+                          absolute dark:bg-gray-700 dark:text-white">Seu nome completo</label>
+                      <input placeholder="Seu nome completo" 
                               type="text"
                               name='nome'
                               id='nome'
                               value={formData.nome}
                               onChange={handleChange}
-                              className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.nome ? 'border-red-500' : ''}`}/>
+                              className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.nome ? 'border-red-500' : ''}`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='email' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">E-mail</label>
+                          absolute dark:bg-gray-700 dark:text-white">E-mail</label>
                             <input 
-                            placeholder="Seu E-mail"
+                            placeholder="example@gmail.com"
                             id='email'
                             name='email'
                             value={formData.email}
                             onChange={handleChange}
                             onBlur={handleBlur} 
                             type="text" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.email
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.email
                     || !isValidEmail || !isEmailUnique  ? 'border-red-500' : ''}`}/>
                    {!isValidEmail && <p style={{ color: 'red' }}>Por favor, insira um e-mail válido.</p>}
                    {!isEmailUnique && <p style={{ color: 'red' }}>Este e-mail já está cadastrado no GoParty!</p>}
                     </div>
                     <div className="relative">
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Nome de usuário</label>
+                          absolute dark:text-white dark:bg-gray-700">Nome de usuário</label>
                             <input 
-                            placeholder="Username"
+                            placeholder="jhon12"
                             id='username'
                             name='username'                           
                             value={formData.username}
                             onChange={handleChange}
+                            onBlur={handleBlurUserName}
                             type="text" 
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}/>
                       {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
                     </div>
                     <div className="relative">
                       <label htmlFor='idade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Data de Nascimento</label>
+                          absolute dark:text-white dark:bg-gray-700">Data de Nascimento</label>
                             <input 
                             placeholder="Data"
                             id='idade'
@@ -352,35 +363,35 @@ export default function Register(){
                             value={formData.idade}
                             onChange={handleChange}
                             type="date" 
-                     className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.idade
+                     className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.idade
                     ? 'border-red-500' : ''}`}/>
                    {errors.idade && <p style={{ color: 'red' }}>Você deve ter pelo menos 16 anos de idade.</p>}
 
                   </div>
 
                   <div className="relative">
-                        <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">Seu CPF</label>
+                        <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700">Seu CPF</label>
                         <MaskedInput
                           mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
-                          placeholder="Digite seu CPF"
+                          placeholder="112.112.112-12"
                           id='cpf'
                           name='cpf'
                           value={formData.cpf}
                           onChange={handleChange}
-                          className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.cpf ? 'border-red-500' : ''}`}
+                          className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
                         />
                       </div>
                    <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Crie uma senha</label>
+                          absolute dark:text-white dark:bg-gray-700">Crie uma senha</label>
                             <input 
-                              placeholder="Password"
+                              placeholder="●●●●●●●●●●●●"
                               name='senha'
                               id='senha'
                               value={formData.senha}
                               onChange={handleChange}
                               type='password'
-                     className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}/>
+                     className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}/>
                   
                   {errors.senha && (
                         <ErrorPassword />
@@ -390,14 +401,14 @@ export default function Register(){
                     </div>
                     <div className="relative">
                       <label htmlFor='senhaConfirm' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Confirmar senha</label>
-                            <input placeholder="Password"
+                          absolute dark:text-white dark:bg-gray-700">Confirmar senha</label>
+                            <input placeholder="●●●●●●●●●●●●"
                             id='senhaConfirm'
                             name='senhaConfirm'
                             onChange={handleChange}
                             value={formData.senhaConfirm}
                             type={showPassword ? 'text' : 'password'}
-                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}/>
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}/>
                  {senhaNotEqual && <p style={{ color: 'red' }}>As senhas não coincidem!</p>}
                 <button
                     type="button"
@@ -448,14 +459,16 @@ export default function Register(){
                     <label
                     className="mt-px cursor-pointer select-none font-light text-gray-700"
                     >
-                    <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
+                    <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased dark:text-white">
                         Eu concordo com 
+                      <Link to='/terms-and-conditions'>
                         <a
                         className="font-semibold transition-colors hover:text-pink-500"
                         href="#"
                         >
                         &nbsp;Termos e Condições
                         </a>
+                        </Link>
                     </p>
                     </label>
                 </div>
@@ -471,9 +484,12 @@ export default function Register(){
                             )}
                           </button>
                     </div>
+                    <div>
+                      <Recaptcha onCaptchaChange={handleCaptchaChange} />
+                    </div>
 
                     {/* AQUI*/}
-                    <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
+                    <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
                     Já possui conta?
                     <button onClick={handleButtonClick} className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
                      Faça o login 

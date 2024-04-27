@@ -9,15 +9,10 @@ import org.springframework.data.repository.query.Param;
 
 import go.party.tcs.model.Ingresso;
 
-public interface IngressoRepository  extends JpaRepository<Ingresso, Integer>{
-
+public interface IngressoRepository  extends JpaRepository<Ingresso, Long>{
     
-    @Query("SELECT i FROM Ingresso i WHERE i.idUsuario.id = :idUsuario")
-    List<Ingresso> findByIdUsuario(@Param("idUsuario") Integer idUsuario);
+    List<Ingresso> findByAutorId(Long usuarioId);
 
     List<Ingresso> findByEventoId(Integer eventoId);
 
-    Ingresso findByCpfComprador(String cpfComprador);
-
-    
 }

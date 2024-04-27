@@ -34,31 +34,23 @@ export const FormsTrends: React.FC = () => {
         <LoadingFormsTrends/>
        ) : (
 
-       <div className="h-screen-10 flex justify-center items-start">
-         <div className="relative me-4 top-3">
-           <img className="w-10 h-10 p-1 rounded-full  bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-         </div>
-         <div className="relative me-4 top-3">
-           <img className="w-10 h-10 p-1 rounded-full  bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-           
-         </div>
-         <div className="relative me-4 top-3">
-           <img className="w-10 h-10 p-1 rounded-full  bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-           
-         </div>
-         <div className="relative me-4 top-3">
-           <img className="w-10 h-10 p-1 rounded-full  bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-         </div>
-
-         <div className="relative me-4 top-3">
-           <img className="w-10 h-10 p-1 rounded-full  bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-         </div>
-
-         <div className="relative me-4 top-3">
-         <a className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-indigo-300 border-2 border-white rounded-full hover:bg-gray-600 " href="#">+99</a>
-         </div>
-
-       </div>
+      <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow dark:bg-gray-900">
+        <div className="relative me-4">
+          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
+        </div>
+        <div className="relative me-4">
+          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
+        </div>
+        <div className="relative me-4">
+          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
+        </div>
+        <div className="relative me-4">
+          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
+        </div>
+        <div className="relative me-4">
+          <a className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-indigo-300 border-2 border-white rounded-full hover:bg-gray-600" href="#">+99</a>
+        </div> 
+      </div>
       )}
       </div>
     );

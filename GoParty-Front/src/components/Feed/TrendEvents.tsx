@@ -28,35 +28,35 @@ const TrendEvents: React.FC = () => {
   }, []);
 
   return (
-    <div>
+               <div>
                   {isLoading ? (
                               <LoadingTrends/>
                         ) : (
         
-     <ul role="list" className="hidden md:block absolute top-14 right-0 w-max max-w-sm mt-4 mr-4 divide-y divide-gray-300 dark:divide-gray-300">
-          {/* {events.map((event) => ( */}
-          <Link to=''>
-          <li className="py-3 sm:py-4">
-            <h1>Eventos em alta</h1>
-              <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                  <div className="flex-shrink-0">
-                      <img className="w-8 h-8 rounded-full" src="/imagens/ufsc.png" alt="ufsc" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-gray-900 truncate dark:text-black">
-                          Formatura Medicina
-                      </p>
-                      <p className="text-sm text-gray-500 truncate dark:text-gray-400">
-                          UFSC
-                      </p>
-                  </div>
-                  <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
-                      <span className="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
-                      Disponível
-                  </span>
-              </div>
-          </li>
-          </Link>
+                            <ul role="list" className="hidden md:block fixed top-10 right-0 w-max max-w-sm mt-4 mr-4 divide-y divide-gray-300 dark:divide-gray-300">
+                            {/* Exemplo de link para um evento */}
+                            <Link to=''>
+                              <li className="py-3 sm:py-4">
+                                <h1>Eventos em alta</h1>
+                                  <div className="flex items-center space-x-3 rtl:space-x-reverse">
+                                      <div className="flex-shrink-0">
+                                          <img className="w-8 h-8 rounded-full" src="/imagens/ufsc.png" alt="ufsc" />
+                                      </div>
+                                      <div className="flex-1 min-w-0">
+                                          <p className="text-sm font-semibold text-gray-900 truncate dark:text-black">
+                                              Formatura Medicina
+                                          </p>
+                                          <p className="text-sm text-gray-500 truncate dark:text-gray-400">
+                                              UFSC
+                                          </p>
+                                      </div>
+                                      <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
+                                          <span className="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
+                                          Disponível
+                                      </span>
+                                  </div>
+                              </li>
+                            </Link>
           <Link to=''>
             <li className="py-3 sm:py-4">
                 <div className="flex items-center space-x-3 rtl:space-x-reverse">

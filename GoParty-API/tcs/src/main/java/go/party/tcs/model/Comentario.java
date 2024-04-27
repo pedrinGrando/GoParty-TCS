@@ -27,7 +27,7 @@ public class Comentario {
     private Integer id;
 
     @Column(name = "texto")
-    private String texto;
+    private String mensagem;
 
     @ManyToOne
     @JoinColumn(name = "autor_id")

@@ -6,7 +6,6 @@ var vite_config_default = defineConfig({
   plugins: [
     react(),
     WindiCSS({
-      // Adicione quaisquer opções de configuração necessárias aqui
     })
   ]
 });

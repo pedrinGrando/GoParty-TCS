@@ -1,80 +1,84 @@
 package go.party.tcs.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import go.party.tcs.Enums.TipoStatus;
+import go.party.tcs.dto.EventoDTO;
+import go.party.tcs.model.Evento;
 import go.party.tcs.model.Ingresso;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.EventoRepository;
 import go.party.tcs.repository.IngressoRepository;
+import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.IngressoService;
-import go.party.tcs.service.NotificationService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
-
-// Importações omitidas por brevidade
-
-@Controller
+@RestController
+@RequestMapping("/v1/ingressos")
 public class IngressoController {
-    
-    @Autowired
-    IngressoRepository ingressoRepository;
 
     @Autowired
-    EventoRepository eventoRepository; 
+    EventoRepository eventoRepository;
 
     @Autowired
     IngressoService ingressoService;
 
     @Autowired
-    private NotificationService notificationService;
+    private IngressoRepository ingressoRepository;
 
-    @GetMapping("/ingressos")
-    public String ingressos(Model model, HttpSession session, HttpServletRequest request){
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
+    @Autowired
+    private UsuarioRepository usuarioRepository;
 
-        if (sessionUsuario != null) {
-            //List<Ingresso> ingressos = ingressoRepository.findByIdUsuario(sessionUsuario.getId());
-            //model.addAttribute("ingressos", ingressos);
-        }
-        model.addAttribute("sessionUsuario", sessionUsuario);
-        return "ingressos";
-    }
+    // Endpoint para criar um ingresso
+    @PostMapping("/comprar-ingresso")
+    public ResponseEntity<Ingresso> criarIngresso(@RequestParam Long userId, @RequestBody EventoDTO eventoDTO) {
 
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoDTO.getId());
+        Ingresso ingresso = new Ingresso();
 
-    // Método para exibir a página do evento com os usuários confirmados
-    @GetMapping("/perfil/{eventoId}")
-    public String exibirUsuariosConfirmados(@PathVariable("eventoId") Integer eventoId, Model model) {
-        List<Ingresso> ingressos = ingressoRepository.findByEventoId(eventoId);
-        model.addAttribute("ingressos", ingressos); // Adicione a lista de ingressos ao modelo
-        return "perfil";
-    }
+        try {
+            if (userOptional.isPresent() && eventoOptional.isPresent()) {
+                Usuario usuario = userOptional.get();
+                Evento evento = eventoOptional.get();
 
-    @PutMapping("/atualizarStatus") 
-    public String atualizarStatus(@RequestParam(name ="ingressoId") Integer id, Model model, HttpSession session) {
-        Ingresso ingresso = ingressoService.encontra(id);
-        
-        if (ingresso != null) {
-            ingresso.setStatus("Inativo");
-            ingressoService.save(ingresso);
-            
-            Usuario sessionUsuario = (Usuario) session.getAttribute("sessionUsuario");
-            if (sessionUsuario != null) {
-                session.setAttribute("sessionUsuario", sessionUsuario);
+                ingresso.setAutor(usuario);
+                ingresso.setEvento(evento);
+                ingresso.setStatus(TipoStatus.PENDENTE);
+                ingresso.setDataCompra(LocalDateTime.now());
+                ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
+                ingressoRepository.save(ingresso);
+                return new ResponseEntity<>(ingresso, HttpStatus.CREATED);
             }
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        
-        return "redirect:/perfil"; 
+        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/seus-ingressos/{usuarioId}")
+    public ResponseEntity<List<Ingresso>> listarIngressosDoUsuario(@PathVariable Long usuarioId) {
+        try {
+            List<Ingresso> ingressos = ingressoRepository.findByAutorId(usuarioId);
+            if (ingressos.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(ingressos, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
-
-

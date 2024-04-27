@@ -23,7 +23,7 @@ export const ModalChoose: React.FC<ModalProps> = ({ mensagem, imagemSrc, mostrar
             data-aos="fade-up"
             data-aos-delay="50"
             data-aos-duration="0"
-            id="crypto-modal" aria-hidden="true" className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden">   
+            id="crypto-modal" aria-hidden="true" className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden backdrop-blur-md">   
                 <div className="relative p-4 w-full max-w-md">
                   <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                   {imagemSrc && <img src={imagemSrc} alt="Modal" className="mx-auto mt-6 mb-1 max-w-[110px]"/>}

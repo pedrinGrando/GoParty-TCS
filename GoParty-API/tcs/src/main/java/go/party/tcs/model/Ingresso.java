@@ -1,7 +1,9 @@
 package go.party.tcs.model;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
+import go.party.tcs.Enums.TipoStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,38 +27,29 @@ public class Ingresso {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Integer id;
-
-    @Column(name = "codigo")
-    private String codigo;
-
-    @Column(name = "cpfComprador")
-    private String cpfComprador;
-
-    @Column(name = "status")
-    private String status;
+    private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "id_usuario")
-    private Usuario idUsuario;
+    @JoinColumn(name = "usuario_id")
+    private Usuario autor;
 
     @ManyToOne
-    @JoinColumn(name = "id_evento")
+    @JoinColumn(name = "evento_id")
     private Evento evento;
 
-    // Construtores, getters e setters...
-    public Ingresso(String codigo, Usuario idUsuario, Evento evento, String cpfComprador, String status) {
-        this.codigo = codigo;
-        this.idUsuario = idUsuario;
-        this.evento = evento;
-        this.cpfComprador = cpfComprador;
-        this.status = status;
-    }
+    @Column(name = "codigoEvento")
+    private String codigoEvento;
+     
+    @Column(name = "status")
+    private TipoStatus status;
+
+    @Column(name = "dataCompra")
+    private LocalDateTime dataCompra;
 
     public static String gerarCodigoAleatorio() {
-        // Gerando um UUID aleatório e pegando os 10 primeiros caracteres
+        // Gera um UUID aleatório e pegando os 10 primeiros caracteres
         String uuid = UUID.randomUUID().toString().replaceAll("[^a-zA-Z0-9]", "").substring(0, 10);
         return uuid;
     }
+    
 }

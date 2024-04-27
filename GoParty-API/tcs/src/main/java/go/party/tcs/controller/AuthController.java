@@ -141,9 +141,8 @@ public class AuthController {
     
     // Método para verificar se o e-mail é educacional
     private boolean isEmailEducacional(String email) {
-        // Lista de domínios educacionais válidos
-        List<String> dominiosEducacionais = Arrays.asList(".edu", ".edu.br", "@alunos"); 
-        return dominiosEducacionais.stream().anyMatch(dominio -> email.endsWith(dominio));
+        List<String> dominiosEducacionais = Arrays.asList(".edu", ".edu.br", "@alunos");
+        return dominiosEducacionais.stream().anyMatch(email::contains);
     }
     
     //Verificação para troca de senha

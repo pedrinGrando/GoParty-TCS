@@ -3,8 +3,10 @@ package go.party.tcs.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -15,6 +17,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,13 +56,19 @@ public class Formatura {
     private String cep;
 
     @Column(name = "meta_arrecad")
-    private String metaArrecad;
+    private double metaArrecad;
+
+    @Column(name = "arrecacado")
+    private double arrecacado;
 
     @Column(name = "pendente_aprovacao") // True = O pedido esta pendente False = o pedido já vou resolvido
     private boolean pendenteAprovacao;
 
     @Column(name = "aprovado") //True = o Adm esta aprovado False = O Adm foi negado
     private boolean aprovado;
+
+    @Column(name = "chave_pix")
+    private String chavePix;
 
     @Column(name = "data_prevista")
     private LocalDate dataPrevista;
@@ -77,9 +86,6 @@ public class Formatura {
     @Column(name = "matricula_caminho")
     private String matriculaCaminho;
 
-    @ManyToMany
-    @JoinTable(name = "formatura_grupo",
-               joinColumns = @JoinColumn(name = "formatura_id"),
-               inverseJoinColumns = @JoinColumn(name = "usuario_id"))
-    private Set<Usuario> grupo = new HashSet<>();
+    @OneToMany(mappedBy = "formatura", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Usuario> usuarios;
 }
