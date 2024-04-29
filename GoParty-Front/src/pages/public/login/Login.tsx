@@ -138,19 +138,19 @@ export default function Login(){
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Nome de usuário</label>
                             <input 
-                            placeholder='PedroAluisio12'
+                            placeholder='Jhon12'
                             id='username'
                             name='username'                           
                             value={formData.username}
                             onChange={handleChange}
                             type="text" 
-                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700`}/>
+                      className={`backdrop-blur-md border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700`}/>
                     </div>
                     <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Senha</label>
                             <input
-                            placeholder='Wp@12p@12'
+                            placeholder='●●●●●●●●●●●'
                             id='senha'
                             onChange={handleChange}
                             value={formData.senha}

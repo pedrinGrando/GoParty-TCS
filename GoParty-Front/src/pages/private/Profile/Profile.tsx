@@ -56,7 +56,6 @@ export default function Profile() {
                   {user.principal.fotoCaminho == null ? (
                     <div className='mt-0 flex justify-center rounded-full h-36 w-36 border border-dashed border-gray-900/25 px-6 py-10'>
 
-
                       <div className='text-center'>
 
                         <RenderIf condition={!imagePreview}>
@@ -85,7 +84,7 @@ export default function Profile() {
                     </div>
                   ) : (
 
-                    <img alt="..." src={`http://localhost:8081${user.principal.fotoCaminho}`} className="h-36 w-36 rounded-full border-4 border-white dark:border-indigo-400 mx-auto my-4"></img>
+                    <img alt="..." src={`http://localhost:8081${user.principal.fotoCaminho}`} className="mt-0 flex justify-center rounded-full h-36 w-36 border"></img>
                   )}
                 </div>
                 <div className="w-full px-4 text-center mt-20">
@@ -112,7 +111,7 @@ export default function Profile() {
                 </div>
               </div>
               <div className="text-center mt-12">
-                <h3 className="text-xl font-semibold leading-normal mb-2 text-blueGray-700 mb-2">
+                <h3 className="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
                   @{user.principal.username}
                 </h3>
                 <div className="text-sm leading-normal mt-0 mb-2 text-blueGray-400 font-bold uppercase">
