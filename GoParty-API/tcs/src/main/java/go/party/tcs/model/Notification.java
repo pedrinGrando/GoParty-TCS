@@ -28,3 +28,4 @@ public class Notification {
     private Long userId; // O ID do usuário que receberá a notificação
     private Boolean visualizado;
 }
+

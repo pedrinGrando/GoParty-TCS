@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import go.party.tcs.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,9 @@ public class EventoController {
 
     @Autowired
     private CurtidaService curtidaService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -131,16 +135,20 @@ public class EventoController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/curtidas/{eventoId}")
-    public int obterQuantidadeCurtidas(@PathVariable Integer eventoId, Model model, HttpSession session) {
-
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        // Aqui você deve implementar a lógica para obter a quantidade de curtidas do
-        // evento com o ID fornecido
-        // Substitua o código abaixo pela lógica real de obtenção de curtidas
-        int quantidadeCurtidas = eventoService.obterQuantidadeCurtidas(eventoId);
-        model.addAttribute("quantidadeCurtidas", quantidadeCurtidas);
-
-        return quantidadeCurtidas;
+    @PostMapping("/curtir-evento/{userId}/{eventoId}")
+    public ResponseEntity<?> curtirEvento(@PathVariable Long userId, @PathVariable Long eventoId){
+           Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+           Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+           Evento evento = new Evento();
+           Usuario usuario = new Usuario();
+           if(eventoOptional.isPresent() && userOptional.isPresent()){
+               evento = eventoOptional.get();
+               usuario = userOptional.get();
+               curtidaService.curtirEvento(usuario,evento);
+               notificationService.criarNotificacaoCurtida(usuario.getUsername() +" curtiu seu evento.", evento.getUsuario().getId());
+               return ResponseEntity.ok().body("Evento curtido com sucesso!");
+           }else{
+               return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento ou usuario nao encontrado!");
+           }
     }
 }
