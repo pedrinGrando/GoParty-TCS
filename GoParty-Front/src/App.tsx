@@ -35,15 +35,6 @@ function App() {
     return !!localStorage.getItem('token');
   };
 
-  const isAbleCreateEvent = () => {
-    return user.principal.tipoUsuario === 'MEMBER'
-      || user.principal.tipoUsuario === 'ADM';
-  }
-
-  const isAbleBeADM = () => {
-    return user.principal.tipoUsuario === 'STUDENT';
-  }
-
   useEffect(() => {
     AOS.init({
       once: true,
@@ -78,19 +69,13 @@ function App() {
           <Route path='/home' element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
           <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
           <Route path='/explore' element={isAuthenticated() ? <Explore /> : <Navigate to="/login" />} />
-
-          <Route path='/register-adm' element={isAbleBeADM() ? <RegisterAdm /> : <Navigate to="/home" />} />
           <Route path='/register-adm' element={isAuthenticated() ? <RegisterAdm /> : <Navigate to="/login" />} />
-
           <Route path='/account-config' element={isAuthenticated() ? <Configs /> : <Navigate to="/login" />} />
           <Route path='/your-groups' element={isAuthenticated() ? <Groups /> : <Navigate to="/login" />} />
           <Route path='/your-tickets' element={isAuthenticated() ? <Tickets /> : <Navigate to="/login" />} />
           <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />
-
-          <Route path='/create-event' element={isAbleCreateEvent() ? <PostEvent /> : <Navigate to="/home" />} />
           <Route path='/create-event' element={isAuthenticated() ? <PostEvent /> : <Navigate to="/login" />} />
-
           <Route path='/trending-events' element={isAuthenticated() ? <TrendPage /> : <Navigate to="/login" />} />
         </Routes>
       </UserProvider>

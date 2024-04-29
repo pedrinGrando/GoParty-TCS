@@ -43,9 +43,6 @@ public class Usuario implements UserDetails {
     @Column(name = "username", unique = true)
     private String username;
 
-    @Column(name = "descricao")
-    private String descricao;
-
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
