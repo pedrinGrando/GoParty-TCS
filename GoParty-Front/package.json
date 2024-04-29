@@ -13,6 +13,7 @@
     "@material-tailwind/react": "^2.1.9",
     "@types/react-text-mask": "^5.4.14",
     "aos": "^2.3.4",
+    "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-currency-input-field": "^3.8.0",
     "react-dom": "^18.2.0",
