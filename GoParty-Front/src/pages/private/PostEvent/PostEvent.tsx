@@ -141,7 +141,7 @@ export default function PostEvent () {
       setIsLoading(true);
   
       try {
-          const responseEvento = await fetch(`http://localhost:8081/v1/eventos/criar-evento/${user.principal.id}`, {
+          const responseEvento = await fetch(`http://localhost:8081/v1/eventos/criar-evento/${user.id}`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',

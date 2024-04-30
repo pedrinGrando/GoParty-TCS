@@ -19,7 +19,7 @@ export default function Groups() {
     const fetchGroup = async (): Promise<UsuarioDTO[]> => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:8081/v1/fomaturas/listar-grupo/${user.principal.id}`);
+            const response = await fetch(`http://localhost:8081/v1/fomaturas/listar-grupo/${user.id}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
