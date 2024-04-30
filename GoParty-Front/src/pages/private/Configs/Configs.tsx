@@ -34,13 +34,13 @@ export default function Configs() {
                         <hr className="mt-4 mb-8" />
                         <p className="py-2 text-xl font-semibold">Endereco de E-mail</p>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                            <p className="text-gray-600">Seu E-mail é <strong>{user.principal.email}</strong></p>
+                            <p className="text-gray-600">Seu E-mail é <strong>{user.email}</strong></p>
                             <button className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
                         </div>
                         <hr className="mt-4 mb-8" />
                         <p className="py-2 text-xl font-semibold">Nome de usuario</p>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                            <p className="text-gray-600">Seu nome de usuario é  <strong>{user.principal.username}</strong></p>
+                            <p className="text-gray-600">Seu nome de usuario é  <strong>{user.username}</strong></p>
                             <button className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
                         </div>
                         <hr className="mt-4 mb-8" />

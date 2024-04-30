@@ -80,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                   <div className="text-sm font-light tracking-wide text-gray-500">Eventos</div>
                 </div>
               </li>
-              {user?.principal.tipoUsuario === 'MEMBER' && (
+              {user?.tipoUsuario === 'MEMBER' && (
                 <li>
                   <Link to='/create-event'>
                     <div className={location.pathname === '/register-adm' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6'}>
@@ -92,7 +92,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                   </Link>
                 </li>
               )}
-              {user?.principal.tipoUsuario === 'STUDENT' && (
+              {user?.tipoUsuario === 'STUDENT' && (
                 <li>
                   <Link to='/register-adm'>
                     <div className={location.pathname === '/register-adm' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6"' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"'}>
@@ -114,7 +114,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                   </div>
                 </Link>
               </li>
-              {user?.principal.tipoUsuario === 'MEMBER' || user?.principal.id === 'ADM' && (
+              {user?.tipoUsuario === 'MEMBER' || user?.id === 'ADM' && (
               <li>
                 <Link to='/your-groups'>
                   <div className={location.pathname === '/your-groups' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6"' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"'}>

@@ -32,7 +32,7 @@ export default function Profile() {
       setImagePreview(imageURL)
 
       try {
-        const response = await fetch(`http://localhost:8081/v1/usuarios/${user.principal.id}/upload-profile-image`, {
+        const response = await fetch(`http://localhost:8081/v1/usuarios/${user.id}/upload-profile-image`, {
           method: 'POST',
           body: fileData,
           headers: {
@@ -59,7 +59,7 @@ export default function Profile() {
               <div className="flex flex-wrap justify-center">
                 <div className="w-full px-4 flex justify-center">
                   {/* Upload da foto condicional*/}
-                  {user.principal.fotoCaminho == null ? (
+                  {user.fotoCaminho == null ? (
                     <div className='mt-0 flex justify-center rounded-full h-36 w-36 border border-dashed border-gray-900/25 px-6 py-10'>
                       <div className='text-center'>
                         <RenderIf condition={!imagePreview}>
@@ -87,7 +87,7 @@ export default function Profile() {
                     </div>
                   ) : (
 
-                    <img alt="..." src={`http://localhost:8081${user.principal.fotoCaminho}`} className="mt-0 flex justify-center rounded-full h-36 w-36 border"></img>
+                    <img alt="..." src={`http://localhost:8081${user?.fotoCaminho}`} className="mt-0 flex justify-center rounded-full h-36 w-36 border"></img>
                   )}
                 </div>
                 <div className="w-full px-4 text-center mt-20">
@@ -116,10 +116,10 @@ export default function Profile() {
               <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
               <div className="text-center mt-12">
                 <h3 className="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
-                  @{user.principal.username}
+                  @{user.username}
                 </h3>
                 <div className="mb-2 text-green-600 mt-10">
-                  <p>GoParty {user.principal.tipoUsuario}
+                  <p>GoParty {user.tipoUsuario}
                   <span className="inline-flex items-center justify-center w-6 h-6 me-2 text-sm font-semibold text-blue-800 bg-blue-100 rounded-full dark:bg-gray-700 dark:text-blue-400">
                   <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                   <path fill="currentColor" d="m18.774 8.245-.892-.893a1.5 1.5 0 0 1-.437-1.052V5.036a2.484 2.484 0 0 0-2.48-2.48H13.7a1.5 1.5 0 0 1-1.052-.438l-.893-.892a2.484 2.484 0 0 0-3.51 0l-.893.892a1.5 1.5 0 0 1-1.052.437H5.036a2.484 2.484 0 0 0-2.48 2.481V6.3a1.5 1.5 0 0 1-.438 1.052l-.892.893a2.484 2.484 0 0 0 0 3.51l.892.893a1.5 1.5 0 0 1 .437 1.052v1.264a2.484 2.484 0 0 0 2.481 2.481H6.3a1.5 1.5 0 0 1 1.052.437l.893.892a2.484 2.484 0 0 0 3.51 0l.893-.892a1.5 1.5 0 0 1 1.052-.437h1.264a2.484 2.484 0 0 0 2.481-2.48V13.7a1.5 1.5 0 0 1 .437-1.052l.892-.893a2.484 2.484 0 0 0 0-3.51Z"/>
@@ -131,19 +131,19 @@ export default function Profile() {
                 <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
                 <div className="flex items-center mb-2 text-blueGray-600 mt-10">
                   <img src="/imagens/id-card.png" className="mr-2" alt="id-card"></img>
-                  <span>{user.principal.nome}</span>
+                  <span>{user.nome}</span>
                 </div>
                 <div className="flex items-center mb-2 text-blueGray-600">
                   <img src="/imagens/envelopes (1).png" className="mr-2" alt="envelopes"></img>
-                  <span>{user.principal.email}</span>
+                  <span>{user.email}</span>
                 </div>
                 <div className="flex items-center mb-2 text-blueGray-600">
                   <img src="/imagens/calendar-lines.png" className="mr-2" alt="calendar-lines"></img>
-                  <span>{formatDate(user.principal.idade)}</span>
+                  <span>{formatDate(user.idade)}</span>
                 </div>
                 <div className="flex items-center mb-2 text-blueGray-600">
                 <img src="/imagens/id-card.png" className="mr-2" alt="id-card"></img>
-                  <span>{formatCpf(user.principal.cpf)}</span>
+                  <span>{formatCpf(user.cpf)}</span>
                 </div>
               </div>
              
