@@ -163,4 +163,21 @@ public class UsuarioController {
         }
      }
 
+     @PutMapping("/update-senha/{senhaAtual}/{userId}")
+     public ResponseEntity<?> atualizarSenha(@PathVariable String senhaAtual, @PathVariable Long userId, @RequestBody String novaSenha){
+         Optional<Usuario> optionalUsuario = usuarioRepository.findById(userId);
+         Usuario usuario = new Usuario();
+         if(!optionalUsuario.isPresent()){
+             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario nao encontrado!");
+         }
+         String senhaAtualDeco = passwordEncoder.encode(usuario.getSenha());
+         if(!senhaAtual.matches(senhaAtualDeco)){
+             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha atual nao coincide!");
+         }else{
+             usuario.setSenha(passwordEncoder.encode(novaSenha));
+             usuarioRepository.save(usuario);
+             return ResponseEntity.status(HttpStatus.OK).body("Senha alterada com sucesso!");
+         }
+     }
+
     }

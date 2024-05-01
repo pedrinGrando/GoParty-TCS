@@ -19,7 +19,7 @@ public class UsuarioService {
 
     public void cadastrarUsuario(Usuario usuario) {
           //Regra de permissao
-         usuario.setTipoUsuario(TipoUsuario.USER);
+         usuario.setTipoUsuario(TipoUsuario.BASIC);
          usuarioRepository.save(usuario);
     }
 
