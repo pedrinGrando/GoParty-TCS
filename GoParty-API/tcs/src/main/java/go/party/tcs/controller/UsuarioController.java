@@ -17,14 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.model.Usuario;
@@ -155,4 +148,19 @@ public class UsuarioController {
     public List<Usuario> searchUsers(@RequestParam String query) {
         return usuarioRepository.findByNomeContaining(query);
     }
-}
+
+    @PutMapping("/update-username/{userId}/{newUsername}")
+    public ResponseEntity<String> atualizarNomeUsuario(@PathVariable Long userId, @PathVariable String newUsername) {
+        Optional<Usuario> optionalUser = usuarioRepository.findById(userId);
+        Usuario usuario = new Usuario();
+        if(optionalUser.isPresent() && !usuarioService.checkUsernameExists(newUsername)){
+            usuario = optionalUser.get();
+            usuario.setUsername(newUsername);
+            usuarioService.atualizarUsuario(usuario);
+            return ResponseEntity.status(HttpStatus.OK).body("Usuario atualizado com sucesso!");
+        }else{
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username em uso!");
+        }
+     }
+
+    }

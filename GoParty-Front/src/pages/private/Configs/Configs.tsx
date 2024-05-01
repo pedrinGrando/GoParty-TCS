@@ -1,6 +1,5 @@
-import React from "react"
+import React, { useState } from "react"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
-import { Link } from "react-router-dom"
 import DarkModeToggle from "../../../components/DarkMode/DarkModeToggle";
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
 
@@ -8,6 +7,40 @@ export default function Configs() {
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
+
+    const [changeUsernameActive, setChangeUsernameActive] = useState(false);
+    const [newUsername, setNewUsername] = useState<string>(user.username);
+
+    const activateChangeUsername = () => {
+        if (changeUsernameActive)
+            setChangeUsernameActive(false)
+        else
+            setChangeUsernameActive(true)
+    }
+
+    const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.value;
+        setNewUsername(newValue);
+
+    };
+
+    const handleUsername = async (event: any) => {
+        try {
+            const response = await fetch(`http://localhost:8081/v1/usuarios/update-username/${user.id}/${newUsername}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            if (!response.ok) {
+                throw new Error('falha ao atualizar o username!');
+            }
+            console.log('Username atualizado com sucesso');
+        } catch (error) {
+            console.error('Erro ao enviar dados:', error);
+        }
+    };
 
     return (
         <div>
@@ -21,7 +54,6 @@ export default function Configs() {
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </div>
-
                     <div className="col-span-8 overflow-hidden rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow dark:bg-gray-900">
                         <div className="pt-4">
                             <h1 className="py-2 text-2xl font-semibold">Configuracoes</h1>
@@ -35,13 +67,26 @@ export default function Configs() {
                         <p className="py-2 text-xl font-semibold">Endereco de E-mail</p>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                             <p className="text-gray-600">Seu E-mail é <strong>{user.email}</strong></p>
-                            <button className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
                         </div>
                         <hr className="mt-4 mb-8" />
                         <p className="py-2 text-xl font-semibold">Nome de usuario</p>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                            <p className="text-gray-600">Seu nome de usuario é  <strong>{user.username}</strong></p>
-                            <button className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
+                            {changeUsernameActive ?
+                                <input
+                                    value={newUsername}
+                                    onChange={handleChange}
+                                    type="text"
+                                    className="bg-transparent rounded"
+                                />
+                                : <p className="text-gray-600">Seu nome de usuario é  <strong>{user.username}</strong></p>
+                            }
+                            {changeUsernameActive ?
+
+                                <button type="submit" onClick={handleUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Atualizar</button>
+
+                                : ""
+                            }
+                            <button onClick={activateChangeUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
                         </div>
                         <hr className="mt-4 mb-8" />
                         <p className="py-2 text-xl font-semibold">Alterar sua senha</p>
