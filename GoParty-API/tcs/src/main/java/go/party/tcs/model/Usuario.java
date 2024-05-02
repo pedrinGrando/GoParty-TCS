@@ -70,9 +70,6 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.tipoUsuario == TipoUsuario.TEAM) {
-            return List.of(new SimpleGrantedAuthority("ROLE_TEAM"));
-        }
         if(this.tipoUsuario == TipoUsuario.ADM) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADM"));
         }
@@ -80,7 +77,7 @@ public class Usuario implements UserDetails {
             return List.of(new SimpleGrantedAuthority("ROLE_MEMBER"));
         }
         else {
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+            return List.of(new SimpleGrantedAuthority("ROLE_BASIC"));
         }
     }
 

@@ -1,13 +1,51 @@
-import React from "react"
+import React, { useState } from "react"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
-import { Link } from "react-router-dom"
 import DarkModeToggle from "../../../components/DarkMode/DarkModeToggle";
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Configs() {
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
+
+    const [changeUsernameActive, setChangeUsernameActive] = useState(false);
+    const [newUsername, setNewUsername] = useState<string>(user.username);
+    const [isUsernameUnique, setIsUsernameUnique] = useState(false);
+    const [changePasswordActive, setChangePasswordActive] = useState(false);
+    const [newPassword, setNewPassword] = useState<string>("");
+    const navigate = useNavigate();
+
+    const activateChangeUsername = () => {
+        if (changeUsernameActive)
+            setChangeUsernameActive(false)
+        else
+            setChangeUsernameActive(true)
+    }
+
+    const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newValue = event.target.value;
+        setNewUsername(newValue);
+    };
+
+    const handleUsername = async (event: any) => {
+        try {
+            const response = await fetch(`http://localhost:8081/v1/usuarios/update-username/${user.id}/${newUsername}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            if (!response.ok) {
+                setIsUsernameUnique(true);
+                throw new Error('falha ao atualizar o username!');
+            }
+            console.log('Username atualizado com sucesso');
+        } catch (error) {
+            console.error('Erro ao enviar dados:', error);
+        }
+    };
 
     return (
         <div>
@@ -21,7 +59,6 @@ export default function Configs() {
                             <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
                         </svg>
                     </div>
-
                     <div className="col-span-8 overflow-hidden rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow dark:bg-gray-900">
                         <div className="pt-4">
                             <h1 className="py-2 text-2xl font-semibold">Configuracoes</h1>
@@ -35,38 +72,36 @@ export default function Configs() {
                         <p className="py-2 text-xl font-semibold">Endereco de E-mail</p>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
                             <p className="text-gray-600">Seu E-mail é <strong>{user.email}</strong></p>
-                            <button className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
                         </div>
                         <hr className="mt-4 mb-8" />
                         <p className="py-2 text-xl font-semibold">Nome de usuario</p>
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-                            <p className="text-gray-600">Seu nome de usuario é  <strong>{user.username}</strong></p>
-                            <button className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
-                        </div>
-                        <hr className="mt-4 mb-8" />
-                        <p className="py-2 text-xl font-semibold">Alterar sua senha</p>
-                        <div className="flex items-center">
-                            <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-3">
-                                <label>
-                                    <span className="text-sm text-gray-500">Senha Atual</span>
-                                    <div className="relative flex overflow-hidden rounded-md border-2 transition focus-within:border-blue-600">
-                                        <input type="password" id="login-password" className="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none" placeholder="***********" />
-                                    </div>
-                                </label>
-                                <label>
-                                    <span className="text-sm text-gray-500">Nova Senha</span>
-                                    <div className="relative flex overflow-hidden rounded-md border-2 transition focus-within:border-blue-600">
-                                        <input type="password" id="login-password" className="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none" placeholder="***********" />
-                                    </div>
-                                </label>
-                            </div>
-                            <svg xmlns="http://www.w3.org/2000/svg" className="mt-5 ml-2 h-6 w-6 cursor-pointer text-sm font-semibold text-gray-600 underline decoration-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                            </svg>
-                        </div>
-                        <button className="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white">Salvar</button>
-                        <hr className="mt-4 mb-8" />
+                            {changeUsernameActive ?
+                                <input
+                                    value={newUsername}
+                                    onChange={handleChange}
+                                    type="text"
+                                    className="bg-transparent rounded"
+                                />
 
+                                : <p className="text-gray-600">Seu nome de usuario é  <strong>{user.username}</strong></p>
+                            }
+                            {changeUsernameActive ?
+
+                                <button type="submit" onClick={handleUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Atualizar</button>
+
+                                : ""
+                            }
+                            {isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
+                            <button onClick={activateChangeUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
+                        </div>
+                        <hr className="mt-4 mb-8" />
+                        <p className="py-2 text-xl font-semibold">Senha</p>
+                        <p className="text-gray-600">Sua senha atual é  <strong>************</strong></p>
+                        <Link to='/new-password'>
+                        <button className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
+                        </Link>
+                        <hr className="mt-4 mb-8" />
                         <div className="mb-10">
                             <p className="py-2 text-xl font-semibold">Deletar Conta</p>
                             <p className="inline-flex items-center rounded-full bg-rose-100 px-4 py-1 text-rose-600">
