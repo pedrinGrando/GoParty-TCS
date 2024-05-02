@@ -5,12 +5,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import go.party.tcs.model.UsuarioInativo;
+import go.party.tcs.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -21,11 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.model.Usuario;
-import go.party.tcs.repository.ComentarioRepository;
-import go.party.tcs.repository.CurtidaRepository;
-import go.party.tcs.repository.EventoRepository;
-import go.party.tcs.repository.NotificationRepository;
-import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EmailService;
 import go.party.tcs.service.EventoService;
@@ -76,6 +74,9 @@ public class UsuarioController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    @Autowired
+    private UsuarioInativoRepository usuarioInativoRepository;
+
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -92,7 +93,6 @@ public class UsuarioController {
             if (!userOptional.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
-
             Usuario usuario = userOptional.get();
             String filename = userId + "_" + file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, filename);
@@ -153,31 +153,52 @@ public class UsuarioController {
     public ResponseEntity<String> atualizarNomeUsuario(@PathVariable Long userId, @PathVariable String newUsername) {
         Optional<Usuario> optionalUser = usuarioRepository.findById(userId);
         Usuario usuario = new Usuario();
-        if(optionalUser.isPresent() && !usuarioService.checkUsernameExists(newUsername)){
+        if (optionalUser.isPresent() && !usuarioService.checkUsernameExists(newUsername)) {
             usuario = optionalUser.get();
             usuario.setUsername(newUsername);
             usuarioService.atualizarUsuario(usuario);
             return ResponseEntity.status(HttpStatus.OK).body("Usuario atualizado com sucesso!");
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Username em uso!");
         }
-     }
-
-     @PutMapping("/update-senha/{senhaAtual}/{userId}")
-     public ResponseEntity<?> atualizarSenha(@PathVariable String senhaAtual, @PathVariable Long userId, @RequestBody String novaSenha){
-         Optional<Usuario> optionalUsuario = usuarioRepository.findById(userId);
-         Usuario usuario = new Usuario();
-         if(!optionalUsuario.isPresent()){
-             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario nao encontrado!");
-         }
-         String senhaAtualDeco = passwordEncoder.encode(usuario.getSenha());
-         if(!senhaAtual.matches(senhaAtualDeco)){
-             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha atual nao coincide!");
-         }else{
-             usuario.setSenha(passwordEncoder.encode(novaSenha));
-             usuarioRepository.save(usuario);
-             return ResponseEntity.status(HttpStatus.OK).body("Senha alterada com sucesso!");
-         }
-     }
-
     }
+    @PutMapping("/update-senha/{userId}")
+    public ResponseEntity<?> atualizarSenha(@PathVariable Long userId, @RequestBody Map<String, String> passwords) {
+        String senhaAtual = passwords.get("senhaAtual");
+        String novaSenha = passwords.get("novaSenha");
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(userId);
+        if (!optionalUsuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
+        }
+        Usuario usuario = optionalUsuario.get();
+        if (!passwordEncoder.matches(senhaAtual, usuario.getSenha())) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha atual não coincide!");
+        }
+        usuario.setSenha(passwordEncoder.encode(novaSenha));
+        usuarioRepository.save(usuario);
+        return ResponseEntity.ok("Senha alterada com sucesso!");
+    }
+
+    @DeleteMapping("/set-to-inative/{userId}")
+    public ResponseEntity<?> atualizarParaInativo(@PathVariable Long userId) {
+        Optional<Usuario> optionalUsuario = usuarioRepository.findById(userId);
+        if (!optionalUsuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
+        }
+        Usuario usuario = optionalUsuario.get();
+        UsuarioInativo usuarioInativo = new UsuarioInativo();
+        usuarioInativo.setTipoUsuario(usuario.getTipoUsuario());
+        usuarioInativo.setEmail(usuario.getEmail());
+        usuarioInativo.setCpf(usuario.getCpf());
+        usuarioInativo.setSenha(usuario.getSenha());
+        usuarioInativo.setNome(usuario.getNome());
+        usuarioInativo.setUsername(usuario.getUsername());
+        usuarioInativo.setFotoCaminho(usuario.getFotoCaminho());
+        usuarioInativo.setDataCadastro(usuario.getDataCadastro());
+        usuarioInativo.setDataExclusao(LocalDateTime.now());
+        usuarioRepository.deleteById(userId);
+        usuarioInativoRepository.save(usuarioInativo);
+
+        return ResponseEntity.ok("Usuario inativado com sucesso!");
+    }
+}

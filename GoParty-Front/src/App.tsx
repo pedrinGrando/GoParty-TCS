@@ -26,6 +26,7 @@ import TypeCodeRegister from './pages/public/register/TypeCodeRegister';
 import Terms from './pages/public/Terms/Terms';
 import EventDetails from './pages/private/EventDetails/EventDetails';
 import TrendPage from './pages/private/Trend/Trend';
+import NewPass from './pages/private/Configs/NewPass';
 
 function App() {
 
@@ -64,7 +65,8 @@ function App() {
           <Route path='/reset-password-email' element={<ResetPassword />} />
           <Route path='/type-your-code' element={<TypeYourCode />} />
           <Route path='/change-password' element={<ChangePassword />} />
-
+          <Route path='/new-password' element={<NewPass />} />
+          
           {/* Private Pages */}
           <Route path='/home' element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
           <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
