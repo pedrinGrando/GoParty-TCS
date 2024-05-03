@@ -15,7 +15,7 @@ export const Error: React.FC<ErrorProps> = ({ error, message, onClose }) => {
     <div>
       <div
         id="alert-2"
-        className="flex items-center p-4 mb-4 text-red-800 rounded-lg bg-red-50 dark:text-red-400"
+        className="flex items-center p-4 mb-4 text-red-400 rounded-lg bg-gray-50 dark:text-red-400"
         role="alert"
       >
         <svg

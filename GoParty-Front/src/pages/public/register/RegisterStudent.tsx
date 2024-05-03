@@ -24,6 +24,7 @@ export default function RegisterStudent() {
   const [isEducational, setIsEducational] = useState(true);
   const [mostrarModal, setMostrarModal] = useState<boolean>(false);
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+  const [isValidPass, setIsValidPass] = useState(false);
 
   const handleCaptchaChange = (isValid: boolean) => {
     setIsCaptchaValid(isValid);
@@ -193,11 +194,8 @@ export default function RegisterStudent() {
       }
 
       if (name === 'senha') {
-        const isValidPassword = validatePassword(value);
-        setErrors({
-          ...errors,
-          senha: !isValidPassword
-        });
+        setIsValidPass(false)
+        setIsValidPass(validatePassword(value))
       }
 
       if (name === 'idade') {
@@ -400,12 +398,9 @@ export default function RegisterStudent() {
                       onChange={handleChange}
                       type='password'
                       className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`} />
-
-                    {errors.senha && (
+                    {!isValidPass && (
                       <ErrorPassword />
                     )}
-
-
                   </div>
                   <div className="relative">
                     <label htmlFor='senhaConfirm' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -482,7 +477,7 @@ export default function RegisterStudent() {
                   </div>
                   <div className="relative">
                     <button type='submit'
-                      disabled={errors.username || !isChecked || errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || !isEducational}
+                      disabled={errors.username || !isValidPass || !isChecked || errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || !isEducational}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                       {isLoading ? (
