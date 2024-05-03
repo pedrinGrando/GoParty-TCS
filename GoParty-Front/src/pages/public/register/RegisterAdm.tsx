@@ -181,10 +181,11 @@ export default function RegisterAdm() {
     }
 
     try {
-      const responseSerAdm = await fetch(`http://localhost:8081/v1/formaturas/ser-adm/${user.principal.id}`, {
+      const responseSerAdm = await fetch(`http://localhost:8081/v1/formaturas/ser-adm/${user.id}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+
         },
         body: JSON.stringify(formData),
       });
@@ -276,10 +277,8 @@ export default function RegisterAdm() {
   return (
 
     <div>
-
       <form onSubmit={handleSubmit}>
         <div className="bg-white relative lg:py-20 dark:bg-gray-900">
-
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 relative lg:pt-20 lg:flex-row">
@@ -288,7 +287,6 @@ export default function RegisterAdm() {
                   <img src="/imagens/BEGoPartyADM.webp" className="rounded lg:-mt-60 sm:mb-36 sm:mt-16 mt-36" />
                 </div>
               </div>
-
               {/* Modal de confirmação*/}
               <ModalMessage
                 mensagem={mensagemModal}

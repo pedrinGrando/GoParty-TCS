@@ -68,7 +68,7 @@ export default function RegisterStudent(){
     };
 
     function isEmailEducational(email: string): boolean {
-      const educationalDomains = ['.edu', '.edu.br', '@alunos'];
+      const educationalDomains = ['.edu', '.edu.br', '@alunos', '@estudante'];
       return educationalDomains.some(domain => email.includes(domain));
   }
 
