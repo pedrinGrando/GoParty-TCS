@@ -273,13 +273,13 @@ export default function Register(){
           } else {
             setIsLoading(false);
             setError(true);
-            setMessage('Alguns dados digitados são inválidos!');
+            setMessage('Houve um erro ao enviar o email, tente novamente!');
             console.error('Erro ao enviar formulário:', response.statusText);
           }
         } catch (error) {
           setIsLoading(false);
           setError(true);
-          setMessage(""+error);
+          setMessage("" + error);
           console.error('Erro ao enviar formulário:', error);
         }
       };
