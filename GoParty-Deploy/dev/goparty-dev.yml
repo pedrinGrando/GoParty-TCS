@@ -1,28 +1,36 @@
 version: '3.8'
 
 services:
-  app:
-    image: <img-backend>
+  server:
+    image: gp-server
     ports:
-      - "8080:8080"
+      - "8080:8080"  
     networks:
-      - app-network
+      - back-network
+    environment:
+      - ../server.conf
 
-  front:
-    image: <img-frontend>
+  client:
+    image: gp-client
     ports:
-      - "3000:3000"
+      - "3000:3000" 
     networks:
-      - app-network
+      - front-network
+    environment:
+      - ../client.conf
 
   db:
-    image: <img-db>
+    image: gp-database
+    ports:
+      - "3306:3306"  
     environment:
       MYSQL_ROOT_PASSWORD: pass
       MYSQL_DATABASE: goparty
     networks:
-      - app-network
+      - back-network
 
 networks:
-  app-network:
+  back-network:
+    driver: bridge
+  front-network:
     driver: bridge
