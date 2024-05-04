@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import go.party.tcs.model.UsuarioInativo;
 import go.party.tcs.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -73,9 +72,6 @@ public class UsuarioController {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
-    @Autowired
-    private UsuarioInativoRepository usuarioInativoRepository;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -179,26 +175,12 @@ public class UsuarioController {
         return ResponseEntity.ok("Senha alterada com sucesso!");
     }
 
-    @DeleteMapping("/set-to-inative/{userId}")
-    public ResponseEntity<?> atualizarParaInativo(@PathVariable Long userId) {
-        Optional<Usuario> optionalUsuario = usuarioRepository.findById(userId);
-        if (!optionalUsuario.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
-        }
-        Usuario usuario = optionalUsuario.get();
-        UsuarioInativo usuarioInativo = new UsuarioInativo();
-        usuarioInativo.setTipoUsuario(usuario.getTipoUsuario());
-        usuarioInativo.setEmail(usuario.getEmail());
-        usuarioInativo.setCpf(usuario.getCpf());
-        usuarioInativo.setSenha(usuario.getSenha());
-        usuarioInativo.setNome(usuario.getNome());
-        usuarioInativo.setUsername(usuario.getUsername());
-        usuarioInativo.setFotoCaminho(usuario.getFotoCaminho());
-        usuarioInativo.setDataCadastro(usuario.getDataCadastro());
-        usuarioInativo.setDataExclusao(LocalDateTime.now());
-        usuarioRepository.deleteById(userId);
-        usuarioInativoRepository.save(usuarioInativo);
-
-        return ResponseEntity.ok("Usuario inativado com sucesso!");
+    @PutMapping("/inativar/{userId}")
+    public ResponseEntity<?> inativarUsuario(@PathVariable Long userId) {
+        return usuarioRepository.findById(userId).map(usuario -> {
+            usuario.setAtivo(false);
+            usuarioRepository.save(usuario);
+            return ResponseEntity.ok().body("Conta inativada com sucesso!");
+        }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

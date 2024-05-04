@@ -37,6 +37,9 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "ativo")
+    private boolean ativo = true; 
+
     @Column(name = "nome")
     private String nome;
 
