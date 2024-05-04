@@ -80,8 +80,7 @@ public class EventoController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
             Usuario usuarioAutor = userOptional.get();
-
-            if (!usuarioAutor.getTipoUsuario().equals(TipoUsuario.MEMBER)) {
+            if (!usuarioAutor.getTipoUsuario().equals(TipoUsuario.MEMBER) && !usuarioAutor.getTipoUsuario().equals(TipoUsuario.ADM)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não é membro!");
             } else {
                 evento.setFormatura(usuarioAutor.getFormatura());
