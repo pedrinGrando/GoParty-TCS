@@ -12,10 +12,7 @@ export default function Configs() {
     const [changeUsernameActive, setChangeUsernameActive] = useState(false);
     const [newUsername, setNewUsername] = useState<string>(user.username);
     const [isUsernameUnique, setIsUsernameUnique] = useState(false);
-    const [changePasswordActive, setChangePasswordActive] = useState(false);
-    const [newPassword, setNewPassword] = useState<string>("");
     const [usernameUpdated, setUsernameUpdated] = useState(false);
-    const navigate = useNavigate();
 
     const activateChangeUsername = () => {
         if (changeUsernameActive)
@@ -103,7 +100,7 @@ export default function Configs() {
                         <p className="py-2 text-xl font-semibold">Senha</p>
                         <p className="text-gray-600">Sua senha atual é  <strong>************</strong></p>
                         <Link to='/new-password'>
-                        <button className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
+                            <button className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
                         </Link>
                         <hr className="mt-4 mb-8" />
                         <div className="mb-10">
