@@ -1,18 +1,13 @@
 package go.party.tcs.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 
-import go.party.tcs.model.Curtida;
 import go.party.tcs.model.Evento;
-import go.party.tcs.model.Usuario;
-import go.party.tcs.repository.CurtidaRepository;
 import go.party.tcs.repository.EventoRepository;
 import go.party.tcs.repository.UsuarioRepository;
 

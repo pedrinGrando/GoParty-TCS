@@ -142,7 +142,7 @@ export default function Profile() {
                   <span>{formatDate(user.idade)}</span>
                 </div>
                 <div className="flex items-center mb-2 text-blueGray-600">
-                <img src="/imagens/id-card.png" className="mr-2" alt="id-card"></img>
+                <img src="/imagens/documents.png" className="mr-2" alt="id-card"></img>
                   <span>{formatCpf(user.cpf)}</span>
                 </div>
               </div>

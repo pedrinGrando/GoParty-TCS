@@ -80,7 +80,8 @@ public class EventoController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
             Usuario usuarioAutor = userOptional.get();
-            if (!usuarioAutor.getTipoUsuario().equals(TipoUsuario.MEMBER) && !usuarioAutor.getTipoUsuario().equals(TipoUsuario.ADM)) {
+            if (!usuarioAutor.getTipoUsuario().equals(TipoUsuario.MEMBER)
+                    && !usuarioAutor.getTipoUsuario().equals(TipoUsuario.ADM)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não é membro!");
             } else {
                 evento.setFormatura(usuarioAutor.getFormatura());
@@ -134,31 +135,52 @@ public class EventoController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/buscar-por-usuario/{userId}")
+    public ResponseEntity<?> buscarEventoPorUserId(@PathVariable Long userId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("Usuário não encontrado!");
+        }
+
+        List<Evento> eventos = eventoRepository.findByUsuarioId(userId);
+        if (eventos.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<EventoDTO> eventosDTO = eventos.stream()
+                .map(evento -> new EventoDTO(evento))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(eventosDTO);
+    }
+
     @GetMapping("/consultar-eventos")
     public List<EventoDTO> searchEventos(@RequestParam(required = false) String search) {
         if (search != null && !search.isEmpty()) {
             return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
         } else {
             return eventoRepository.findAll().stream()
-                   .map(e -> new EventoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(), e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor()))
-                   .collect(Collectors.toList());
+                    .map(e -> new EventoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(),
+                            e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor()))
+                    .collect(Collectors.toList());
         }
     }
 
     @PostMapping("/curtir-evento/{userId}/{eventoId}")
-    public ResponseEntity<?> curtirEvento(@PathVariable Long userId, @PathVariable Long eventoId){
-           Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
-           Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-           Evento evento = new Evento();
-           Usuario usuario = new Usuario();
-           if(eventoOptional.isPresent() && userOptional.isPresent()){
-               evento = eventoOptional.get();
-               usuario = userOptional.get();
-               curtidaService.curtirEvento(usuario,evento);
-               notificationService.criarNotificacaoCurtida(usuario.getUsername() +" curtiu seu evento.", evento.getUsuario().getId());
-               return ResponseEntity.ok().body("Evento curtido com sucesso!");
-           }else{
-               return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento ou usuario nao encontrado!");
-           }
+    public ResponseEntity<?> curtirEvento(@PathVariable Long userId, @PathVariable Long eventoId) {
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Evento evento = new Evento();
+        Usuario usuario = new Usuario();
+        if (eventoOptional.isPresent() && userOptional.isPresent()) {
+            evento = eventoOptional.get();
+            usuario = userOptional.get();
+            curtidaService.curtirEvento(usuario, evento);
+            notificationService.criarNotificacaoCurtida(usuario.getUsername() + " curtiu seu evento.",
+                    evento.getUsuario().getId());
+            return ResponseEntity.ok().body("Evento curtido com sucesso!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento ou usuario nao encontrado!");
+        }
     }
 }

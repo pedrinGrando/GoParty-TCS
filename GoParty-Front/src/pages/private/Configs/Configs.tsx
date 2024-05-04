@@ -124,7 +124,6 @@ export default function Configs() {
                                 : <p className="text-gray-600">Seu nome de usuario é  <strong>{user.username}</strong></p>
                             }
                             {changeUsernameActive ?
-
                                 <button type="submit" onClick={handleUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Atualizar</button>
 
                                 : ""
