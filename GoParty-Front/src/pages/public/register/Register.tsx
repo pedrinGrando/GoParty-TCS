@@ -24,7 +24,8 @@ export default function Register() {
   const [senhaNotEqual, setSenhaNotEqual] = useState(false);
   const [mostrarModal, setMostrarModal] = useState<boolean>(false);
   const [isCaptchaValid, setIsCaptchaValid] = useState(false)
-  const [isValidPass, setIsValidPass] = useState(false);
+  const [isValidPass, setIsValidPass] = useState(true);
+  const [isValidCPF, setIsValidCPF] = useState<boolean>(true);
 
   const handleCaptchaChange = (isValid: boolean) => {
     setIsCaptchaValid(isValid);
@@ -193,6 +194,15 @@ export default function Register() {
         setIsValidPass(validatePassword(value))
       }
 
+      if (name === 'cpf') {
+        setIsValidCPF(true);
+        if (!validateCPF(value)) {
+          setIsValidCPF(false);
+        } else {
+          setIsValidCPF(true);
+        }
+      }
+
       if (name === 'idade') {
         // calcula a idade com base na data de nascimento fornecida
         const today = new Date();
@@ -210,6 +220,24 @@ export default function Register() {
         setErrors({ ...errors, captcha: isCaptchaValid });
       }
     }
+  };
+  const validateCPF = (inputCPF: string): boolean => {
+    const cpf = inputCPF.replace(/[^\d]+/g, '');
+    if (cpf.length !== 11) return false;
+    if (cpf.split('').every(c => c === cpf[0])) return false;
+
+    const calculateCheckDigit = (base: string, factor: number): number => {
+      const sum = base
+        .split('')
+        .reduce((acc, curr, index) => acc + parseInt(curr) * (factor - index), 0);
+      const remainder = sum % 11;
+      return remainder < 2 ? 0 : 11 - remainder;
+    };
+
+    const digit1 = calculateCheckDigit(cpf.slice(0, 9), 10);
+    const digit2 = calculateCheckDigit(cpf.slice(0, 9) + digit1.toString(), 11);
+
+    return digit1 === parseInt(cpf[9]) && digit2 === parseInt(cpf[10]);
   };
 
   const handleSubmit = async (event: any) => {
@@ -308,7 +336,7 @@ export default function Register() {
                     relative z-10 dark:bg-gray-700">
                 <p className="w-full text-4xl font-medium text-center leading-snug font-serif dark:text-white">Crie uma nova conta</p>
                 <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
-                  <div className="backdrop-blur-lg relative">
+                  <div className="relative">
                     <label htmlFor='nome' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:bg-gray-700 dark:text-white">Seu nome completo</label>
                     <input placeholder="Seu nome completo"
@@ -369,13 +397,14 @@ export default function Register() {
                     <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700">Seu CPF</label>
                     <MaskedInput
                       mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
-                      placeholder="112.112.112-12"
+                      placeholder="Seu CPF"
                       id='cpf'
                       name='cpf'
                       value={formData.cpf}
                       onChange={handleChange}
                       className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
                     />
+                     {!isValidCPF && <p style={{ color: 'red' }}>O CPF digitado é inválido!</p>}
                   </div>
                   <div className="relative">
                       <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -468,7 +497,7 @@ export default function Register() {
                   </div>
                   <div className="relative">
                     <button type='submit'
-                      disabled={!isChecked || !isValidPass || errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique}
+                      disabled={!isChecked || !isValidPass ||errors.senha|| errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                       {isLoading ? (
@@ -481,7 +510,6 @@ export default function Register() {
                   <div>
                     <Recaptcha onCaptchaChange={handleCaptchaChange} />
                   </div>
-
                   {/* AQUI*/}
                   <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
                     Já possui conta?
@@ -489,7 +517,6 @@ export default function Register() {
                       Faça o login
                     </button>
                   </p>
-
                   {/*AQUI*/}
                   <div className="w-full p-1 text-center">
                     © 2023 GoParty direitos reservados

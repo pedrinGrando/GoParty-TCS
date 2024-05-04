@@ -137,10 +137,7 @@ export default function Home() {
                                     <div className="px-6 pt-4 pb-2">
                                         {/* Tags */}
                                     </div>
-
-                                </div>
-                           
-
+                                </div>  
                         ))
                     )}
                 </div>

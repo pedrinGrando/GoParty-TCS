@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import go.party.tcs.model.Evento;
 
 public class EventoDTO {
-    
+
     private Long id;
     private String titulo;
     private String descricao;
@@ -13,9 +13,19 @@ public class EventoDTO {
     private String estado;
     private LocalDateTime dataEvento;
     private double valor;
-    private String nomeUsuario;
 
     public EventoDTO() {}
+
+    public EventoDTO(Long id, String titulo, String descricao, String eventoCaminho, String cidade, String estado, LocalDateTime dataEvento, double valor) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.eventoCaminho = eventoCaminho;
+        this.cidade = cidade;
+        this.estado = estado;
+        this.dataEvento = dataEvento;
+        this.valor = valor;
+    }
 
     public EventoDTO(Evento evento) {
         if (evento != null) {
@@ -27,7 +37,6 @@ public class EventoDTO {
             this.estado = evento.getEstado();
             this.dataEvento = evento.getDataEvento();
             this.valor = evento.getValor();
-            this.nomeUsuario = evento.getUsuario() != null ? evento.getUsuario().getNome() : null;
         }
     }
 
@@ -47,6 +56,4 @@ public class EventoDTO {
     public void setDataEvento(LocalDateTime dataEvento) { this.dataEvento = dataEvento; }
     public double getValor() { return valor; }
     public void setValor(double valor) { this.valor = valor; }
-    public String getNomeUsuario() { return nomeUsuario; }
-    public void setNomeUsuario(String nomeUsuario) { this.nomeUsuario = nomeUsuario; }
 }
