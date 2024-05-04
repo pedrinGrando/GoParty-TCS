@@ -134,6 +134,17 @@ public class EventoController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("/consultar-eventos")
+    public List<EventoDTO> searchEventos(@RequestParam(required = false) String search) {
+        if (search != null && !search.isEmpty()) {
+            return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
+        } else {
+            return eventoRepository.findAll().stream()
+                   .map(e -> new EventoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(), e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor()))
+                   .collect(Collectors.toList());
+        }
+    }
+
     @PostMapping("/curtir-evento/{userId}/{eventoId}")
     public ResponseEntity<?> curtirEvento(@PathVariable Long userId, @PathVariable Long eventoId){
            Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);

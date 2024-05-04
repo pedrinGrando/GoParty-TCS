@@ -24,7 +24,8 @@ export default function RegisterStudent() {
   const [isEducational, setIsEducational] = useState(true);
   const [mostrarModal, setMostrarModal] = useState<boolean>(false);
   const [isCaptchaValid, setIsCaptchaValid] = useState(false);
-  const [isValidPass, setIsValidPass] = useState(false);
+  const [isValidPass, setIsValidPass] = useState(true);
+  const [isValidCPF, setIsValidCPF] = useState<boolean>(true);
 
   const handleCaptchaChange = (isValid: boolean) => {
     setIsCaptchaValid(isValid);
@@ -159,8 +160,8 @@ export default function RegisterStudent() {
     const { name, value, type } = event.target;
 
     if (name === 'cpf' && type === 'text') {
+      setIsValidCPF(true);
       const numericValue = value.replace(/\D/g, '');
-
       setFormData({
         ...formData,
         [name]: numericValue,
@@ -198,6 +199,15 @@ export default function RegisterStudent() {
         setIsValidPass(validatePassword(value))
       }
 
+      if (name === 'cpf') {
+        setIsValidCPF(true);
+        if (!validateCPF(value)) {
+          setIsValidCPF(false);
+        } else {
+          setIsValidCPF(true);
+        }
+      }
+
       if (name === 'idade') {
         // calcula a idade com base na data de nascimento fornecida
         const today = new Date();
@@ -217,6 +227,24 @@ export default function RegisterStudent() {
       }
     }
   };
+  const validateCPF = (inputCPF: string): boolean => {
+    const cpf = inputCPF.replace(/[^\d]+/g, '');
+    if (cpf.length !== 11) return false;
+    if (cpf.split('').every(c => c === cpf[0])) return false;
+
+    const calculateCheckDigit = (base: string, factor: number): number => {
+      const sum = base
+        .split('')
+        .reduce((acc, curr, index) => acc + parseInt(curr) * (factor - index), 0);
+      const remainder = sum % 11;
+      return remainder < 2 ? 0 : 11 - remainder;
+    };
+
+    const digit1 = calculateCheckDigit(cpf.slice(0, 9), 10);
+    const digit2 = calculateCheckDigit(cpf.slice(0, 9) + digit1.toString(), 11);
+
+    return digit1 === parseInt(cpf[9]) && digit2 === parseInt(cpf[10]);
+  };
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
@@ -228,9 +256,9 @@ export default function RegisterStudent() {
       username: formData.username.trim() === '',
       idade: formData.idade.trim() === '',
       senha: formData.senha.trim() === '',
-      cpf: formData.senha.trim() === '',
+      cpf: formData.cpf.trim() === '',
       senhaConfirm: formData.senhaConfirm.trim() === '',
-      senhaRegras: formData.senhaConfirm.trim() === '',
+      senhaRegras: formData.senhaRegras.trim() === '',
       captcha: !isCaptchaValid
     };
 
@@ -379,13 +407,14 @@ export default function RegisterStudent() {
                           absolute dark:bg-gray-700 dark:text-white">Seu CPF</label>
                     <MaskedInput
                       mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
-                      placeholder="112.112.112-12"
+                      placeholder="Seu CPF"
                       id='cpf'
                       name='cpf'
                       value={formData.cpf}
                       onChange={handleChange}
                       className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
                     />
+                    {!isValidCPF && <p style={{ color: 'red' }}>O CPF digitado é inválido!</p>}
                   </div>
                   <div className="relative">
                     <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -477,7 +506,7 @@ export default function RegisterStudent() {
                   </div>
                   <div className="relative">
                     <button type='submit'
-                      disabled={errors.username || !isValidPass || !isChecked || errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || !isEducational}
+                         disabled={!isChecked || !isValidPass ||errors.senha|| errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                       {isLoading ? (

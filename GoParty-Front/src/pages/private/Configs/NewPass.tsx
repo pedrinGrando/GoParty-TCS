@@ -19,7 +19,7 @@ export default function NewPass() {
     const [isLoading, setIsLoading] = useState(false);
     const [passNotValid, setPassNotValid] = useState(true);
     const [errorChange, setErrorChange] = useState(false);
-    const [message, setMessage] = useState(false);
+    const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
     const validatePassword = (password: string) => {
@@ -57,6 +57,8 @@ export default function NewPass() {
 
         if (name === 'senhaConfirm' && value !== novaSenha) {
             setSenhaNotEqual(true);
+        } else {
+            setSenhaNotEqual(false);
         }
     }
 
@@ -84,11 +86,14 @@ export default function NewPass() {
             if (response.ok) {
                 setSucessChange(true);
                 setIsLoading(false);
-                console.log("Senha atualizada com sucesso!")
+                setTimeout(() => {
+                    navigate('/account-config');
+                }, 4000);
             } else {
                 setIsLoading(false);
+                setErrorChange(true)
+                setMessage("Senha atual incorreta!");
                 const errorText = await response.text();
-                console.log("Error: " + errorText)
             }
         } catch (error: any) {
             setIsLoading(false);
@@ -101,7 +106,10 @@ export default function NewPass() {
             <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
               xl:px-5 lg:flex-row">
                 <div className="mx-4 min-h-screen max-w-screen-xl sm:mx-8 xl:mx-auto dark:bg-gray-900">
-                    <h1 className="border-b py-6 text-4xl font-semibold">Atualizar sua senha</h1>
+                    <h1 className="border-b py-6 text-4xl font-semibold">Atualizar sua senha </h1>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                    </svg>
                     <div className="relative">
                         <label htmlFor='senhaAtual' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Senha atual</label>
