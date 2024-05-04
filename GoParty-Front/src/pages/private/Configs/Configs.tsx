@@ -3,16 +3,22 @@ import { Sidebar } from "../../../components/sidebar/Sidebar"
 import DarkModeToggle from "../../../components/DarkMode/DarkModeToggle";
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
 import { Link, useNavigate } from "react-router-dom";
+import { Loading } from "../../../components/Loading/Loading";
 
 export default function Configs() {
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
+    const navigate = useNavigate();
 
     const [changeUsernameActive, setChangeUsernameActive] = useState(false);
     const [newUsername, setNewUsername] = useState<string>(user.username);
     const [isUsernameUnique, setIsUsernameUnique] = useState(false);
     const [usernameUpdated, setUsernameUpdated] = useState(false);
+    const [isAccountDelete, setIsAccoutDelete] = useState(false);
+
+    const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
+    const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
     const activateChangeUsername = () => {
         if (changeUsernameActive)
@@ -27,6 +33,7 @@ export default function Configs() {
     };
 
     const handleUsername = async (event: any) => {
+        setIsLoadingUpdate(true);
         try {
             const response = await fetch(`http://localhost:8081/v1/usuarios/update-username/${user.id}/${newUsername}`, {
                 method: 'PUT',
@@ -36,18 +43,48 @@ export default function Configs() {
                 },
             });
             if (!response.ok) {
+                setIsLoadingUpdate(false);
                 setIsUsernameUnique(true);
                 setUsernameUpdated(false);
                 throw new Error('falha ao atualizar o username!');
             }
+            setIsLoadingUpdate(false);
             setUsernameUpdated(true);
             console.log('Username atualizado com sucesso');
         } catch (error) {
+            setIsLoadingUpdate(false);
             setUsernameUpdated(false);
             console.error('Erro ao enviar dados:', error);
         }
     };
 
+    const handleDeleteAccount = async () => {
+        setIsLoadingDelete(true);
+        if (!user.id) return;
+
+        try {
+            const response = await fetch(`http://localhost:8081/v1/usuarios/inativar/${user.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+            });
+
+            if (!response.ok) throw new Error('Falha ao inativar conta.');
+
+            setIsAccoutDelete(true);
+            setIsLoadingDelete(false);
+            alert('Conta inativada com sucesso!');
+            localStorage.clear();
+            navigate('/login');
+        } catch (error) {
+            setIsAccoutDelete(false);
+            setIsLoadingDelete(false);
+            alert('Erro ao inativar conta.');
+            console.error('Falha na requisição:', error);
+        }
+    };
     return (
         <div>
             <div className="mx-4 min-h-screen max-w-screen-xl sm:mx-8 xl:mx-auto dark:bg-gray-900">
@@ -87,14 +124,13 @@ export default function Configs() {
                                 : <p className="text-gray-600">Seu nome de usuario é  <strong>{user.username}</strong></p>
                             }
                             {changeUsernameActive ?
-
                                 <button type="submit" onClick={handleUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Atualizar</button>
 
                                 : ""
                             }
                             {usernameUpdated && <p style={{ color: 'green' }}>Nome de usuário atualizado com sucesso!</p>}
                             {isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
-                            <button onClick={activateChangeUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">{changeUsernameActive ? "Voltar" : "Alterar"}</button>
+                            <button onClick={activateChangeUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">{changeUsernameActive ? "Voltar" : "Alterar"}</button>{isLoadingUpdate ? <Loading /> : ''}
                         </div>
                         <hr className="mt-4 mb-8" />
                         <p className="py-2 text-xl font-semibold">Senha</p>
@@ -111,8 +147,9 @@ export default function Configs() {
                                 </svg>
                                 Prossiga com cautela
                             </p>
-                            <p className="mt-2">Tenha Certeza para tomar esta decisao.</p>
-                            <button className="ml-auto text-sm font-semibold text-rose-600 underline decoration-2">Continuar com minha decisao</button>
+                            <p className="mt-2">Tenha Certeza para tomar esta decisao.</p> {isLoadingDelete ? <Loading /> : ''}
+                            {isAccountDelete && <p style={{ color: 'green' }}>Conta deletada com sucesso!</p>}
+                            <button onClick={handleDeleteAccount} className="ml-auto text-sm font-semibold text-rose-600 underline decoration-2">Continuar com minha decisao</button>
                         </div>
                     </div>
                 </div>

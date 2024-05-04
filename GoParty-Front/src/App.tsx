@@ -27,6 +27,7 @@ import Terms from './pages/public/Terms/Terms';
 import EventDetails from './pages/private/EventDetails/EventDetails';
 import TrendPage from './pages/private/Trend/Trend';
 import NewPass from './pages/private/Configs/NewPass';
+import Events from './pages/private/Events/Events';
 
 function App() {
 
@@ -75,6 +76,7 @@ function App() {
           <Route path='/account-config' element={isAuthenticated() ? <Configs /> : <Navigate to="/login" />} />
           <Route path='/your-groups' element={isAuthenticated() ? <Groups /> : <Navigate to="/login" />} />
           <Route path='/your-tickets' element={isAuthenticated() ? <Tickets /> : <Navigate to="/login" />} />
+          <Route path='/your-events' element={isAuthenticated() ? <Events /> : <Navigate to="/login" />} />
           <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />
           <Route path='/create-event' element={isAuthenticated() ? <PostEvent /> : <Navigate to="/login" />} />
