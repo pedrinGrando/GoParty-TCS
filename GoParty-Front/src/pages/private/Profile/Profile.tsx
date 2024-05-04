@@ -143,7 +143,7 @@ export default function Profile() {
                 </div>
                 <div className="flex items-center mb-2 text-blueGray-600">
                   <img src="/imagens/calendar-lines.png" className="mr-2" alt="calendar-lines"></img>
-                  <span>{formatDate(user.dataNasci)}</span>
+                  <span>{formatDate(user.idade)}</span>
                 </div>
                 <div className="flex items-center mb-2 text-blueGray-600">
                   <img src="/imagens/documents.png" className="mr-2" alt="id-card"></img>
