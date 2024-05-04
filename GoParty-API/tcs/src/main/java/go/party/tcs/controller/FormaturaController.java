@@ -16,7 +16,6 @@ import org.springframework.core.io.UrlResource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties.Http;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,15 +32,12 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.Enums.TipoUsuario;
-import go.party.tcs.dto.EventoDTO;
-import go.party.tcs.dto.FormaturaDTO;
 import go.party.tcs.dto.UsuarioDTO;
 import go.party.tcs.model.Formatura;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.FormaturaRepository;
 import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.FormaturaService;
-import go.party.tcs.service.UsuarioService;
 
 @RestController
 @RequestMapping("/v1/formaturas")
@@ -229,6 +225,7 @@ public class FormaturaController {
         UsuarioDTO dto = new UsuarioDTO();
         dto.setId(usuario.getId());
         dto.setNome(usuario.getNome());
+        dto.setUsername(usuario.getUsername());
         dto.setUsuarioCaminho(usuario.getFotoCaminho());
         return dto;
     }
