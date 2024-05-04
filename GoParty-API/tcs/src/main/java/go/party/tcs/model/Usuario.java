@@ -49,8 +49,8 @@ public class Usuario implements UserDetails {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "idade")
-    private LocalDate idade;
+    @Column(name = "dataNasci")
+    private LocalDate dataNasci;
 
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;
