@@ -14,6 +14,7 @@ export default function Configs() {
     const [isUsernameUnique, setIsUsernameUnique] = useState(false);
     const [changePasswordActive, setChangePasswordActive] = useState(false);
     const [newPassword, setNewPassword] = useState<string>("");
+    const [usernameUpdated, setUsernameUpdated] = useState(false);
     const navigate = useNavigate();
 
     const activateChangeUsername = () => {
@@ -39,10 +40,13 @@ export default function Configs() {
             });
             if (!response.ok) {
                 setIsUsernameUnique(true);
+                setUsernameUpdated(false);
                 throw new Error('falha ao atualizar o username!');
             }
+            setUsernameUpdated(true);
             console.log('Username atualizado com sucesso');
         } catch (error) {
+            setUsernameUpdated(false);
             console.error('Erro ao enviar dados:', error);
         }
     };
@@ -81,9 +85,8 @@ export default function Configs() {
                                     value={newUsername}
                                     onChange={handleChange}
                                     type="text"
-                                    className="bg-transparent rounded"
+                                    className="border-black"
                                 />
-
                                 : <p className="text-gray-600">Seu nome de usuario é  <strong>{user.username}</strong></p>
                             }
                             {changeUsernameActive ?
@@ -92,8 +95,9 @@ export default function Configs() {
 
                                 : ""
                             }
+                            {usernameUpdated && <p style={{ color: 'green' }}>Nome de usuário atualizado com sucesso!</p>}
                             {isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
-                            <button onClick={activateChangeUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">Alterar</button>
+                            <button onClick={activateChangeUsername} className="inline-flex text-sm font-semibold text-blue-600 underline decoration-2">{changeUsernameActive ? "Voltar" : "Alterar"}</button>
                         </div>
                         <hr className="mt-4 mb-8" />
                         <p className="py-2 text-xl font-semibold">Senha</p>
