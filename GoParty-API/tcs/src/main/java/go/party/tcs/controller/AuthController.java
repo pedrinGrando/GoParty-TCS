@@ -75,7 +75,7 @@ public ResponseEntity<?> login(@RequestBody Usuario usuario) {
 
         UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO(
             authenticatedUser.getId(), authenticatedUser.getNome(), authenticatedUser.getUsername(),
-            authenticatedUser.getEmail(), authenticatedUser.getIdade(), authenticatedUser.getTipoUsuario(),
+            authenticatedUser.getEmail(), authenticatedUser.getDataNasci(), authenticatedUser.getTipoUsuario(),
             authenticatedUser.getCpf(), authenticatedUser.getFotoCaminho(),
             authenticatedUser.getDataCadastro()
         );

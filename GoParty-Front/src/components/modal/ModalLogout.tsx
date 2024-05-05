@@ -15,6 +15,7 @@ export const ModalLogout: React.FC<ModalProps> = ({ mostrarModal, onClose }) => 
     const handleLogout = () => {
         localStorage.removeItem('sessionUser');
         localStorage.removeItem('token');
+        localStorage.clear();
         navigate('/login');
     }
 

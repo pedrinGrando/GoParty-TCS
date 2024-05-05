@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import go.party.tcs.model.Ingresso;
+import go.party.tcs.repository.IngressoRepository;
 import go.party.tcs.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -66,6 +68,9 @@ public class EventoController {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private IngressoRepository ingressoRepository;
+
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -120,9 +125,9 @@ public class EventoController {
     }
 
     @GetMapping("/buscar-eventos")
-    public List<EventoDTO> getAllEventos() {
-        List<Evento> eventos = eventoRepository.findAll();
-        return eventos.stream()
+    public List<EventoDTO> getAllEventosAtivos() {
+        List<Evento> eventosAtivos = eventoRepository.findByAtivoTrue();
+        return eventosAtivos.stream()
                 .map(EventoDTO::new)
                 .collect(Collectors.toList());
     }
@@ -160,8 +165,8 @@ public class EventoController {
             return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
         } else {
             return eventoRepository.findAll().stream()
-                    .map(e -> new EventoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(),
-                            e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor()))
+                    .map(e -> new EventoDTO(e.getId(), e.isAtivo(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(),
+                            e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor(), e.getRua(), e.getBairro(), e.getCep()))
                     .collect(Collectors.toList());
         }
     }
@@ -183,4 +188,44 @@ public class EventoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento ou usuario nao encontrado!");
         }
     }
+
+    @PutMapping("/inativar-evento/{userId}/{eventoId}")
+    public ResponseEntity<?> inativarEvento(@PathVariable Long userId, @PathVariable Long eventoId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("Usuário não encontrado!");
+        }
+        return eventoRepository.findById(eventoId)
+                .map(evento -> {
+                    if (!evento.getUsuario().getId().equals(userId)) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não criou este evento!");
+                    }
+                    if (!ingressoRepository.findByEventoId(evento.getId()).isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Já existem ingressos comprados para este evento!");
+                    }
+                    evento.setAtivo(false);
+                    eventoRepository.save(evento);
+                    return ResponseEntity.ok().body("Evento inativado com sucesso!");
+                })
+                .orElseGet(() -> ResponseEntity.badRequest().body("Evento não encontrado!"));
+    }
+
+    @PutMapping("/atualizar-evento/{eventoId}")
+    public ResponseEntity<?> atualizarEvento(@PathVariable Long eventoId, @RequestBody EventoDTO eventoDTO) {
+        return eventoRepository.findById(eventoId).map(evento -> {
+            evento.setTitulo(eventoDTO.getTitulo());
+            evento.setDescricao(eventoDTO.getDescricao());
+            evento.setCep(eventoDTO.getCep());
+            evento.setEstado(eventoDTO.getEstado());
+            evento.setCidade(eventoDTO.getCidade());
+            evento.setBairro(eventoDTO.getBairro());
+            evento.setRua(eventoDTO.getRua());
+            evento.setValor(eventoDTO.getValor());
+            evento.setDataEvento(eventoDTO.getDataEvento());
+
+            eventoRepository.save(evento);
+            return ResponseEntity.ok(new EventoDTO(evento));
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }

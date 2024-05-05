@@ -3,6 +3,8 @@ import { RenderIf } from "../../../components/RenderIf/RenderIf";
 import { Sidebar } from "../../../components/sidebar/Sidebar";
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
 import { format, parseISO } from 'date-fns';
+import TrendEvents from "../../../components/Feed/TrendEvents";
+import { FormsTrends } from "../../../components/Feed/FormsTrend";
 
 export default function Profile() {
 
@@ -16,12 +18,12 @@ export default function Profile() {
     return format(date, 'dd/MM/yyyy');
   }
 
-  const formatCpf = (cpfUser: string) =>{
-     const cpfFormated = cpfUser.substring(0,3);
-     const finalCpf = cpfFormated+'.'+'***'+'***';
-     return finalCpf;
+  const formatCpf = (cpfUser: string) => {
+    const cpfFormated = cpfUser.substring(0, 3);
+    const finalCpf = cpfFormated + '.' + '***' + '***';
+    return finalCpf;
   }
- 
+
 
   const onFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -53,7 +55,9 @@ export default function Profile() {
   return (
     <div>
       <section className="pt-16 bg-blueGray-50 dark:bg-gray-900">
+        <TrendEvents />
         <div className="w-full lg:w-4/12 px-4 mx-auto">
+          <FormsTrends />
           <div className="backdrop:blur-md relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
             <div className="px-6">
               <div className="flex flex-wrap justify-center">
@@ -92,12 +96,14 @@ export default function Profile() {
                 </div>
                 <div className="w-full px-4 text-center mt-20">
                   <div className="flex justify-center py-4 lg:pt-4 pt-8">
-                    <div className="mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                        22
-                      </span>
-                      <span className="text-sm text-blueGray-400">Eventos Criados</span>
-                    </div>
+                    {user?.tipoUsuario === 'MEMBER' || user?.tipoUsuario === 'ADM' && (
+                      <div className="mr-4 p-3 text-center">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                          22
+                        </span>
+                        <span className="text-sm text-blueGray-400">Eventos Criados</span>
+                      </div>
+                    )}
                     <div className="mr-4 p-3 text-center">
                       <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
                         10
@@ -120,13 +126,13 @@ export default function Profile() {
                 </h3>
                 <div className="mb-2 text-green-600 mt-10">
                   <p>GoParty {user.tipoUsuario}
-                  <span className="inline-flex items-center justify-center w-6 h-6 me-2 text-sm font-semibold text-blue-800 bg-blue-100 rounded-full dark:bg-gray-700 dark:text-blue-400">
-                  <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                  <path fill="currentColor" d="m18.774 8.245-.892-.893a1.5 1.5 0 0 1-.437-1.052V5.036a2.484 2.484 0 0 0-2.48-2.48H13.7a1.5 1.5 0 0 1-1.052-.438l-.893-.892a2.484 2.484 0 0 0-3.51 0l-.893.892a1.5 1.5 0 0 1-1.052.437H5.036a2.484 2.484 0 0 0-2.48 2.481V6.3a1.5 1.5 0 0 1-.438 1.052l-.892.893a2.484 2.484 0 0 0 0 3.51l.892.893a1.5 1.5 0 0 1 .437 1.052v1.264a2.484 2.484 0 0 0 2.481 2.481H6.3a1.5 1.5 0 0 1 1.052.437l.893.892a2.484 2.484 0 0 0 3.51 0l.893-.892a1.5 1.5 0 0 1 1.052-.437h1.264a2.484 2.484 0 0 0 2.481-2.48V13.7a1.5 1.5 0 0 1 .437-1.052l.892-.893a2.484 2.484 0 0 0 0-3.51Z"/>
-                  <path fill="#fff" d="M8 13a1 1 0 0 1-.707-.293l-2-2a1 1 0 1 1 1.414-1.414l1.42 1.42 5.318-3.545a1 1 0 0 1 1.11 1.664l-6 4A1 1 0 0 1 8 13Z"/>
-                  </svg>
-                  <span className="sr-only">Icon description</span>
-                  </span></p>
+                    <span className="inline-flex items-center justify-center w-6 h-6 me-2 text-sm font-semibold text-blue-800 bg-blue-100 rounded-full dark:bg-gray-700 dark:text-blue-400">
+                      <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill="currentColor" d="m18.774 8.245-.892-.893a1.5 1.5 0 0 1-.437-1.052V5.036a2.484 2.484 0 0 0-2.48-2.48H13.7a1.5 1.5 0 0 1-1.052-.438l-.893-.892a2.484 2.484 0 0 0-3.51 0l-.893.892a1.5 1.5 0 0 1-1.052.437H5.036a2.484 2.484 0 0 0-2.48 2.481V6.3a1.5 1.5 0 0 1-.438 1.052l-.892.893a2.484 2.484 0 0 0 0 3.51l.892.893a1.5 1.5 0 0 1 .437 1.052v1.264a2.484 2.484 0 0 0 2.481 2.481H6.3a1.5 1.5 0 0 1 1.052.437l.893.892a2.484 2.484 0 0 0 3.51 0l.893-.892a1.5 1.5 0 0 1 1.052-.437h1.264a2.484 2.484 0 0 0 2.481-2.48V13.7a1.5 1.5 0 0 1 .437-1.052l.892-.893a2.484 2.484 0 0 0 0-3.51Z" />
+                        <path fill="#fff" d="M8 13a1 1 0 0 1-.707-.293l-2-2a1 1 0 1 1 1.414-1.414l1.42 1.42 5.318-3.545a1 1 0 0 1 1.11 1.664l-6 4A1 1 0 0 1 8 13Z" />
+                      </svg>
+                      <span className="sr-only">Icon description</span>
+                    </span></p>
                 </div>
                 <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
                 <div className="flex items-center mb-2 text-blueGray-600 mt-10">
@@ -142,11 +148,11 @@ export default function Profile() {
                   <span>{formatDate(user.idade)}</span>
                 </div>
                 <div className="flex items-center mb-2 text-blueGray-600">
-                <img src="/imagens/documents.png" className="mr-2" alt="id-card"></img>
+                  <img src="/imagens/documents.png" className="mr-2" alt="id-card"></img>
                   <span>{formatCpf(user.cpf)}</span>
                 </div>
               </div>
-             
+
             </div>
           </div>
         </div>

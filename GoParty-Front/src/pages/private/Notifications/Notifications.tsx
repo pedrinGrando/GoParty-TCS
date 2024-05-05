@@ -38,6 +38,8 @@ export default function Notifications() {
     return (
         <div>
             <TrendEvents />
+            <h1 className="flex justify-center mt-4 text-4xl font-semibold dark:bg-gray-900 items-center">Suas notificacoes</h1>
+            <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
             <section className="pt-16 bg-blueGray-50 dark:bg-gray-900">
                 <div className="w-full lg:w-4/12 px-4 mx-auto">
                     <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">

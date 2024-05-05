@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
 
-
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
 import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
@@ -132,7 +131,7 @@ export default function Register() {
     nome: false,
     email: false,
     username: false,
-    idade: false,
+    dataNasci: false,
     senha: false,
     cpf: false,
     senhaConfirm: false,
@@ -144,7 +143,7 @@ export default function Register() {
     nome: '',
     email: '',
     username: '',
-    idade: '',
+    dataNasci: '',
     senha: '',
     cpf: '',
     fotoPerfil: null,
@@ -203,7 +202,7 @@ export default function Register() {
         }
       }
 
-      if (name === 'idade') {
+      if (name === 'dataNasci') {
         // calcula a idade com base na data de nascimento fornecida
         const today = new Date();
         const birthDate = new Date(value);
@@ -211,9 +210,9 @@ export default function Register() {
         const monthDiff = today.getMonth() - birthDate.getMonth();
 
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-          setErrors({ ...errors, idade: age - 1 < 16 });
+          setErrors({ ...errors, dataNasci: age - 1 < 16 });
         } else {
-          setErrors({ ...errors, idade: age < 16 });
+          setErrors({ ...errors, dataNasci: age < 16 });
         }
       }
       if (!isCaptchaValid) {
@@ -248,7 +247,7 @@ export default function Register() {
       nome: formData.nome.trim() === '',
       email: formData.email.trim() === '',
       username: formData.username.trim() === '',
-      idade: formData.idade.trim() === '',
+      dataNasci: formData.dataNasci.trim() === '',
       senha: formData.senha.trim() === '',
       cpf: formData.senha.trim() === '',
       senhaConfirm: formData.senhaConfirm.trim() === '',
@@ -282,7 +281,7 @@ export default function Register() {
           nome: '',
           email: '',
           username: '',
-          idade: '',
+          dataNasci: '',
           senha: '',
           cpf: '',
           fotoPerfil: null,
@@ -378,18 +377,18 @@ export default function Register() {
                     {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
                   </div>
                   <div className="relative">
-                    <label htmlFor='idade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                    <label htmlFor='dataNasci' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Data de Nascimento</label>
                     <input
                       placeholder="Data"
-                      id='idade'
-                      name='idade'
-                      value={formData.idade}
+                      id='dataNasci'
+                      name='dataNasci'
+                      value={formData.dataNasci}
                       onChange={handleChange}
                       type="date"
-                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.idade
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.dataNasci
                         ? 'border-red-500' : ''}`} />
-                    {errors.idade && <p style={{ color: 'red' }}>Você deve ter pelo menos 16 anos de idade.</p>}
+                    {errors.dataNasci && <p style={{ color: 'red' }}>Você deve ter pelo menos 16 anos de idade.</p>}
 
                   </div>
 
@@ -497,7 +496,7 @@ export default function Register() {
                   </div>
                   <div className="relative">
                     <button type='submit'
-                      disabled={!isChecked || !isValidPass ||errors.senha|| errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
+                      disabled={!isChecked || !isValidPass ||errors.senha|| errors.dataNasci || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                       {isLoading ? (

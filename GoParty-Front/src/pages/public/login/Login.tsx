@@ -86,9 +86,9 @@ export default function Login() {
         localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
         
         setIsLoading(false);
-        navigate('/home');
         console.log('Login efetuado com sucesso!');
         console.log(token);
+        navigate('/home');
       } else {
         setIsLoading(false);
         setMessage("Usuário ou senha inválidos!");
