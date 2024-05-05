@@ -29,6 +29,7 @@ import TrendPage from './pages/private/Trend/Trend';
 import NewPass from './pages/private/Configs/NewPass';
 import Events from './pages/private/Events/Events';
 import Graduation from './pages/private/Graduation/Graduation';
+import EventUpdate from './pages/private/EventDetails/EventUpdate';
 
 function App() {
 
@@ -72,6 +73,7 @@ function App() {
           {/* Private Pages */}
           <Route path='/home' element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
           <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
+          <Route path="/event-update/:eventId" element={isAuthenticated() ? <EventUpdate /> : <Navigate to="/login" />} />
           <Route path='/explore' element={isAuthenticated() ? <Explore /> : <Navigate to="/login" />} />
           <Route path='/register-adm' element={isAuthenticated() ? <RegisterAdm /> : <Navigate to="/login" />} />
           <Route path='/account-config' element={isAuthenticated() ? <Configs /> : <Navigate to="/login" />} />

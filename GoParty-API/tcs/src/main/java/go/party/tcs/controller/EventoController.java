@@ -125,9 +125,9 @@ public class EventoController {
     }
 
     @GetMapping("/buscar-eventos")
-    public List<EventoDTO> getAllEventos() {
-        List<Evento> eventos = eventoRepository.findAll();
-        return eventos.stream()
+    public List<EventoDTO> getAllEventosAtivos() {
+        List<Evento> eventosAtivos = eventoRepository.findByAtivoTrue();
+        return eventosAtivos.stream()
                 .map(EventoDTO::new)
                 .collect(Collectors.toList());
     }
@@ -165,7 +165,7 @@ public class EventoController {
             return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
         } else {
             return eventoRepository.findAll().stream()
-                    .map(e -> new EventoDTO(e.getId(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(),
+                    .map(e -> new EventoDTO(e.getId(), e.isAtivo(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(),
                             e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor(), e.getRua(), e.getBairro(), e.getCep()))
                     .collect(Collectors.toList());
         }

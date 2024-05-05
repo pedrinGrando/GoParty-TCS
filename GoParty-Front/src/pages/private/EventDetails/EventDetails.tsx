@@ -22,6 +22,8 @@ const EventDetails: React.FC = () => {
         eventoCaminho: string;
         cidade: string;
         estado: string;
+        rua: string;
+        bairro: string;
         dataEvento: Date;
         valor: number;
         nomeUsuario?: string;
@@ -37,6 +39,8 @@ const EventDetails: React.FC = () => {
             cidade: evento.cidade,
             estado: evento.estado,
             dataEvento: evento.dataEvento,
+            bairro: evento.barro,
+            rua: evento.rua,
             valor: evento.valor,
             nomeUsuario: "Pedro Aluisio Scuissiatto"
         };

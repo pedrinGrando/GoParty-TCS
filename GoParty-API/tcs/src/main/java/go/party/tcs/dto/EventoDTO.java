@@ -12,6 +12,7 @@ import lombok.Setter;
 public class EventoDTO {
 
     private Long id;
+    private boolean ativo;
     private String titulo;
     private String descricao;
     private String eventoCaminho;
@@ -25,7 +26,7 @@ public class EventoDTO {
 
     public EventoDTO() {}
 
-    public EventoDTO(Long id, String titulo, String descricao, String eventoCaminho, String cidade, String estado, LocalDateTime dataEvento, double valor, String rua, String bairro, String cep) {
+    public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado, LocalDateTime dataEvento, double valor, String rua, String bairro, String cep) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -37,15 +38,19 @@ public class EventoDTO {
         this.estado = estado;
         this.dataEvento = dataEvento;
         this.valor = valor;
+        this.ativo = ativo;
     }
 
     public EventoDTO(Evento evento) {
         if (evento != null) {
             this.id = evento.getId();
+            this.ativo = evento.isAtivo();
             this.titulo = evento.getTitulo();
             this.descricao = evento.getDescricao();
             this.eventoCaminho = evento.getEventoCaminho();
             this.cidade = evento.getCidade();
+            this.bairro = evento.getBairro();
+            this.rua = evento.getRua();
             this.estado = evento.getEstado();
             this.dataEvento = evento.getDataEvento();
             this.valor = evento.getValor();

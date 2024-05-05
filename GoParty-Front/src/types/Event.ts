@@ -1,6 +1,7 @@
 //Tipo evento
 interface Event {
     id: number;
+    ativo: boolean;
     titulo: string;
     descricao: string;
     eventoCaminho: string;
