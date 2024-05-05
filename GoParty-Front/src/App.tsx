@@ -31,6 +31,7 @@ import Events from './pages/private/Events/Events';
 import Graduation from './pages/private/Graduation/Graduation';
 import EventUpdate from './pages/private/EventDetails/EventUpdate';
 
+
 function App() {
 
   const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
