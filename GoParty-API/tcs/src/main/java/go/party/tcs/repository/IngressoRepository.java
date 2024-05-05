@@ -13,6 +13,6 @@ public interface IngressoRepository  extends JpaRepository<Ingresso, Long>{
     
     List<Ingresso> findByAutorId(Long usuarioId);
 
-    List<Ingresso> findByEventoId(Integer eventoId);
+    List<Ingresso> findByEventoId(Long eventoId);
 
 }

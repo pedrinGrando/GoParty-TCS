@@ -240,10 +240,14 @@ export default function PostEvent () {
               setImagePreview('');
               setIsLoading(false);
           } else {
+              setMessage("Houve um erro ao criar o evento!")
+              setError(true);
               setIsLoading(false);
               console.error("Erro ao criar evento:", eventData.mensagem);
           }
       } catch (error) {
+          setMessage("Houve um erro ao criar o evento!")
+          setError(true);
           setIsLoading(false);
           console.error("Erro na requisição:", error);
       }
@@ -460,15 +464,6 @@ export default function PostEvent () {
                             )}
                           </button>
                     </div>
-
-                    {/* AQUI*/}
-                    <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
-                    Está esperando por aprovação?
-                    <button className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
-                     ver meus pedidos
-                   </button>
-                   </p>
-
                     {/*AQUI*/}
                     <div className="w-full p-1 text-center">
                       © 2023 GoParty direitos reservados

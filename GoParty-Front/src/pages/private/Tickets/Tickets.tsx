@@ -39,14 +39,13 @@ export default function Tickets() {
     return (
 
         <div>
-
             {isLoading ? (
                 <LoadingHome />
             ) : (
                 <div>
                     {ingressos.length === 0 ? (
-                        <div className="flex justify-center items-center h-screen">
-                            <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
+                        <div className="pt-16 bg-blueGray-50 dark:bg-gray-900">
+                            <div className="w-full px-4 md:px-5 lg-6 mx-auto">
 
                                 <h2 className="title font-manrope font-bold text-4xl leading-10 mb-8 text-center text-black">Seus ingressos
                                 </h2>

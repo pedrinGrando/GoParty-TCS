@@ -227,8 +227,11 @@ export default function RegisterAdm() {
             setIsLoading(false);
             setMessage('Formatura criada com sucesso!')
             setMostrarModal(true);
-          } else {
-            console.error("Falha ao enviar imagem do evento.");
+          } else{
+            setIsLoading(false);
+            setImagePreview('');
+            setMessage("Usuario nao elegivel!")
+            setError(true)
             setFormData({
               titulo: '',
               descricao: '',
@@ -246,29 +249,21 @@ export default function RegisterAdm() {
             setIsLoading(false);
           }
         }
-
-        // Limpa o formulário após o envio bem-sucedido
-        setFormData({
-          titulo: '',
-          descricao: '',
-          estado: '',
-          dataPrevista: '',
-          metaArrecad: '',
-          chavePix: '',
-          cep: '',
-          cidade: '',
-          bairro: '',
-          rua: '',
-          fotoFormatura: null
-        });
-        setImagePreview('');
         setIsLoading(false);
+        setImagePreview('');
+        setMessage("Erro ao criar formatura, Tente novamente!")
+        setError(true)
       } else {
         setIsLoading(false);
+        setMessage("Erro ao criar formatura, Tente novamente!")
+        setError(true)
         console.error("Erro ao criar formatura:", formaturaData.mensagem);
       }
     } catch (error) {
       setIsLoading(false);
+      setImagePreview('');
+      setMessage("Erro ao criar formatura, Tente novamente!")
+      setError(true)
       console.error("Erro na requisição:", error);
     }
 

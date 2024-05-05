@@ -16,7 +16,7 @@ public class IngressoService {
         this.ingressoRepository = ingressoRepository;
     }
 
-    public List<Ingresso> getIngressosDoEvento(Integer eventoId) {
+    public List<Ingresso> getIngressosDoEvento(Long eventoId) {
         return ingressoRepository.findByEventoId(eventoId);
     }
 
