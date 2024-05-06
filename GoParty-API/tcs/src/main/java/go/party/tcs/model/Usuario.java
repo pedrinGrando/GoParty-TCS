@@ -37,20 +37,20 @@ public class Usuario implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "ativo")
+    private boolean ativo = true; 
+
     @Column(name = "nome")
     private String nome;
 
     @Column(name = "username", unique = true)
     private String username;
 
-    @Column(name = "descricao")
-    private String descricao;
-
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "idade")
-    private LocalDate idade;
+    @Column(name = "dataNasci")
+    private LocalDate dataNasci;
 
     @Enumerated(EnumType.STRING)
     private TipoUsuario tipoUsuario;
@@ -73,9 +73,6 @@ public class Usuario implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.tipoUsuario == TipoUsuario.TEAM) {
-            return List.of(new SimpleGrantedAuthority("ROLE_TEAM"));
-        }
         if(this.tipoUsuario == TipoUsuario.ADM) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADM"));
         }
@@ -83,7 +80,7 @@ public class Usuario implements UserDetails {
             return List.of(new SimpleGrantedAuthority("ROLE_MEMBER"));
         }
         else {
-            return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+            return List.of(new SimpleGrantedAuthority("ROLE_BASIC"));
         }
     }
 

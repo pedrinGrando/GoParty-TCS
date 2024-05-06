@@ -37,6 +37,9 @@ public class Evento {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "ativo")
+    private boolean ativo = true;
+
     @Column(name = "titulo")
     private String titulo;
 
@@ -72,7 +75,7 @@ public class Evento {
     @JsonBackReference
     private Usuario usuario;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "formatura_id")
     private Formatura formatura;
 

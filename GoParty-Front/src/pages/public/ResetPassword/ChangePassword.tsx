@@ -97,9 +97,8 @@ export default function ChangePassword () {
             });
     
             if (response.ok) {
-                // Encontrou email
-                setIsLoading(false);
                 navigate('/login');
+                setIsLoading(false);
                 console.log('Senha alterada com sucesso!');
             } else {
                 setIsLoading(false);

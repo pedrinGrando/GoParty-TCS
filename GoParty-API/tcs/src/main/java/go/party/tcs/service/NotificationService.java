@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import go.party.tcs.Enums.TipoNotificacao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,8 +33,8 @@ public class NotificationService {
         notification.setMessage(message);
         notification.setDate(LocalDateTime.now());
         notification.setUserId(userId);
+        notification.setTipoNotificacao(TipoNotificacao.CURTIDA);
         notification.setVisualizado(false);
-        notificationRepository.save(notification);
         notificationRepository.save(notification);
     }
 
@@ -42,8 +43,8 @@ public class NotificationService {
         notification.setMessage(message);
         notification.setDate(LocalDateTime.now());
         notification.setUserId(userId);
+        notification.setTipoNotificacao(TipoNotificacao.COMENTARIO);
         notification.setVisualizado(false);
-        notificationRepository.save(notification);
         notificationRepository.save(notification);
     }
 
@@ -53,11 +54,11 @@ public class NotificationService {
         notification.setDate(LocalDateTime.now());
         notification.setUserId(userId);
         notification.setVisualizado(false);
-        notificationRepository.save(notification);
+        notification.setTipoNotificacao(TipoNotificacao.COMPRA);
         notificationRepository.save(notification);
     }
 
-    // METODO PARA CALCULAR O TEMPO DA ANOTIFICAÇÃO
+    // METODO PARA CALCULAR O TEMPO DA A NOTIFICAÇÃO
     public String calcularTempoDecorrido(LocalDateTime notificationDate) {
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(notificationDate, now);

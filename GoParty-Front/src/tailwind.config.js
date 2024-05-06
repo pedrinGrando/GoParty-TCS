@@ -4,13 +4,6 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
-  theme: {
-    extend: {
-      backdropFilter: {
-        'none': 'none',
-        'blur': 'blur(20px)',
-      },
-    },
-  },
+  theme: {},
   plugins: [],
 }

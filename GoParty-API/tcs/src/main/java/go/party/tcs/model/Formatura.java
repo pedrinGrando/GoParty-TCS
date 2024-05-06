@@ -37,6 +37,9 @@ public class Formatura {
     @Column(name = "id")
     private Long id;
 
+    @Column(name = "ativo")
+    private boolean ativo = true;
+
     @Column(name = "titulo")
     private String titulo;
 
@@ -61,12 +64,6 @@ public class Formatura {
     @Column(name = "arrecacado")
     private double arrecacado;
 
-    @Column(name = "pendente_aprovacao") // True = O pedido esta pendente False = o pedido já vou resolvido
-    private boolean pendenteAprovacao;
-
-    @Column(name = "aprovado") //True = o Adm esta aprovado False = O Adm foi negado
-    private boolean aprovado;
-
     @Column(name = "chave_pix")
     private String chavePix;
 
@@ -88,4 +85,7 @@ public class Formatura {
 
     @OneToMany(mappedBy = "formatura", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Usuario> usuarios;
+
+    @OneToMany(mappedBy = "formatura", cascade = CascadeType.ALL)
+    private List<Evento> eventos;
 }

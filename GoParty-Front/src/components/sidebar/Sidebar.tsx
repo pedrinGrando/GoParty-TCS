@@ -80,7 +80,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                   <div className="text-sm font-light tracking-wide text-gray-500">Eventos</div>
                 </div>
               </li>
-              {user?.principal.tipoUsuario === 'MEMBER' && (
+              {user?.tipoUsuario === 'MEMBER' || user?.tipoUsuario === 'ADM' && (
                 <li>
                   <Link to='/create-event'>
                     <div className={location.pathname === '/register-adm' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6'}>
@@ -92,7 +92,31 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                   </Link>
                 </li>
               )}
-              {user?.principal.tipoUsuario === 'STUDENT' && (
+              {user?.tipoUsuario === 'ADM' && (
+                <li>
+                  <Link to='/your-graduation'>
+                    <div className={location.pathname === '/register-adm' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6'}>
+                      <span className="inline-flex justify-center items-center ml-4">
+                        <img src="/imagens/gradParty.png" alt="" />
+                      </span>
+                      <span className="ml-2 text-sm tracking-wide truncate">Sua formatura</span>
+                    </div>
+                  </Link>
+                </li>
+              )}
+              {user?.tipoUsuario === 'MEMBER' || user?.tipoUsuario === 'ADM' && (
+                <li>
+                  <Link to='/your-events'>
+                    <div className={location.pathname === '/your-events' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6'}>
+                      <span className="inline-flex justify-center items-center ml-4">
+                        <img src="/imagens/calendar.png" alt="" />
+                      </span>
+                      <span className="ml-2 text-sm tracking-wide truncate">Seus eventos </span>
+                    </div>
+                  </Link>
+                </li>
+              )}
+              {user?.tipoUsuario === 'STUDENT' && (
                 <li>
                   <Link to='/register-adm'>
                     <div className={location.pathname === '/register-adm' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6"' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"'}>
@@ -114,7 +138,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                   </div>
                 </Link>
               </li>
-              {user?.principal.tipoUsuario === 'MEMBER' || user?.principal.id === 'ADM' && (
+              {user?.tipoUsuario === 'MEMBER' || user?.id === 'ADM' && (
               <li>
                 <Link to='/your-groups'>
                   <div className={location.pathname === '/your-groups' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6"' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"'}>
@@ -167,16 +191,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                 </Link>
               </li>
               <li>
-
                 {/* Ao fazer o logout */}
-
                 <div onClick={handleLogout} className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6 cursor-pointer">
                   <span className="inline-flex justify-center items-center ml-4">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">Sair</span>
                 </div>
-
               </li>
               <li>
                 <footer className="shadow dark:bg-gray-300 rounded m-4">

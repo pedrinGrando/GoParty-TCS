@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import go.party.tcs.model.Ingresso;
+import go.party.tcs.repository.IngressoRepository;
+import go.party.tcs.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -62,6 +65,12 @@ public class EventoController {
     @Autowired
     private CurtidaService curtidaService;
 
+    @Autowired
+    private NotificationService notificationService;
+
+    @Autowired
+    private IngressoRepository ingressoRepository;
+
     @Value("${file.upload-dir}")
     private String uploadDir;
 
@@ -76,8 +85,8 @@ public class EventoController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
             Usuario usuarioAutor = userOptional.get();
-
-            if (!usuarioAutor.getTipoUsuario().equals(TipoUsuario.MEMBER)) {
+            if (!usuarioAutor.getTipoUsuario().equals(TipoUsuario.MEMBER)
+                    && !usuarioAutor.getTipoUsuario().equals(TipoUsuario.ADM)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não é membro!");
             } else {
                 evento.setFormatura(usuarioAutor.getFormatura());
@@ -116,9 +125,9 @@ public class EventoController {
     }
 
     @GetMapping("/buscar-eventos")
-    public List<EventoDTO> getAllEventos() {
-        List<Evento> eventos = eventoRepository.findAll();
-        return eventos.stream()
+    public List<EventoDTO> getAllEventosAtivos() {
+        List<Evento> eventosAtivos = eventoRepository.findByAtivoTrue();
+        return eventosAtivos.stream()
                 .map(EventoDTO::new)
                 .collect(Collectors.toList());
     }
@@ -131,16 +140,92 @@ public class EventoController {
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/curtidas/{eventoId}")
-    public int obterQuantidadeCurtidas(@PathVariable Integer eventoId, Model model, HttpSession session) {
+    @GetMapping("/buscar-por-usuario/{userId}")
+    public ResponseEntity<?> buscarEventoPorUserId(@PathVariable Long userId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("Usuário não encontrado!");
+        }
 
-        Usuario sessionUsuario = (Usuario) session.getAttribute("usuario");
-        // Aqui você deve implementar a lógica para obter a quantidade de curtidas do
-        // evento com o ID fornecido
-        // Substitua o código abaixo pela lógica real de obtenção de curtidas
-        int quantidadeCurtidas = eventoService.obterQuantidadeCurtidas(eventoId);
-        model.addAttribute("quantidadeCurtidas", quantidadeCurtidas);
+        List<Evento> eventos = eventoRepository.findByUsuarioId(userId);
+        if (eventos.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
-        return quantidadeCurtidas;
+        List<EventoDTO> eventosDTO = eventos.stream()
+                .map(evento -> new EventoDTO(evento))
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(eventosDTO);
     }
+
+    @GetMapping("/consultar-eventos")
+    public List<EventoDTO> searchEventos(@RequestParam(required = false) String search) {
+        if (search != null && !search.isEmpty()) {
+            return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
+        } else {
+            return eventoRepository.findByAtivoTrue().stream()
+                    .map(e -> new EventoDTO(e.getId(), e.isAtivo(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(),
+                            e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor(), e.getRua(), e.getBairro(), e.getCep()))
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @PostMapping("/curtir-evento/{userId}/{eventoId}")
+    public ResponseEntity<?> curtirEvento(@PathVariable Long userId, @PathVariable Long eventoId) {
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Evento evento = new Evento();
+        Usuario usuario = new Usuario();
+        if (eventoOptional.isPresent() && userOptional.isPresent()) {
+            evento = eventoOptional.get();
+            usuario = userOptional.get();
+            curtidaService.curtirEvento(usuario, evento);
+            notificationService.criarNotificacaoCurtida(usuario.getUsername() + " curtiu seu evento.",
+                    evento.getUsuario().getId());
+            return ResponseEntity.ok().body("Evento curtido com sucesso!");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento ou usuario nao encontrado!");
+        }
+    }
+
+    @PutMapping("/inativar-evento/{userId}/{eventoId}")
+    public ResponseEntity<?> inativarEvento(@PathVariable Long userId, @PathVariable Long eventoId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.badRequest().body("Usuário não encontrado!");
+        }
+        return eventoRepository.findById(eventoId)
+                .map(evento -> {
+                    if (!evento.getUsuario().getId().equals(userId)) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não criou este evento!");
+                    }
+                    if (!ingressoRepository.findByEventoId(evento.getId()).isEmpty()) {
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Já existem ingressos comprados para este evento!");
+                    }
+                    evento.setAtivo(false);
+                    eventoRepository.save(evento);
+                    return ResponseEntity.ok().body("Evento inativado com sucesso!");
+                })
+                .orElseGet(() -> ResponseEntity.badRequest().body("Evento não encontrado!"));
+    }
+
+    @PutMapping("/atualizar-evento/{eventoId}")
+    public ResponseEntity<?> atualizarEvento(@PathVariable Long eventoId, @RequestBody EventoDTO eventoDTO) {
+        return eventoRepository.findById(eventoId).map(evento -> {
+            evento.setTitulo(eventoDTO.getTitulo());
+            evento.setDescricao(eventoDTO.getDescricao());
+            evento.setCep(eventoDTO.getCep());
+            evento.setEstado(eventoDTO.getEstado());
+            evento.setCidade(eventoDTO.getCidade());
+            evento.setBairro(eventoDTO.getBairro());
+            evento.setRua(eventoDTO.getRua());
+            evento.setValor(eventoDTO.getValor());
+            evento.setDataEvento(eventoDTO.getDataEvento());
+
+            eventoRepository.save(evento);
+            return ResponseEntity.ok(new EventoDTO(evento));
+        }).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
 }

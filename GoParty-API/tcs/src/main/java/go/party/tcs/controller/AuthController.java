@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import go.party.tcs.dto.FormaturaDTO;
+import go.party.tcs.dto.UsuarioResponseDTO;
+import go.party.tcs.model.Formatura;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.EmailService;
@@ -59,19 +62,33 @@ public class AuthController {
     private String emailUsuario;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Usuario usuario) {
-        try{
-            UsernamePasswordAuthenticationToken userPassword = new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword());
-            var authenticate = manager.authenticate(userPassword);
-            String jwt = jwtService.generateToken((Usuario) authenticate.getPrincipal());
-            Map<String, Object> response = new HashMap<>();
-            response.put("token", jwt);
-            response.put("usuario", authenticate);
-            return ResponseEntity.ok().body(response);
-        } catch (AuthenticationException exception) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuario e senha inválidos");
+public ResponseEntity<?> login(@RequestBody Usuario usuario) {
+    try {
+        UsernamePasswordAuthenticationToken userPassword = new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword());
+        var authenticate = manager.authenticate(userPassword);
+
+        Usuario authenticatedUser = (Usuario) authenticate.getPrincipal();
+
+        if (!authenticatedUser.isAtivo()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Conta inativa. Por favor, entre em contato com o suporte.");
         }
+
+        UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO(
+            authenticatedUser.getId(), authenticatedUser.getNome(), authenticatedUser.getUsername(),
+            authenticatedUser.getEmail(), authenticatedUser.getDataNasci(), authenticatedUser.getTipoUsuario(),
+            authenticatedUser.getCpf(), authenticatedUser.getFotoCaminho(),
+            authenticatedUser.getDataCadastro()
+        );
+        
+        String jwt = jwtService.generateToken(authenticatedUser);
+        Map<String, Object> response = new HashMap<>();
+        response.put("token", jwt);
+        response.put("usuario", usuarioResponseDTO);
+        return ResponseEntity.ok().body(response);
+    } catch (AuthenticationException exception) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuário e senha inválidos");
     }
+}
 
     @PostMapping("/cadastro")
     public ResponseEntity<String> cadastrarUsuario(@RequestBody Usuario usuario) throws MessagingException{

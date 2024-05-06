@@ -13,11 +13,7 @@ public class FormaturaService {
     private FormaturaRepository formaturaRepository;
 
     public Formatura cadastrarSolicitacaoAdm(Formatura formatura){
-           //Regra de aprovacao
-           formatura.setAprovado(false);
-           formatura.setPendenteAprovacao(true);
            formaturaRepository.save(formatura);
-
            return formatura;
     }
 }

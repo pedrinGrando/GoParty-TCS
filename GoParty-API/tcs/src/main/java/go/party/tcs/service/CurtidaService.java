@@ -24,21 +24,18 @@ public class CurtidaService {
     private EventoService eventoService;
 
 
-    public void curtirEvento(Usuario usuario, Evento evento) {
-
-        // if (evento != null && !this.usuarioJaCurtiuEvento(evento.getId(), usuario)) {
-        //         Curtida curtida = new Curtida();
-        //         curtida.setUsuario(usuario);
-        //         curtida.setEvento(evento);
-
-        //         curtidaRepository.save(curtida);
-        // }
+    public void curtirEvento(Usuario usuario, Evento evento) throws RuntimeException {
+        if (evento != null) {
+              Curtida curtida = new Curtida();
+              curtida.setUsuario(usuario);
+              curtida.setEvento(evento);
+              curtidaRepository.save(curtida);
+       }else{
+            throw new RuntimeException("usuario ja curtiu este evento!");
+        }
     }
 
-    
     public void descurtirEvento(Usuario usuario, Evento evento) {
-        // Implemente a lógica para descurtir o evento
-        // Por exemplo, você pode remover a curtida do evento associada ao usuário
         Curtida curtida = curtidaRepository.findByUsuarioAndEvento(usuario, evento);
         if (curtida != null) {
             curtidaRepository.delete(curtida);

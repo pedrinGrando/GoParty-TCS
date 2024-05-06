@@ -141,7 +141,7 @@ export default function PostEvent () {
       setIsLoading(true);
   
       try {
-          const responseEvento = await fetch(`http://localhost:8081/v1/eventos/criar-evento/${user.principal.id}`, {
+          const responseEvento = await fetch(`http://localhost:8081/v1/eventos/criar-evento/${user.id}`, {
               method: 'POST',
               headers: {
                   'Content-Type': 'application/json',
@@ -240,18 +240,21 @@ export default function PostEvent () {
               setImagePreview('');
               setIsLoading(false);
           } else {
+              setMessage("Houve um erro ao criar o evento!")
+              setError(true);
               setIsLoading(false);
               console.error("Erro ao criar evento:", eventData.mensagem);
           }
       } catch (error) {
+          setMessage("Houve um erro ao criar o evento!")
+          setError(true);
           setIsLoading(false);
           console.error("Erro na requisição:", error);
       }
   };
   
-
     return (
-
+      
    <div>
     <form onSubmit={handleSubmit}>
        <div className="bg-white relative lg:py-20">
@@ -285,7 +288,7 @@ export default function PostEvent () {
                               id='titulo'
                               onChange={handleChange}
                               className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}/>
-                    </div>
+                   </div>
 
                     <div className="relative">
                       <label htmlFor='descricao' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -461,15 +464,6 @@ export default function PostEvent () {
                             )}
                           </button>
                     </div>
-
-                    {/* AQUI*/}
-                    <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
-                    Está esperando por aprovação?
-                    <button className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
-                     ver meus pedidos
-                   </button>
-                   </p>
-
                     {/*AQUI*/}
                     <div className="w-full p-1 text-center">
                       © 2023 GoParty direitos reservados
