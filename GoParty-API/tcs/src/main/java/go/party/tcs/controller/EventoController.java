@@ -164,7 +164,7 @@ public class EventoController {
         if (search != null && !search.isEmpty()) {
             return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
         } else {
-            return eventoRepository.findAll().stream()
+            return eventoRepository.findByAtivoTrue().stream()
                     .map(e -> new EventoDTO(e.getId(), e.isAtivo(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(),
                             e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor(), e.getRua(), e.getBairro(), e.getCep()))
                     .collect(Collectors.toList());
