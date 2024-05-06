@@ -70,6 +70,9 @@ public class Evento {
     @Column(name = "data_postagem")
     private LocalDateTime dataPostagem;
 
+    @Column(name = "data_expiracao")
+    private LocalDateTime dataExpiracao;
+
     @ManyToOne
     @JoinColumn(name = "usuario_id")
     @JsonBackReference

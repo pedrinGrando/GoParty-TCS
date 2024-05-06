@@ -8,6 +8,7 @@ import { LoadingHome } from '../../../components/Loading/LoadingHome';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import Event from '../../../types/Event';
 import { Link } from 'react-router-dom';
+import { format, parseISO } from 'date-fns';
 import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 import { CommentsSection } from '../../../components/Comments/CommentsSection';
 
@@ -19,7 +20,7 @@ interface EventoDTO {
     cidade: string;
     rua: string;
     estado: string;
-    dataEvento: Date;
+    dataEvento: string;
     valor: number;
     nomeUsuario?: string;
 }
@@ -37,9 +38,11 @@ export default function Home() {
         setIsCommentsOpen(true);
     } 
 
-    function handleLikeClick(){
-          
-    }
+    const formatDate = (dateString: string) => {
+        const date = parseISO(dateString);
+        return format(date, 'dd/MM/yyyy');
+      }
+    
 
     const fetchTodosEventos = async (): Promise<EventoDTO[]> => {
         setIsLoading(true);
@@ -100,13 +103,16 @@ export default function Home() {
                                             <p className='text-gray-500'>
                                                 {evento.rua}
                                             </p>
+                                            <p className='text-gray-500'>
+                                                {formatDate(evento.dataEvento)}
+                                            </p>
                                         </div>
                                         </Link>
 
                                         <hr className="my-5 border-gray-300 dark:border-gray-300 lg:my-5" />
                                         {/* curtir e Comentar evento  */}
                                         <div className="mt-4 flex items-center">
-                                            <button onClick={handleLikeClick} className="flex mr-2 text-gray-700 text-sm mr-3 hover:text-indigo-500">
+                                            <button className="flex mr-2 text-gray-700 text-sm mr-3 hover:text-indigo-500">
                                                 <svg fill="none" viewBox="0 0 24 24" className="w-5 h-5 mr-1" stroke="currentColor">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                                                 </svg>

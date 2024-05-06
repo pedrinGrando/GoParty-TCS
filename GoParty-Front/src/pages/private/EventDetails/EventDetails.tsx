@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { Loading } from '../../../components/Loading/Loading';
+import { format, parseISO } from 'date-fns';
 import Event from '../../../types/Event';
 
 const EventDetails: React.FC = () => {
@@ -24,11 +25,15 @@ const EventDetails: React.FC = () => {
         estado: string;
         rua: string;
         bairro: string;
-        dataEvento: Date;
+        dataEvento: string;
         valor: number;
         nomeUsuario?: string;
     }
 
+    const formatDate = (dateString: string) => {
+        const date = parseISO(dateString);
+        return format(date, 'dd/MM/yyyy');
+      }
 
     async function comprarIngresso(userId: number): Promise<void> {
         const eventoDTO: EventoDTO = {
@@ -162,6 +167,9 @@ const EventDetails: React.FC = () => {
                                             Bairro: <span> {evento.bairro}</span>
                                         </p><p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
                                             Rua: <span> {evento.rua}</span>
+                                        </p>
+                                         <p className="text-gray-600 dark:text-gray-300 text-sm mt-2">
+                                            Data do evento: <span> {formatDate(evento.dataEvento)}</span>
                                         </p>
                                     </div>
                                 </div>
