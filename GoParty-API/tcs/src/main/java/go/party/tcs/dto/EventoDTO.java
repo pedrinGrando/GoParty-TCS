@@ -26,7 +26,7 @@ public class EventoDTO {
 
     public EventoDTO() {}
 
-    public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado, LocalDateTime dataEvento, double valor, String rua, String bairro, String cep) {
+    public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado, LocalDateTime dataEvento, double valor, String rua, String bairro, LocalDateTime dataPrevista, String cep) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;

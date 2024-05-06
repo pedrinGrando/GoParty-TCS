@@ -36,7 +36,7 @@ export default function PostEvent () {
         titulo: '',
         descricao: '',
         estado: '',
-        dataPrevista: '',
+        dataEvento: '',
         cep: '',
         valor: '',
         cidade: '',
@@ -50,7 +50,7 @@ export default function PostEvent () {
         descricao: false,
         estado: false,
         cep: false,
-        dataPrevista: false,
+        dataEvento: false,
         valor: false,
         cidade: false,
         bairro: false,
@@ -83,7 +83,10 @@ export default function PostEvent () {
 
       const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = event.target;
-      
+        setFormData(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
           if (type === 'file' && event.target instanceof HTMLInputElement) {
               const file = event.target.files && event.target.files[0];
               if (file) {
@@ -159,7 +162,7 @@ export default function PostEvent () {
                 titulo: '',
                 descricao: '',
                 estado: '',
-                dataPrevista: '',
+                dataEvento: '',
                 cep: '',
                 valor: '',
                 cidade: '',
@@ -192,7 +195,7 @@ export default function PostEvent () {
                         titulo: '',
                         descricao: '',
                         estado: '',
-                        dataPrevista: '',
+                        dataEvento: '',
                         cep: '',
                         valor: '',
                         cidade: '',
@@ -211,7 +214,7 @@ export default function PostEvent () {
                         titulo: '',
                         descricao: '',
                         estado: '',
-                        dataPrevista: '',
+                        dataEvento: '',
                         cep: '',
                         valor: '',
                         cidade: '',
@@ -229,7 +232,7 @@ export default function PostEvent () {
                   titulo: '',
                   descricao: '',
                   estado: '',
-                  dataPrevista: '',
+                  dataEvento: '',
                   valor: '',
                   cep: '',
                   cidade: '',
@@ -365,13 +368,13 @@ export default function PostEvent () {
                           />
                     </div>
                     <div className="relative">
-                      <label htmlFor='dataPrevista' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                      <label htmlFor='dataEvento' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Data do Evento</label>
                             <input 
-                            placeholder="Data"
-                            id='dataPrevista'
-                            name='dataPrevista'
-                            value={formData.dataPrevista}
+                            placeholder="Data Evento"
+                            id='dataEvento'
+                            name='dataEvento'
+                            value={formData.dataEvento}
                             onChange={handleChange}
                             type="date" 
                      className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `}/>

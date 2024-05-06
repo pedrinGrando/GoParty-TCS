@@ -127,7 +127,15 @@ public class EventoController {
     @GetMapping("/buscar-eventos")
     public List<EventoDTO> getAllEventosAtivos() {
         List<Evento> eventosAtivos = eventoRepository.findByAtivoTrue();
+        LocalDateTime now = LocalDateTime.now();
+        eventosAtivos.forEach(evento -> {
+            if (evento.getDataEvento().isBefore(now)) {
+                evento.setDataExpiracao(now);
+                eventoRepository.save(evento);
+            }
+        });
         return eventosAtivos.stream()
+                .filter(evento -> evento.getDataEvento().isAfter(now))
                 .map(EventoDTO::new)
                 .collect(Collectors.toList());
     }
@@ -165,8 +173,20 @@ public class EventoController {
             return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
         } else {
             return eventoRepository.findByAtivoTrue().stream()
-                    .map(e -> new EventoDTO(e.getId(), e.isAtivo(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(),
-                            e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor(), e.getRua(), e.getBairro(), e.getCep()))
+                    .map(e -> new EventoDTO(
+                            e.getId(),
+                            e.isAtivo(),
+                            e.getTitulo(),
+                            e.getDescricao(),
+                            e.getEventoCaminho(),
+                            e.getCidade(),
+                            e.getEstado(),
+                            e.getDataEvento(),
+                            e.getValor(),
+                            e.getRua(),
+                            e.getBairro(),
+                            e.getDataEvento(),
+                            e.getCep()))
                     .collect(Collectors.toList());
         }
     }
