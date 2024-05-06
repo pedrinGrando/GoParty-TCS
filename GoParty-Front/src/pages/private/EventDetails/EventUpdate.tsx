@@ -47,16 +47,45 @@ const EventUpdate: React.FC = () => {
         nomeUsuario?: string;
     }
 
+    useEffect(() => {
+        const fetchEvento = async () => {
+            setIsLoading(true);
+
+            try {
+                const response = await fetch(`http://localhost:8081/v1/eventos/buscar-evento/${eventId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!response.ok) {
+                    console.log("Erro na requisicao")
+                }
+
+                const data: EventoDTO = await response.json();
+                console.log("Erro na requisicao")
+                setEvento(data);
+            } catch (e) {
+                
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchEvento();
+    }, [eventId]);
+
     const [formData, setFormData] = useState({
-        titulo: '',
-        descricao: '',
-        estado: '',
-        dataPrevista: '',
-        cep: '',
-        valor: '',
-        cidade: '',
-        bairro: '',
-        rua: '',
+        titulo: "evento.titulo,",
+        descricao: "evento.titulo,",
+        estado: "evento.titulo,",
+        dataPrevista: "evento.titulo,",
+        cep: "evento.titulo,",
+        valor: "evento.titulo,",
+        cidade: "evento.titulo,",
+        bairro: "evento.titulo,",
+        rua: "evento.titulo,",
         fotoEvento: null
       });
 
@@ -72,51 +101,6 @@ const EventUpdate: React.FC = () => {
         rua: false
      });
 
-
-    async function comprarIngresso(userId: number): Promise<void> {
-        const eventoDTO: EventoDTO = {
-            id: evento.id,
-            titulo: evento.titulo,
-            descricao: evento.descricao,
-            eventoCaminho: evento.eventoCaminho,
-            cidade: evento.cidade,
-            estado: evento.estado,
-            dataEvento: evento.dataEvento,
-            bairro: evento.barro,
-            rua: evento.rua,
-            valor: evento.valor,
-            nomeUsuario: "Pedro Aluisio Scuissiatto"
-        };
-
-        try {
-            const response = await fetch(`http://localhost:8081/v1/ingressos/comprar-ingresso?userId=${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(eventoDTO)
-            });
-
-            if (response.ok) {
-                const ingresso = await response.json();
-                console.log('Ingresso criado com sucesso:', ingresso);
-            } else {
-                
-            }
-        } catch (error) {
-            console.error('Erro ao comprar ingresso:', error);
-        }
-    }
-
-
-    const handlePurchase = (userId: number,) => {
-        comprarIngresso(userId).then(() => {
-            alert('Compra realizada com sucesso!');
-        }).catch(error => {
-            alert('Erro ao realizar a compra: ' + error.message);
-        });
-    };
 
     function onFileUpload(event: React.ChangeEvent<HTMLInputElement>){
 
@@ -137,40 +121,12 @@ const EventUpdate: React.FC = () => {
         }
     }
 
-    useEffect(() => {
-        const fetchEvento = async () => {
-            setIsLoading(true);
-
-            try {
-                const response = await fetch(`http://localhost:8081/v1/eventos/buscar-evento/${eventId}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    }
-                });
-
-                if (!response.ok) {
-                    
-                }
-
-                const data: EventoDTO = await response.json();
-                setEvento(data);
-            } catch (e) {
-                
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchEvento();
-    }, [eventId]);
-
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsLoading(true);
     
         try {
-            const responseEvento = await fetch(`http://localhost:8081/v1/eventos/criar-evento/${user.id}`, {
+            const responseEvento = await fetch(`http://localhost:8081/v1/eventos/atualizar-evento/${eventId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -182,7 +138,7 @@ const EventUpdate: React.FC = () => {
             const eventData = await responseEvento.json();
     
             if (responseEvento.ok) {
-                console.log("Evento criado com sucesso. ID:", eventData.id);
+                console.log("Evento atualizado com sucesso:", eventData.id);
   
                 setFormData({
                   titulo: '',
@@ -196,7 +152,7 @@ const EventUpdate: React.FC = () => {
                   rua: '',
                   fotoEvento: null
               });
-              setMensagemModal("Evento criado com sucesso!");
+              setMensagemModal("Evento atualizdo com sucesso!");
               setImagemSrcModal("imagens/EventCreatedSucess.webp");
               setMostrarModal(true);
               setImagePreview('');
@@ -229,7 +185,7 @@ const EventUpdate: React.FC = () => {
                           rua: '',
                           fotoEvento: null
                       });
-                      setMensagemModal("Evento criado com sucesso!");
+                      setMensagemModal("Evento atualizado com sucesso!");
                       setImagemSrcModal("imagens/EventCreatedSucess.webp");
                       setMostrarModal(true);
                       setImagePreview('');
@@ -269,13 +225,13 @@ const EventUpdate: React.FC = () => {
                 setImagePreview('');
                 setIsLoading(false);
             } else {
-                setMessage("Houve um erro ao criar o evento!")
+                setMessage("Houve um erro ao atualizar o evento!")
                 setError(true);
                 setIsLoading(false);
-                console.error("Erro ao criar evento:", eventData.mensagem);
+                console.error("Erro ao atualizar evento:", eventData.mensagem);
             }
         } catch (error) {
-            setMessage("Houve um erro ao criar o evento!")
+            setMessage("Houve um erro ao atualizar o evento!")
             setError(true);
             setIsLoading(false);
             console.error("Erro na requisição:", error);
@@ -367,7 +323,7 @@ const EventUpdate: React.FC = () => {
                                             <input placeholder="Festa universitária"
                                                 type="text"
                                                 name='titulo'
-                                                value={evento.titulo}
+                                                value={formData.titulo}
                                                 id='titulo'
                                                 onChange={handleChange}
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`} />
@@ -379,7 +335,7 @@ const EventUpdate: React.FC = () => {
 
                                             <textarea
                                                 onChange={handleChange}
-                                                value={evento.descricao}
+                                                value={formData.descricao}
                                                 name='descricao'
                                                 id='descricao'
                                                 className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
@@ -392,7 +348,7 @@ const EventUpdate: React.FC = () => {
                                             <ReactInputMask
                                                 placeholder='CEP'
                                                 mask="99999-999"
-                                                value={evento.cep}
+                                                value={formData.cep}
                                                 onChange={handleChange}
                                                 className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
                                                 type="text"
@@ -406,7 +362,7 @@ const EventUpdate: React.FC = () => {
                                             <input placeholder="Florianópolis"
                                                 type="text"
                                                 name='cidade'
-                                                value={evento.cidade}
+                                                value={formData.cidade}
                                                 id='cidade'
                                                 onChange={handleChange}
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`} />
@@ -417,7 +373,7 @@ const EventUpdate: React.FC = () => {
                                             <input placeholder="Capoeiras"
                                                 type="text"
                                                 name='bairro'
-                                                value={evento.bairro}
+                                                value={formData.bairro}
                                                 id='bairro'
                                                 onChange={handleChange}
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`} />
@@ -427,7 +383,7 @@ const EventUpdate: React.FC = () => {
                           absolute">Rua</label>
                                             <input placeholder="Rua major costa 291"
                                                 type="text"
-                                                value={evento.rua}
+                                                value={formData.rua}
                                                 name='rua'
                                                 id='rua'
                                                 onChange={handleChange}
@@ -442,7 +398,7 @@ const EventUpdate: React.FC = () => {
                                                 placeholder="R$ 0,00"
                                                 id='valor'
                                                 name='valor'
-                                                value={evento.valor}
+                                                value={formData.valor}
                                                 onChange={handleChange}
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
                                             />
@@ -454,7 +410,7 @@ const EventUpdate: React.FC = () => {
                                                 placeholder="Data"
                                                 id='dataPrevista'
                                                 name='dataPrevista'
-                                                value={evento.dataPrevista}
+                                                value={formData.dataPrevista}
                                                 onChange={handleChange}
                                                 type="date"
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `} />

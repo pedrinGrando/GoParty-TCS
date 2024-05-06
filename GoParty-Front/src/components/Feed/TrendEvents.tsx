@@ -32,8 +32,7 @@ const TrendEvents: React.FC = () => {
                   {isLoading ? (
                               <LoadingTrends/>
                         ) : (
-        
-                            <ul role="list" className="hidden md:block fixed top-10 right-0 w-max max-w-sm mt-4 mr-4 divide-y divide-gray-300 dark:divide-gray-300">
+                            <ul role="list" className="hidden md:block rounded-md fixed top-10 right-4 translate-x-[-20px] border-gray-300 w-max max-w-md mt-4 bg-white divide-y divide-gray-300 shadow-lg z-50 dark:bg-gray-900">
                             {/* Exemplo de link para um evento */}
                             <Link to=''>
                               <li className="py-3 sm:py-4">
