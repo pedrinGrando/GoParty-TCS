@@ -184,6 +184,7 @@ public class EventoController {
                             e.getEstado(),
                             e.getDataEvento(),
                             e.getValor(),
+                            e.getQntIngressos(),
                             e.getRua(),
                             e.getBairro(),
                             e.getCep()))
@@ -225,6 +226,7 @@ public class EventoController {
                                 .body("Já existem ingressos comprados para este evento!");
                     }
                     evento.setAtivo(false);
+                    evento.setDataExpiracao(LocalDate.now());
                     eventoRepository.save(evento);
                     return ResponseEntity.ok().body("Evento inativado com sucesso!");
                 })
