@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,7 @@ public class EventoController {
     @GetMapping("/buscar-eventos")
     public List<EventoDTO> getAllEventosAtivos() {
         List<Evento> eventosAtivos = eventoRepository.findByAtivoTrue();
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.now();
         eventosAtivos.forEach(evento -> {
             if (evento.getDataEvento().isBefore(now)) {
                 evento.setDataExpiracao(now);
@@ -185,7 +186,6 @@ public class EventoController {
                             e.getValor(),
                             e.getRua(),
                             e.getBairro(),
-                            e.getDataEvento(),
                             e.getCep()))
                     .collect(Collectors.toList());
         }
@@ -221,7 +221,8 @@ public class EventoController {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não criou este evento!");
                     }
                     if (!ingressoRepository.findByEventoId(evento.getId()).isEmpty()) {
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Já existem ingressos comprados para este evento!");
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body("Já existem ingressos comprados para este evento!");
                     }
                     evento.setAtivo(false);
                     eventoRepository.save(evento);

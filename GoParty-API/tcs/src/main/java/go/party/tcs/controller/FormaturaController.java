@@ -37,6 +37,7 @@ import go.party.tcs.model.Formatura;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.FormaturaRepository;
 import go.party.tcs.repository.UsuarioRepository;
+import go.party.tcs.service.EventoService;
 import go.party.tcs.service.FormaturaService;
 
 @RestController
@@ -52,6 +53,9 @@ public class FormaturaController {
 
     @Autowired
     private FormaturaRepository formaturaRepository;
+
+    @Autowired
+    private EventoService eventoService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -215,6 +219,13 @@ public class FormaturaController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(usuariosDTO);
+    }
+
+    @GetMapping("/{eventoId}/consultar-pix-formatura")
+    public ResponseEntity<String> getChavePixPorEventoId(@PathVariable Long eventoId) {
+        Optional<String> chavePix = eventoService.findChavePixByEventoId(eventoId);
+        return chavePix.map(ResponseEntity::ok)
+                       .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     private UsuarioDTO convertToDTO(Usuario usuario) {

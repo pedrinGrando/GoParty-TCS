@@ -43,29 +43,33 @@ public class IngressoController {
 
     // Endpoint para criar um ingresso
     @PostMapping("/comprar-ingresso")
-    public ResponseEntity<Ingresso> criarIngresso(@RequestParam Long userId, @RequestBody EventoDTO eventoDTO) {
-
-        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-        Optional<Evento> eventoOptional = eventoRepository.findById(eventoDTO.getId());
-        Ingresso ingresso = new Ingresso();
-
+    public ResponseEntity<?> criarIngresso(@RequestParam Long userId, @RequestBody EventoDTO eventoDTO) {
         try {
-            if (userOptional.isPresent() && eventoOptional.isPresent()) {
-                Usuario usuario = userOptional.get();
-                Evento evento = eventoOptional.get();
-
-                ingresso.setAutor(usuario);
-                ingresso.setEvento(evento);
-                ingresso.setStatus(TipoStatus.PENDENTE);
-                ingresso.setDataCompra(LocalDateTime.now());
-                ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
-                ingressoRepository.save(ingresso);
-                return new ResponseEntity<>(ingresso, HttpStatus.CREATED);
+            Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+            if (!userOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
             }
+            Optional<Evento> eventoOptional = eventoRepository.findById(eventoDTO.getId());
+            if (!eventoOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado.");
+            }
+
+            Usuario usuario = userOptional.get();
+            Evento evento = eventoOptional.get();
+
+            Ingresso ingresso = new Ingresso();
+            ingresso.setAutor(usuario);
+            ingresso.setEvento(evento);
+            ingresso.setStatus(TipoStatus.PENDENTE);
+            ingresso.setDataCompra(LocalDateTime.now());
+            ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
+            ingressoRepository.save(ingresso);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(ingresso);
         } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao criar ingresso: " + e.getMessage());
         }
-        return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/seus-ingressos/{usuarioId}")
