@@ -1,5 +1,6 @@
 package go.party.tcs.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,13 +66,13 @@ public class Evento {
     private double valor;
 
     @Column(name = "data_evento")
-    private LocalDateTime dataEvento;
+    private LocalDate dataEvento;
 
     @Column(name = "data_postagem")
     private LocalDateTime dataPostagem;
 
     @Column(name = "data_expiracao")
-    private LocalDateTime dataExpiracao;
+    private LocalDate dataExpiracao;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")

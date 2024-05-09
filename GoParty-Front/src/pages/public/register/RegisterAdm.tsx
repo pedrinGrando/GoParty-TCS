@@ -250,9 +250,6 @@ export default function RegisterAdm() {
           }
         }
         setIsLoading(false);
-        setImagePreview('');
-        setMessage("Erro ao criar formatura, Tente novamente!")
-        setError(true)
       } else {
         setIsLoading(false);
         setMessage("Erro ao criar formatura, Tente novamente!")
@@ -266,7 +263,6 @@ export default function RegisterAdm() {
       setError(true)
       console.error("Erro na requisição:", error);
     }
-
   };
 
   return (
