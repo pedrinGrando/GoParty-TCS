@@ -118,7 +118,7 @@ export default function Events() {
                     <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
 
                     {eventos.length === 0 ? (
-                        <div className="flex justify-center dark:bg-gray-900 items-center h-screen">
+                        <div className="fPlex justify-center dark:bg-gray-900 items-center h-screen">
                             <NoEvent />
                         </div>
                     ) : (

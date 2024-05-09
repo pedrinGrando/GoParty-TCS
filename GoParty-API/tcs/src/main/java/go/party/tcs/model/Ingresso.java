@@ -47,7 +47,6 @@ public class Ingresso {
     private LocalDateTime dataCompra;
 
     public static String gerarCodigoAleatorio() {
-        // Gera um UUID aleatório e pegando os 10 primeiros caracteres
         String uuid = UUID.randomUUID().toString().replaceAll("[^a-zA-Z0-9]", "").substring(0, 10);
         return uuid;
     }

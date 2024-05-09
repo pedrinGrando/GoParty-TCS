@@ -13,6 +13,7 @@ const PixKey: React.FC = () => {
     const [eventoDTO, setEventoDTO] = useState<EventoDTO>();
     const [error, setError] = useState<string | null>(null);
     const [chavePix, setChavePix] = useState<string | null>(null);
+    const [solicitPag, setSolicitPag] = useState(false);
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
@@ -66,23 +67,26 @@ const PixKey: React.FC = () => {
 
     async function handlePurchase(userId: number, eventoId: number): Promise<void> {
         try {
-            const eventoDTO = { id: eventoId }; 
+            const eventoDTO = { id: eventoId };
             const response = await fetch(`http://localhost:8081/v1/ingressos/comprar-ingresso?userId=${userId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(eventoDTO) 
+                body: JSON.stringify(eventoDTO)
             });
-    
+
             if (response.ok) {
+                setSolicitPag(true);
                 const ingresso = await response.json();
                 console.log('Ingresso criado com sucesso:', ingresso);
             } else {
+                setSolicitPag(false);
                 throw new Error('Falha ao comprar ingresso');
             }
         } catch (error) {
+            setSolicitPag(false);
             console.error('Erro ao comprar ingresso:', error);
         }
     }
@@ -130,13 +134,19 @@ const PixKey: React.FC = () => {
                             <div className="flex -mx-2 mb-4">
                                 {chavePix ? <p>{chavePix}</p> : <p>Não disponível.</p>}
                                 <div className="w-1/2 px-2">
-                                    <button onClick={() => handlePurchase(user.id, 1)} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
-                                        {isLoading ? (
-                                            <Loading />
-                                        ) : (
-                                            'Comprar'
-                                        )}
-                                    </button>
+                                    {solicitPag ?
+                                        <button onClick={() => handlePurchase(user.id, 1)} disabled={true} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
+                                            Evento pago(verifique o status na lista de ingressos)
+                                        </button>
+                                        :
+                                        <button onClick={() => handlePurchase(user.id, 1)} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
+                                            {isLoading ? (
+                                                <Loading />
+                                            ) : (
+                                                'Pagar'
+                                            )}
+                                        </button>
+                                    }
                                 </div>
                             </div>
                         </div>
