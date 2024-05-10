@@ -3,6 +3,7 @@ package go.party.tcs.controller;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import go.party.tcs.Enums.TipoStatus;
 import go.party.tcs.dto.EventoDTO;
+import go.party.tcs.dto.IngressoDTO;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Ingresso;
 import go.party.tcs.model.Usuario;
@@ -44,42 +47,50 @@ public class IngressoController {
     // Endpoint para criar um ingresso
     @PostMapping("/comprar-ingresso")
     public ResponseEntity<?> criarIngresso(@RequestParam Long userId, @RequestBody EventoDTO eventoDTO) {
-        try {
-            Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-            if (!userOptional.isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado.");
-            }
-            Optional<Evento> eventoOptional = eventoRepository.findById(eventoDTO.getId());
-            if (!eventoOptional.isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado.");
-            }
+        Usuario usuario = usuarioRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
-            Usuario usuario = userOptional.get();
-            Evento evento = eventoOptional.get();
+        Evento evento = eventoRepository.findById(eventoDTO.getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento não encontrado"));
 
-            Ingresso ingresso = new Ingresso();
-            ingresso.setAutor(usuario);
-            ingresso.setEvento(evento);
-            ingresso.setStatus(TipoStatus.PENDENTE);
-            ingresso.setDataCompra(LocalDateTime.now());
-            ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
-            ingressoRepository.save(ingresso);
+        Ingresso ingresso = new Ingresso();
+        ingresso.setAutor(usuario);
+        ingresso.setEvento(evento);
+        ingresso.setStatus(TipoStatus.PENDENTE);
+        ingresso.setDataCompra(LocalDateTime.now());
+        ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(ingresso);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao criar ingresso: " + e.getMessage());
-        }
+        Ingresso savedIngresso = ingressoRepository.save(ingresso);
+
+        IngressoDTO ingressoDTO = new IngressoDTO();
+        ingressoDTO.setId(savedIngresso.getId());
+        ingressoDTO.setCodigoEvento(savedIngresso.getCodigoEvento());
+        ingressoDTO.setStatus(savedIngresso.getStatus().toString());
+        ingressoDTO.setNomeUsuario(savedIngresso.getAutor().getNome());
+        ingressoDTO.setNomeEvento(evento.getTitulo());
+        ingressoDTO.setDataCompra(savedIngresso.getDataCompra());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(ingressoDTO);
     }
 
     @GetMapping("/seus-ingressos/{usuarioId}")
-    public ResponseEntity<List<Ingresso>> listarIngressosDoUsuario(@PathVariable Long usuarioId) {
+    public ResponseEntity<List<IngressoDTO>> listarIngressosDoUsuario(@PathVariable Long usuarioId) {
         try {
             List<Ingresso> ingressos = ingressoRepository.findByAutorId(usuarioId);
             if (ingressos.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(ingressos, HttpStatus.OK);
+            List<IngressoDTO> ingressosDTO = ingressos.stream()
+                    .map(ingresso -> new IngressoDTO(
+                            ingresso.getId(),
+                            ingresso.getCodigoEvento(),
+                            ingresso.getStatus().toString(),
+                            ingresso.getAutor().getNome(),
+                            ingresso.getEvento().getTitulo(),
+                            ingresso.getDataCompra()))
+                    .collect(Collectors.toList());
+
+            return new ResponseEntity<>(ingressosDTO, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }

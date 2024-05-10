@@ -65,6 +65,9 @@ public class Evento {
     @Column(name = "valor")
     private double valor;
 
+    @Column(name = "qnt_ingressos")
+    private int qntIngressos;
+
     @Column(name = "data_evento")
     private LocalDate dataEvento;
 

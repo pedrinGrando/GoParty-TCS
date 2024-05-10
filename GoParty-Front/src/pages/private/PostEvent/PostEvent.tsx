@@ -9,6 +9,7 @@ import { ModalMessage } from '../../../components/modal/ModalMessage';
 import ReactInputMask from 'react-input-mask';
 import { Error } from '../../../components/Error/Error';
 import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
+import { Input } from '@material-tailwind/react';
 
 export default function PostEvent () {
 
@@ -39,6 +40,7 @@ export default function PostEvent () {
         dataEvento: '',
         cep: '',
         valor: '',
+        qntIngressos: 0,
         cidade: '',
         bairro: '',
         rua: '',
@@ -52,6 +54,7 @@ export default function PostEvent () {
         cep: false,
         dataEvento: false,
         valor: false,
+        qntIngressos: false,
         cidade: false,
         bairro: false,
         rua: false
@@ -165,6 +168,7 @@ export default function PostEvent () {
                 dataEvento: '',
                 cep: '',
                 valor: '',
+                qntIngressos: 0,
                 cidade: '',
                 bairro: '',
                 rua: '',
@@ -198,6 +202,7 @@ export default function PostEvent () {
                         dataEvento: '',
                         cep: '',
                         valor: '',
+                        qntIngressos: 0,
                         cidade: '',
                         bairro: '',
                         rua: '',
@@ -217,6 +222,7 @@ export default function PostEvent () {
                         dataEvento: '',
                         cep: '',
                         valor: '',
+                        qntIngressos: 0,
                         cidade: '',
                         bairro: '',
                         rua: '',
@@ -234,6 +240,7 @@ export default function PostEvent () {
                   estado: '',
                   dataEvento: '',
                   valor: '',
+                  qntIngressos: 0,
                   cep: '',
                   cidade: '',
                   bairro: '',
@@ -364,6 +371,20 @@ export default function PostEvent () {
                             name='valor'
                             value={formData.valor}
                             onChange={handleChange}
+                            className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
+                          />
+                    </div>
+                    <div className="relative">
+                      <label htmlFor='qntIngressos' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Quantidade de ingressos
+                          </label>
+                          <input
+                            placeholder="0"
+                            id='qntIngressos'
+                            name='qntIngressos'
+                            value={formData.qntIngressos}
+                            onChange={handleChange}
+                            type='number'
                             className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
                           />
                     </div>
