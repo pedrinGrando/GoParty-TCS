@@ -265,6 +265,7 @@ public class FormaturaController {
         dto.setNome(usuario.getNome());
         dto.setUsername(usuario.getUsername());
         dto.setUsuarioCaminho(usuario.getFotoCaminho());
+        dto.setTipoUsuario(usuario.getTipoUsuario());
         return dto;
     }
 

@@ -1,18 +1,21 @@
 package go.party.tcs.dto;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
+import go.party.tcs.Enums.TipoUsuario;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class UsuarioDTO {
     private Long id;
     private String nome;
     private String username;
     private String usuarioCaminho;
+    private TipoUsuario tipoUsuario;
 }
