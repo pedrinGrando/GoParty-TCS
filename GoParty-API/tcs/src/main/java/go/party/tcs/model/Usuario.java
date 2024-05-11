@@ -61,8 +61,8 @@ public class Usuario implements UserDetails {
     @Column(name = "fotoCaminho")
     private String fotoCaminho;
 
-    @Column(name = "data_cadastro")
-    private LocalDateTime dataCadastro;
+    @Column(name = "data_aceite")
+    private LocalDateTime dataAceite;
 
     @Column(name = "senha")
     private String senha;

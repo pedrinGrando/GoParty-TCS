@@ -129,24 +129,29 @@ const PixKey: React.FC = () => {
                     <div className="flex flex-col md:flex-row -mx-4">
                         <div className="md:flex-1 px-4">
                             <div className="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
-                                {/* QRCODE */} QR CODE
-                            </div>
-                            <div className="flex -mx-2 mb-4">
-                                {chavePix ? <p>{chavePix}</p> : <p>Não disponível.</p>}
-                                <div className="w-1/2 px-2">
-                                    {solicitPag ?
+                                {chavePix ?
+                                    //API de qr code dinamico
+                                    <div className="flex flex-col justify-center items-center ">
+                                        <img src={`https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${chavePix}`} alt="QR Code" />
+                                        {chavePix ? <p className="mt-4">{chavePix}</p> : <p className="mt-4">Não disponível.</p>}
+                                        {solicitPag ?
                                         <button onClick={() => handlePurchase(user.id, 1)} disabled={true} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
                                             Evento pago(verifique o status na lista de ingressos)
                                         </button>
                                         :
-                                        <button onClick={() => handlePurchase(user.id, 1)} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
+                                        <button onClick={() => handlePurchase(user.id, 1)} className="w-full max-w-xs bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
                                             {isLoading ? (
-                                                <Loading />
+                                                <Loading/>
                                             ) : (
                                                 'Pagar'
                                             )}
                                         </button>
                                     }
+                                    </div>
+                                    : ''}
+                            </div>
+                            <div className="flex -mx-2 mb-4">
+                                <div className="w-1/2 px-2">
                                 </div>
                             </div>
                         </div>
