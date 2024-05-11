@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
 import { Loading } from "../../../components/Loading/Loading";
+import { Link } from "react-router-dom";
 
 export default function Graduation() {
 
@@ -70,17 +71,19 @@ export default function Graduation() {
                     <div className="py-4 border-b border-gray-200 flex items-center justify-between">
                         <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Membros</p>
                         <div className="flex items-center justify-center">
-                            <p className="text-sm leading-none text-gray-600 dark:text-gray-300">Smoke Blue with red accents</p>
+                            <p className="text-sm leading-none text-gray-600 dark:text-gray-300">Adicionar membro +</p>
                             <div className="w-6 h-6 bg-gradient-to-b from-gray-900 to-indigo-500 ml-3 mr-4 cursor-pointer"></div>
+                            <Link to={`/add-member/${formatura?.id}`}>
                             <svg className="cursor-pointer text-gray-300 dark:text-white" width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1 1L5 5L1 9" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
+                            </Link>
                         </div>
                     </div>
                     <div className="py-4 border-b border-gray-200 flex items-center justify-between">
                         <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Arrecadado</p>
                         <div className="flex items-center justify-center">
-                            <p className="text-sm leading-none text-gray-600 dark:text-gray-300 mr-3">38.2</p>
+                            <p className="text-sm leading-none text-gray-600 dark:text-gray-300 mr-3">{formatura?.arrecadado}</p>
                             <svg className="text-gray-300 dark:text-white cursor-pointer" width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1 1L5 5L1 9" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -97,16 +100,14 @@ export default function Graduation() {
                     </button>
                     <div>
                         <p className="xl:pr-48 text-base lg:leading-tight leading-normal text-gray-600 dark:text-gray-300 mt-7">{formatura?.descricao}</p>
-                        <p className="text-base leading-4 mt-7 text-gray-600 dark:text-gray-300"> Teste Code: 8BN321AF2IF0NYA</p>
-                        <p className="text-base leading-4 mt-4 text-gray-600 dark:text-gray-300"> Teste: 13.2 inches</p>
-                        <p className="text-base leading-4 mt-4 text-gray-600 dark:text-gray-300"> Teste: 10 inches</p>
-                        <p className="text-base leading-4 mt-4 text-gray-600 dark:text-gray-300"> Teste: 5.1 inches</p>
-                        <p className="md:w-96 text-base leading-normal text-gray-600 dark:text-gray-300 mt-4"> Teste: 100% calf leather, inside: 100% lamb leather</p>
+                        <p className="text-base leading-4 mt-7 text-gray-600 dark:text-gray-300"> Cidade: {formatura?.cidade}</p>
+                        <p className="text-base leading-4 mt-4 text-gray-600 dark:text-gray-300"> Estado: {formatura?.estado}</p>
+                        <p className="md:w-96 text-base leading-normal text-gray-600 dark:text-gray-300 mt-4"> Rua</p>
                     </div>
                     <div>
                         <div className="border-t border-b py-4 mt-7 border-gray-200">
                             <div data-menu className="flex justify-between items-center cursor-pointer">
-                                <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Shipping and returns</p>
+                                <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Eventos relacionados</p>
                                 <button className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 rounded" role="button" aria-label="show or hide">
                                     <svg className="transform text-gray-300 dark:text-white" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 1L5 5L1 1" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
@@ -119,7 +120,7 @@ export default function Graduation() {
                     <div>
                         <div className="border-b py-4 border-gray-200">
                             <div data-menu className="flex justify-between items-center cursor-pointer">
-                                <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Contact us</p>
+                                <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Teste</p>
                                 <button className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 rounded" role="button" aria-label="show or hide">
                                     <svg className="transform text-gray-300 dark:text-white" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 1L5 5L1 1" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />

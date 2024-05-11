@@ -22,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import go.party.tcs.dto.UsuarioDTO;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EmailService;
@@ -29,6 +30,7 @@ import go.party.tcs.service.EventoService;
 import go.party.tcs.service.NotificationService;
 import go.party.tcs.service.UsuarioService;
 import jakarta.servlet.http.HttpSession;
+
 
 @RestController
 @RequestMapping("/v1/usuarios")
@@ -140,6 +142,12 @@ public class UsuarioController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
     }
 
+    @GetMapping("/ativos-estudantes")
+    public ResponseEntity<List<UsuarioDTO>> findAllStudentsAtive() {
+        List<UsuarioDTO> ativeStudensUsers = usuarioService.getUsuariosAtivosEstudantes();
+        return ResponseEntity.ok(ativeStudensUsers);
+    }
+    
     @GetMapping("/search")
     public List<Usuario> searchUsers(@RequestParam String query) {
         return usuarioRepository.findByNomeContaining(query);

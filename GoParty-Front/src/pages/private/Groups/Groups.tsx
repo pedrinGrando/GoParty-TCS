@@ -13,6 +13,7 @@ export default function Groups() {
         nome: string;
         username: string;
         usuarioCaminho: string;
+        tipoUsuario: string;
     }
 
     const [usuarios, setUsuarios] = useState<UsuarioDTO[]>([]);
@@ -24,7 +25,7 @@ export default function Groups() {
     const fetchGroup = async (): Promise<UsuarioDTO[]> => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:8081/v1/fomaturas/listar-grupo/${user.id}`);
+            const response = await fetch(`http://localhost:8081/v1/formaturas/listar-grupo/${user.id}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -66,7 +67,9 @@ export default function Groups() {
                                 <li className="py-3 sm:py-4">
                                     <div className="flex items-center space-x-4">
                                         <div className="flex-shrink-0">
-                                            <img className="w-8 h-8 rounded-full" src={`http://localhost:8081${usuario.usuarioCaminho}`} alt="Neil image" />
+                                            <img className="w-8 h-8 rounded-full"
+                                             src={usuario.usuarioCaminho ? `http://localhost:8081${usuario.usuarioCaminho}` : '/imagens/user (1).png'} 
+                                            alt="Neil image" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-sm font-medium text-gray-900 truncate dark:text-white">
@@ -77,7 +80,7 @@ export default function Groups() {
                                             </p>
                                         </div>
                                         <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
-                                            Teste
+                                            {usuario.tipoUsuario}
                                         </div>
                                     </div>
                                 </li>

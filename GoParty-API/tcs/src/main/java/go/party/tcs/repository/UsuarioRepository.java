@@ -6,14 +6,17 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.model.Usuario;
 import org.springframework.security.core.userdetails.UserDetails;
 
 public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
-    Usuario findByNome(String nome);
+    List<Usuario> findByAtivoTrue();
 
-    //Usuario findByUsername(String usuarioNome);
+    List<Usuario> findByAtivoTrueAndTipoUsuario(TipoUsuario tipoUsuario);
+
+    Usuario findByNome(String nome);
 
     boolean existsByEmail(String email);
 
