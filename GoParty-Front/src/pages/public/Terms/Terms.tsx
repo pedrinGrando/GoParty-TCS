@@ -8,7 +8,7 @@ export default function Terms() {
     doc.setFontSize(17);
     doc.setFont("arial", "bold");
     doc.text("Políticas de Privacidade", 105, 20, { align: 'center' });
-    doc.setFontSize(12); 
+    doc.setFontSize(12);
     doc.setFont("arial", "normal");
 
     const text: string = "    Para garantir a segurança e a eficiência do GoParty, o sistema oferecerá uma base sólida e confiável em conformidade com a Lei Geral de Proteção de Dados Pessoais (LGPD), Lei n° 13.709/2018, que estabelece diretrizes para o tratamento de dados pessoais. Reconhecemos a importância de proteger as informações dos usuários, garantindo assim a confidencialidade e a privacidade de seus dados.\n\n" +
@@ -27,33 +27,69 @@ export default function Terms() {
   return (
     <div>
       <NavBar />
-      <div className="max-w-4xl mx-auto p-4">
-        <h1 className="text-xl font-semibold text-gray-900 mb-4">Segurança e Privacidade no GoParty</h1>
-        <p className="mb-2">
-          No GoParty, levamos sua privacidade a sério. Estamos comprometidos em proteger suas informações pessoais e garantir sua segurança enquanto você organiza e participa de eventos de formatura em nossa plataforma.
-        </p>
-        <h2 className="text-lg font-semibold text-gray-800 mt-6 mb-2">Como Protegemos Seus Dados:</h2>
-        <ul className="list-disc list-inside mb-4">
-          <li><strong>Conformidade com a LGPD:</strong> Nosso sistema foi projetado para cumprir a Lei Geral de Proteção de Dados Pessoais (LGPD). Isso significa que seguimos regras estritas sobre como coletar, usar e armazenar seus dados.</li>
-          <li><strong>Transparência:</strong> Ao se cadastrar, você será informado sobre quais dados coletamos e como eles serão utilizados. Garantimos clareza para que você sempre saiba quais informações estão sendo coletadas.</li>
-          <li><strong>Segurança Avançada:</strong> Utilizamos tecnologias de ponta para proteger seus dados armazenados em nossa plataforma, assegurando que apenas informações necessárias sejam coletadas e mantendo-as seguras contra acessos não autorizados.</li>
-        </ul>
-        <h2 className="text-lg font-semibold text-gray-800 mb-2">Seus Direitos:</h2>
-        <ul className="list-disc list-inside mb-4">
-          <li><strong>Acesso e Controle:</strong> Você tem o direito de acessar, corrigir ou excluir seus dados pessoais a qualquer momento. Essa flexibilidade permite que você mantenha controle total sobre suas informações pessoais.</li>
-        </ul>
-        <h2 className="text-lg font-semibold text-gray-800 mb-2">Responsabilidade:</h2>
-        <ul className="list-disc list-inside mb-4">
-          <li><strong>Uso Apropriado:</strong> A responsabilidade pelos eventos cadastrados na plataforma recai sobre os usuários que os criam. Qualquer questão legal ou consequência resultante de eventos é gerida de acordo com as informações fornecidas durante o registro.</li>
-          <li><strong>Integridade de Dados:</strong> É crucial que as informações fornecidas sejam verdadeiras e precisas. Caso contrário, medidas apropriadas serão tomadas em conformidade com as leis vigentes.</li>
-        </ul>
-        <p className="mt-4">
-          No GoParty, você pode se dedicar totalmente à organização de sua formatura, sabendo que suas informações estão protegidas e que nossa plataforma está comprometida em garantir uma experiência segura e confiável para todos os usuários.
-        </p>
-        <div className="flex justify-center mt-6">
-          <button onClick={generatePdf} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-            Gerar PDF
+      <div className="bg-white">
+        <div className="container mx-auto px-4 py-8">
+          <h1 className="text-3xl font-bold mb-4">Politicas de Privacidade</h1>
+
+          <p className="mb-4">
+            Esta política de privacidade define como nosso site usa e protege qualquer informação que você nos fornece quando usa este site.
+          </p>
+
+          <h2 className="text-2xl font-bold mb-2">Conformidade com a LGPD</h2>
+
+          <ul className="list-disc list-inside mb-4">
+            <li>Nosso sistema foi projetado para cumprir a Lei Geral de Proteção de Dados Pessoais (LGPD).</li>
+            <li>Seguimos regras estritas sobre como coletar.</li>
+            <li>E sobre usar e armazenar seus dados.</li>
+          </ul>
+
+          <h2 className="text-2xl font-bold mb-2">Transparência</h2>
+
+          <p className="mb-4">
+            Ao se cadastrar, você será informado sobre quais dados coletamos e como eles serão utilizados. Garantimos clareza para que você sempre saiba quais informações estão sendo coletadas.
+          </p>
+
+          <ul className="list-disc list-inside mb-4">
+            <li>Segurança Avançada</li>
+            <li>Melhorar nossos serviços</li>
+            <li>De tempos em tempos, também poderemos usar suas informações para entrar em contato com você para fins de pesquisa de mercado. Nós podemos
+              contato
+              você por e-mail, telefone ou correio. Podemos usar as informações para personalizar o site de acordo com o seu
+              interesses.</li>
+          </ul>
+
+          <h2 className="text-2xl font-bold mb-2">Seus Direitos:</h2>
+          <h3 className='text-1xl font-bold mb-2'>Acesso e Controle:</h3>
+          <p className="mb-4">
+            Você tem o direito de acessar, corrigir ou excluir seus dados pessoais a qualquer momento. Essa flexibilidade permite que você mantenha controle total sobre suas informações pessoais.
+          </p>
+
+          <h2 className="text-2xl font-bold mb-2">Uso Apropriado</h2>
+
+          <p className="mb-4">
+            A responsabilidade pelos eventos cadastrados na plataforma recai sobre os usuários que os criam. Qualquer questão legal ou consequência resultante de eventos é gerida de acordo com as informações fornecidas durante o registro.
+          </p>
+
+          <h2 className="text-2xl font-bold mb-2">Integridade de Dados</h2>
+
+          <p className="mb-4">
+            É crucial que as informações fornecidas sejam verdadeiras e precisas. Caso contrário, medidas apropriadas serão tomadas em conformidade com as leis vigentes.
+            No GoParty, você pode se dedicar totalmente à organização de sua formatura, sabendo que suas informações estão protegidas e que nossa plataforma está comprometida em garantir uma experiência segura e confiável para todos os usuários.
+          </p>
+
+          <h2 className="text-2xl font-bold mb-2">Controlling Your Personal Information</h2>
+
+          <p className="mb-4">
+            You may choose to restrict the collection or use of your personal information in the following ways:
+          </p>
+          <p className="mb-4">
+            Esta política de privacidade está sujeita a alterações sem aviso prévio.
+          </p>
+          <div className="flex justify-center mt-6">
+          <button title='Baixar PDF' onClick={generatePdf} className="text-white font-bold py-2 px-4 rounded">
+           <img src="/imagens/downloads-folder.png" alt="download" />
           </button>
+        </div>
         </div>
       </div>
     </div>
