@@ -103,7 +103,6 @@ export default function Login() {
     }
   };
 
-
   return (
     <div className='min-h-screen dark:bg-gray-900'>
       {/* Modal de escolha*/}

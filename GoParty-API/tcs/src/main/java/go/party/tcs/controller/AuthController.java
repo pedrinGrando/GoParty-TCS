@@ -77,7 +77,7 @@ public ResponseEntity<?> login(@RequestBody Usuario usuario) {
             authenticatedUser.getId(), authenticatedUser.getNome(), authenticatedUser.getUsername(),
             authenticatedUser.getEmail(), authenticatedUser.getDataNasci(), authenticatedUser.getTipoUsuario(),
             authenticatedUser.getCpf(), authenticatedUser.getFotoCaminho(),
-            authenticatedUser.getDataCadastro()
+            authenticatedUser.getDataAceite()
         );
         
         String jwt = jwtService.generateToken(authenticatedUser);
@@ -96,7 +96,7 @@ public ResponseEntity<?> login(@RequestBody Usuario usuario) {
             String password = new BCryptPasswordEncoder().encode(usuario.getSenha());
             usuario.setSenha(password);
             //Momento de cadastro do user
-            usuario.setDataCadastro(LocalDateTime.now());
+            usuario.setDataAceite(LocalDateTime.now());
             usuarioValidarCadastro = usuario;
 
             //Validar o cadastro
@@ -140,7 +140,7 @@ public ResponseEntity<?> login(@RequestBody Usuario usuario) {
             String password = new BCryptPasswordEncoder().encode(usuario.getSenha());
             usuario.setSenha(password);
             //Momento de cadastro do usuário
-            usuario.setDataCadastro(LocalDateTime.now());
+            usuario.setDataAceite(LocalDateTime.now());
             usuarioValidarCadastro = usuario;
 
             //Validar o cadastro

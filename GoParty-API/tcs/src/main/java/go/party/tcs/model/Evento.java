@@ -1,5 +1,6 @@
 package go.party.tcs.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +65,17 @@ public class Evento {
     @Column(name = "valor")
     private double valor;
 
+    @Column(name = "qnt_ingressos")
+    private int qntIngressos;
+
     @Column(name = "data_evento")
-    private LocalDateTime dataEvento;
+    private LocalDate dataEvento;
 
     @Column(name = "data_postagem")
     private LocalDateTime dataPostagem;
+
+    @Column(name = "data_expiracao")
+    private LocalDate dataExpiracao;
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")

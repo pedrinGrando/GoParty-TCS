@@ -32,11 +32,14 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.Enums.TipoUsuario;
+import go.party.tcs.dto.EventoDTO;
+import go.party.tcs.dto.FormaturaDTO;
 import go.party.tcs.dto.UsuarioDTO;
 import go.party.tcs.model.Formatura;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.FormaturaRepository;
 import go.party.tcs.repository.UsuarioRepository;
+import go.party.tcs.service.EventoService;
 import go.party.tcs.service.FormaturaService;
 
 @RestController
@@ -52,6 +55,9 @@ public class FormaturaController {
 
     @Autowired
     private FormaturaRepository formaturaRepository;
+
+    @Autowired
+    private EventoService eventoService;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -75,7 +81,8 @@ public class FormaturaController {
             usuarioAdm.setTipoUsuario(TipoUsuario.ADM);
             usuarioAdm.setFormatura(formaturaSalva);
             usuarioRepository.save(usuarioAdm);
-            return ResponseEntity.ok(Map.of("id", formaturaSalva.getId(), "mensagem", "Formatura cadastrada com sucesso!"));
+            return ResponseEntity
+                    .ok(Map.of("id", formaturaSalva.getId(), "mensagem", "Formatura cadastrada com sucesso!"));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -176,13 +183,13 @@ public class FormaturaController {
         Optional<Usuario> admOptional = usuarioRepository.findById(admId);
         Usuario usuario = new Usuario();
         Usuario admUser = new Usuario();
-        if(!userOptional.isPresent()){
+        if (!userOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario nao encontrado!");
-        }else if(!admOptional.isPresent()){
+        } else if (!admOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Adm nao escontrado!");
-        }else if(!admUser.getTipoUsuario().equals(TipoUsuario.ADM)){
+        } else if (!admUser.getTipoUsuario().equals(TipoUsuario.ADM)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario nao e ADM!");
-        } else{
+        } else {
             usuario = userOptional.get();
             admUser = admOptional.get();
             usuario.setFormatura(null);
@@ -217,12 +224,48 @@ public class FormaturaController {
         return ResponseEntity.ok(usuariosDTO);
     }
 
+    @GetMapping("/encontrar-por-id/{userId}")
+    public ResponseEntity<?> formaturaPeloId(@PathVariable Long userId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+        }
+
+        Usuario usuario = userOptional.get();
+        Formatura formatura = usuario.getFormatura();
+        if (formatura == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Formatura não encontrada para o usuário");
+        }
+
+        FormaturaDTO formaturaDTO = new FormaturaDTO(
+                formatura.getId(),
+                formatura.getTitulo(),
+                formatura.getDescricao(),
+                formatura.getFormaturaCaminho(),
+                formatura.getCidade(),
+                formatura.getEstado(),
+                formatura.getDataPrevista(),
+                formatura.getArrecacado(),
+                formatura.getMetaArrecad(),
+                usuario.getNome());
+
+        return ResponseEntity.ok(formaturaDTO);
+    }
+
+    @GetMapping("/{eventoId}/consultar-pix-formatura")
+    public ResponseEntity<String> acharChavePixPorEventoId(@PathVariable Long eventoId) {
+        Optional<String> chavePix = eventoService.findChavePixByEventoId(eventoId);
+        return chavePix.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     private UsuarioDTO convertToDTO(Usuario usuario) {
         UsuarioDTO dto = new UsuarioDTO();
         dto.setId(usuario.getId());
         dto.setNome(usuario.getNome());
         dto.setUsername(usuario.getUsername());
         dto.setUsuarioCaminho(usuario.getFotoCaminho());
+        dto.setTipoUsuario(usuario.getTipoUsuario());
         return dto;
     }
 

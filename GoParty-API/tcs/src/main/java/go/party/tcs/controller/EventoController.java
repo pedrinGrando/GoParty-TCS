@@ -4,6 +4,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -127,7 +128,15 @@ public class EventoController {
     @GetMapping("/buscar-eventos")
     public List<EventoDTO> getAllEventosAtivos() {
         List<Evento> eventosAtivos = eventoRepository.findByAtivoTrue();
+        LocalDate now = LocalDate.now();
+        eventosAtivos.forEach(evento -> {
+            if (evento.getDataEvento().isBefore(now)) {
+                evento.setDataExpiracao(now);
+                eventoRepository.save(evento);
+            }
+        });
         return eventosAtivos.stream()
+                .filter(evento -> evento.getDataEvento().isAfter(now))
                 .map(EventoDTO::new)
                 .collect(Collectors.toList());
     }
@@ -165,8 +174,20 @@ public class EventoController {
             return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
         } else {
             return eventoRepository.findByAtivoTrue().stream()
-                    .map(e -> new EventoDTO(e.getId(), e.isAtivo(), e.getTitulo(), e.getDescricao(), e.getEventoCaminho(),
-                            e.getCidade(), e.getEstado(), e.getDataEvento(), e.getValor(), e.getRua(), e.getBairro(), e.getCep()))
+                    .map(e -> new EventoDTO(
+                            e.getId(),
+                            e.isAtivo(),
+                            e.getTitulo(),
+                            e.getDescricao(),
+                            e.getEventoCaminho(),
+                            e.getCidade(),
+                            e.getEstado(),
+                            e.getDataEvento(),
+                            e.getValor(),
+                            e.getQntIngressos(),
+                            e.getRua(),
+                            e.getBairro(),
+                            e.getCep()))
                     .collect(Collectors.toList());
         }
     }
@@ -201,9 +222,11 @@ public class EventoController {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não criou este evento!");
                     }
                     if (!ingressoRepository.findByEventoId(evento.getId()).isEmpty()) {
-                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Já existem ingressos comprados para este evento!");
+                        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                                .body("Já existem ingressos comprados para este evento!");
                     }
                     evento.setAtivo(false);
+                    evento.setDataExpiracao(LocalDate.now());
                     eventoRepository.save(evento);
                     return ResponseEntity.ok().body("Evento inativado com sucesso!");
                 })

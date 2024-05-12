@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
 import Event from "../../../types/Event";
@@ -31,6 +31,15 @@ export default function Explore() {
             throw e;
         }
     }
+
+    //Busca os eventos criados
+    useEffect(() => {
+        buscarEventos(search).then(data => {
+            setEventos(data);
+            setIsLoading(false);
+        });
+    }, []);
+
 
     const handleSearch = async () => {
         try {

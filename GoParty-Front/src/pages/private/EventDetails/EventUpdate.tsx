@@ -8,17 +8,32 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 import CurrencyInput from 'react-currency-input-field';
 import { ModalMessage } from '../../../components/modal/ModalMessage';
 import ReactInputMask from 'react-input-mask';
+import { format, parseISO } from 'date-fns';
 
 const EventUpdate: React.FC = () => {
 
+    interface EventoDTO {
+        id: number;
+        titulo: string;
+        descricao: string;
+        eventoCaminho: string;
+        cidade: string;
+        estado: string;
+        rua: string;
+        bairro: string;
+        dataEvento: string;
+        valor: number;
+        nomeUsuario?: string;
+    }
+
     const { eventId } = useParams();
-    const [evento, setEvento] = useState<any>(null);
+    const [evento, setEvento] = useState<EventoDTO>();
 
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState<string>('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [error, setError] = useState(false);
-    const [message, setMessage] = useState(""); 
+    const [message, setMessage] = useState("");
 
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
     const [mensagemModal, setMensagemModal] = useState<string>('');
@@ -30,21 +45,12 @@ const EventUpdate: React.FC = () => {
     const handleClose = () => setMostrarModal(false);
 
     const handleCloseFooter = () => {
-      setError(false); 
+        setError(false);
     };
 
-    interface EventoDTO {
-        id: number;
-        titulo: string;
-        descricao: string;
-        eventoCaminho: string;
-        cidade: string;
-        estado: string;
-        rua: string;
-        bairro: string;
-        dataEvento: Date;
-        valor: number;
-        nomeUsuario?: string;
+    const formatDate = (dateString: string) => {
+        const date = parseISO(dateString);
+        return format(date, 'dd/MM/yyyy');
     }
 
     useEffect(() => {
@@ -64,10 +70,10 @@ const EventUpdate: React.FC = () => {
                 }
 
                 const data: EventoDTO = await response.json();
-                console.log("Erro na requisicao")
+                console.log("Evento consultado")
                 setEvento(data);
             } catch (e) {
-                
+
             } finally {
                 setIsLoading(false);
             }
@@ -76,20 +82,7 @@ const EventUpdate: React.FC = () => {
         fetchEvento();
     }, [eventId]);
 
-    const [formData, setFormData] = useState({
-        titulo: "evento.titulo,",
-        descricao: "evento.titulo,",
-        estado: "evento.titulo,",
-        dataPrevista: "evento.titulo,",
-        cep: "evento.titulo,",
-        valor: "evento.titulo,",
-        cidade: "evento.titulo,",
-        bairro: "evento.titulo,",
-        rua: "evento.titulo,",
-        fotoEvento: null
-      });
-
-      const [errors, setErrors] = useState({
+    const [errors, setErrors] = useState({
         titulo: false,
         descricao: false,
         estado: false,
@@ -99,69 +92,57 @@ const EventUpdate: React.FC = () => {
         cidade: false,
         bairro: false,
         rua: false
-     });
+    });
 
 
-    function onFileUpload(event: React.ChangeEvent<HTMLInputElement>){
+    function onFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
 
-        if(event.target.files){
+        if (event.target.files) {
 
-          const file = event.target.files[0];
-          const maxFileSize = 2 * 1024 * 1024; // 2MB
-      
-          if (file.size > maxFileSize) {
-              setError(true);
-              setMessage("Imagem excedeu o limite de 2 MB")
-          } else {
-            const imageURL = URL.createObjectURL(file)
-            setImagePreview(imageURL)
-            setSelectedFile(file);
-          }
-            
+            const file = event.target.files[0];
+            const maxFileSize = 2 * 1024 * 1024; // 2MB
+
+            if (file.size > maxFileSize) {
+                setError(true);
+                setMessage("Imagem excedeu o limite de 2 MB")
+            } else {
+                const imageURL = URL.createObjectURL(file)
+                setImagePreview(imageURL)
+                setSelectedFile(file);
+            }
+
         }
     }
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsLoading(true);
-    
+
         try {
             const responseEvento = await fetch(`http://localhost:8081/v1/eventos/atualizar-evento/${eventId}`, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(evento),
             });
-    
+
             const eventData = await responseEvento.json();
-    
+
             if (responseEvento.ok) {
                 console.log("Evento atualizado com sucesso:", eventData.id);
-  
-                setFormData({
-                  titulo: '',
-                  descricao: '',
-                  estado: '',
-                  dataPrevista: '',
-                  cep: '',
-                  valor: '',
-                  cidade: '',
-                  bairro: '',
-                  rua: '',
-                  fotoEvento: null
-              });
-              setMensagemModal("Evento atualizdo com sucesso!");
-              setImagemSrcModal("imagens/EventCreatedSucess.webp");
-              setMostrarModal(true);
-              setImagePreview('');
-              setIsLoading(false);
-    
+
+                setMensagemModal("Evento atualizdo com sucesso!");
+                setImagemSrcModal("imagens/EventCreatedSucess.webp");
+                setMostrarModal(true);
+                setImagePreview('');
+                setIsLoading(false);
+
                 if (selectedFile) {
                     const formDataImage = new FormData();
                     formDataImage.append('file', selectedFile);
-    
+
                     const responseImage = await fetch(`http://localhost:8081/v1/eventos/upload-event-image/${eventData.id}`, {
                         method: 'PUT',
                         headers: {
@@ -169,59 +150,22 @@ const EventUpdate: React.FC = () => {
                         },
                         body: formDataImage,
                     });
-    
+
                     if (responseImage.ok) {
                         console.log("Imagem do evento enviada com sucesso.");
-  
-                        setFormData({
-                          titulo: '',
-                          descricao: '',
-                          estado: '',
-                          dataPrevista: '',
-                          cep: '',
-                          valor: '',
-                          cidade: '',
-                          bairro: '',
-                          rua: '',
-                          fotoEvento: null
-                      });
-                      setMensagemModal("Evento atualizado com sucesso!");
-                      setImagemSrcModal("imagens/EventCreatedSucess.webp");
-                      setMostrarModal(true);
-                      setImagePreview('');
-                      setIsLoading(false);
+
+                        setMensagemModal("Evento atualizado com sucesso!");
+                        setImagemSrcModal("imagens/EventCreatedSucess.webp");
+                        setMostrarModal(true);
+                        setImagePreview('');
+                        setIsLoading(false);
                     } else {
                         console.error("Falha ao enviar imagem do evento.");
-                        setFormData({
-                          titulo: '',
-                          descricao: '',
-                          estado: '',
-                          dataPrevista: '',
-                          cep: '',
-                          valor: '',
-                          cidade: '',
-                          bairro: '',
-                          rua: '',
-                          fotoEvento: null
-                      });
-                      setImagePreview('');
-                      setIsLoading(false);
+                        setImagePreview('');
+                        setIsLoading(false);
                     }
                 }
-    
-                // Limpa o formulário após o envio bem-sucedido
-                setFormData({
-                    titulo: '',
-                    descricao: '',
-                    estado: '',
-                    dataPrevista: '',
-                    valor: '',
-                    cep: '',
-                    cidade: '',
-                    bairro: '',
-                    rua: '',
-                    fotoEvento: null
-                });
+
                 setImagePreview('');
                 setIsLoading(false);
             } else {
@@ -240,56 +184,32 @@ const EventUpdate: React.FC = () => {
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = event.target;
-      
-          if (type === 'file' && event.target instanceof HTMLInputElement) {
-              const file = event.target.files && event.target.files[0];
-              if (file) {
-                  const blob = new Blob([file], { type: file.type });
-                  setFormData({
-                      ...formData,
-                      [name]: blob,
-                  });
-              }
-          } else {
-              setFormData({
-                  ...formData,
-                  [name]: value,
-              });
+        setEvento(prev => ({ ...prev!, [name]: value }));
+
+        if (type === 'file' && event.target instanceof HTMLInputElement) {
+            const file = event.target.files && event.target.files[0];
+        } else {
         }
 
         if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
-          buscarEndereco(value);
+            buscarEndereco(value);
         }
     };
 
-     //checar endereços por CEP (api ViaCEP)
-     const buscarEndereco = async (cep: string) => {
+    //checar endereços por CEP (api ViaCEP)
+    const buscarEndereco = async (cep: string) => {
         try {
-          const url = `https://viacep.com.br/ws/${cep}/json/`;
-          const response = await fetch(url);
-          if (!response.ok) console.log('Erro ao fazer requisicao viaCEP');
-          const data = await response.json();
-      
-          if (data.erro) {
-            console.error('CEP não encontrado.');
-            return;
-          }
-      
-          setFormData(prevState => ({
-            ...prevState,
-            cep
-          }));
-      
-          const { logradouro, bairro, localidade, uf } = data;
-          setFormData(prevState => ({
-            ...prevState,
-            rua: logradouro,
-            bairro: bairro,
-            cidade: localidade,
-            estado: uf
-          }));
+            const url = `https://viacep.com.br/ws/${cep}/json/`;
+            const response = await fetch(url);
+            if (!response.ok) console.log('Erro ao fazer requisicao viaCEP');
+            const data = await response.json();
+
+            if (data.erro) {
+                console.error('CEP não encontrado.');
+                return;
+            }
         } catch (error) {
-          console.error('Erro ao buscar CEP:', error);
+            console.error('Erro ao buscar CEP:', error);
         }
     };
 
@@ -323,7 +243,7 @@ const EventUpdate: React.FC = () => {
                                             <input placeholder="Festa universitária"
                                                 type="text"
                                                 name='titulo'
-                                                value={formData.titulo}
+                                                value={evento?.titulo}
                                                 id='titulo'
                                                 onChange={handleChange}
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`} />
@@ -335,7 +255,7 @@ const EventUpdate: React.FC = () => {
 
                                             <textarea
                                                 onChange={handleChange}
-                                                value={formData.descricao}
+                                                value={evento?.descricao}
                                                 name='descricao'
                                                 id='descricao'
                                                 className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
@@ -344,25 +264,12 @@ const EventUpdate: React.FC = () => {
                                             </textarea>
                                         </div>
                                         <div className="relative">
-                                            <label htmlFor='cep' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">CEP</label>
-                                            <ReactInputMask
-                                                placeholder='CEP'
-                                                mask="99999-999"
-                                                value={formData.cep}
-                                                onChange={handleChange}
-                                                className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
-                                                type="text"
-                                                name="cep"
-                                                id="cep"
-                                            />
-                                        </div>
-                                        <div className="relative">
                                             <label htmlFor='cidade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Cidade</label>
                                             <input placeholder="Florianópolis"
                                                 type="text"
                                                 name='cidade'
-                                                value={formData.cidade}
+                                                value={evento?.cidade}
                                                 id='cidade'
                                                 onChange={handleChange}
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`} />
@@ -373,7 +280,7 @@ const EventUpdate: React.FC = () => {
                                             <input placeholder="Capoeiras"
                                                 type="text"
                                                 name='bairro'
-                                                value={formData.bairro}
+                                                value={evento?.bairro}
                                                 id='bairro'
                                                 onChange={handleChange}
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`} />
@@ -383,7 +290,7 @@ const EventUpdate: React.FC = () => {
                           absolute">Rua</label>
                                             <input placeholder="Rua major costa 291"
                                                 type="text"
-                                                value={formData.rua}
+                                                value={evento?.rua}
                                                 name='rua'
                                                 id='rua'
                                                 onChange={handleChange}
@@ -398,7 +305,7 @@ const EventUpdate: React.FC = () => {
                                                 placeholder="R$ 0,00"
                                                 id='valor'
                                                 name='valor'
-                                                value={formData.valor}
+                                                value={evento?.valor}
                                                 onChange={handleChange}
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
                                             />
@@ -410,7 +317,7 @@ const EventUpdate: React.FC = () => {
                                                 placeholder="Data"
                                                 id='dataPrevista'
                                                 name='dataPrevista'
-                                                value={formData.dataPrevista}
+                                                value={evento ? formatDate(evento.dataEvento) : ''}
                                                 onChange={handleChange}
                                                 type="date"
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `} />
@@ -471,19 +378,6 @@ const EventUpdate: React.FC = () => {
                                                         ></path>
                                                     </svg>
                                                 </span>
-                                            </label>
-                                            <label
-                                                className="mt-px cursor-pointer select-none font-light text-gray-700"
-                                            >
-                                                <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
-                                                    Eu concordo com
-                                                    <a
-                                                        className="font-semibold transition-colors hover:text-pink-500"
-                                                        href="#"
-                                                    >
-                                                        &nbsp;Termos e Condições
-                                                    </a>
-                                                </p>
                                             </label>
                                         </div>
                                         <div className="relative">

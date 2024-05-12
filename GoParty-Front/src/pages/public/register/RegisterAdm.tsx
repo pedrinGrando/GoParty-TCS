@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import CurrencyInput from 'react-currency-input-field';
 import { RenderIf } from '../../../components/RenderIf/RenderIf';
 import InputMask from 'react-input-mask';
+import { ToastContainer } from '../../../components/modal/ToastContainer';
+import { ToastType } from '../../../components/modal/ToastType';
 
 //Pages/components
 import { Loading } from '../../../components/Loading/Loading';
 import { ModalMessage } from '../../../components/modal/ModalMessage';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Error } from '../../../components/Error/Error';
 import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 
@@ -15,16 +17,19 @@ import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 export default function RegisterAdm() {
 
   const [isLoading, setIsLoading] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isChecked, setIsChecked] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedFileMatri, setSelectedFileMatri] = useState<File | null>(null);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const [mostrarModal, setMostrarModal] = useState<boolean>(true);
   const [mensagemModal, setMensagemModal] = useState<string>('Crie sua formatura de forma fácil e gerencia os ganhos sendo o melhor GoParty ADM!');
   const [imagemSrcModal, setImagemSrcModal] = useState<string>('/imagens/BEGoPartyADM.webp');
+  const [toastType, setToasType] = useState<ToastType>('error');
 
   const handleClose = () => setMostrarModal(false);
 
@@ -65,6 +70,10 @@ export default function RegisterAdm() {
   const handleCloseFooter = () => {
     setError(false);
   };
+
+  const closeToast = () => {
+    setIsVisible(false);
+  }
 
   function onFileUpload(event: React.ChangeEvent<HTMLInputElement>) {
 
@@ -225,8 +234,12 @@ export default function RegisterAdm() {
             });
             setImagePreview('');
             setIsLoading(false);
+            setToasType("success")
             setMessage('Formatura criada com sucesso!')
-            setMostrarModal(true);
+            setIsVisible(true);
+            setTimeout(() => {
+              navigate('/home');
+            }, 2000);
           } else{
             setIsLoading(false);
             setImagePreview('');
@@ -245,14 +258,9 @@ export default function RegisterAdm() {
               rua: '',
               fotoFormatura: null
             });
-            setImagePreview('');
-            setIsLoading(false);
           }
         }
         setIsLoading(false);
-        setImagePreview('');
-        setMessage("Erro ao criar formatura, Tente novamente!")
-        setError(true)
       } else {
         setIsLoading(false);
         setMessage("Erro ao criar formatura, Tente novamente!")
@@ -266,12 +274,17 @@ export default function RegisterAdm() {
       setError(true)
       console.error("Erro na requisição:", error);
     }
-
   };
 
   return (
 
     <div>
+      <ToastContainer
+        message={message}
+        onClose={closeToast}
+        isVisible={isVisible}
+        type={toastType}
+      />
       <form onSubmit={handleSubmit}>
         <div className="bg-white relative lg:py-20 dark:bg-gray-900">
           <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl

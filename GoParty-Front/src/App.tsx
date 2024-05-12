@@ -30,6 +30,8 @@ import NewPass from './pages/private/Configs/NewPass';
 import Events from './pages/private/Events/Events';
 import Graduation from './pages/private/Graduation/Graduation';
 import EventUpdate from './pages/private/EventDetails/EventUpdate';
+import PixKey from './pages/private/Tickets/PixKey';
+import AddMember from './pages/private/Graduation/AddMember';
 
 
 function App() {
@@ -75,6 +77,8 @@ function App() {
           <Route path='/home' element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
           <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
           <Route path="/event-update/:eventId" element={isAuthenticated() ? <EventUpdate /> : <Navigate to="/login" />} />
+          <Route path="/formatura-pix/:eventId" element={isAuthenticated() ? <PixKey /> : <Navigate to="/login" />} />
+          <Route path="//add-member/:formaturaId" element={isAuthenticated() ? <AddMember /> : <Navigate to="/login" />} />
           <Route path='/explore' element={isAuthenticated() ? <Explore /> : <Navigate to="/login" />} />
           <Route path='/register-adm' element={isAuthenticated() ? <RegisterAdm /> : <Navigate to="/login" />} />
           <Route path='/account-config' element={isAuthenticated() ? <Configs /> : <Navigate to="/login" />} />

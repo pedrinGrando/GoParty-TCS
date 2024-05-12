@@ -4,14 +4,14 @@ import { jsPDF } from "jspdf";
 
 export default function Terms() {
   const generatePdf = () => {
-    const doc = new jsPDF();
+    const doc: jsPDF = new jsPDF();
     doc.setFontSize(17);
     doc.setFont("arial", "bold");
     doc.text("Políticas de Privacidade", 105, 20, { align: 'center' });
     doc.setFontSize(12); 
     doc.setFont("arial", "normal");
 
-    const text = "    Para garantir a segurança e a eficiência do GoParty, o sistema oferecerá uma base sólida e confiável em conformidade com a Lei Geral de Proteção de Dados Pessoais (LGPD), Lei n° 13.709/2018, que estabelece diretrizes para o tratamento de dados pessoais. Reconhecemos a importância de proteger as informações dos usuários, garantindo assim a confidencialidade e a privacidade de seus dados.\n\n" +
+    const text: string = "    Para garantir a segurança e a eficiência do GoParty, o sistema oferecerá uma base sólida e confiável em conformidade com a Lei Geral de Proteção de Dados Pessoais (LGPD), Lei n° 13.709/2018, que estabelece diretrizes para o tratamento de dados pessoais. Reconhecemos a importância de proteger as informações dos usuários, garantindo assim a confidencialidade e a privacidade de seus dados.\n\n" +
       "    A proteção dos dados pessoais é um aspecto fundamental no mundo digital contemporâneo, especialmente considerando o crescimento das plataformas online e a sensibilidade das informações compartilhadas pelos usuários.\n\n" +
       "    Nesse contexto, o GoParty surge como uma solução para facilitar a organização e financiamento de comemorações de formatura, ao mesmo tempo em que prioriza a segurança e a privacidade dos dados de seus usuários.\n\n" +
       "    Desde a sua concepção, o GoParty tem como premissa o cumprimento das diretrizes estabelecidas pela LGPD, reconhecendo a importância de resguardar a privacidade e a confidencialidade das informações fornecidas pelos usuários. A política de privacidade do GoParty reflete esse compromisso, garantindo transparência no tratamento de dados e implementando medidas robustas de segurança para proteger as informações pessoais dos usuários.\n\n" +
