@@ -23,6 +23,7 @@ interface EventoDTO {
     dataEvento: string;
     valor: number;
     nomeUsuario?: string;
+    esgotado: boolean;
 }
 
 export default function Home() {

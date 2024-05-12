@@ -127,7 +127,7 @@ public class EventoController {
 
     @GetMapping("/buscar-eventos")
     public List<EventoDTO> getAllEventosAtivos() {
-        List<Evento> eventosAtivos = eventoRepository.findByAtivoTrue();
+        List<Evento> eventosAtivos = eventoRepository.findByAtivoTrueAndEsgotadoFalse();
         LocalDate now = LocalDate.now();
         eventosAtivos.forEach(evento -> {
             if (evento.getDataEvento().isBefore(now)) {
@@ -173,7 +173,7 @@ public class EventoController {
         if (search != null && !search.isEmpty()) {
             return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
         } else {
-            return eventoRepository.findByAtivoTrue().stream()
+            return eventoRepository.findByAtivoTrueAndEsgotadoFalse().stream()
                     .map(e -> new EventoDTO(
                             e.getId(),
                             e.isAtivo(),
@@ -187,7 +187,8 @@ public class EventoController {
                             e.getQntIngressos(),
                             e.getRua(),
                             e.getBairro(),
-                            e.getCep()))
+                            e.getCep(),
+                           e.isEsgotado()))
                     .collect(Collectors.toList());
         }
     }

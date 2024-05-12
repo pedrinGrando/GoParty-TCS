@@ -13,7 +13,7 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     List<Evento> findByUsuarioId(Long userId);
 
-    List<Evento> findByAtivoTrue();
+    List<Evento> findByAtivoTrueAndEsgotadoFalse();
 
     Optional<Evento> findById(Long id);
 
