@@ -188,7 +188,8 @@ public class EventoController {
                             e.getRua(),
                             e.getBairro(),
                             e.getCep(),
-                           e.isEsgotado()))
+                           e.isEsgotado(),
+                           e.getFormatura().getTitulo()))
                     .collect(Collectors.toList());
         }
     }

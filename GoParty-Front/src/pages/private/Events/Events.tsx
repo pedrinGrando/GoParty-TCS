@@ -24,6 +24,7 @@ interface EventoDTO {
     valor: number;
     nomeUsuario?: string;
     esgotado: boolean;
+    tituloFormatura: string;
 }
 
 export default function Events() {
