@@ -44,7 +44,6 @@ public class IngressoController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // Endpoint para criar um ingresso
     @PostMapping("/comprar-ingresso")
     public ResponseEntity<?> criarIngresso(@RequestParam Long userId, @RequestBody EventoDTO eventoDTO) {
         Usuario usuario = usuarioRepository.findById(userId)
@@ -52,6 +51,18 @@ public class IngressoController {
 
         Evento evento = eventoRepository.findById(eventoDTO.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento não encontrado"));
+
+        if (evento.isEsgotado()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ingressos para este evento estão esgotados");
+        }
+
+        evento.setIngressosVendidos(evento.getIngressosVendidos() + 1);
+
+        if (evento.getIngressosVendidos() >= evento.getQntIngressos()) {
+            evento.setEsgotado(true);
+        }
+
+        eventoRepository.save(evento);
 
         Ingresso ingresso = new Ingresso();
         ingresso.setAutor(usuario);

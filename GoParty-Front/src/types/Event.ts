@@ -14,6 +14,7 @@ interface Event {
     foto: Blob | string;
     dataEvento: Date;
     dataPostagem: Date;
+    esgotado: boolean;
 }
 
 export default Event;

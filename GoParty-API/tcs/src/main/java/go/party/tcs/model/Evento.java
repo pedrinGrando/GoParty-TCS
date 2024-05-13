@@ -18,7 +18,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,6 +39,15 @@ public class Evento {
 
     @Column(name = "ativo")
     private boolean ativo = true;
+
+    @Column(name = "qnt_ingressos")
+    private int qntIngressos;
+
+    @Column(name = "ingressosVendidos")
+    private int ingressosVendidos = 0;  
+
+    @Column(name = "esgotado")
+    private boolean esgotado = false;
 
     @Column(name = "titulo")
     private String titulo;
@@ -64,9 +72,6 @@ public class Evento {
 
     @Column(name = "valor")
     private double valor;
-
-    @Column(name = "qnt_ingressos")
-    private int qntIngressos;
 
     @Column(name = "data_evento")
     private LocalDate dataEvento;
