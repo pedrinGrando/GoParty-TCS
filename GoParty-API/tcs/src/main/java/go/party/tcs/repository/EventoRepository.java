@@ -13,11 +13,13 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     List<Evento> findByUsuarioId(Long userId);
 
-    List<Evento> findByAtivoTrue();
+    List<Evento> findByAtivoTrueAndEsgotadoFalse();
 
     Optional<Evento> findById(Long id);
 
-    @Query("SELECT new go.party.tcs.dto.EventoDTO(e.id, e.ativo, e.titulo, e.descricao, e.eventoCaminho, e.cidade, e.estado, e.dataEvento, e.valor, e.qntIngressos, e.rua, e.bairro, e.cep) " +
-       "FROM Evento e WHERE lower(e.titulo) LIKE lower(concat('%', :search, '%')) OR lower(e.descricao) LIKE lower(concat('%', :search, '%'))")
+    @Query("SELECT new go.party.tcs.dto.EventoDTO(e.id, e.ativo, e.titulo, e.descricao, e.eventoCaminho, e.cidade, e.estado, e.dataEvento, e.valor, e.qntIngressos, e.rua, e.bairro, e.cep, e.esgotado, e.formatura.titulo) "
+            +
+            "FROM Evento e WHERE (lower(e.titulo) LIKE lower(concat('%', :search, '%')) OR lower(e.descricao) LIKE lower(concat('%', :search, '%'))) AND e.ativo = true")
     List<EventoDTO> findByTituloOrDescricaoContainingIgnoreCase(String search);
+
 }

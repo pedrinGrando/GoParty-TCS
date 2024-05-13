@@ -78,7 +78,7 @@ function App() {
           <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
           <Route path="/event-update/:eventId" element={isAuthenticated() ? <EventUpdate /> : <Navigate to="/login" />} />
           <Route path="/formatura-pix/:eventId" element={isAuthenticated() ? <PixKey /> : <Navigate to="/login" />} />
-          <Route path="//add-member/:formaturaId" element={isAuthenticated() ? <AddMember /> : <Navigate to="/login" />} />
+          <Route path="/add-member/:formaturaId" element={isAuthenticated() ? <AddMember /> : <Navigate to="/login" />} />
           <Route path='/explore' element={isAuthenticated() ? <Explore /> : <Navigate to="/login" />} />
           <Route path='/register-adm' element={isAuthenticated() ? <RegisterAdm /> : <Navigate to="/login" />} />
           <Route path='/account-config' element={isAuthenticated() ? <Configs /> : <Navigate to="/login" />} />

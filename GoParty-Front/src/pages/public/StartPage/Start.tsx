@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { NavBar } from "../../../components/NavBar/NavBar";
 import { ModalChoose } from "../../../components/modal/ModalChoose";
+import { Link } from "react-router-dom";
 
 export default function StartPage() {
 
@@ -358,18 +359,7 @@ export default function StartPage() {
                             </div>
                             <div className="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
                                 <div>
-                                    <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Resources</h2>
-                                    <ul className="text-gray-600 dark:text-gray-400">
-                                        <li className="mb-4">
-                                            <a href="#" className="hover:underline">Flowbite</a>
-                                        </li>
-                                        <li>
-                                            <a href="#" className="hover:underline">Tailwind CSS</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Follow us</h2>
+                                    <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Nos siga</h2>
                                     <ul className="text-gray-600 dark:text-gray-400">
                                         <li className="mb-4">
                                             <a href="#" className="hover:underline ">Github</a>
@@ -382,11 +372,13 @@ export default function StartPage() {
                                 <div>
                                     <h2 className="mb-6 text-sm font-semibold text-gray-900 uppercase dark:text-white">Legal</h2>
                                     <ul className="text-gray-600 dark:text-gray-400">
+                                        <Link to='/terms-and-conditions'>
                                         <li className="mb-4">
-                                            <a href="#" className="hover:underline">Privacy Policy</a>
+                                            <a href="#" className="hover:underline">Política de Privacidade</a>
                                         </li>
+                                        </Link>
                                         <li>
-                                            <a href="#" className="hover:underline">Terms &amp; Conditions</a>
+                                            <a href="#" className="hover:underline">Termos  &amp; Condições</a>
                                         </li>
                                     </ul>
                                 </div>
@@ -394,7 +386,7 @@ export default function StartPage() {
                         </div>
                         <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
                         <div className="sm:flex sm:items-center sm:justify-between">
-                            <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2022 <a href="#" className="hover:underline">GoParty</a>. Todos os direitos reservados.
+                            <span className="text-sm text-gray-500 sm:text-center dark:text-gray-400">© 2024 <a href="#" className="hover:underline">GoParty</a>. Todos os direitos reservados.
                             </span>
                             <div className="flex mt-4 space-x-6 sm:justify-center sm:mt-0">
                                 <a href="#" className="text-gray-500 hover:text-gray-900 dark:hover:text-white">
@@ -417,7 +409,6 @@ export default function StartPage() {
                     </div>
                 </footer>
 
-                <script src="https://unpkg.com/flowbite@1.4.7/dist/flowbite.js"></script>
             </body>
         </div>
     )

@@ -24,10 +24,13 @@ public class EventoDTO {
     private LocalDate dataEvento;
     private double valor;
     private int qntIngressos;
+    private boolean esgotado;
+    private String tituloFormatura;
 
     public EventoDTO() {}
 
-    public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado, LocalDate dataEvento, double valor, int qntIngressos, String rua, String bairro, String cep) {
+    public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado, 
+    LocalDate dataEvento, double valor, int qntIngressos, String rua, String bairro, String cep, boolean esgotado, String tituloFormatura) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -41,6 +44,8 @@ public class EventoDTO {
         this.valor = valor;
         this.qntIngressos = qntIngressos;
         this.ativo = ativo;
+        this.esgotado = esgotado;
+        this.tituloFormatura = tituloFormatura;
     }
 
     public EventoDTO(Evento evento) {
@@ -57,6 +62,8 @@ public class EventoDTO {
             this.dataEvento = evento.getDataEvento();
             this.valor = evento.getValor();
             this.qntIngressos = evento.getQntIngressos();
+            this.esgotado = evento.isEsgotado();
+            this.tituloFormatura = evento.getFormatura().getTitulo();
         }
     }
 }
