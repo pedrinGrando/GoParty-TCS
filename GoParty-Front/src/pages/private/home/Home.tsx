@@ -7,7 +7,7 @@ import TrendEvents from '../../../components/Feed/TrendEvents';
 import { LoadingHome } from '../../../components/Loading/LoadingHome';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import Event from '../../../types/Event';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { format, parseISO } from 'date-fns';
 import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 import { CommentsSection } from '../../../components/Comments/CommentsSection';
@@ -32,6 +32,10 @@ export default function Home() {
     const [eventos, setEventos] = useState<EventoDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
+    const navigate = useNavigate();
+
+    const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
+    const token = localStorage.getItem('token');
 
     const openComments = () => {
         if (isCommentsOpen)
@@ -44,7 +48,6 @@ export default function Home() {
         const date = parseISO(dateString);
         return format(date, 'dd/MM/yyyy');
     }
-
 
     const fetchTodosEventos = async (): Promise<EventoDTO[]> => {
         setIsLoading(true);
@@ -64,6 +67,12 @@ export default function Home() {
 
     //Busca os eventos criados
     useEffect(() => {
+        const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
+        const token = localStorage.getItem('token');
+
+        if (!user || !token) {
+            navigate('/login');
+        }
         fetchTodosEventos().then(data => {
             setEventos(data);
             setIsLoading(false);
