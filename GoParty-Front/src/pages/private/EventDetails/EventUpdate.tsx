@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { Loading } from '../../../components/Loading/Loading';
 import { Error } from '../../../components/Error/Error';
@@ -8,7 +8,10 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 import CurrencyInput from 'react-currency-input-field';
 import { ModalMessage } from '../../../components/modal/ModalMessage';
 import ReactInputMask from 'react-input-mask';
+import { ToastContainer } from '../../../components/modal/ToastContainer';
+import { ToastType } from '../../../components/modal/ToastType';
 import { format, parseISO } from 'date-fns';
+import { setIsInitial } from '@material-tailwind/react/components/Tabs/TabsContext';
 
 const EventUpdate: React.FC = () => {
 
@@ -33,7 +36,10 @@ const EventUpdate: React.FC = () => {
     const [imagePreview, setImagePreview] = useState<string>('');
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [error, setError] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const [toastType, setToasType] = useState<ToastType>("error");
     const [message, setMessage] = useState("");
+    const navigate = useNavigate();
 
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
     const [mensagemModal, setMensagemModal] = useState<string>('');
@@ -41,6 +47,10 @@ const EventUpdate: React.FC = () => {
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
+
+    const closeToast = () => {
+        setIsVisible(false);
+      }
 
     const handleClose = () => setMostrarModal(false);
 
@@ -132,10 +142,7 @@ const EventUpdate: React.FC = () => {
 
             if (responseEvento.ok) {
                 console.log("Evento atualizado com sucesso:", eventData.id);
-
-                setMensagemModal("Evento atualizdo com sucesso!");
                 setImagemSrcModal("imagens/EventCreatedSucess.webp");
-                setMostrarModal(true);
                 setImagePreview('');
                 setIsLoading(false);
 
@@ -154,11 +161,15 @@ const EventUpdate: React.FC = () => {
                     if (responseImage.ok) {
                         console.log("Imagem do evento enviada com sucesso.");
 
-                        setMensagemModal("Evento atualizado com sucesso!");
+                        setMessage("Evento atualizado com sucesso!");
                         setImagemSrcModal("imagens/EventCreatedSucess.webp");
-                        setMostrarModal(true);
+                        setToasType('success');
+                        setIsVisible(true);
                         setImagePreview('');
                         setIsLoading(false);
+                        setTimeout(() => {
+                            navigate('/your-events');
+                          }, 2000);
                     } else {
                         console.error("Falha ao enviar imagem do evento.");
                         setImagePreview('');
@@ -215,6 +226,12 @@ const EventUpdate: React.FC = () => {
 
     return (
         <div>
+            <ToastContainer
+                message={message}
+                onClose={closeToast}
+                isVisible={isVisible}
+                type={toastType}
+            />
             <form onSubmit={handleSubmit}>
                 <div className="bg-white relative lg:py-20">
                     <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
@@ -311,12 +328,12 @@ const EventUpdate: React.FC = () => {
                                             />
                                         </div>
                                         <div className="relative">
-                                            <label htmlFor='dataPrevista' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                                            <label htmlFor='dataEvento' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Data do Evento</label>
                                             <input
                                                 placeholder="Data"
-                                                id='dataPrevista'
-                                                name='dataPrevista'
+                                                id='dataEvento'
+                                                name='dataEvento'
                                                 value={evento ? formatDate(evento.dataEvento) : ''}
                                                 onChange={handleChange}
                                                 type="date"

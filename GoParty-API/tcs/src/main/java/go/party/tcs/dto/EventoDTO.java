@@ -27,7 +27,6 @@ public class EventoDTO {
     private boolean esgotado;
     private String tituloFormatura;
 
-
     public EventoDTO() {}
 
     public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado, 
