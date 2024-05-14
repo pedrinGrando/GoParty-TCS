@@ -334,7 +334,7 @@ const EventUpdate: React.FC = () => {
                                                 placeholder="Data"
                                                 id='dataEvento'
                                                 name='dataEvento'
-                                                value={evento ? formatDate(evento.dataEvento) : ''}
+                                                value={evento?.dataEvento}
                                                 onChange={handleChange}
                                                 type="date"
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `} />
