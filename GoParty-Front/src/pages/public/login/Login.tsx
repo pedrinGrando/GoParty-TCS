@@ -27,6 +27,10 @@ export default function Login() {
 
   const handleClose = () => setModalEscolha(false);
 
+  function redirectHome(){
+    navigate('/home');
+  }
+
   const [formData, setFormData] = useState({
     username: '',
     senha: '',
@@ -84,11 +88,10 @@ export default function Login() {
         
         localStorage.setItem('token', token);
         localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
-        
+
         setIsLoading(false);
         console.log('Login efetuado com sucesso!');
-        console.log(token);
-        navigate('/home');
+        redirectHome();
       } else {
         setIsLoading(false);
         setMessage("Usuário ou senha inválidos!");

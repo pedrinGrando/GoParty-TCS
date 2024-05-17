@@ -67,12 +67,6 @@ export default function Home() {
 
     //Busca os eventos criados
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
-        const token = localStorage.getItem('token');
-
-        if (!user || !token) {
-            navigate('/login');
-        }
         fetchTodosEventos().then(data => {
             setEventos(data);
             setIsLoading(false);
