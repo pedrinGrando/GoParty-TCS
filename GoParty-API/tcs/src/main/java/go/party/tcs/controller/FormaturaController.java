@@ -156,25 +156,27 @@ public class FormaturaController {
     }
 
     @PutMapping("/adicionar-membro/{userId}")
-    public ResponseEntity<String> adicionarMembros(@PathVariable Long userId, @RequestBody Long formId) {
+    public ResponseEntity<?> adicionarMembros(@PathVariable Long userId, @RequestBody FormaturaDTO form) {
         Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-        Optional<Formatura> formOptional = formaturaRepository.findById(formId);
-        Usuario usuario = new Usuario();
         if (!userOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
-        usuario = userOptional.get();
+        Usuario usuario = userOptional.get();
+
+        Optional<Formatura> formOptional = formaturaRepository.findById(form.getId());
         if (!formOptional.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Graduation not found");
-        } else if (usuario.getTipoUsuario().equals(TipoUsuario.STUDENT)) {
-            Formatura formatura = formOptional.get();
-            usuario.setFormatura(formatura);
-            usuario.setTipoUsuario(TipoUsuario.MEMBER);
-            usuarioRepository.save(usuario);
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Membro adicionado com sucesso!");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario precisa ser estudante!");
         }
+        Formatura formatura = formOptional.get();
+
+        if (usuario.getTipoUsuario() != TipoUsuario.STUDENT) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário precisa ser estudante!");
+        }
+
+        usuario.setFormatura(formatura);
+        usuario.setTipoUsuario(TipoUsuario.MEMBER);
+        usuarioRepository.save(usuario);
+        return ResponseEntity.ok("Membro adicionado com sucesso!");
     }
 
     @PutMapping("/remover-membro/{userId}")
