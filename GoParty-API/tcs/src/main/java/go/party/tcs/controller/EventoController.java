@@ -11,14 +11,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import go.party.tcs.model.Ingresso;
 import go.party.tcs.repository.IngressoRepository;
 import go.party.tcs.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,10 +28,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import go.party.tcs.Enums.NotificationType;
 import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.model.Evento;
-import go.party.tcs.model.Formatura;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.EventoRepository;
 import go.party.tcs.repository.FormaturaRepository;
@@ -41,7 +39,6 @@ import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EventoService;
-import jakarta.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/v1/eventos")
@@ -204,8 +201,11 @@ public class EventoController {
             evento = eventoOptional.get();
             usuario = userOptional.get();
             curtidaService.curtirEvento(usuario, evento);
-            notificationService.criarNotificacaoCurtida(usuario.getUsername() + " curtiu seu evento.",
-                    evento.getUsuario().getId());
+            notificationService.createNotification(
+                usuario.getUsername() + " curtiu seu evento.",
+                evento.getUsuario().getId(),
+                NotificationType.CURTIDA
+            );
             return ResponseEntity.ok().body("Evento curtido com sucesso!");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento ou usuario nao encontrado!");
@@ -252,5 +252,4 @@ public class EventoController {
             return ResponseEntity.ok(new EventoDTO(evento));
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
-
 }

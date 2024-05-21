@@ -2,7 +2,7 @@ package go.party.tcs.model;
 
 import java.time.LocalDateTime;
 
-import go.party.tcs.Enums.TipoNotificacao;
+import go.party.tcs.Enums.NotificationType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -22,10 +22,23 @@ public class Notification {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private TipoNotificacao tipoNotificacao;
+    @Column(name = "notificatio_type")
+    private NotificationType notificationType;
+    @Column(name = "message")
     private String message;
-    private LocalDateTime date;
-    private Long userId; // O ID do usuário que receberá a notificação
-    private Boolean visualizado;
+    @Column(name = "notification_date")
+    private LocalDateTime notificationDate;
+    @Column(name = "user_id")
+    private Long userId;
+    @Column(name = "visualized")
+    private Boolean visualized;
+
+    public Notification(String message, LocalDateTime notificationDate, Long userId, boolean visualized, NotificationType notificationType) {
+        this.message = message;
+        this.notificationDate = notificationDate;
+        this.userId = userId;
+        this.visualized = visualized;
+        this.notificationType = notificationType;
+    }
 }
 
