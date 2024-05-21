@@ -16,7 +16,7 @@ public class NotificationService {
     private NotificationRepository notificationRepository;
 
     public void createNotification(String message, Long userId, NotificationType notificationType){
-        Notification notification = this.createNotioficationInstance(message, userId, notificationType);
+        Notification notification = this.createNotificationInstance(message, userId, notificationType);
         notificationRepository.save(notification);
     }
 
@@ -43,7 +43,7 @@ public class NotificationService {
         return days + " d";
     }
 
-    private Notification createNotioficationInstance(String message, Long userId, NotificationType notificationType) {
+    private Notification createNotificationInstance(String message, Long userId, NotificationType notificationType) {
         return new Notification(
             message,
             LocalDateTime.now(),
