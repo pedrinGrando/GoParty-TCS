@@ -23,7 +23,7 @@ export default function AddMember() {
     const token = localStorage.getItem('token');
 
     interface UsuarioDTO {
-        id: string;
+        id: number;
         nome: string;
         username: string;
         usuarioCaminho: string;
@@ -35,38 +35,42 @@ export default function AddMember() {
       }
 
 
-    const inviteUser = async (userId: string) => {
+      const inviteUser = async (userId: number) => {
+        console.log(formId);
         setIsLoading(true);
         try {
+            const formaturaDTO = { id: 1 };  
+    
             const response = await fetch(`http://localhost:8081/v1/formaturas/adicionar-membro/${userId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formId),
+                body: JSON.stringify(formaturaDTO),
             });
+    
             if (!response.ok) {
-                setToastType('error')
+                setToastType('error');
                 setInvited(false);
-                setIsVisible(true)
-                setMessage('Erro ao adicionar membro')
-                throw new Error('Network response was not ok');
+                setIsVisible(true);
+                setMessage('Erro ao adicionar membro');
+                throw new Error(`Network response was not ok: ${response.statusText}`);
             }
+    
             setInvited(true);
-            setToastType('success')
-            setIsVisible(true)
-            setMessage('Membro adicionado com sucesso!')
-            setIsLoading(false);
-
+            setToastType('success');
+            setIsVisible(true);
+            setMessage('Membro adicionado com sucesso!');
         } catch (error) {
             setInvited(false);
-            setIsLoading(false);
-            setToastType('error')
-            setIsVisible(true)
-            setMessage('Erro ao adicionar membro')
+            setToastType('error');
+            setIsVisible(true);
+            setMessage('Erro ao adicionar membro');
             console.error('Error fetching users:', error);
+        } finally {
+            setIsLoading(false);
         }
-    }
+    };  
 
     const buscarUsuarios = async (search: string): Promise<UsuarioDTO[]> => {
         setIsLoading(true);
