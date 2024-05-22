@@ -1,6 +1,7 @@
 
 import React, { useEffect, useState } from "react";
 import { LoadingFormsTrends } from "../Loading/LoadingFormsTrend";
+import { NotificationBell } from "../Notification/NotificationBell";
 
 export const FormsTrends: React.FC = () => {
 
@@ -50,6 +51,7 @@ export const FormsTrends: React.FC = () => {
         <div className="relative me-4">
           <a className="flex items-center justify-center w-10 h-10 text-xs font-medium text-white bg-indigo-300 border-2 border-white rounded-full hover:bg-gray-600" href="#">+99</a>
         </div> 
+        <NotificationBell/>
       </div>
       )}
       </div>
