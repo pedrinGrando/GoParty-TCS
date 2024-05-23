@@ -15,7 +15,7 @@ export default function Terms() {
       "    A proteção dos dados pessoais é um aspecto fundamental no mundo digital contemporâneo, especialmente considerando o crescimento das plataformas online e a sensibilidade das informações compartilhadas pelos usuários.\n\n" +
       "    Nesse contexto, o GoParty surge como uma solução para facilitar a organização e financiamento de comemorações de formatura, ao mesmo tempo em que prioriza a segurança e a privacidade dos dados de seus usuários.\n\n" +
       "    Desde a sua concepção, o GoParty tem como premissa o cumprimento das diretrizes estabelecidas pela LGPD, reconhecendo a importância de resguardar a privacidade e a confidencialidade das informações fornecidas pelos usuários. A política de privacidade do GoParty reflete esse compromisso, garantindo transparência no tratamento de dados e implementando medidas robustas de segurança para proteger as informações pessoais dos usuários.\n\n" +
-      "    Ao se cadastrar na plataforma, os usuários são informados sobre quais dados serão coletados e como serão utilizados. Para os representantes de turma, são solicitadas informações adicionais, como CPF, RG e atestado de matrícula vinculado à instituição de ensino, conforme o disposto no Artigo 7°, incisos I e II, da LGPD. Esses dados são essenciais para validar a identidade e a elegibilidade dos representantes, garantindo a legitimidade das iniciativas de arrecadação de fundos para as festas de formatura.\n\n" +
+      "    Ao se cadastrar na plataforma, os usuários são informados sobre quais dados serão coletados e como serão utilizados. Para os representantes de turma, são solicitadas informações adicionais como, chave pix (e-mail) para vincular a formatura e e-mail institucional no seu cadastro de estudante, conforme o disposto no Artigo 7°, incisos I e II, da LGPD. Esses dados são essenciais para validar a identidade e a elegibilidade dos representantes, garantindo a legitimidade das iniciativas de arrecadação de fundos para as festas de formatura.\n\n" +
       "    Para todos os usuários, são coletados os dados padrão, como nome, cpf, data de nascimento e e-mail. Essa diferenciação na coleta de dados é uma medida que visa garantir a segurança e a privacidade dos usuários, evitando o compartilhamento desnecessário de informações.\n\n" +
       "    Além disso, a política de privacidade do GoParty é clara ao estabelecer que a responsabilidade pelos eventos cadastrados na plataforma recai sobre os usuários que os criam. Qualquer consequência resultante desses eventos é atribuída aos usuários cadastrados, conforme as informações fornecidas por eles no momento do registro. Essa abordagem está em conformidade com o Artigo 42 da LGPD, que confere aos controladores e/ou operadores de dados a responsabilidade pela segurança e proteção das informações pessoais sob sua guarda. É importante destacar que, caso seja identificada a inserção de dados falsos, as sanções pertinentes serão aplicadas ao usuário responsável pela falsificação ou pela inserção de informações incongruentes.\n\n" +
       "    Para garantir a segurança e a integridade dos dados armazenados na plataforma, o GoParty implementa tecnologias avançadas e medidas de segurança, conforme exigido pelo Artigo 46° da LGPD. Além disso, os usuários têm o direito de acessar, corrigir ou excluir seus dados pessoais a qualquer momento, conforme previsto pelo Artigo 18° da LGPD.\n\n" +
@@ -75,12 +75,6 @@ export default function Terms() {
           <p className="mb-4">
             É crucial que as informações fornecidas sejam verdadeiras e precisas. Caso contrário, medidas apropriadas serão tomadas em conformidade com as leis vigentes.
             No GoParty, você pode se dedicar totalmente à organização de sua formatura, sabendo que suas informações estão protegidas e que nossa plataforma está comprometida em garantir uma experiência segura e confiável para todos os usuários.
-          </p>
-
-          <h2 className="text-2xl font-bold mb-2">Controlling Your Personal Information</h2>
-
-          <p className="mb-4">
-            You may choose to restrict the collection or use of your personal information in the following ways:
           </p>
           <p className="mb-4">
             Esta política de privacidade está sujeita a alterações sem aviso prévio.
