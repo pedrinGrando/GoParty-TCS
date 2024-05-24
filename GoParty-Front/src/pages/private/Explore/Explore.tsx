@@ -6,6 +6,7 @@ import { Loading } from "../../../components/Loading/Loading";
 import { Link } from "react-router-dom";
 import { CommentsSection } from "../../../components/Comments/CommentsSection";
 import { NoEvent } from "../../../components/Feed/NoEvent";
+import TrendEvents from "../../../components/Feed/TrendEvents";
 
 export default function Explore() {
 
@@ -55,35 +56,38 @@ export default function Explore() {
 
     return (
         <div>
+            <TrendEvents />
             <div className="px-4 mx-auto text-center mt-5">
                 {/*campo de pesquisa*/}
-                <div className="max-w-md mx-auto w-full">
+                <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow dark:bg-gray-900">
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Pesquisar</label>
                     <div className="relative">
-                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                             <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                             </svg>
                         </div>
                         <input
                             type="text"
-                            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-black" placeholder="Procure por eventos, formaturas..." required
+                            className="block w-full p-4 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-black"
+                            placeholder="Procure por eventos, formaturas..."
+                            required
                             onChange={e => setSearch(e.target.value)}
                             value={search}
                         />
-                        <button onClick={handleSearch} className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+                        <button onClick={handleSearch} className="text-white absolute right-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
                         {erro && <div>{erro}</div>}
                     </div>
+                    <hr className="fixed flex my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
                 </div>
-                <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
                 <ul>
                     {
                         !isLoading && eventos.length == 0 ?
-                       <NoEvent/> : ""
+                            <NoEvent /> : ""
                     }
-
+                    
                     {eventos.map(evento => (
-                        <div className="max-w-sm mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg">
+                       <div className="mt-12 max-w-md mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg">
                             <Link to={`/event/${evento.id}`} key={evento.id} className="block mt-16 mb-8">
                                 <img className="w-full" src={`http://localhost:8081${evento.eventoCaminho}`} alt="fotoEvento" />
                                 <div className="px-6 py-4 dark:bg-gray-500">

@@ -45,6 +45,7 @@ export default function Tickets() {
     return (
 
         <div>
+             <TrendEvents/>
             {isLoading ? (
                 <LoadingHome />
             ) : (

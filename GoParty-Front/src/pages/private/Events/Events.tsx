@@ -10,6 +10,7 @@ import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 import { CommentsSection } from '../../../components/Comments/CommentsSection';
 import { Loading } from '../../../components/Loading/Loading';
 import { format, parseISO } from 'date-fns';
+import TrendEvents from '../../../components/Feed/TrendEvents';
 
 interface EventoDTO {
     id: number;
@@ -112,6 +113,7 @@ export default function Events() {
 
     return (
         <div>
+            <TrendEvents/>
             {isLoading ? (
                 <LoadingHome />
             ) : (

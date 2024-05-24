@@ -135,7 +135,7 @@ export default function Login() {
                     relative z-10 dark:bg-gray-700">
                   <p className="w-full text-4xl font-medium text-center leading-snug font-serif dark:text-white">Entre em sua conta</p>
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
-                    <div className="relative">
+                    <div className="relative backdrop: blur-md">
                       <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Nome de usuário</label>
                       <input
