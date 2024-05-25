@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import go.party.tcs.Enums.TipoUsuario;
+import go.party.tcs.Enums.UserType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -19,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,19 +30,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
-@Table(name ="usuarios")
-public class Usuario implements UserDetails {
+@Table(name ="user")
+@Entity(name = "user")
+public class User implements UserDetails {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "ativo")
-    private boolean ativo = true; 
+    @Column(name = "enabled")
+    private boolean enabled = true; 
 
-    @Column(name = "nome")
-    private String nome;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "username", unique = true)
     private String username;
@@ -49,34 +50,41 @@ public class Usuario implements UserDetails {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Column(name = "dataNasci")
-    private LocalDate dataNasci;
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
 
     @Enumerated(EnumType.STRING)
-    private TipoUsuario tipoUsuario;
+    private UserType userType;
 
     @Column(name = "cpf", unique = true, nullable = false)
     private String cpf;
 
-    @Column(name = "fotoCaminho")
+    @Column(name = "photoPath")
     private String fotoCaminho;
 
-    @Column(name = "data_aceite")
-    private LocalDateTime dataAceite;
+    @Column(name = "accept_date")
+    private LocalDateTime acceptDate;
 
-    @Column(name = "senha")
-    private String senha;
+    @Column(name = "password")
+    private String password;
+
+    @OneToMany(mappedBy = "user")
+    private List<Notification> notifications;
 
     @ManyToOne
     @JoinColumn(name = "formatura_id")
     private Formatura formatura;
 
+    public User(Long id) {
+        this.id = id;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if(this.tipoUsuario == TipoUsuario.ADM) {
+        if(this.userType == UserType.ADM) {
             return List.of(new SimpleGrantedAuthority("ROLE_ADM"));
         }
-        if(this.tipoUsuario == TipoUsuario.MEMBER) {
+        if(this.userType == UserType.MEMBER) {
             return List.of(new SimpleGrantedAuthority("ROLE_MEMBER"));
         }
         else {
@@ -91,7 +99,7 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getPassword() {
-        return this.senha;
+        return this.password;
     }
 
     @Override
