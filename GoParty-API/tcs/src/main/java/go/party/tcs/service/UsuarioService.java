@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import go.party.tcs.Enums.TipoUsuario;
+import go.party.tcs.Enums.UserType;
 import go.party.tcs.dto.UsuarioDTO;
-import go.party.tcs.model.Usuario;
+import go.party.tcs.model.User;
 import go.party.tcs.repository.UsuarioRepository;
 import jakarta.persistence.EntityNotFoundException;
 
@@ -19,56 +19,56 @@ public class UsuarioService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public void cadastrarUsuario(Usuario usuario) {
+    public void cadastrarUsuario(User usuario) {
           //Regra de permissao
-         usuario.setTipoUsuario(TipoUsuario.BASIC);
+         usuario.setUserType(UserType.BASIC);
          usuarioRepository.save(usuario);
     }
 
-    public void cadastrarUsuarioEstudante(Usuario usuario) {  
+    public void cadastrarUsuarioEstudante(User usuario) {  
         //Regra de permissao
-        usuario.setTipoUsuario(TipoUsuario.STUDENT);
+        usuario.setUserType(UserType.STUDENT);
         usuarioRepository.save(usuario);
        }
 
-    public void atualizarUsuario(Usuario usuario){
+    public void atualizarUsuario(User usuario){
         usuarioRepository.save(usuario);
     }
 
-    public List<Usuario> findAll(){
+    public List<User> findAll(){
         return usuarioRepository.findAll();
     }
 
     public List<UsuarioDTO> getUsuariosAtivosEstudantes() {
-        return usuarioRepository.findByAtivoTrueAndTipoUsuario(TipoUsuario.STUDENT).stream()
+        return usuarioRepository.findByEnabledTrueAndUserType(UserType.STUDENT).stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    private UsuarioDTO convertToDTO(Usuario usuario) {
+    private UsuarioDTO convertToDTO(User usuario) {
         return new UsuarioDTO(
             usuario.getId(),
-            usuario.getNome(),
+            usuario.getName(),
             usuario.getUsername(),
             usuario.getFotoCaminho(),
-            usuario.getTipoUsuario()
+            usuario.getUserType()
         );
     }
     
-    public Usuario findByUsuario(String usuarioNome){
-        return usuarioRepository.findByNome(usuarioNome);
+    public User findByUsuario(String usuarioNome){
+        return usuarioRepository.findByName(usuarioNome);
     }
 
-    public Usuario encontrarId(Integer userId){
+    public User encontrarId(Integer userId){
         return usuarioRepository.getById(userId);
     }
 
     public boolean emailExiste(String email) {
-        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
+        Optional<User> usuario = usuarioRepository.findByEmail(email);
         return usuario.isPresent();
     }
 
-    public Usuario buscarPorEmail(String email) {
+    public User buscarPorEmail(String email) {
         return usuarioRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado para o email: " + email));
     }

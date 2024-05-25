@@ -3,17 +3,13 @@ package go.party.tcs.controller;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.*;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -22,10 +18,9 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import go.party.tcs.controller.IngressoController;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Ingresso;
-import go.party.tcs.model.Usuario;
+import go.party.tcs.model.User;
 import go.party.tcs.repository.IngressoRepository;
 import go.party.tcs.repository.UsuarioRepository;
 
@@ -48,7 +43,7 @@ public class IngressoControllerTest {
     @Test
     public void criarIngressoTest() throws Exception {
         Long userId = 1L;
-        Usuario usuario = new Usuario();
+        User usuario = new User();
         usuario.setId(userId);
         Evento evento = new Evento();
         evento.setId(2L);

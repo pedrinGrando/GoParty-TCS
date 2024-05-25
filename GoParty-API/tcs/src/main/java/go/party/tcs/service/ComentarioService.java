@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import go.party.tcs.model.Comentario;
-import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.ComentarioRepository;
 
 @Service

@@ -3,7 +3,7 @@ package go.party.tcs.dto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import go.party.tcs.Enums.TipoUsuario;
+import go.party.tcs.Enums.UserType;
 
 public class UsuarioResponseDTO {
     private Long id;
@@ -11,20 +11,20 @@ public class UsuarioResponseDTO {
     private String username;
     private String email;
     private LocalDate idade;
-    private TipoUsuario tipoUsuario;
+    private UserType userType;
     private String cpf;
     private String fotoCaminho;
     private LocalDateTime dataCadastro;
 
     public UsuarioResponseDTO(Long id, String nome, String username, String email, LocalDate idade,
-                              TipoUsuario tipoUsuario, String cpf, String fotoCaminho,
+                              UserType userType, String cpf, String fotoCaminho,
                               LocalDateTime dataCadastro) {
         this.id = id;
         this.nome = nome;
         this.username = username;
         this.email = email;
         this.idade = idade;
-        this.tipoUsuario = tipoUsuario;
+        this.userType = userType;
         this.cpf = cpf;
         this.fotoCaminho = fotoCaminho;
         this.dataCadastro = dataCadastro;
@@ -40,8 +40,8 @@ public class UsuarioResponseDTO {
     public void setEmail(String email) { this.email = email; }
     public LocalDate getIdade() { return idade; }
     public void setIdade(LocalDate idade) { this.idade = idade; }
-    public TipoUsuario getTipoUsuario() { return tipoUsuario; }
-    public void setTipoUsuario(TipoUsuario tipoUsuario) { this.tipoUsuario = tipoUsuario; }
+    public UserType getTipoUsuario() { return userType; }
+    public void setTipoUsuario(UserType tipoUsuario) { this.userType = tipoUsuario; }
     public String getCpf() { return cpf; }
     public void setCpf(String cpf) { this.cpf = cpf; }
     public String getFotoCaminho() { return fotoCaminho; }

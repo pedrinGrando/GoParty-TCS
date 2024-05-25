@@ -1,13 +1,9 @@
 package go.party.tcs.controller;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -18,19 +14,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.dto.UsuarioDTO;
-import go.party.tcs.model.Usuario;
-import go.party.tcs.service.CurtidaService;
-import go.party.tcs.service.EmailService;
-import go.party.tcs.service.EventoService;
-import go.party.tcs.service.NotificationService;
+import go.party.tcs.model.User;
 import go.party.tcs.service.UsuarioService;
-import jakarta.servlet.http.HttpSession;
-
 
 @RestController
 @RequestMapping("/v1/usuarios")
@@ -38,39 +27,10 @@ import jakarta.servlet.http.HttpSession;
 public class UsuarioController {
 
     @Autowired
-    public UsuarioController(UsuarioService usuarioService) {
-        this.usuarioService = usuarioService;
-    }
-
-    @Autowired
-    private NotificationRepository notificationRepository;
-
-    @Autowired
-    private ComentarioRepository comentarioRepository;
-
-    @Autowired
     private UsuarioService usuarioService;
 
     @Autowired
-    private CurtidaService curtidaService;
-
-    @Autowired
-    private CurtidaRepository curtidaRepository;
-
-    @Autowired
     private UsuarioRepository usuarioRepository;
-
-    @Autowired
-    private EventoRepository eventoRepository;
-
-    @Autowired
-    private EventoService eventoService;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private NotificationService notificationService;
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
@@ -78,20 +38,20 @@ public class UsuarioController {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    Usuario usuarioCadastro = new Usuario();
+    User usuarioCadastro = new User();
 
-    Usuario usuarioPerfilVisitado = new Usuario();
+    User usuarioPerfilVisitado = new User();
 
     @PostMapping("/{userId}/upload-profile-image")
     public ResponseEntity<String> uploadProfileImage(@PathVariable Long userId,
             @RequestParam("file") MultipartFile file) {
 
         try {
-            Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+            Optional<User> userOptional = usuarioRepository.findById(userId);
             if (!userOptional.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
-            Usuario usuario = userOptional.get();
+            User usuario = userOptional.get();
             String filename = userId + "_" + file.getOriginalFilename();
             Path filePath = Paths.get(uploadDir, filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -106,8 +66,8 @@ public class UsuarioController {
     }
 
     @GetMapping("/find/{usuarioId}")
-    public ResponseEntity<Usuario> buscarUsuarioPorId(@PathVariable Integer usuarioId) {
-        Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioId);
+    public ResponseEntity<User> buscarUsuarioPorId(@PathVariable Integer usuarioId) {
+        Optional<User> usuarioOptional = usuarioRepository.findById(usuarioId);
         if (usuarioOptional.isPresent()) {
             return ResponseEntity.ok(usuarioOptional.get());
         } else {
@@ -149,14 +109,14 @@ public class UsuarioController {
     }
     
     @GetMapping("/search")
-    public List<Usuario> searchUsers(@RequestParam String query) {
-        return usuarioRepository.findByNomeContaining(query);
+    public List<User> searchUsers(@RequestParam String query) {
+        return usuarioRepository.findByNameContaining(query);
     }
 
     @PutMapping("/update-username/{userId}/{newUsername}")
     public ResponseEntity<String> atualizarNomeUsuario(@PathVariable Long userId, @PathVariable String newUsername) {
-        Optional<Usuario> optionalUser = usuarioRepository.findById(userId);
-        Usuario usuario = new Usuario();
+        Optional<User> optionalUser = usuarioRepository.findById(userId);
+        User usuario = new User();
         if (optionalUser.isPresent() && !usuarioService.checkUsernameExists(newUsername)) {
             usuario = optionalUser.get();
             usuario.setUsername(newUsername);
@@ -170,15 +130,15 @@ public class UsuarioController {
     public ResponseEntity<?> atualizarSenha(@PathVariable Long userId, @RequestBody Map<String, String> passwords) {
         String senhaAtual = passwords.get("senhaAtual");
         String novaSenha = passwords.get("novaSenha");
-        Optional<Usuario> optionalUsuario = usuarioRepository.findById(userId);
+        Optional<User> optionalUsuario = usuarioRepository.findById(userId);
         if (!optionalUsuario.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado!");
         }
-        Usuario usuario = optionalUsuario.get();
-        if (!passwordEncoder.matches(senhaAtual, usuario.getSenha())) {
+        User usuario = optionalUsuario.get();
+        if (!passwordEncoder.matches(senhaAtual, usuario.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Senha atual não coincide!");
         }
-        usuario.setSenha(passwordEncoder.encode(novaSenha));
+        usuario.setPassword(passwordEncoder.encode(novaSenha));
         usuarioRepository.save(usuario);
         return ResponseEntity.ok("Senha alterada com sucesso!");
     }
@@ -186,7 +146,7 @@ public class UsuarioController {
     @PutMapping("/inativar/{userId}")
     public ResponseEntity<?> inativarUsuario(@PathVariable Long userId) {
         return usuarioRepository.findById(userId).map(usuario -> {
-            usuario.setAtivo(false);
+            usuario.setEnabled(false);
             usuarioRepository.save(usuario);
             return ResponseEntity.ok().body("Conta inativada com sucesso!");
         }).orElseGet(() -> ResponseEntity.notFound().build());

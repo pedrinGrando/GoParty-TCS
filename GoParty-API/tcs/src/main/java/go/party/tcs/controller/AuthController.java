@@ -22,10 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import go.party.tcs.dto.FormaturaDTO;
 import go.party.tcs.dto.UsuarioResponseDTO;
-import go.party.tcs.model.Formatura;
-import go.party.tcs.model.Usuario;
+import go.party.tcs.model.User;
 import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.EmailService;
 import go.party.tcs.service.JWTService;
@@ -55,29 +53,29 @@ public class AuthController {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    private Usuario usuarioValidarCadastro;
+    private User usuarioValidarCadastro;
 
     private String codigoGeradoEmail;
 
     private String emailUsuario;
 
     @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody Usuario usuario) {
+public ResponseEntity<?> login(@RequestBody User usuario) {
     try {
         UsernamePasswordAuthenticationToken userPassword = new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword());
         var authenticate = manager.authenticate(userPassword);
 
-        Usuario authenticatedUser = (Usuario) authenticate.getPrincipal();
+        User authenticatedUser = (User) authenticate.getPrincipal();
 
-        if (!authenticatedUser.isAtivo()) {
+        if (!authenticatedUser.isEnabled()) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Conta inativa. Por favor, entre em contato com o suporte.");
         }
 
         UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO(
-            authenticatedUser.getId(), authenticatedUser.getNome(), authenticatedUser.getUsername(),
-            authenticatedUser.getEmail(), authenticatedUser.getDataNasci(), authenticatedUser.getTipoUsuario(),
+            authenticatedUser.getId(), authenticatedUser.getName(), authenticatedUser.getUsername(),
+            authenticatedUser.getEmail(), authenticatedUser.getBirthDate(), authenticatedUser.getUserType(),
             authenticatedUser.getCpf(), authenticatedUser.getFotoCaminho(),
-            authenticatedUser.getDataAceite()
+            authenticatedUser.getAcceptDate()
         );
         
         String jwt = jwtService.generateToken(authenticatedUser);
@@ -91,12 +89,12 @@ public ResponseEntity<?> login(@RequestBody Usuario usuario) {
 }
 
     @PostMapping("/cadastro")
-    public ResponseEntity<String> cadastrarUsuario(@RequestBody Usuario usuario) throws MessagingException{
+    public ResponseEntity<String> cadastrarUsuario(@RequestBody User usuario) throws MessagingException{
         try {
-            String password = new BCryptPasswordEncoder().encode(usuario.getSenha());
-            usuario.setSenha(password);
+            String password = new BCryptPasswordEncoder().encode(usuario.getPassword());
+            usuario.setPassword(password);
             //Momento de cadastro do user
-            usuario.setDataAceite(LocalDateTime.now());
+            usuario.setAcceptDate(LocalDateTime.now());
             usuarioValidarCadastro = usuario;
 
             //Validar o cadastro
@@ -130,17 +128,17 @@ public ResponseEntity<?> login(@RequestBody Usuario usuario) {
     }
 
     @PostMapping("/cadastro-usuario-estudante")
-    public ResponseEntity<String> cadastrarUsuarioEstudante(@RequestBody Usuario usuario) throws MessagingException {
+    public ResponseEntity<String> cadastrarUsuarioEstudante(@RequestBody User usuario) throws MessagingException {
         try {
             // Verifica se o e-mail é educacional
             if (!isEmailEducacional(usuario.getEmail())) {
                 return ResponseEntity.badRequest().body("O e-mail fornecido não é de uma instituição educacional.");
             }
     
-            String password = new BCryptPasswordEncoder().encode(usuario.getSenha());
-            usuario.setSenha(password);
+            String password = new BCryptPasswordEncoder().encode(usuario.getPassword());
+            usuario.setPassword(password);
             //Momento de cadastro do usuário
-            usuario.setDataAceite(LocalDateTime.now());
+            usuario.setAcceptDate(LocalDateTime.now());
             usuarioValidarCadastro = usuario;
 
             //Validar o cadastro
@@ -198,12 +196,12 @@ public ResponseEntity<?> login(@RequestBody Usuario usuario) {
     @PostMapping("/change-password")
     public ResponseEntity<String> trocaDeSenha(@RequestParam String senha) throws MessagingException {
 
-        Optional<Usuario> usuarioOptional = usuarioRepository.findByEmail(emailUsuario);
+        Optional<User> usuarioOptional = usuarioRepository.findByEmail(emailUsuario);
 
         if (usuarioOptional.isPresent()){
-            Usuario usuario = usuarioOptional.get();
+            User usuario = usuarioOptional.get();
             String novaSenhaEncode = passwordEncoder.encode(senha);
-            usuario.setSenha(novaSenhaEncode);
+            usuario.setPassword(novaSenhaEncode);
             usuarioRepository.save(usuario);
             return ResponseEntity.ok("Senha alterada com sucesso!");
         } else {

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import go.party.tcs.model.Curtida;
 import go.party.tcs.model.Evento;
-import go.party.tcs.model.Usuario;
+import go.party.tcs.model.User;
 import go.party.tcs.repository.CurtidaRepository;
 import go.party.tcs.repository.EventoRepository;
 
@@ -24,10 +24,10 @@ public class CurtidaService {
     private EventoService eventoService;
 
 
-    public void curtirEvento(Usuario usuario, Evento evento) throws RuntimeException {
+    public void curtirEvento(User usuario, Evento evento) throws RuntimeException {
         if (evento != null) {
               Curtida curtida = new Curtida();
-              curtida.setUsuario(usuario);
+              curtida.setUser(usuario);
               curtida.setEvento(evento);
               curtidaRepository.save(curtida);
        }else{
@@ -35,7 +35,7 @@ public class CurtidaService {
         }
     }
 
-    public void descurtirEvento(Usuario usuario, Evento evento) {
+    public void descurtirEvento(User usuario, Evento evento) {
         Curtida curtida = curtidaRepository.findByUsuarioAndEvento(usuario, evento);
         if (curtida != null) {
             curtidaRepository.delete(curtida);

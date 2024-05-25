@@ -5,13 +5,15 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.model.Evento;
 
+@Repository
 public interface EventoRepository extends JpaRepository<Evento, Long> {
 
-    List<Evento> findByUsuarioId(Long userId);
+    List<Evento> findByUserId(Long userId);
 
     List<Evento> findByAtivoTrueAndEsgotadoFalse();
 

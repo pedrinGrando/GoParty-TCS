@@ -2,7 +2,6 @@ package go.party.tcs.controller;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,7 @@ import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.dto.IngressoDTO;
 import go.party.tcs.model.Evento;
 import go.party.tcs.model.Ingresso;
-import go.party.tcs.model.Usuario;
+import go.party.tcs.model.User;
 import go.party.tcs.repository.EventoRepository;
 import go.party.tcs.repository.IngressoRepository;
 import go.party.tcs.repository.UsuarioRepository;
@@ -46,7 +45,7 @@ public class IngressoController {
 
     @PostMapping("/comprar-ingresso")
     public ResponseEntity<?> criarIngresso(@RequestParam Long userId, @RequestBody EventoDTO eventoDTO) {
-        Usuario usuario = usuarioRepository.findById(userId)
+        User usuario = usuarioRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Usuário não encontrado"));
 
         Evento evento = eventoRepository.findById(eventoDTO.getId())
@@ -77,7 +76,7 @@ public class IngressoController {
         ingressoDTO.setId(savedIngresso.getId());
         ingressoDTO.setCodigoEvento(savedIngresso.getCodigoEvento());
         ingressoDTO.setStatus(savedIngresso.getStatus().toString());
-        ingressoDTO.setNomeUsuario(savedIngresso.getAutor().getNome());
+        ingressoDTO.setNomeUsuario(savedIngresso.getAutor().getName());
         ingressoDTO.setNomeEvento(evento.getTitulo());
         ingressoDTO.setDataCompra(savedIngresso.getDataCompra());
 
@@ -96,7 +95,7 @@ public class IngressoController {
                             ingresso.getId(),
                             ingresso.getCodigoEvento(),
                             ingresso.getStatus().toString(),
-                            ingresso.getAutor().getNome(),
+                            ingresso.getAutor().getName(),
                             ingresso.getEvento().getTitulo(),
                             ingresso.getDataCompra()))
                     .collect(Collectors.toList());

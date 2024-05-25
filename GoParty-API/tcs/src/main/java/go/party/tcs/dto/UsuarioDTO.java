@@ -1,6 +1,6 @@
 package go.party.tcs.dto;
 
-import go.party.tcs.Enums.TipoUsuario;
+import go.party.tcs.Enums.UserType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -17,5 +17,5 @@ public class UsuarioDTO {
     private String nome;
     private String username;
     private String usuarioCaminho;
-    private TipoUsuario tipoUsuario;
+    private UserType userType;
 }

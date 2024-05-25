@@ -30,8 +30,8 @@ public class Ingresso {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario autor;
+    @JoinColumn(name = "user_id")
+    private User autor;
 
     @ManyToOne
     @JoinColumn(name = "evento_id")

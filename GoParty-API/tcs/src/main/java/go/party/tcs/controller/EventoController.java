@@ -29,17 +29,13 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.Enums.NotificationType;
-import go.party.tcs.Enums.TipoUsuario;
+import go.party.tcs.Enums.UserType;
 import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.model.Evento;
-import go.party.tcs.model.Usuario;
+import go.party.tcs.model.User;
 import go.party.tcs.repository.EventoRepository;
-import go.party.tcs.repository.FormaturaRepository;
 import go.party.tcs.repository.UsuarioRepository;
-import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
-import go.party.tcs.service.EventoService;
-
 @RestController
 @RequestMapping("/v1/eventos")
 @CrossOrigin(origins = "http://localhost:5173/")
@@ -49,16 +45,7 @@ public class EventoController {
     private UsuarioRepository usuarioRepository;
 
     @Autowired
-    private EventoService eventoService;
-
-    @Autowired
-    private ComentarioService comentarioService;
-
-    @Autowired
     private EventoRepository eventoRepository;
-
-    @Autowired
-    private FormaturaRepository formaturaRepository;
 
     @Autowired
     private CurtidaService curtidaService;
@@ -78,17 +65,17 @@ public class EventoController {
         try {
 
             // encontrar usuario que fez a postagem
-            Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+            Optional<User> userOptional = usuarioRepository.findById(userId);
             if (!userOptional.isPresent()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
             }
-            Usuario usuarioAutor = userOptional.get();
-            if (!usuarioAutor.getTipoUsuario().equals(TipoUsuario.MEMBER)
-                    && !usuarioAutor.getTipoUsuario().equals(TipoUsuario.ADM)) {
+            User usuarioAutor = userOptional.get();
+            if (!usuarioAutor.getUserType().equals(UserType.MEMBER)
+                    && !usuarioAutor.getUserType().equals(UserType.ADM)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não é membro!");
             } else {
                 evento.setFormatura(usuarioAutor.getFormatura());
-                evento.setUsuario(usuarioAutor);
+                evento.setUser(usuarioAutor);
                 // Momento da Postagem
                 evento.setDataPostagem(LocalDateTime.now());
                 Evento eventoSalvo = eventoRepository.save(evento);
@@ -148,12 +135,12 @@ public class EventoController {
 
     @GetMapping("/buscar-por-usuario/{userId}")
     public ResponseEntity<?> buscarEventoPorUserId(@PathVariable Long userId) {
-        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Optional<User> userOptional = usuarioRepository.findById(userId);
         if (!userOptional.isPresent()) {
             return ResponseEntity.badRequest().body("Usuário não encontrado!");
         }
 
-        List<Evento> eventos = eventoRepository.findByUsuarioId(userId);
+        List<Evento> eventos = eventoRepository.findByUserId(userId);
         if (eventos.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -194,16 +181,16 @@ public class EventoController {
     @PostMapping("/curtir-evento/{userId}/{eventoId}")
     public ResponseEntity<?> curtirEvento(@PathVariable Long userId, @PathVariable Long eventoId) {
         Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
-        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Optional<User> userOptional = usuarioRepository.findById(userId);
         Evento evento = new Evento();
-        Usuario usuario = new Usuario();
+        User usuario = new User();
         if (eventoOptional.isPresent() && userOptional.isPresent()) {
             evento = eventoOptional.get();
             usuario = userOptional.get();
             curtidaService.curtirEvento(usuario, evento);
             notificationService.createNotification(
                 usuario.getUsername() + " curtiu seu evento.",
-                evento.getUsuario().getId(),
+                evento.getUser().getId(),
                 NotificationType.CURTIDA
             );
             return ResponseEntity.ok().body("Evento curtido com sucesso!");
@@ -214,13 +201,13 @@ public class EventoController {
 
     @PutMapping("/inativar-evento/{userId}/{eventoId}")
     public ResponseEntity<?> inativarEvento(@PathVariable Long userId, @PathVariable Long eventoId) {
-        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        Optional<User> userOptional = usuarioRepository.findById(userId);
         if (!userOptional.isPresent()) {
             return ResponseEntity.badRequest().body("Usuário não encontrado!");
         }
         return eventoRepository.findById(eventoId)
                 .map(evento -> {
-                    if (!evento.getUsuario().getId().equals(userId)) {
+                    if (!evento.getUser().getId().equals(userId)) {
                         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuário não criou este evento!");
                     }
                     if (!ingressoRepository.findByEventoId(evento.getId()).isEmpty()) {

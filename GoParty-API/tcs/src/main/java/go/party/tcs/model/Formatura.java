@@ -2,9 +2,7 @@ package go.party.tcs.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -13,9 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -75,7 +70,7 @@ public class Formatura {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    private Usuario adm;
+    private User adm;
 
     @Column(name = "formatura_caminho")
     private String formaturaCaminho;
@@ -84,7 +79,7 @@ public class Formatura {
     private String matriculaCaminho;
 
     @OneToMany(mappedBy = "formatura", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Usuario> usuarios;
+    private List<User> usuarios;
 
     @OneToMany(mappedBy = "formatura", cascade = CascadeType.ALL)
     private List<Evento> eventos;

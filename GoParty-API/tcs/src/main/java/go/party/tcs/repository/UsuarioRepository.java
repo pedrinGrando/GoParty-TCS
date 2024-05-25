@@ -4,27 +4,26 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
-import go.party.tcs.Enums.TipoUsuario;
-import go.party.tcs.model.Usuario;
+import go.party.tcs.Enums.UserType;
+import go.party.tcs.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
-public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
+public interface UsuarioRepository extends JpaRepository<User, Integer> {
 
-    List<Usuario> findByAtivoTrue();
+    List<User> findByEnabledTrue();
 
-    List<Usuario> findByAtivoTrueAndTipoUsuario(TipoUsuario tipoUsuario);
+    List<User> findByEnabledTrueAndUserType(UserType userType);
 
-    Usuario findByNome(String nome);
+    User findByName(String nome);
 
     boolean existsByEmail(String email);
 
-    Optional<Usuario> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-    Optional<Usuario> findById(Long id);
+    Optional<User> findById(Long id);
 
-    List<Usuario> findByNomeContaining(String query);
+    List<User> findByNameContaining(String query);
 
     UserDetails findByUsername(String username);
 

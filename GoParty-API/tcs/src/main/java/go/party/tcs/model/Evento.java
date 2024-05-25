@@ -5,8 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.cglib.core.Local;
-
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.CascadeType;
@@ -83,9 +81,9 @@ public class Evento {
     private LocalDate dataExpiracao;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "user_id")
     @JsonBackReference
-    private Usuario usuario;
+    private User user;
 
     @ManyToOne
     @JoinColumn(name = "formatura_id")

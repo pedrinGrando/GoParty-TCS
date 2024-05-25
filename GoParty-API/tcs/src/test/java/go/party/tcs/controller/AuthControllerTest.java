@@ -25,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import go.party.tcs.model.Usuario;
+import go.party.tcs.model.User;
 import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.EmailService;
 import go.party.tcs.service.UsuarioService;
@@ -50,12 +50,12 @@ public class AuthControllerTest {
     @Test
     public void testCadastrarUsuario() throws Exception {
         // cria um objeto de usuário para o teste
-        Usuario usuario = new Usuario();
-        usuario.setNome("Nome do Usuário");
+        User usuario = new User();
+        usuario.setName("Nome do Usuário");
         usuario.setEmail("email@example.com");
-        usuario.setSenha("senha");
+        usuario.setPassword("senha");
 
-      doNothing().when(usuarioService).cadastrarUsuario(any(Usuario.class));
+      doNothing().when(usuarioService).cadastrarUsuario(any(User.class));
 
         mockMvc.perform(post("/cadastro")
             .contentType(MediaType.APPLICATION_JSON)

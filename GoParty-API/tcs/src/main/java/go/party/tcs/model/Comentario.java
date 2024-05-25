@@ -31,7 +31,7 @@ public class Comentario {
 
     @ManyToOne
     @JoinColumn(name = "autor_id")
-    private Usuario autor;
+    private User autor;
 
     @ManyToOne
     @JoinColumn(name = "evento_id")
