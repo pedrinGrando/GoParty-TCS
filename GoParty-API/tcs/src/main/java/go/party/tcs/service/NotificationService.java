@@ -2,22 +2,30 @@ package go.party.tcs.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import go.party.tcs.Enums.NotificationType;
 import go.party.tcs.model.Notification;
+import go.party.tcs.model.User;
 import go.party.tcs.repository.NotificationRepository;
 
 @Service
 public class NotificationService {
+
     @Autowired
     private NotificationRepository notificationRepository;
 
     public void createNotification(String message, Long userId, NotificationType notificationType){
-        Notification notification = this.createNotificationInstance(message, userId, notificationType);
+        User user = new User(userId);
+        Notification notification = this.createNotificationInstance(message, user, notificationType);
         notificationRepository.save(notification);
+    }
+
+    public void changeVisualization(Long userId) {
+        notificationRepository.updateVisualizedByUserId(userId);
     }
 
     public String calculateNotificationTimeExistence(LocalDateTime notificationDate) {
@@ -43,7 +51,7 @@ public class NotificationService {
         return days + " d";
     }
 
-    private Notification createNotificationInstance(String message, Long userId, NotificationType notificationType) {
+    private Notification createNotificationInstance(String message, User userId, NotificationType notificationType) {
         return new Notification(
             message,
             LocalDateTime.now(),
@@ -51,5 +59,9 @@ public class NotificationService {
             false,
             notificationType
         );
+    }
+
+    public List<Notification> getNotificationByUserId(Long userId) {
+        return notificationRepository.findByUserId(userId);
     }
 }

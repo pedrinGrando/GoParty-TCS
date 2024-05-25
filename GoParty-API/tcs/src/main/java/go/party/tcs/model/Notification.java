@@ -8,6 +8,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,26 +20,34 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
+@Entity(name = "notification")
+@Table(name = "notification")
 public class Notification {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "notificatio_type")
     private NotificationType notificationType;
+
     @Column(name = "message")
     private String message;
+
     @Column(name = "notification_date")
     private LocalDateTime notificationDate;
-    @Column(name = "user_id")
-    private Long userId;
+    
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+    
     @Column(name = "visualized")
     private Boolean visualized;
 
-    public Notification(String message, LocalDateTime notificationDate, Long userId, boolean visualized, NotificationType notificationType) {
+    public Notification(String message, LocalDateTime notificationDate, User user, boolean visualized, NotificationType notificationType) {
         this.message = message;
         this.notificationDate = notificationDate;
-        this.userId = userId;
+        this.user = user;
         this.visualized = visualized;
         this.notificationType = notificationType;
     }
