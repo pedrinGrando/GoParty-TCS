@@ -67,7 +67,7 @@ public class IngressoController {
         Ingresso ingresso = new Ingresso();
         ingresso.setAutor(usuario);
         ingresso.setEvento(evento);
-        ingresso.setStatus(TipoStatus.PENDENTE);
+        ingresso.setStatus(TipoStatus.PAGO);
         ingresso.setDataCompra(LocalDateTime.now());
         ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
 

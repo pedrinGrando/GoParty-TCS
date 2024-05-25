@@ -118,9 +118,7 @@ export default function Events() {
                 <LoadingHome />
             ) : (
                 <div>
-                    <h1 className='flex justify-center mt-4 text-4xl font-semibold dark:bg-gray-900 items-center'>{isLoadingDelete && <Loading />} Eventos criados </h1>
-                    <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
-
+                     <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seus eventos</h1>
                     {eventos.length === 0 ? (
                         <div className="fPlex justify-center dark:bg-gray-900 items-center h-screen">
                             <NoEvent />

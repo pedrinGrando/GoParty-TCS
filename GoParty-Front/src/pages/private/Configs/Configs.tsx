@@ -89,14 +89,13 @@ export default function Configs() {
     return (
         <div>
             <TrendEvents />
+            <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Configurações de conta</h1>
             <div className="flex items-center justify-center min-h-screen dark:bg-gray-900">
                 <div className="w-full max-w-4xl mx-4 sm:mx-8 xl:mx-auto">
-                    <h1 className="border-b py-6 text-4xl font-semibold">Configurações</h1>
                     <div className="grid grid-cols-8 pt-3 sm:grid-cols-10">
                     </div>
                     <div className="col-span-8 overflow-hidden rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow dark:bg-gray-900">
                         <div className="pt-4">
-                            <h1 className="py-2 text-2xl font-semibold">Configuracoes</h1>
                             <p className="font- text-slate-600">Realize alteracoes importantes em sua conta.</p>
                         </div>
                         <div className="pt-4">

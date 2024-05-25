@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation } from 'react-router-dom';
 import { ModalLogout } from "../modal/ModalLogout";
 
@@ -11,11 +11,31 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
   const [mostrarModal, setMostrarModal] = useState<boolean>(false);
+  const [contadorNoti, setContadorNoti] = useState<number>(3);
 
   const handleClose = () => setMostrarModal(false);
 
   const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
   const token = localStorage.getItem('token');
+
+  const fetchNoti = async (): Promise<number> => {
+    try {
+      const response = await fetch(`http://localhost:8081/v1/notifications/count-notifications/${user.id}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const countNoti: number = await response.json();
+      return countNoti;
+    } catch (error) {
+      console.error('Error fetching yout notifications events:', error);
+      return 0;
+    }
+  }
+  useEffect(() => {
+    fetchNoti().then(data => {
+      setContadorNoti(data);
+    });
+  }, []);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -24,7 +44,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
   const handleLogout = () => {
     setMostrarModal(true);
   }
-
 
   return (
     <div>
@@ -77,7 +96,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                       </svg>
                     </span>
                     <span className="ml-2 text-sm tracking-wide truncate">Notificações</span>
-                    <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-500 bg-red-50 rounded-full">1.2k</span>
+                    {contadorNoti > 0 ?
+                      <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-red-500 bg-red-50 rounded-full">{contadorNoti}</span>
+                      : ''
+                    }
                   </div>
                 </Link>
               </li>
