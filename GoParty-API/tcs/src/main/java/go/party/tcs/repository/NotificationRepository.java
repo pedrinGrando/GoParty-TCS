@@ -10,21 +10,21 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import go.party.tcs.model.Notification;
+import go.party.tcs.model.User;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
     
-    List<Notification> findByUserId(Long userId);
+    List<Notification> findByUser(User userId);
 
-    int countByUserIdAndVisualizadoFalse(Integer userId);
+    int countByUserAndVisualizedFalse(User userId);
 
-    @Query("SELECT n FROM Notification n WHERE n.userId = :userId ORDER BY n.date DESC")
-    List<Notification> findNotificationsByUserIdOrderByDateDesc(@Param("userId") Integer userId);
+    List<Notification> findByUserOrderByNotificationDateDesc(User user);
 
     Notification findById(Integer id);
 
     @Transactional
     @Modifying
-    @Query("UPDATE notification n SET n.visualized = TRUE WHERE n.userId = :userId AND visualized = FALSE")
-    int updateVisualizedByUserId(Long userId);
+    @Query("UPDATE notification n SET n.visualized = true WHERE n.user.id = :userId AND n.visualized = false")
+    void markNotificationsAsVisualized(@Param("userId") Long userId);
 }

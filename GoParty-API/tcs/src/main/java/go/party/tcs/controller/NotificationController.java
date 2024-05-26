@@ -9,10 +9,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import go.party.tcs.model.Notification;
+import go.party.tcs.model.User;
 import go.party.tcs.service.NotificationService;
 
 @RestController
@@ -22,10 +24,10 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
     
-    @PostMapping("/change_visualization/{userId}")
-    public ResponseEntity<?> changeVisualization(@PathVariable Long userId) {
+    @PostMapping("/change_visualization")
+    public ResponseEntity<?> changeVisualization(@RequestBody User user) {
         Map<String, String> json = new HashMap<>();
-        notificationService.changeVisualization(userId);
+        notificationService.markNotificationsAsVisualized(user);
         json.put("message", "Notificações visualizadas");
         return ResponseEntity.ok().body(json);
     }
@@ -33,7 +35,7 @@ public class NotificationController {
     @GetMapping("/notifications/{userId}")
     public ResponseEntity<?> getNotificationByUserId(@PathVariable Long userId) {
         Map<String, Object> json = new HashMap<>();
-        List<Notification> notifications = notificationService.getNotificationByUserId(userId);
+        List<Notification> notifications = notificationService.getNotificationByUser(userId);
         json.put("notifications", notifications);
         return ResponseEntity.ok().body(json);
     }

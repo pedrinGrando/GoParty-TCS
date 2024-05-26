@@ -50,7 +50,7 @@ public class UsuarioService {
             usuario.getId(),
             usuario.getName(),
             usuario.getUsername(),
-            usuario.getFotoCaminho(),
+            usuario.getPhotoPath(),
             usuario.getUserType()
         );
     }
@@ -59,8 +59,8 @@ public class UsuarioService {
         return usuarioRepository.findByName(usuarioNome);
     }
 
-    public User encontrarId(Integer userId){
-        return usuarioRepository.getById(userId);
+    public User encontrarId(Long userId){
+        return usuarioRepository.findById(userId).get();
     }
 
     public boolean emailExiste(String email) {

@@ -3,7 +3,9 @@ package go.party.tcs.service;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
+import go.party.tcs.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,14 +20,17 @@ public class NotificationService {
     @Autowired
     private NotificationRepository notificationRepository;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     public void createNotification(String message, Long userId, NotificationType notificationType){
-        User user = new User(userId);
+        User user = this.isPresent(usuarioRepository.findById(userId));
         Notification notification = this.createNotificationInstance(message, user, notificationType);
         notificationRepository.save(notification);
     }
 
-    public void changeVisualization(Long userId) {
-        notificationRepository.updateVisualizedByUserId(userId);
+    public void markNotificationsAsVisualized(User user) {
+        notificationRepository.markNotificationsAsVisualized(user.getId());
     }
 
     public String calculateNotificationTimeExistence(LocalDateTime notificationDate) {
@@ -61,7 +66,15 @@ public class NotificationService {
         );
     }
 
-    public List<Notification> getNotificationByUserId(Long userId) {
-        return notificationRepository.findByUserId(userId);
+    public List<Notification> getNotificationByUser(Long userId) {
+        User user = usuarioRepository.findById(userId).get();
+        return notificationRepository.findByUser(user);
+    }
+
+    private <T> T isPresent(Optional<T> object) {
+        if (object.isPresent()) {
+            return object.get();
+        }
+        return null;
     }
 }
