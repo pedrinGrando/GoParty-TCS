@@ -8,8 +8,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import go.party.tcs.Enums.UserType;
 import go.party.tcs.model.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Repository;
 
-public interface UsuarioRepository extends JpaRepository<User, Integer> {
+@Repository
+public interface UsuarioRepository extends JpaRepository<User, Long> {
 
     List<User> findByEnabledTrue();
 
@@ -21,14 +23,10 @@ public interface UsuarioRepository extends JpaRepository<User, Integer> {
 
     Optional<User> findByEmail(String email);
 
-    Optional<User> findById(Long id);
-
     List<User> findByNameContaining(String query);
 
     UserDetails findByUsername(String username);
 
     boolean existsByUsername(String username);
-
-    void deleteById(Long userId);
 
 }

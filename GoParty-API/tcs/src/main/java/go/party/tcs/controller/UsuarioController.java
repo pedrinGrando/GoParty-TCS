@@ -56,7 +56,7 @@ public class UsuarioController {
             Path filePath = Paths.get(uploadDir, filename);
             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-            usuario.setFotoCaminho("/uploads/" + filename);
+            usuario.setPhotoPath("/uploads/" + filename);
             usuarioRepository.save(usuario);
 
             return ResponseEntity.ok("Profile image uploaded successfully");
@@ -66,7 +66,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/find/{usuarioId}")
-    public ResponseEntity<User> buscarUsuarioPorId(@PathVariable Integer usuarioId) {
+    public ResponseEntity<User> buscarUsuarioPorId(@PathVariable Long usuarioId) {
         Optional<User> usuarioOptional = usuarioRepository.findById(usuarioId);
         if (usuarioOptional.isPresent()) {
             return ResponseEntity.ok(usuarioOptional.get());

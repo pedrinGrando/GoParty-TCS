@@ -31,8 +31,7 @@ import go.party.tcs.service.UsuarioService;
 import jakarta.mail.MessagingException;
 
 @RestController
-@RequestMapping("/v1/auth") 
-
+@RequestMapping("/v1/auth")
 public class AuthController {
 
     @Autowired
@@ -60,33 +59,33 @@ public class AuthController {
     private String emailUsuario;
 
     @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody User usuario) {
-    try {
-        UsernamePasswordAuthenticationToken userPassword = new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword());
-        var authenticate = manager.authenticate(userPassword);
+    public ResponseEntity<?> login(@RequestBody User usuario) {
+        try {
+            UsernamePasswordAuthenticationToken userPassword = new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword());
+            var authenticate = manager.authenticate(userPassword);
 
-        User authenticatedUser = (User) authenticate.getPrincipal();
+            User authenticatedUser = (User) authenticate.getPrincipal();
 
-        if (!authenticatedUser.isEnabled()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Conta inativa. Por favor, entre em contato com o suporte.");
+            if (!authenticatedUser.isEnabled()) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Conta inativa. Por favor, entre em contato com o suporte.");
+            }
+
+            UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO(
+                authenticatedUser.getId(), authenticatedUser.getName(), authenticatedUser.getUsername(),
+                authenticatedUser.getEmail(), authenticatedUser.getBirthDate(), authenticatedUser.getUserType(),
+                authenticatedUser.getCpf(), authenticatedUser.getPhotoPath(),
+                authenticatedUser.getAcceptDate()
+            );
+            
+            String jwt = jwtService.generateToken(authenticatedUser);
+            Map<String, Object> response = new HashMap<>();
+            response.put("token", jwt);
+            response.put("usuario", usuarioResponseDTO);
+            return ResponseEntity.ok().body(response);
+        } catch (AuthenticationException exception) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuário e senha inválidos");
         }
-
-        UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO(
-            authenticatedUser.getId(), authenticatedUser.getName(), authenticatedUser.getUsername(),
-            authenticatedUser.getEmail(), authenticatedUser.getBirthDate(), authenticatedUser.getUserType(),
-            authenticatedUser.getCpf(), authenticatedUser.getFotoCaminho(),
-            authenticatedUser.getAcceptDate()
-        );
-        
-        String jwt = jwtService.generateToken(authenticatedUser);
-        Map<String, Object> response = new HashMap<>();
-        response.put("token", jwt);
-        response.put("usuario", usuarioResponseDTO);
-        return ResponseEntity.ok().body(response);
-    } catch (AuthenticationException exception) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome de usuário e senha inválidos");
     }
-}
 
     @PostMapping("/cadastro")
     public ResponseEntity<String> cadastrarUsuario(@RequestBody User usuario) throws MessagingException{
@@ -95,6 +94,7 @@ public ResponseEntity<?> login(@RequestBody User usuario) {
             usuario.setPassword(password);
             //Momento de cadastro do user
             usuario.setAcceptDate(LocalDateTime.now());
+            usuario.setEnabled(true);
             usuarioValidarCadastro = usuario;
 
             //Validar o cadastro

@@ -30,8 +30,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name ="user")
-@Entity(name = "user")
+@Table(name ="user_gp")
+@Entity(name = "user_gp")
 public class User implements UserDetails {
     
     @Id
@@ -39,7 +39,7 @@ public class User implements UserDetails {
     private Long id;
 
     @Column(name = "enabled")
-    private boolean enabled = true; 
+    private boolean enabled; 
 
     @Column(name = "name")
     private String name;
@@ -56,11 +56,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserType userType;
 
-    @Column(name = "cpf", unique = true, nullable = false)
+    @Column(name = "cpf", unique = false, nullable = false)
     private String cpf;
 
-    @Column(name = "photoPath")
-    private String fotoCaminho;
+    @Column(name = "photo_path")
+    private String photoPath;
 
     @Column(name = "accept_date")
     private LocalDateTime acceptDate;
@@ -121,5 +121,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-  
 }
