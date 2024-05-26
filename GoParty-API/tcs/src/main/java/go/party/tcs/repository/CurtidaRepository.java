@@ -16,10 +16,10 @@ public interface CurtidaRepository extends JpaRepository<Curtida, Long> {
 
     long countByEvento(Evento evento);
 
-    void deleteByUsuarioAndEvento(User usuario, Evento evento);
+    void deleteByUserAndEvento(User user, Evento evento);
 
-    @Query("SELECT c FROM Curtida c WHERE c.usuario = :usuario AND c.evento = :evento")
-    Curtida findByUserAndEvento(@Param("usuario") User usuario, @Param("evento") Evento evento);
+    @Query("SELECT c FROM Curtida c WHERE c.user = :user AND c.evento = :evento")
+    Curtida findByUserAndEvento(@Param("user") User user, @Param("evento") Evento evento);
 
     @Query("SELECT COUNT(c) FROM Curtida c WHERE c.evento.id = :eventoId")
     int quantidadeCurtidasPorEvento(@Param("eventoId") Integer eventoId);

@@ -36,7 +36,7 @@ public class CurtidaService {
     }
 
     public void descurtirEvento(User usuario, Evento evento) {
-        Curtida curtida = curtidaRepository.findByUsuarioAndEvento(usuario, evento);
+        Curtida curtida = curtidaRepository.findByUserAndEvento(usuario, evento);
         if (curtida != null) {
             curtidaRepository.delete(curtida);
         }
@@ -59,5 +59,4 @@ public class CurtidaService {
     public List<Curtida> getAllCurtidas() {
         return curtidaRepository.findAll();
     }
-
 }
