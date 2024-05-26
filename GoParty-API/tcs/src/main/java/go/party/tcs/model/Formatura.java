@@ -23,17 +23,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity
+@Entity(name = "formatura")
 @Table(name = "formatura")
 public class Formatura {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
     private Long id;
 
     @Column(name = "ativo")
-    private boolean ativo = true;
+    private boolean ativo;
 
     @Column(name = "titulo")
     private String titulo;
@@ -83,4 +82,8 @@ public class Formatura {
 
     @OneToMany(mappedBy = "formatura", cascade = CascadeType.ALL)
     private List<Evento> eventos;
+
+    public Formatura(Long formaturaId) {
+        this.id = formaturaId;
+    }
 }

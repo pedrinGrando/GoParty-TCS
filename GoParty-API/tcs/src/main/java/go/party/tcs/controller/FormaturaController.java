@@ -76,6 +76,7 @@ public class FormaturaController {
             }
             formatura.setAdm(usuarioAdm);
             formatura.setDataSolicitacao(LocalDateTime.now());
+            formatura.setAtivo(true);
             Formatura formaturaSalva = formaturaService.cadastrarSolicitacaoAdm(formatura);
             usuarioAdm.setUserType(UserType.ADM);
             usuarioAdm.setFormatura(formaturaSalva);
@@ -113,6 +114,7 @@ public class FormaturaController {
     }
 
     // Upload da matricula
+    @SuppressWarnings("null")
     @PostMapping("/upload-matricula-pdf/{fomaturaId}")
     public ResponseEntity<String> uploadMatriculaPdf(@PathVariable Long fomaturaId,
             @RequestParam("file") MultipartFile file) {
@@ -263,9 +265,8 @@ public class FormaturaController {
         dto.setId(usuario.getId());
         dto.setNome(usuario.getName());
         dto.setUsername(usuario.getUsername());
-        dto.setUsuarioCaminho(usuario.getFotoCaminho());
+        dto.setUsuarioCaminho(usuario.getPhotoPath());
         dto.setUserType(usuario.getUserType());
         return dto;
     }
-
 }
