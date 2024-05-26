@@ -20,17 +20,18 @@ import jakarta.servlet.http.HttpServletResponse;
 public class SecurityFilter extends OncePerRequestFilter {
 
     @Autowired
-    JWTService jwtService;
+    private JWTService jwtService;
 
     @Autowired
-    UsuarioRepository repository;
+    private UsuarioRepository usuarioRepository;
 
     @Override
+    @SuppressWarnings("null")
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String token = this.recoverJWT(request);
         if (token != null) {
             String username = jwtService.validateToken(token);
-            UserDetails user = repository.findByUsername(username);
+            UserDetails user = usuarioRepository.findByUsername(username);
             if (user != null) {
                 UsernamePasswordAuthenticationToken autorizathion = new UsernamePasswordAuthenticationToken(null, user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(autorizathion);
