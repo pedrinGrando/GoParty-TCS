@@ -21,13 +21,13 @@ export const ToastContainer: React.FC<ToastContainerProps> = ({ message, onClose
     const getToastStyle = () => {
         switch (type) {
             case 'success':
-                return "bg-green-100 text-green-800";
+                return "bg-green-500 text-green-900";
             case 'error':
-                return "bg-red-100 text-red-800";
+                return "bg-red-500 text-red-900";
             case 'informative':
-                return "bg-blue-100 text-blue-800";
+                return "bg-blue-500 text-blue-900";
             default:
-                return "bg-gray-100 text-gray-800";
+                return "bg-gray-500 text-gray-900";
         }
     };
 
@@ -51,8 +51,12 @@ export const ToastContainer: React.FC<ToastContainerProps> = ({ message, onClose
     };
 
     return (
-        <div style={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 1000 }}>
-            <div id={`toast-${type}`} className={`flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 bg-white rounded-lg shadow dark:text-gray-400 ${getToastStyle()}`} role="alert">
+        <div 
+        data-aos="fade-left"
+        data-aos-delay="50"
+        data-aos-duration="0"
+        style={{ position: 'fixed', top: '1rem', right: '1rem', zIndex: 1000 }}>
+            <div id={`toast-${type}`} className={`flex items-center w-full max-w-xs p-4 mb-4 text-gray-500 rounded-lg shadow-lg dark:text-gray-400 ${getToastStyle()}`} role="alert">
                 <div className={`inline-flex items-center justify-center flex-shrink-0 w-8 h-8 ${getToastStyle()} rounded-lg`}>
                     <div className={`inline-flex items-center justify-center flex-shrink-0 w-8 h-8 ${getToastStyle()} rounded-lg`}>
                         {getIcon()}

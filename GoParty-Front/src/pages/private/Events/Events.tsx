@@ -10,6 +10,7 @@ import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 import { CommentsSection } from '../../../components/Comments/CommentsSection';
 import { Loading } from '../../../components/Loading/Loading';
 import { format, parseISO } from 'date-fns';
+import TrendEvents from '../../../components/Feed/TrendEvents';
 
 interface EventoDTO {
     id: number;
@@ -56,7 +57,7 @@ export default function Events() {
     const formatDate = (dateString: string) => {
         const date = parseISO(dateString);
         return format(date, 'dd/MM/yyyy');
-      }
+    }
 
     const handleDelete = async (eventoId: number) => {
         setIsLoadingDelete(true);
@@ -112,13 +113,12 @@ export default function Events() {
 
     return (
         <div>
+            <TrendEvents/>
             {isLoading ? (
                 <LoadingHome />
             ) : (
                 <div>
-                    <h1 className='flex justify-center mt-4 text-4xl font-semibold dark:bg-gray-900 items-center'>{isLoadingDelete && <Loading />} Eventos criados </h1>
-                    <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
-
+                     <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seus eventos</h1>
                     {eventos.length === 0 ? (
                         <div className="fPlex justify-center dark:bg-gray-900 items-center h-screen">
                             <NoEvent />
@@ -136,16 +136,20 @@ export default function Events() {
                                         <span className="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
                                         Inativo
                                     </span>}
-                                    {evento.esgotado ?
+                                {evento.esgotado && evento.ativo ?
                                     <span className="inline-flex items-centerbg-red-100 text-red-800  text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                         <span className="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
                                         Esgotado
                                     </span>
                                     :
-                                    <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                    ''}
+                                {!evento.esgotado && evento.ativo ?
+                                    <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                         <span className="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
                                         Disponível
-                                    </span>}
+                                    </span>
+                                    :
+                                    ''}
 
                                 <img className="w-full" src={`http://localhost:8081${evento.eventoCaminho}`} alt="fotoEvento" />
                                 <div className="px-6 py-4 dark:bg-gray-500">

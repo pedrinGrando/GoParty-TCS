@@ -37,7 +37,7 @@ const EventUpdate: React.FC = () => {
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [error, setError] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
-    const [toastType, setToasType] = useState<ToastType>("error");
+    const [toastType, setToastType] = useState<ToastType>("error");
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
 
@@ -143,8 +143,11 @@ const EventUpdate: React.FC = () => {
             if (responseEvento.ok) {
                 console.log("Evento atualizado com sucesso:", eventData.id);
                 setImagemSrcModal("imagens/EventCreatedSucess.webp");
+                setMessage("Evento atualizado com sucesso!");
                 setImagePreview('');
                 setIsLoading(false);
+                setToastType("success")
+                setIsVisible(true);
 
                 if (selectedFile) {
                     const formDataImage = new FormData();
@@ -163,7 +166,7 @@ const EventUpdate: React.FC = () => {
 
                         setMessage("Evento atualizado com sucesso!");
                         setImagemSrcModal("imagens/EventCreatedSucess.webp");
-                        setToasType('success');
+                        setToastType('success');
                         setIsVisible(true);
                         setImagePreview('');
                         setIsLoading(false);
@@ -174,6 +177,9 @@ const EventUpdate: React.FC = () => {
                         console.error("Falha ao enviar imagem do evento.");
                         setImagePreview('');
                         setIsLoading(false);
+                        setMessage("Erro ao atualizar evento!")
+                        setToastType('error');
+                        setIsVisible(true)
                     }
                 }
 
@@ -183,6 +189,9 @@ const EventUpdate: React.FC = () => {
                 setMessage("Houve um erro ao atualizar o evento!")
                 setError(true);
                 setIsLoading(false);
+                setMessage("Erro ao atualizar evento!")
+                setToastType('error');
+                setIsVisible(true)
                 console.error("Erro ao atualizar evento:", eventData.mensagem);
             }
         } catch (error) {

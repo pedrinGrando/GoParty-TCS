@@ -3,11 +3,17 @@ import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar"
 import { Sidebar } from "../../../components/sidebar/Sidebar"
 import { Loading } from "../../../components/Loading/Loading";
 import { useParams } from "react-router-dom";
+import { ToastType } from "../../../components/modal/ToastType";
+import { ToastContainer } from "../../../components/modal/ToastContainer";
 
 export default function AddMember() {
 
     const [search, setSearch] = useState<string>('');
     const [usuarios, setUsuarios] = useState<UsuarioDTO[]>([]);
+    const [invited, setInvited] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const [toastType, setToastType] = useState<ToastType>("error");
+    const [message, setMessage] = useState("");
     const [erro, setErro] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>();
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -17,12 +23,54 @@ export default function AddMember() {
     const token = localStorage.getItem('token');
 
     interface UsuarioDTO {
-        id: string;
+        id: number;
         nome: string;
         username: string;
         usuarioCaminho: string;
         tipoUsuario: string;
     }
+
+    const closeToast = () => {
+        setIsVisible(false);
+      }
+
+
+      const inviteUser = async (userId: number) => {
+        console.log(formId);
+        setIsLoading(true);
+        try {
+            const formaturaDTO = { id: 1 };  
+    
+            const response = await fetch(`http://localhost:8081/v1/formaturas/adicionar-membro/${userId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formaturaDTO),
+            });
+    
+            if (!response.ok) {
+                setToastType('error');
+                setInvited(false);
+                setIsVisible(true);
+                setMessage('Erro ao adicionar membro');
+                throw new Error(`Network response was not ok: ${response.statusText}`);
+            }
+    
+            setInvited(true);
+            setToastType('success');
+            setIsVisible(true);
+            setMessage('Membro adicionado com sucesso!');
+        } catch (error) {
+            setInvited(false);
+            setToastType('error');
+            setIsVisible(true);
+            setMessage('Erro ao adicionar membro');
+            console.error('Error fetching users:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    };  
 
     const buscarUsuarios = async (search: string): Promise<UsuarioDTO[]> => {
         setIsLoading(true);
@@ -63,6 +111,12 @@ export default function AddMember() {
 
     return (
         <div className="items-center justify-center min-h-screen">
+            <ToastContainer
+                message={message}
+                onClose={closeToast}
+                isVisible={isVisible}
+                type={toastType}
+            />
             <div className="p-6 max-w-lg bg-white rounded-lg border shadow-md sm:p-10 dark:bg-gray-800 dark:border-gray-700">
                 <div className="relative">
                     <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -102,6 +156,16 @@ export default function AddMember() {
                                     </div>
                                     <div className="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
                                         {usuario.tipoUsuario}
+                                    </div>
+                                    <div>
+
+                                        {invited ?
+                                            <span><img src="/imagens/letter.png" alt="invite" /></span>
+                                            : <button onClick={() => inviteUser(usuario.id)}>
+                                                <img src="/imagens/add-group.png" alt="invite" />
+                                            </button>
+                                        }
+
                                     </div>
                                 </div>
                             </li>

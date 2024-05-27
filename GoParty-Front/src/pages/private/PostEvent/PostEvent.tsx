@@ -22,7 +22,7 @@ export default function PostEvent() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
-  const [toastType, setToasType] = useState<ToastType>('error');
+  const [toastType, setToasType] = useState<ToastType>("error");
   const navigate = useNavigate();
 
   const [mostrarModal, setMostrarModal] = useState<boolean>(false);

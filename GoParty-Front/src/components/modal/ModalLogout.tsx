@@ -30,7 +30,7 @@ export const ModalLogout: React.FC<ModalProps> = ({ mostrarModal, onClose }) => 
                 data-aos="fade-up"
                 data-aos-delay="50"
                 data-aos-duration="0"
-                id="popup-modal" className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto overflow-x-hidden">
+                id="popup-modal" className="fixed inset-0 z-50 flex items-center shadow-lg justify-center overflow-y-auto overflow-x-hidden">
                 <div className="relative p-4 w-full max-w-md max-h-full">
                     <div className="relative bg-white rounded-lg shadow dark:bg-gray-700">
                         <div className="p-4 md:p-5 text-center">
