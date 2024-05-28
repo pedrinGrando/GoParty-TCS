@@ -4,4 +4,5 @@ export interface CommentDTO {
     autor: string;
     commentMoment: string;
     autorCaminho: string;
+    name: string;
 }

@@ -81,7 +81,7 @@ const CommentsSection: React.FC<ComentariosProps> = ({ eventoId }) => {
                                         <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold"><img
                                             className="mr-2 w-6 h-6 rounded-full"
                                             src={comentario.autorCaminho ? `http://localhost:8081${comentario.autorCaminho}` : '/imagens/user (1).png'} 
-                                            alt="Michael Gough" />Michael Gough</p>
+                                            alt="Michael Gough" />@{comentario.name}</p>
                                         <p className="text-sm text-gray-600 dark:text-gray-400"></p>
                                     </div>
                                     <button id="dropdownComment1Button" data-dropdown-toggle="dropdownComment1"

@@ -19,6 +19,7 @@ public class CommentDTO {
     private Long autorId;
     private Long eventoId;
     private String autorCaminho;
+    private String name;
 
     public CommentDTO(Comentario comentario) {
         this.id = comentario.getId();

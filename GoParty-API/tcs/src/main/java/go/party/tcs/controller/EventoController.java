@@ -72,6 +72,9 @@ public class EventoController {
     @Autowired
     private ComentarioRepository comentarioRepository;
 
+    @Autowired
+    private CurtidaRepository curtidaRepository;
+
     // Método para Criar um Evento
     @PostMapping("/criar-evento/{userId}")
     public ResponseEntity<?> cadastrarEvento(@PathVariable Long userId, @RequestBody Evento evento) {
@@ -101,7 +104,7 @@ public class EventoController {
 
     @PutMapping("/upload-event-image/{eventoId}")
     public ResponseEntity<String> uploadProfileImage(@PathVariable Long eventoId,
-            @RequestParam("file") MultipartFile file) {
+                                                     @RequestParam("file") MultipartFile file) {
         try {
             Optional<Evento> eventoOpcional = eventoRepository.findById(eventoId);
             if (!eventoOpcional.isPresent()) {
@@ -185,27 +188,9 @@ public class EventoController {
                             e.getRua(),
                             e.getBairro(),
                             e.getCep(),
-                           e.isEsgotado(),
-                           e.getFormatura().getTitulo()))
+                            e.isEsgotado(),
+                            e.getFormatura().getTitulo()))
                     .collect(Collectors.toList());
-        }
-    }
-
-    @PostMapping("/curtir-evento/{userId}/{eventoId}")
-    public ResponseEntity<?> curtirEvento(@PathVariable Long userId, @PathVariable Long eventoId) {
-        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
-        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-        Evento evento = new Evento();
-        Usuario usuario = new Usuario();
-        if (eventoOptional.isPresent() && userOptional.isPresent()) {
-            evento = eventoOptional.get();
-            usuario = userOptional.get();
-            curtidaService.curtirEvento(usuario, evento);
-            notificationService.criarNotificacaoCurtida(usuario.getUsername() + " curtiu seu evento.",
-                    evento.getUsuario().getId());
-            return ResponseEntity.ok().body("Evento curtido com sucesso!");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento ou usuario nao encontrado!");
         }
     }
 
@@ -262,7 +247,8 @@ public class EventoController {
                         comentario.getTexto(),
                         comentario.getAutor().getId(),
                         comentario.getEvento().getId(),
-                        comentario.getAutor().getFotoCaminho()
+                        comentario.getAutor().getFotoCaminho(),
+                        comentario.getAutor().getUsername()
                 ))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(comentarioDTOs, HttpStatus.OK);
@@ -293,4 +279,46 @@ public class EventoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar comentário");
         }
     }
+
+    @GetMapping("/isLiked/{eventoId}/{userId}")
+    public ResponseEntity<Boolean> isEventoCurtido(@PathVariable Long eventoId, @PathVariable Long userId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+        }
+        Usuario usuario = userOptional.get();
+        boolean curtido = curtidaRepository.existsByEventoIdAndUsuarioId(eventoId, userId);
+        return ResponseEntity.ok(curtido);
+    }
+
+    @PostMapping("/like/{eventoId}/{usuarioId}")
+    public ResponseEntity<String> likeEvent(@PathVariable Long eventoId, @PathVariable Long usuarioId) {
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioId);
+
+        if (!eventoOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado");
+        }
+
+        if (!usuarioOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+        }
+
+        Evento evento = eventoOptional.get();
+        Usuario usuario = usuarioOptional.get();
+
+        boolean curtido = curtidaRepository.existsByEventoIdAndUsuarioId(eventoId, usuarioId);
+        if (curtido) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário já curtiu este evento");
+        }
+
+        Curtida curtida = new Curtida();
+        curtida.setEvento(evento);
+        curtida.setUsuario(usuario);
+        curtidaRepository.save(curtida);
+
+        return ResponseEntity.ok("Evento curtido com sucesso");
+    }
+
 }
+
