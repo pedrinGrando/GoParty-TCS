@@ -11,8 +11,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import go.party.tcs.model.Ingresso;
-import go.party.tcs.repository.IngressoRepository;
+import go.party.tcs.dto.CommentDTO;
+import go.party.tcs.model.*;
+import go.party.tcs.repository.*;
 import go.party.tcs.service.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,12 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.dto.EventoDTO;
-import go.party.tcs.model.Evento;
-import go.party.tcs.model.Formatura;
-import go.party.tcs.model.Usuario;
-import go.party.tcs.repository.EventoRepository;
-import go.party.tcs.repository.FormaturaRepository;
-import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EventoService;
@@ -74,6 +69,8 @@ public class EventoController {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
+    @Autowired
+    private ComentarioRepository comentarioRepository;
 
     // Método para Criar um Evento
     @PostMapping("/criar-evento/{userId}")
@@ -253,4 +250,47 @@ public class EventoController {
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/find-comments/{eventoId}")
+    public ResponseEntity<List<CommentDTO>> getComentariosByEventoId(@PathVariable Long eventoId) {
+        List<Comentario> comentarios = comentarioRepository.findByEventoId(eventoId);
+        if (comentarios.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<CommentDTO> comentarioDTOs = comentarios.stream()
+                .map(comentario -> new CommentDTO(
+                        comentario.getId(),
+                        comentario.getTexto(),
+                        comentario.getAutor().getId(),
+                        comentario.getEvento().getId(),
+                        comentario.getAutor().getFotoCaminho()
+                ))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(comentarioDTOs, HttpStatus.OK);
+    }
+
+    @PostMapping("/comment")
+    public ResponseEntity<?> comment(@RequestParam Long eventoId, @RequestParam Long autorId, @RequestBody String texto) {
+        try {
+            Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+            if (!eventoOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado");
+            }
+
+            Optional<Usuario> usuarioOptional = usuarioRepository.findById(autorId);
+            if (!usuarioOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+            }
+
+            Comentario comentario = new Comentario();
+            comentario.setTexto(texto);
+            comentario.setEvento(eventoOptional.get());
+            comentario.setAutor(usuarioOptional.get());
+
+            comentarioRepository.save(comentario);
+
+            return ResponseEntity.status(HttpStatus.CREATED).body("Comentário adicionado com sucesso!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar comentário");
+        }
+    }
 }

@@ -24,10 +24,10 @@ public class Comentario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "texto")
-    private String mensagem;
+    private String texto;
 
     @ManyToOne
     @JoinColumn(name = "autor_id")

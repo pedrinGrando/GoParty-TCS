@@ -4,7 +4,7 @@ import { Sidebar } from "../../../components/sidebar/Sidebar"
 import Event from "../../../types/Event";
 import { Loading } from "../../../components/Loading/Loading";
 import { Link } from "react-router-dom";
-import { CommentsSection } from "../../../components/Comments/CommentsSection";
+import CommentsSection from "../../../components/Comments/CommentsSection";
 import { NoEvent } from "../../../components/Feed/NoEvent";
 import TrendEvents from "../../../components/Feed/TrendEvents";
 
@@ -131,7 +131,7 @@ export default function Explore() {
                                         <span>Compartilhar</span>
                                     </button>
                                 </div>
-                                {isCommentsOpen ? <CommentsSection /> : ''}
+                                {/* {isCommentsOpen ? <CommentsSection /> : ''} */}
 
                                 {/* Valor ingresso */}
                                 <div className="mt-6 text-white bg-indigo-500 hover:bg-grey-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-indigo-500 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
