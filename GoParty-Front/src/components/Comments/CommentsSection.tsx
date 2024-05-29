@@ -14,12 +14,11 @@ const CommentsSection: React.FC<ComentariosProps> = ({ eventoId }) => {
 
     const postComment = async (eventoId: number, autorId: number, texto: string) => {
         try {
-            const response = await fetch(`http://localhost:8081/v1/eventos/comment?eventoId=${eventoId}&autorId=${autorId}`, {
+            const response = await fetch(`http://localhost:8081/v1/eventos/comment/${texto}?eventoId=${eventoId}&autorId=${autorId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ texto }),
             });
     
             if (!response.ok) {

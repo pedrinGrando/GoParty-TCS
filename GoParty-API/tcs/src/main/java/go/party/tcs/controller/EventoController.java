@@ -254,8 +254,8 @@ public class EventoController {
         return new ResponseEntity<>(comentarioDTOs, HttpStatus.OK);
     }
 
-    @PostMapping("/comment")
-    public ResponseEntity<?> comment(@RequestParam Long eventoId, @RequestParam Long autorId, @RequestBody String texto) {
+    @PostMapping("/comment/{text}")
+    public ResponseEntity<?> comment(@RequestParam Long eventoId, @RequestParam Long autorId, @PathVariable String text) {
         try {
             Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
             if (!eventoOptional.isPresent()) {
@@ -268,7 +268,8 @@ public class EventoController {
             }
 
             Comentario comentario = new Comentario();
-            comentario.setTexto(texto);
+            comentario.setTexto(text);
+            System.out.print(text);
             comentario.setEvento(eventoOptional.get());
             comentario.setAutor(usuarioOptional.get());
 

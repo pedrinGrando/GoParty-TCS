@@ -7,7 +7,7 @@ const useEventoCurtido = (eventoId: number, userId: number) => {
     useEffect(() => {
         const fetchCurtido = async () => {
             try {
-                const response = await fetch(`http://localhost:8081/v1/eventos/isLiked/${eventoId}/curtido/${userId}`);
+                const response = await fetch(`http://localhost:8081/v1/eventos/isLiked/${eventoId}/${userId}`);
                 if (!response.ok) {
                     throw new Error('Falha ao verificar curtida');
                 }
