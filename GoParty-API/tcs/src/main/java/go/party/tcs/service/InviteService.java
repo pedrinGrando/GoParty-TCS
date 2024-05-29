@@ -30,8 +30,11 @@ public class InviteService {
     @Autowired
     private NotificationService notificationService;
 
-    public Invite save(Invite invite) {
+    public Invite save(Invite invite) throws RuntimeException {
         User user = this.isPresent(userRepository.findById(invite.getUser().getId()));
+        if (user.getUserType() != UserType.STUDENT) {
+            throw new RuntimeException("Esse usuario não pode ser  convidado para uma formatura");
+        }
         Formatura graduation = this.isPresent(graduationRepository.findById(invite.getGraduation().getId()));
         invite.setUser(user);
         invite.setGraduation(graduation);

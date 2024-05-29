@@ -31,9 +31,14 @@ public class InviteController {
             inviteDTO.studentId(), 
             LocalDateTime.now()
         );
-        invite = inviteService.save(invite);
-        json.put("message", "Convite enviado com sucesso!");
-        return ResponseEntity.ok().body(json);
+        try {
+            invite = inviteService.save(invite);
+            json.put("message", "Convite enviado com sucesso!");
+            return ResponseEntity.ok().body(json);
+        } catch (RuntimeException exception) {
+            json.put("message", exception.getMessage());
+        }
+        return ResponseEntity.status(400).body(json);
     }
 
     @PostMapping("/accept/{inviteId}")
