@@ -14,14 +14,12 @@ import go.party.tcs.model.User;
 
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
-    
-    List<Notification> findByUser(User userId);
+
+    List<Notification> findByUserAndVisualizedIsFalse(User userId);
 
     int countByUserAndVisualizedFalse(User userId);
 
     List<Notification> findByUserOrderByNotificationDateDesc(User user);
-
-    Notification findById(Integer id);
 
     @Transactional
     @Modifying

@@ -3,14 +3,7 @@ package go.party.tcs.model;
 import java.time.LocalDateTime;
 
 import go.party.tcs.Enums.NotificationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,6 +22,7 @@ public class Notification {
     private Long id;
 
     @Column(name = "notificatio_type")
+    @Enumerated(EnumType.STRING)
     private NotificationType notificationType;
 
     @Column(name = "message")
@@ -42,7 +36,7 @@ public class Notification {
     private User user;
     
     @Column(name = "visualized")
-    private Boolean visualized;
+    private boolean visualized;
 
     public Notification(String message, LocalDateTime notificationDate, User user, boolean visualized, NotificationType notificationType) {
         this.message = message;
@@ -52,4 +46,3 @@ public class Notification {
         this.notificationType = notificationType;
     }
 }
-

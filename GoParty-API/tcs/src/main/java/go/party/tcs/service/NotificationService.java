@@ -2,9 +2,11 @@ package go.party.tcs.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import go.party.tcs.dto.NotificationResponseDTO;
 import go.party.tcs.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,8 +31,8 @@ public class NotificationService {
         notificationRepository.save(notification);
     }
 
-    public void markNotificationsAsVisualized(User user) {
-        notificationRepository.markNotificationsAsVisualized(user.getId());
+    public void markNotificationsAsVisualized(Long user) {
+        notificationRepository.markNotificationsAsVisualized(user);
     }
 
     public String calculateNotificationTimeExistence(LocalDateTime notificationDate) {
@@ -66,9 +68,11 @@ public class NotificationService {
         );
     }
 
-    public List<Notification> getNotificationByUser(Long userId) {
-        User user = usuarioRepository.findById(userId).get();
-        return notificationRepository.findByUser(user);
+    public List<NotificationResponseDTO> getNotificationByUser(Long userId) {
+        User user = this.isPresent(usuarioRepository.findById(userId));
+        List<Notification> notifications = notificationRepository.findByUserAndVisualizedIsFalse(user);
+        List<NotificationResponseDTO> notificationsResponse = this.convertNotificationListToDTO(notifications);
+        return notificationsResponse;
     }
 
     private <T> T isPresent(Optional<T> object) {
@@ -76,5 +80,23 @@ public class NotificationService {
             return object.get();
         }
         return null;
+    }
+
+    private List<NotificationResponseDTO> convertNotificationListToDTO(List<Notification> notifications) {
+        List<NotificationResponseDTO> notificationResponseDTOs = new ArrayList<>();
+        for (Notification notification : notifications) {
+            notificationResponseDTOs.add(this.convertNotificationToNotificationDTO(notification));
+        }
+        return notificationResponseDTOs;
+    }
+
+    private NotificationResponseDTO convertNotificationToNotificationDTO(Notification notification) {
+        return new NotificationResponseDTO(
+                notification.getId(),
+                notification.getMessage(),
+                notification.getNotificationDate(),
+                notification.getUser().getId(),
+                notification.isVisualized()
+        );
     }
 }
