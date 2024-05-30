@@ -27,6 +27,8 @@ interface EventoDTO {
     nomeUsuario?: string;
     esgotado: boolean;
     tituloFormatura: string;
+    totalCurtidas: number;
+    totalComentarios: number;
 }
 
 export default function Home() {

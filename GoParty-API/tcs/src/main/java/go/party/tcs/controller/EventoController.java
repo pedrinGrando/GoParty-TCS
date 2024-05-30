@@ -20,15 +20,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.Enums.TipoUsuario;
@@ -135,17 +127,24 @@ public class EventoController {
                 eventoRepository.save(evento);
             }
         });
+
         return eventosAtivos.stream()
                 .filter(evento -> evento.getDataEvento().isAfter(now))
-                .map(EventoDTO::new)
+                .map(evento -> {
+                    int totalCurtidas = curtidaRepository.countByEventoId(evento.getId());
+                    int totalComentarios = comentarioRepository.countByEventoId(evento.getId());
+                    return new EventoDTO(evento, totalCurtidas, totalComentarios);
+                })
                 .collect(Collectors.toList());
     }
 
     // Id evento
     @GetMapping("/buscar-evento/{eventoId}")
     public ResponseEntity<?> buscarEventoPeloId(@PathVariable Long eventoId) {
+        int totalCurtidas = curtidaRepository.countByEventoId(eventoId);
+        int totalComentarios = comentarioRepository.countByEventoId(eventoId);
         return eventoRepository.findById(eventoId)
-                .map(evento -> new ResponseEntity<>(new EventoDTO(evento), HttpStatus.OK))
+                .map(evento -> new ResponseEntity<>(new EventoDTO(evento, totalCurtidas, totalComentarios), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -160,9 +159,10 @@ public class EventoController {
         if (eventos.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
+        int totalCurtidas = 0;
+        int totalComentarios = 0;
         List<EventoDTO> eventosDTO = eventos.stream()
-                .map(evento -> new EventoDTO(evento))
+                .map(evento -> new EventoDTO(evento, totalCurtidas, totalComentarios))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(eventosDTO);
@@ -189,7 +189,10 @@ public class EventoController {
                             e.getBairro(),
                             e.getCep(),
                             e.isEsgotado(),
-                            e.getFormatura().getTitulo()))
+                            e.getFormatura().getTitulo(),
+                            curtidaRepository.countByEventoId(e.getId()),
+                            comentarioRepository.countByEventoId(e.getId())
+                            ))
                     .collect(Collectors.toList());
         }
     }
@@ -231,7 +234,7 @@ public class EventoController {
             evento.setDataEvento(eventoDTO.getDataEvento());
 
             eventoRepository.save(evento);
-            return ResponseEntity.ok(new EventoDTO(evento));
+            return ResponseEntity.ok(new EventoDTO(evento, eventoDTO.getTotalCurtidas(), eventoDTO.getTotalComentarios()));
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -319,6 +322,27 @@ public class EventoController {
         curtidaRepository.save(curtida);
 
         return ResponseEntity.ok("Evento curtido com sucesso");
+    }
+
+    @DeleteMapping("/like/{eventoId}/{usuarioId}")
+    public ResponseEntity<String> unlikeEvent(@PathVariable Long eventoId, @PathVariable Long usuarioId) {
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioId);
+
+        if (!eventoOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado");
+        }
+
+        if (!usuarioOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+        }
+
+        Evento evento = eventoOptional.get();
+        Usuario usuario = usuarioOptional.get();
+
+        curtidaRepository.deleteByUsuarioAndEvento(usuario, evento);
+
+        return ResponseEntity.ok("Evento descurtido com sucesso!");
     }
 
 }

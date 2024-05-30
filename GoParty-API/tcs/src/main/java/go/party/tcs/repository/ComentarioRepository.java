@@ -13,4 +13,6 @@ public interface ComentarioRepository extends JpaRepository<Comentario, Integer>
 
     @Transactional
     void deleteByAutor(Usuario sessionUsuario);
+
+    int countByEventoId(Long eventoId);
 }

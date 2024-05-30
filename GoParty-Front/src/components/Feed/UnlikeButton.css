@@ -1,9 +1,10 @@
 .heart-container {
     --heart-color: rgb(72, 164, 255);
     position: relative;
-    width: 50px;
-    height: 50px;
-    transition: .3s;
+    width: 24px;
+    height: 24px;
+    z-index: auto;
+    transition: .4s;
   }
   
   .heart-container .checkbox {
