@@ -8,48 +8,53 @@ import { NotificationBell } from "../../../components/Notification/NotificationB
 
 export default function Notifications() {
 
-    interface notificationDTO {
+    interface NotificationDTO {
         id: string;
         tipoNotificacao: string;
         message: string;
-        timestamp: string;
         visualizado: boolean;
+        notificationMoment: string;
+        fotoCaminho: string;
     }
 
-    const [notifications, setNotifications] = useState<notificationDTO[]>([]);
+    const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
 
-    const fetchSeusEventos = async (): Promise<notificationDTO[]> => {
+    const fetchYourNotifications = async (): Promise<NotificationDTO[]> => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:8081/v1/notifications/buscar-por-usuario/${user.id}`);
+            const response = await fetch(`http://localhost:8081/v1/notification/get/${user.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+            const notificationsData = await response.json();
             setIsLoading(false);
-            const notificationsData: notificationDTO[] = await response.json();
-            return notificationsData;
+            return Array.isArray(notificationsData) ? notificationsData : [];
         } catch (error) {
-            console.error('Error fetching yout notifications events:', error);
+            console.error('Error fetching your notifications:', error);
+            setIsLoading(false);
             return [];
         }
     }
 
-    //Busca notifications usuario
     useEffect(() => {
-        fetchSeusEventos().then(data => {
+        fetchYourNotifications().then(data => {
             setNotifications(data);
-            setIsLoading(false);
+            console.log(notifications);
         });
     }, []);
 
     return (
         <div>
             <TrendEvents />
-            <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Suas notificacoes</h1>
+            <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Suas notificações</h1>
             <section className="pt-16 bg-blueGray-50 dark:bg-gray-900">
                 <div className="w-full lg:w-4/12 px-4 mx-auto">
                     <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
@@ -57,18 +62,16 @@ export default function Notifications() {
                             <div className="flex justify-center items-center h-screen">
                                 <Loading />
                             </div>
-
                         ) : (
                             <div>
                                 {notifications.length === 0 ? (
-                                    <div className="flex justify-center my-8  dark:bg-gray-900">
+                                    <div className="flex justify-center my-8 dark:bg-gray-900">
                                         <h2>
-                                          Você não possui notificações.
+                                            Você não possui notificações.
                                         </h2>
                                     </div>
                                 ) : (
                                     notifications.map(notification => (
-                                        //Cada notificacao
                                         <div className="flex justify-center my-8"> {/* Ajusta o espaçamento vertical para menor e mantém a centralização horizontal */}
                                             <div id="toast-notification" className="w-full max-w-xs p-4 text-gray-900 bg-white rounded-lg shadow dark:bg-white dark:text-black" role="alert">
                                                 <div className="flex items-center mb-3">
@@ -86,7 +89,7 @@ export default function Notifications() {
                                                     {/* Ícone e detalhes da notificação */}
                                                     <div className="relative inline-block shrink-0">
                                                         {/* foto user */}
-                                                        <img className="w-12 h-12 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="Jese Leos image" />
+                                                        <img className="w-12 h-12 rounded-full"  src={notification.fotoCaminho ? `http://localhost:8081${notification.fotoCaminho}` : '/imagens/user (1).png'} />
                                                         {/* tipo noti icon */}
                                                         <span className="absolute bottom-0 right-0 inline-flex items-center justify-center w-6 h-6 bg-blue-600 rounded-full">
                                                             <svg className="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18" fill="currentColor">
@@ -98,11 +101,11 @@ export default function Notifications() {
                                                     </div>
                                                     <div className="ms-3 text-sm font-normal">
                                                         {/* Encaminhador */}
-                                                        <div className="text-sm font-semibold text-gray-900 dark:text-white">Dono da noti</div>
+                                                        <div className="text-sm font-semibold text-gray-500 dark:text-white">Dono da noti</div>
                                                         {/* Message noti */}
-                                                        <div className="text-sm font-normal">{notification.message}</div>
+                                                        <div className="text-sm font-normal">@{notification.message}</div>
                                                         {/* Time noti */}
-                                                        <span className="text-xs font-medium text-blue-600 dark:text-blue-500">{notification.timestamp}</span>
+                                                        <span className="text-xs font-medium text-blue-600 dark:text-blue-500">{notification.notificationMoment}</span>
                                                     </div>
                                                 </div>
                                             </div>

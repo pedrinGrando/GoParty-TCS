@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import CommentsSection from "../../../components/Comments/CommentsSection";
 import { NoEvent } from "../../../components/Feed/NoEvent";
 import TrendEvents from "../../../components/Feed/TrendEvents";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Explore() {
 
@@ -60,6 +61,7 @@ export default function Explore() {
             <div className="px-4 mx-auto text-center mt-5">
                 {/* campo de pesquisa */}
                 <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow dark:bg-gray-900">
+                <NotificationBell/>
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Pesquisar</label>
                     <div className="relative">
                        

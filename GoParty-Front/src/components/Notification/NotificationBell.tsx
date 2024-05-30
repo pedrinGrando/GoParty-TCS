@@ -17,7 +17,7 @@ export const NotificationBell: React.FC = () => {
 
     const fetchNoti = async (): Promise<number> => {
         try {
-            const response = await fetch(`http://localhost:8081/v1/notifications/count-notifications/${user.id}`);
+            const response = await fetch(`http://localhost:8081/v1/notification/count-notifications/${user.id}`);
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

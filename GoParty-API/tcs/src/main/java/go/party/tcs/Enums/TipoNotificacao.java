@@ -4,11 +4,16 @@ public enum TipoNotificacao {
 
     CURTIDA("curtida"),
     COMPRA("compra"),
-    COMENTARIO("COMENTARIO");
+    COMENTARIO("COMENTARIO"),
+    INVITE("INVITE");
 
-    private String tipo;
+    private String type;
 
-    private TipoNotificacao(String tipo) {
-        this.tipo = tipo;
+    private TipoNotificacao(String type) {
+        this.type = type;
+    }
+
+    public String getRole(){
+        return this.type;
     }
 }
