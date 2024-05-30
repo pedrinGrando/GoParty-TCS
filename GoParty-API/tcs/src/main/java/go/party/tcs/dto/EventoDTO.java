@@ -26,12 +26,16 @@ public class EventoDTO {
     private int qntIngressos;
     private boolean esgotado;
     private String tituloFormatura;
+    private int totalComentarios;
+    private int totalCurtidas;
 
     public EventoDTO() {}
 
-    public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado, 
-    LocalDate dataEvento, double valor, int qntIngressos, String rua, String bairro, String cep, boolean esgotado, String tituloFormatura) {
+    public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado,
+                     LocalDate dataEvento, double valor, int qntIngressos, String rua, String bairro, String cep,
+                     boolean esgotado, String tituloFormatura, int totalComentarios, int totalCurtidas) {
         this.id = id;
+        this.ativo = ativo;
         this.titulo = titulo;
         this.descricao = descricao;
         this.eventoCaminho = eventoCaminho;
@@ -43,12 +47,13 @@ public class EventoDTO {
         this.dataEvento = dataEvento;
         this.valor = valor;
         this.qntIngressos = qntIngressos;
-        this.ativo = ativo;
         this.esgotado = esgotado;
         this.tituloFormatura = tituloFormatura;
+        this.totalComentarios = totalComentarios;
+        this.totalCurtidas = totalCurtidas;
     }
 
-    public EventoDTO(Evento evento) {
+    public EventoDTO(Evento evento, int totalCurtidas, int totalComentarios) {
         if (evento != null) {
             this.id = evento.getId();
             this.ativo = evento.isAtivo();
@@ -64,6 +69,10 @@ public class EventoDTO {
             this.qntIngressos = evento.getQntIngressos();
             this.esgotado = evento.isEsgotado();
             this.tituloFormatura = evento.getFormatura().getTitulo();
+            this.totalCurtidas = totalCurtidas;
+            this.totalComentarios = totalComentarios;
         }
     }
+
+    // Getters e setters para todos os campos
 }

@@ -16,11 +16,11 @@ import { useNavigate } from 'react-router-dom';
 export default function PostEvent() {
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isChecked, setIsChecked] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   const [message, setMessage] = useState("");
   const [toastType, setToasType] = useState<ToastType>("error");
   const navigate = useNavigate();

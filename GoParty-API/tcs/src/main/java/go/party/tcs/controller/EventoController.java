@@ -4,40 +4,30 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import go.party.tcs.model.Ingresso;
-import go.party.tcs.repository.IngressoRepository;
+import go.party.tcs.dto.CommentDTO;
+import go.party.tcs.model.*;
+import go.party.tcs.repository.*;
 import go.party.tcs.service.NotificationService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.dto.EventoDTO;
-import go.party.tcs.model.Evento;
-import go.party.tcs.model.Formatura;
-import go.party.tcs.model.Usuario;
-import go.party.tcs.repository.EventoRepository;
-import go.party.tcs.repository.FormaturaRepository;
-import go.party.tcs.repository.UsuarioRepository;
 import go.party.tcs.service.ComentarioService;
 import go.party.tcs.service.CurtidaService;
 import go.party.tcs.service.EventoService;
@@ -74,6 +64,11 @@ public class EventoController {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
+    @Autowired
+    private ComentarioRepository comentarioRepository;
+
+    @Autowired
+    private CurtidaRepository curtidaRepository;
 
     // Método para Criar um Evento
     @PostMapping("/criar-evento/{userId}")
@@ -104,7 +99,7 @@ public class EventoController {
 
     @PutMapping("/upload-event-image/{eventoId}")
     public ResponseEntity<String> uploadProfileImage(@PathVariable Long eventoId,
-            @RequestParam("file") MultipartFile file) {
+                                                     @RequestParam("file") MultipartFile file) {
         try {
             Optional<Evento> eventoOpcional = eventoRepository.findById(eventoId);
             if (!eventoOpcional.isPresent()) {
@@ -135,17 +130,24 @@ public class EventoController {
                 eventoRepository.save(evento);
             }
         });
+
         return eventosAtivos.stream()
                 .filter(evento -> evento.getDataEvento().isAfter(now))
-                .map(EventoDTO::new)
+                .map(evento -> {
+                    int totalCurtidas = curtidaRepository.countByEventoId(evento.getId());
+                    int totalComentarios = comentarioRepository.countByEventoId(evento.getId());
+                    return new EventoDTO(evento, totalCurtidas, totalComentarios);
+                })
                 .collect(Collectors.toList());
     }
 
     // Id evento
     @GetMapping("/buscar-evento/{eventoId}")
     public ResponseEntity<?> buscarEventoPeloId(@PathVariable Long eventoId) {
+        int totalCurtidas = curtidaRepository.countByEventoId(eventoId);
+        int totalComentarios = comentarioRepository.countByEventoId(eventoId);
         return eventoRepository.findById(eventoId)
-                .map(evento -> new ResponseEntity<>(new EventoDTO(evento), HttpStatus.OK))
+                .map(evento -> new ResponseEntity<>(new EventoDTO(evento, totalCurtidas, totalComentarios), HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
@@ -160,9 +162,10 @@ public class EventoController {
         if (eventos.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-
+        int totalCurtidas = 0;
+        int totalComentarios = 0;
         List<EventoDTO> eventosDTO = eventos.stream()
-                .map(evento -> new EventoDTO(evento))
+                .map(evento -> new EventoDTO(evento, totalCurtidas, totalComentarios))
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(eventosDTO);
@@ -188,27 +191,12 @@ public class EventoController {
                             e.getRua(),
                             e.getBairro(),
                             e.getCep(),
-                           e.isEsgotado(),
-                           e.getFormatura().getTitulo()))
+                            e.isEsgotado(),
+                            e.getFormatura().getTitulo(),
+                            curtidaRepository.countByEventoId(e.getId()),
+                            comentarioRepository.countByEventoId(e.getId())
+                            ))
                     .collect(Collectors.toList());
-        }
-    }
-
-    @PostMapping("/curtir-evento/{userId}/{eventoId}")
-    public ResponseEntity<?> curtirEvento(@PathVariable Long userId, @PathVariable Long eventoId) {
-        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
-        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-        Evento evento = new Evento();
-        Usuario usuario = new Usuario();
-        if (eventoOptional.isPresent() && userOptional.isPresent()) {
-            evento = eventoOptional.get();
-            usuario = userOptional.get();
-            curtidaService.curtirEvento(usuario, evento);
-            notificationService.criarNotificacaoCurtida(usuario.getUsername() + " curtiu seu evento.",
-                    evento.getUsuario().getId());
-            return ResponseEntity.ok().body("Evento curtido com sucesso!");
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento ou usuario nao encontrado!");
         }
     }
 
@@ -249,8 +237,143 @@ public class EventoController {
             evento.setDataEvento(eventoDTO.getDataEvento());
 
             eventoRepository.save(evento);
-            return ResponseEntity.ok(new EventoDTO(evento));
+            return ResponseEntity.ok(new EventoDTO(evento, eventoDTO.getTotalCurtidas(), eventoDTO.getTotalComentarios()));
         }).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/find-comments/{eventoId}")
+    public ResponseEntity<List<CommentDTO>> getComentariosByEventoId(@PathVariable Long eventoId) {
+        List<Comentario> comentarios = comentarioRepository.findByEventoIdOrderByCommentMomentDesc(eventoId);
+        if (comentarios.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        List<CommentDTO> comentarioDTOs = comentarios.stream()
+                .map(comentario -> new CommentDTO(
+                        comentario.getId(),
+                        comentario.getTexto(),
+                        comentario.getAutor().getId(),
+                        comentario.getEvento().getId(),
+                        comentario.getAutor().getFotoCaminho(),
+                        comentario.getAutor().getUsername(),
+                        comentario.getCommentMoment() != null ? calculateTimeDifference(comentario.getCommentMoment()) : "Momento do comentário não disponível"
+                ))
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(comentarioDTOs, HttpStatus.OK);
+    }
+
+    @PostMapping("/comment/{text}")
+    public ResponseEntity<?> comment(@RequestParam Long eventoId, @RequestParam Long autorId, @PathVariable String text) {
+        try {
+            Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+            if (!eventoOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado");
+            }
+
+            Optional<Usuario> usuarioOptional = usuarioRepository.findById(autorId);
+            if (!usuarioOptional.isPresent()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+            }
+
+            Comentario comentario = new Comentario();
+            comentario.setTexto(text);
+            comentario.setCommentMoment(LocalDateTime.now());
+            comentario.setEvento(eventoOptional.get());
+            comentario.setAutor(usuarioOptional.get());
+
+            comentarioRepository.save(comentario);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Comentário adicionado com sucesso!");
+            response.put("comentario", new CommentDTO(  comentario.getId(),
+                    comentario.getTexto(),
+                    comentario.getAutor().getId(),
+                    comentario.getEvento().getId(),
+                    comentario.getAutor().getFotoCaminho(),
+                    comentario.getAutor().getUsername(),
+                    comentario.getCommentMoment() != null ? calculateTimeDifference(comentario.getCommentMoment()) : "Momento do comentário não disponível"));
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar comentário");
+        }
+    }
+
+    @GetMapping("/isLiked/{eventoId}/{userId}")
+    public ResponseEntity<Boolean> isEventoCurtido(@PathVariable Long eventoId, @PathVariable Long userId) {
+        Optional<Usuario> userOptional = usuarioRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(false);
+        }
+        Usuario usuario = userOptional.get();
+        boolean curtido = curtidaRepository.existsByEventoIdAndUsuarioId(eventoId, userId);
+        return ResponseEntity.ok(curtido);
+    }
+
+    @PostMapping("/like/{eventoId}/{usuarioId}")
+    public ResponseEntity<String> likeEvent(@PathVariable Long eventoId, @PathVariable Long usuarioId) {
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioId);
+
+        if (!eventoOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado");
+        }
+
+        if (!usuarioOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+        }
+
+        Evento evento = eventoOptional.get();
+        Usuario usuario = usuarioOptional.get();
+
+        boolean curtido = curtidaRepository.existsByEventoIdAndUsuarioId(eventoId, usuarioId);
+        if (curtido) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Usuário já curtiu este evento");
+        }
+
+        Curtida curtida = new Curtida();
+        curtida.setEvento(evento);
+        curtida.setUsuario(usuario);
+        curtidaRepository.save(curtida);
+
+        return ResponseEntity.ok("Evento curtido com sucesso");
+    }
+
+    @DeleteMapping("/like/{eventoId}/{usuarioId}")
+    @Transactional
+    public ResponseEntity<String> unlikeEvent(@PathVariable Long eventoId, @PathVariable Long usuarioId) {
+        Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
+        Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioId);
+
+        if (!eventoOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evento não encontrado");
+        }
+
+        if (!usuarioOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não encontrado");
+        }
+
+        Evento evento = eventoOptional.get();
+        Usuario usuario = usuarioOptional.get();
+
+        curtidaRepository.deleteByUsuarioAndEvento(usuario, evento);
+
+        return ResponseEntity.ok("Evento descurtido com sucesso!");
+    }
+
+    private String calculateTimeDifference(LocalDateTime commentMoment) {
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(commentMoment, now);
+
+        if (duration.getSeconds() < 60) {
+            return duration.getSeconds() + " seg";
+        } else if (duration.toMinutes() < 60) {
+            return duration.toMinutes() + " min";
+        } else if (duration.toHours() < 24) {
+            return duration.toHours() + " h";
+        } else {
+            return duration.toDays() + " d";
+        }
+    }
+
 }
+
