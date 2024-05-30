@@ -4,8 +4,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,6 +17,7 @@ import go.party.tcs.dto.CommentDTO;
 import go.party.tcs.model.*;
 import go.party.tcs.repository.*;
 import go.party.tcs.service.NotificationService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -240,7 +243,7 @@ public class EventoController {
 
     @GetMapping("/find-comments/{eventoId}")
     public ResponseEntity<List<CommentDTO>> getComentariosByEventoId(@PathVariable Long eventoId) {
-        List<Comentario> comentarios = comentarioRepository.findByEventoId(eventoId);
+        List<Comentario> comentarios = comentarioRepository.findByEventoIdOrderByCommentMomentDesc(eventoId);
         if (comentarios.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -251,7 +254,8 @@ public class EventoController {
                         comentario.getAutor().getId(),
                         comentario.getEvento().getId(),
                         comentario.getAutor().getFotoCaminho(),
-                        comentario.getAutor().getUsername()
+                        comentario.getAutor().getUsername(),
+                        comentario.getCommentMoment() != null ? calculateTimeDifference(comentario.getCommentMoment()) : "Momento do comentário não disponível"
                 ))
                 .collect(Collectors.toList());
         return new ResponseEntity<>(comentarioDTOs, HttpStatus.OK);
@@ -272,13 +276,23 @@ public class EventoController {
 
             Comentario comentario = new Comentario();
             comentario.setTexto(text);
-            System.out.print(text);
+            comentario.setCommentMoment(LocalDateTime.now());
             comentario.setEvento(eventoOptional.get());
             comentario.setAutor(usuarioOptional.get());
 
             comentarioRepository.save(comentario);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body("Comentário adicionado com sucesso!");
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Comentário adicionado com sucesso!");
+            response.put("comentario", new CommentDTO(  comentario.getId(),
+                    comentario.getTexto(),
+                    comentario.getAutor().getId(),
+                    comentario.getEvento().getId(),
+                    comentario.getAutor().getFotoCaminho(),
+                    comentario.getAutor().getUsername(),
+                    comentario.getCommentMoment() != null ? calculateTimeDifference(comentario.getCommentMoment()) : "Momento do comentário não disponível"));
+
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao adicionar comentário");
         }
@@ -325,6 +339,7 @@ public class EventoController {
     }
 
     @DeleteMapping("/like/{eventoId}/{usuarioId}")
+    @Transactional
     public ResponseEntity<String> unlikeEvent(@PathVariable Long eventoId, @PathVariable Long usuarioId) {
         Optional<Evento> eventoOptional = eventoRepository.findById(eventoId);
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(usuarioId);
@@ -343,6 +358,21 @@ public class EventoController {
         curtidaRepository.deleteByUsuarioAndEvento(usuario, evento);
 
         return ResponseEntity.ok("Evento descurtido com sucesso!");
+    }
+
+    private String calculateTimeDifference(LocalDateTime commentMoment) {
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(commentMoment, now);
+
+        if (duration.getSeconds() < 60) {
+            return duration.getSeconds() + " seg";
+        } else if (duration.toMinutes() < 60) {
+            return duration.toMinutes() + " min";
+        } else if (duration.toHours() < 24) {
+            return duration.toHours() + " h";
+        } else {
+            return duration.toDays() + " d";
+        }
     }
 
 }

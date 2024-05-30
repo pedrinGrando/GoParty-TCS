@@ -16,7 +16,7 @@ const useComentarios = (eventoId: number) => {
                 const data = await response.json();
                 setComentarios(data);
             } catch (error) {
-                // setError(error.message);
+                //
             } finally {
                 setLoading(false);
             }
@@ -25,7 +25,7 @@ const useComentarios = (eventoId: number) => {
         fetchComentarios();
     }, [eventoId]);
 
-    return { comentarios, loading, error };
+    return { comentarios, setComentarios, loading, error };
 };
 
 export default useComentarios;

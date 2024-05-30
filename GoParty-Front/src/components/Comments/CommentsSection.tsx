@@ -1,18 +1,29 @@
 import React, { useState } from 'react';
 import useComentarios from "../../hooks/useComentarios ";
+import { CommentDTO } from '../../types/CommentDTO';
+import { Loading } from '../Loading/Loading';
+import { ToastType } from '../modal/ToastType';
+import { ToastContainer } from '../modal/ToastContainer';
 
 interface ComentariosProps {
     eventoId: number;
 }
 
 const CommentsSection: React.FC<ComentariosProps> = ({ eventoId }) => {
-    const { comentarios, loading, error } = useComentarios(eventoId);
+    const { comentarios, loading, error, setComentarios } = useComentarios(eventoId);
     const [text, setText] = useState("");
+    const [isVisible, setIsVisible] = useState(false);
+    const [message, setMessage] = useState("");
+    const [toastType, setToasType] = useState<ToastType>("error");
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
 
-    const postComment = async (eventoId: number, autorId: number, texto: string) => {
+    const closeToast = () => {
+        setIsVisible(false);
+    }
+
+    const postComment = async (eventoId: number, autorId: number, texto: string): Promise<CommentDTO> => {
         try {
             const response = await fetch(`http://localhost:8081/v1/eventos/comment/${texto}?eventoId=${eventoId}&autorId=${autorId}`, {
                 method: 'POST',
@@ -20,32 +31,53 @@ const CommentsSection: React.FC<ComentariosProps> = ({ eventoId }) => {
                     'Content-Type': 'application/json',
                 },
             });
-    
+
             if (!response.ok) {
+                setToasType("error");
+                setMessage("Não foi possível comentar neste post.")
+                setIsVisible(true);
                 throw new Error('Erro ao adicionar comentário');
             }
-    
-            console.log('Comentário adicionado com sucesso!');
+
+            setToasType("success");
+            setMessage("Comentário enviado!")
+            setIsVisible(true);
+            const data = await response.json();
+            const newComment: CommentDTO = data.comentario;
+            console.log('Comentário adicionado com sucesso. ' + newComment);
+            return newComment;
         } catch (error) {
+            setToasType("error");
+            setMessage("Não foi possível comentar neste post.")
+            setIsVisible(true);
             console.error('Erro:', error);
+            throw error;
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            await postComment(eventoId, user.id, text);
+            const newComment = await postComment(eventoId, user.id, text);
+            setComentarios([...comentarios, newComment]);
+            setText("");
             console.log("Comentário adicionado.")
         } catch (error) {
             console.log("Erro ao adicionar comentário.")
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) return <div><Loading /></div>;
     if (error) return <div>{error}</div>;
 
     return (
         <section className="bg-white dark:bg-gray-900 py-8 lg:py-16 antialiased">
+            <ToastContainer
+                message={message}
+                onClose={closeToast}
+                isVisible={isVisible}
+                type={toastType}
+            />
             <div className="max-w-2xl mx-auto px-4">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">Comentários</h2>
@@ -79,7 +111,7 @@ const CommentsSection: React.FC<ComentariosProps> = ({ eventoId }) => {
                                     <div className="flex items-center">
                                         <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold"><img
                                             className="mr-2 w-6 h-6 rounded-full"
-                                            src={comentario.autorCaminho ? `http://localhost:8081${comentario.autorCaminho}` : '/imagens/user (1).png'} 
+                                            src={comentario.autorCaminho ? `http://localhost:8081${comentario.autorCaminho}` : '/imagens/user (1).png'}
                                             alt="Michael Gough" />@{comentario.name}</p>
                                         <p className="text-sm text-gray-600 dark:text-gray-400"></p>
                                     </div>
@@ -94,9 +126,10 @@ const CommentsSection: React.FC<ComentariosProps> = ({ eventoId }) => {
                                 </footer>
                                 <p className="text-gray-500 dark:text-gray-400">{comentario.texto}</p>
                                 <div className="flex items-center mt-4 space-x-4">
+                                <span className="text-sm text-gray-500">{comentario.commentMoment}</span>
                                 </div>
+                                <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
                             </article>
-
                         ))}
                     </ul>
                 )}

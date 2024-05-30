@@ -9,7 +9,7 @@ import go.party.tcs.model.Usuario;
 import jakarta.transaction.Transactional;
 
 public interface ComentarioRepository extends JpaRepository<Comentario, Integer> {
-    List<Comentario> findByEventoId(Long eventoId);
+    List<Comentario> findByEventoIdOrderByCommentMomentDesc(Long eventoId);
 
     @Transactional
     void deleteByAutor(Usuario sessionUsuario);
