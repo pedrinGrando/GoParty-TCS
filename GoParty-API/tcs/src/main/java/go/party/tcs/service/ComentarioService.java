@@ -19,10 +19,6 @@ public class ComentarioService {
     public ComentarioService(ComentarioRepository comentarioRepository) {
         this.comentarioRepository = comentarioRepository;
     }
-
-    public List<Comentario> encontrarComentariosPorEvento(Integer eventoId) {
-        return comentarioRepository.findByEventoId(eventoId);
-    }
     
     public void save(Comentario comentario) {
         comentarioRepository.save(comentario);

@@ -13,6 +13,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,10 +26,10 @@ public class Comentario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
 
     @Column(name = "texto")
-    private String mensagem;
+    private String texto;
 
     @ManyToOne
     @JoinColumn(name = "autor_id")
@@ -36,4 +38,7 @@ public class Comentario {
     @ManyToOne
     @JoinColumn(name = "evento_id")
     private Evento evento;
+
+    @Column(name = "commentMoment")
+    private LocalDateTime commentMoment;
 }

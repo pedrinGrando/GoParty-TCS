@@ -74,7 +74,7 @@ function App() {
           <Route path='/new-password' element={<NewPass />} />
           
           {/* Private Pages */}
-          <Route path='/home' element={<Home />} />
+          <Route path="/home" element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
           <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
           <Route path="/event-update/:eventId" element={isAuthenticated() ? <EventUpdate /> : <Navigate to="/login" />} />
           <Route path="/formatura-pix/:eventId" element={isAuthenticated() ? <PixKey /> : <Navigate to="/login" />} />

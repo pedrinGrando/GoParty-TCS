@@ -19,7 +19,7 @@ export default function Graduation() {
         nomeUsuario: string;
     }
 
-    const [formatura, setFormatura] = useState<FormaturaDTO | null>(null);
+    const [formatura, setFormatura] = useState<any>();
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
     const [isLoading, setIsloading] = useState(false)
@@ -38,6 +38,7 @@ export default function Graduation() {
             } catch (err: any) {
                 console.error(err.message);  
             } finally {
+                console.log(formatura)
                 setIsloading(false);  
             }
         };

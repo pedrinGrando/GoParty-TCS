@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { ModalChoose } from "../modal/ModalChoose";
 import DarkModeToggle from "../DarkMode/DarkModeToggle";
+import { NotificationBell } from "../Notification/NotificationBell";
 
 export const NavBar: React.FC = () => {
 

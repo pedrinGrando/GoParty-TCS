@@ -4,8 +4,9 @@ import { Sidebar } from "../../../components/sidebar/Sidebar"
 import Event from "../../../types/Event";
 import { Loading } from "../../../components/Loading/Loading";
 import { Link } from "react-router-dom";
-import { CommentsSection } from "../../../components/Comments/CommentsSection";
+import CommentsSection from "../../../components/Comments/CommentsSection";
 import { NoEvent } from "../../../components/Feed/NoEvent";
+import TrendEvents from "../../../components/Feed/TrendEvents";
 
 export default function Explore() {
 
@@ -55,35 +56,38 @@ export default function Explore() {
 
     return (
         <div>
+            <TrendEvents />
             <div className="px-4 mx-auto text-center mt-5">
-                {/*campo de pesquisa*/}
-                <div className="max-w-md mx-auto w-full">
+                {/* campo de pesquisa */}
+                <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow dark:bg-gray-900">
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Pesquisar</label>
                     <div className="relative">
-                        <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                            <svg className="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                            </svg>
-                        </div>
+                       
                         <input
                             type="text"
-                            className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-black" placeholder="Procure por eventos, formaturas..." required
+                            className="block w-96 p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-black"
+                            placeholder="Procure por eventos, formaturas..."
+                            required
                             onChange={e => setSearch(e.target.value)}
                             value={search}
                         />
-                        <button onClick={handleSearch} className="text-white absolute end-2.5 bottom-2.5 bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Search</button>
+                        <button onClick={handleSearch} className="text-white absolute right-2.5 bottom-2.5 bg-indigo-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                            <svg className="w-4 h-4 text-white dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </button>
                         {erro && <div>{erro}</div>}
                     </div>
+                    <hr className="fixed flex my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
                 </div>
-                <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
                 <ul>
                     {
                         !isLoading && eventos.length == 0 ?
-                       <NoEvent/> : ""
+                            <NoEvent /> : ""
                     }
 
                     {eventos.map(evento => (
-                        <div className="max-w-sm mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg">
+                        <div className="mt-12 max-w-md mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg">
                             <Link to={`/event/${evento.id}`} key={evento.id} className="block mt-16 mb-8">
                                 <img className="w-full" src={`http://localhost:8081${evento.eventoCaminho}`} alt="fotoEvento" />
                                 <div className="px-6 py-4 dark:bg-gray-500">
@@ -95,16 +99,29 @@ export default function Explore() {
                             </Link>
                             <div className="px-6 py-4 dark:bg-gray-500">
                                 <Link to={`/event/${evento.id}`} key={evento.id} className="block mt-16 mb-8">
-                                    <div className="px-6 py-4 dark:bg-gray-500">
-                                        <p className='text-gray-500'>
+                                <div className="px-6 py-4 dark:bg-gray-500">
+                                        <p className="text-gray-500 flex items-center">
+                                            <svg className="w-6 h-6 text-gray-800 dark:text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
+                                            </svg>
                                             {evento.cidade}/{evento.estado}
                                         </p>
-                                        <p className='text-gray-500'>
+                                        <p className="text-gray-500 flex items-center">
+                                            <svg className="w-6 h-6 text-gray-800 dark:text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
+                                            </svg>
                                             {evento.rua}
+                                        </p>
+                                        <p className="text-gray-500 flex items-center">
+                                            <svg className="w-6 h-6 text-gray-800 dark:text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                <path fillRule="evenodd" d="M18 5.05h1a2 2 0 0 1 2 2v2H3v-2a2 2 0 0 1 2-2h1v-1a1 1 0 1 1 2 0v1h3v-1a1 1 0 1 1 2 0v1h3v-1a1 1 0 1 1 2 0v1Zm-15 6v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8H3ZM11 18a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1a1 1 0 1 0-2 0v1h-1a1 1 0 1 0 0 2h1v1Z" clipRule="evenodd" />
+                                            </svg>
+                                            {new Date(evento.dataEvento).toLocaleDateString('pt-BR')}
                                         </p>
                                     </div>
                                 </Link>
-
                                 <hr className="my-5 border-gray-300 dark:border-gray-300 lg:my-5" />
                                 {/* curtir e Comentar evento  */}
                                 <div className="mt-4 flex items-center">
@@ -127,7 +144,7 @@ export default function Explore() {
                                         <span>Compartilhar</span>
                                     </button>
                                 </div>
-                                {isCommentsOpen ? <CommentsSection /> : ''}
+                                {/* {isCommentsOpen ? <CommentsSection /> : ''} */}
 
                                 {/* Valor ingresso */}
                                 <div className="mt-6 text-white bg-indigo-500 hover:bg-grey-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-indigo-500 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

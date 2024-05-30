@@ -7,9 +7,9 @@ import { LoadingHome } from '../../../components/Loading/LoadingHome';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { Link } from 'react-router-dom';
 import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
-import { CommentsSection } from '../../../components/Comments/CommentsSection';
 import { Loading } from '../../../components/Loading/Loading';
 import { format, parseISO } from 'date-fns';
+import TrendEvents from '../../../components/Feed/TrendEvents';
 
 interface EventoDTO {
     id: number;
@@ -56,7 +56,7 @@ export default function Events() {
     const formatDate = (dateString: string) => {
         const date = parseISO(dateString);
         return format(date, 'dd/MM/yyyy');
-      }
+    }
 
     const handleDelete = async (eventoId: number) => {
         setIsLoadingDelete(true);
@@ -112,13 +112,12 @@ export default function Events() {
 
     return (
         <div>
+            <TrendEvents />
             {isLoading ? (
                 <LoadingHome />
             ) : (
                 <div>
-                    <h1 className='flex justify-center mt-4 text-4xl font-semibold dark:bg-gray-900 items-center'>{isLoadingDelete && <Loading />} Eventos criados </h1>
-                    <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
-
+                    <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seus eventos</h1>
                     {eventos.length === 0 ? (
                         <div className="fPlex justify-center dark:bg-gray-900 items-center h-screen">
                             <NoEvent />
@@ -136,16 +135,20 @@ export default function Events() {
                                         <span className="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
                                         Inativo
                                     </span>}
-                                    {evento.esgotado ?
+                                {evento.esgotado && evento.ativo ?
                                     <span className="inline-flex items-centerbg-red-100 text-red-800  text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                         <span className="w-2 h-2 me-1 bg-red-500 rounded-full"></span>
                                         Esgotado
                                     </span>
                                     :
-                                    <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">
+                                    ''}
+                                {!evento.esgotado && evento.ativo ?
+                                    <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                         <span className="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
                                         Disponível
-                                    </span>}
+                                    </span>
+                                    :
+                                    ''}
 
                                 <img className="w-full" src={`http://localhost:8081${evento.eventoCaminho}`} alt="fotoEvento" />
                                 <div className="px-6 py-4 dark:bg-gray-500">
@@ -156,14 +159,25 @@ export default function Events() {
                                 </div>
                                 <div className="px-6 py-4 dark:bg-gray-500">
                                     <div className="px-6 py-4 dark:bg-gray-500">
-                                        <p className='text-gray-500'>
+                                        <p className="text-gray-500 flex items-center">
+                                            <svg className="w-6 h-6 text-gray-800 dark:text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
+                                            </svg>
                                             {evento.cidade}/{evento.estado}
                                         </p>
-                                        <p className='text-gray-500'>
+                                        <p className="text-gray-500 flex items-center">
+                                            <svg className="w-6 h-6 text-gray-800 dark:text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.8 13.938h-.011a7 7 0 1 0-11.464.144h-.016l.14.171c.1.127.2.251.3.371L12 21l5.13-6.248c.194-.209.374-.429.54-.659l.13-.155Z" />
+                                            </svg>
                                             {evento.rua}
                                         </p>
-                                        <p className='text-gray-500'>
-                                            {formatDate(evento.dataEvento)}
+                                        <p className="text-gray-500 flex items-center">
+                                            <svg className="w-6 h-6 text-gray-800 dark:text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                                                <path fillRule="evenodd" d="M18 5.05h1a2 2 0 0 1 2 2v2H3v-2a2 2 0 0 1 2-2h1v-1a1 1 0 1 1 2 0v1h3v-1a1 1 0 1 1 2 0v1h3v-1a1 1 0 1 1 2 0v1Zm-15 6v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8H3ZM11 18a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1a1 1 0 1 0-2 0v1h-1a1 1 0 1 0 0 2h1v1Z" clipRule="evenodd" />
+                                            </svg>
+                                            {new Date(evento.dataEvento).toLocaleDateString('pt-BR')}
                                         </p>
                                     </div>
                                     <hr className="my-5 border-gray-300 dark:border-gray-300 lg:my-5" />
@@ -221,7 +235,7 @@ export default function Events() {
                                             </div>
                                             : ''}
                                     </div>
-                                    {isCommentsOpen ? <CommentsSection /> : ''}
+                                    {/* {isCommentsOpen ? <CommentsSection /> : ''} */}
 
                                     {/* Valor ingresso */}
                                     <div className="mt-6 text-white bg-indigo-500 hover:bg-grey-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-indigo-500 dark:hover:bg-blue-700 dark:focus:ring-blue-800">

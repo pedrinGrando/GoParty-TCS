@@ -8,10 +8,10 @@ export const NoEvent: React.FC = () => {
 
     return (
       <div>
-        <section className="mt-5 bg-center bg-no-repeat rounded-lg bg-blend-multiply py-24 lg:py-40">
-        <div className="px-4 mx-auto text-center max-w-xl">
-            <img src="/imagens/NoEventSad.webp" alt="" />
-            <h1 className="mb-4 text-2xl font-semibold text-black md:text-3xl lg:text-3xl">Nenhum evento encontrado para você.</h1>
+        <section className="mt-3 bg-center bg-no-repeat rounded-lg bg-blend-multiply py-24 lg:py-40">
+        <div className="px-4 mx-auto text-center mt-2 max-w-xl">
+            <img src="/imagens/noEventNoBg.png" alt=""/>
+            <h1 className="mb-4 text-2xl font-semibold text-black md:text-3xl lg:text-3xl">Nenhum evento.</h1>
             <div className="flex justify-center">
             </div>
         </div>
