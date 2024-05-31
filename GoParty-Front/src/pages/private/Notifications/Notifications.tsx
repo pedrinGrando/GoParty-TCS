@@ -46,11 +46,28 @@ export default function Notifications() {
         }
     }
 
+    const markNotificationsAsVisualized = async (): Promise<void> => {
+        try {
+            const response = await fetch(`http://localhost:8081/v1/notification/change_visualization/${user.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to mark notifications as visualized');
+            }
+        } catch (error) {
+            console.error('Error marking notifications as visualized:', error);
+        }
+    }
+
     useEffect(() => {
         fetchYourNotifications().then(data => {
             setNotifications(data);
-            console.log(notifications);
+            console.log(data); 
         });
+        markNotificationsAsVisualized();
     }, []);
 
     return (

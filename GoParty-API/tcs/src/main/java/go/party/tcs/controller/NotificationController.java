@@ -22,7 +22,7 @@ public class NotificationController {
     @Autowired
     private NotificationRepository notificationRepository;
 
-    @PostMapping("/change_visualization")
+    @PutMapping("/change_visualization/{userId}")
     public ResponseEntity<?> changeVisualization(@PathVariable Long userId) {
         Map<String, String> json = new HashMap<>();
         notificationService.markNotificationsAsVisualized(userId);
