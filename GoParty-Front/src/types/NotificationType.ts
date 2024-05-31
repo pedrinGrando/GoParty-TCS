@@ -1,0 +1,1 @@
+export type TipoNotificacao = 'CURTIDA' | 'COMENTARIO' | 'COMPRA' | 'INVITE';

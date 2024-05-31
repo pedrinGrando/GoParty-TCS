@@ -25,7 +25,7 @@ const TrendEvents: React.FC = () => {
     const fetchTodosEventos = async (): Promise<EventoDTO[]> => {
         setIsLoading(true);
         try {
-            const response = await fetch('http://localhost:8081/v1/eventos/buscar-eventos');
+            const response = await fetch('http://localhost:8081/v1/eventos/top10Curtidas');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }

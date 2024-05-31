@@ -74,5 +74,4 @@ public class EventoDTO {
         }
     }
 
-    // Getters e setters para todos os campos
 }

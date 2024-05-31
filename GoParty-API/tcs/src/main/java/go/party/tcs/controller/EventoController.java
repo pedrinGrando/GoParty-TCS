@@ -375,6 +375,11 @@ public class EventoController {
         return ResponseEntity.ok("Evento descurtido com sucesso!");
     }
 
+    @GetMapping("/top10Curtidas")
+    public List<EventoDTO> getTop10EventosComMaisCurtidas() {
+        return eventoService.findTop10EventosComMaisCurtidas();
+    }
+
     private String calculateTimeDifference(LocalDateTime commentMoment) {
         LocalDateTime now = LocalDateTime.now();
         Duration duration = Duration.between(commentMoment, now);
