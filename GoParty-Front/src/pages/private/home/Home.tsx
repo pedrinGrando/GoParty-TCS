@@ -103,7 +103,7 @@ export default function Home() {
             ) : (
                 <div>
                     <FormsTrends />
-                    <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
+                    <hr className="my-5 border-gray-300 dark:text-white dark:bg-gray-900 dark:border-white lg:my-5" />
                     {eventos.length === 0 ? (
                         <div className="flex justify-center dark:bg-gray-900 items-center h-screen">
                             <NoEvent />
