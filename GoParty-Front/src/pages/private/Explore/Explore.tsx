@@ -56,9 +56,9 @@ export default function Explore() {
     };
 
     return (
-        <div>
+        <div className="dark:bg-gray-900">
             <TrendEvents />
-            <div className="px-4 mx-auto text-center mt-5">
+            <div className="px-4 mx-auto text-center mt-5 dark:bg-gray-900">
                 {/* campo de pesquisa */}
                 <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow dark:bg-gray-900">
                 <NotificationBell/>
@@ -67,7 +67,7 @@ export default function Explore() {
                        
                         <input
                             type="text"
-                            className="block w-96 p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-black"
+                            className="block w-96 p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-black"
                             placeholder="Procure por eventos, formaturas..."
                             required
                             onChange={e => setSearch(e.target.value)}

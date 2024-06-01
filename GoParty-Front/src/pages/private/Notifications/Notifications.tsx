@@ -71,7 +71,7 @@ export default function Notifications() {
     }, []);
 
     return (
-        <div>
+        <div className=" dark:bg-gray-900">
             <TrendEvents />
             <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Suas notificações</h1>
             <div className=" grid place-items-center my-8">
@@ -92,7 +92,7 @@ export default function Notifications() {
                     </div>
 
                     {isLoading ? (
-                        <div className="flex justify-center items-center h-screen">
+                        <div className="flex justify-center items-center h-screen dark:bg-gray-900">
                             <Loading />
                         </div>
                     ) : (

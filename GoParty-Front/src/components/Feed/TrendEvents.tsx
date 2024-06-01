@@ -58,7 +58,7 @@ const TrendEvents: React.FC = () => {
                     </div>
                     {events.length === 0 ? (
                         <div className="flex justify-center dark:bg-gray-900 items-center h-screen">
-                            <h2>Nenhum evento em alta.</h2>
+                            <h2 className="dark:text-white">Nenhum evento em alta.</h2>
                         </div>
                     ) : (
                         events.map(evento => (
