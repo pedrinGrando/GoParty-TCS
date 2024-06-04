@@ -16,7 +16,6 @@ export default function AddMember() {
     const [message, setMessage] = useState("");
     const [erro, setErro] = useState<string>('');
     const [isLoading, setIsLoading] = useState<boolean>();
-    const [isCommentsOpen, setIsCommentsOpen] = useState(false);
     const { formId } = useParams();
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
@@ -41,12 +40,11 @@ export default function AddMember() {
         try {
             const formaturaDTO = { id: 1 };  
     
-            const response = await fetch(`http://localhost:8081/v1/formaturas/adicionar-membro/${userId}`, {
-                method: 'PUT',
+            const response = await fetch(`http://localhost:8081/v1/invite/send-invite/${userId}/${formaturaDTO.id}`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(formaturaDTO),
             });
     
             if (!response.ok) {
@@ -60,12 +58,12 @@ export default function AddMember() {
             setInvited(true);
             setToastType('success');
             setIsVisible(true);
-            setMessage('Membro adicionado com sucesso!');
+            setMessage('Convite enviado!');
         } catch (error) {
             setInvited(false);
             setToastType('error');
             setIsVisible(true);
-            setMessage('Erro ao adicionar membro');
+            setMessage('Erro ao enviar o convite!');
             console.error('Error fetching users:', error);
         } finally {
             setIsLoading(false);
