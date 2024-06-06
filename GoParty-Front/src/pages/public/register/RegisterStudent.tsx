@@ -149,7 +149,7 @@ export default function RegisterStudent() {
     cpf: '',
     fotoPerfil: null,
     senhaConfirm: '',
-    senhaRegras: '',
+    senhaRegras: ''
   });
 
   const handleButtonClick = () => {
