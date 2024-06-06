@@ -19,7 +19,8 @@ public class RelatoriosController {
     public RelatorioEventoPorMembroDTO ingresso(@RequestParam Long idFormatura,
                           @RequestParam(required = false) LocalDate dataInicio,
                           @RequestParam(required = false) LocalDate dataFim,
-                          @RequestParam(required = false) double valorIngresso,
+                          @RequestParam(required = false) Double valorIngressoInicial,
+                          @RequestParam(required = false) Double valorIngressoFinal,
                           @RequestParam(required = false) Long idEvento) {
         return new RelatorioEventoPorMembroDTO();
     }
