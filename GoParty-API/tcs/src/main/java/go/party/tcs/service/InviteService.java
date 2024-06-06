@@ -32,24 +32,26 @@ public class InviteService {
 
     @Autowired
     private NotificationService notificationService;
+    @Autowired
+    private FormaturaRepository formaturaRepository;
 
-    public Invite save(Invite invite) throws RuntimeException {
-        Usuario user = this.isPresent(userRepository.findById(invite.getUser().getId()));
+    public void save(Invite invite) throws RuntimeException {
+        Usuario user = this.isPresent(userRepository.findById(invite.getUsuario().getId()));
         if (user.getTipoUsuario() != TipoUsuario.STUDENT) {
             throw new RuntimeException("Esse usuario não pode ser convidado para uma formatura");
         }
-        Formatura graduation = this.isPresent(graduationRepository.findById(invite.getGraduation().getId()));
-        invite.setUser(user);
-        invite.setGraduation(graduation);
-        String notificationMessage = "Você foi convidado para a formatura " + graduation.getTitulo() + "!";
-        notificationService.addNotification(notificationMessage, user.getId(), TipoNotificacao.INVITE, graduation.getAdm().getFotoCaminho());
-        return inviteRepository.save(invite);
+        Formatura graduation = this.isPresent(formaturaRepository.findById(invite.getFormatura().getId()));
+        invite.setUsuario(user);
+        invite.setFormatura(graduation);
+//       String notificationMessage = "Você foi convidado para a formatura " + graduation.getTitulo() + "!";
+//       notificationService.addNotification(notificationMessage, user.getId(), TipoNotificacao.INVITE, graduation.getAdm().getFotoCaminho());
+        inviteRepository.save(invite);
     }
 
     public void acceptInvite(Long inviteId) {
         Invite invite =  this.isPresent(inviteRepository.findById(inviteId));
-        Usuario user = this.isPresent(userRepository.findById(invite.getUser().getId()));
-        Formatura graduation = graduationRepository.findById(invite.getGraduation().getId()).get();
+        Usuario user = this.isPresent(userRepository.findById(invite.getUsuario().getId()));
+        Formatura graduation = this.isPresent(formaturaRepository.findById(invite.getFormatura().getId()));
         invite.setAccept(true);
         invite.setAcceptDate(LocalDateTime.now());
         user.setTipoUsuario(TipoUsuario.MEMBER);
@@ -59,7 +61,7 @@ public class InviteService {
     }
 
     public List<InviteDTO> getInvitesByUserId(Long userId) {
-        List<Invite> invites = inviteRepository.findByUserId(userId);
+        List<Invite> invites = inviteRepository.findByUsuarioId(userId);
         return invites.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
@@ -67,8 +69,8 @@ public class InviteService {
         return new InviteDTO(
                 invite.getId(),
                 invite.getInviteDate(),
-                invite.getGraduation().getId(),
-                invite.getUser().getId(),
+                invite.getFormatura().getId(),
+                invite.getUsuario().getId(),
                 invite.isAccept(),
                 invite.getAcceptDate(),
                 invite.getRejectDate()

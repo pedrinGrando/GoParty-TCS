@@ -20,10 +20,10 @@ public class Invite {
     private LocalDateTime inviteDate;
     @OneToOne
     @JoinColumn(name = "formatura_id", nullable = false)
-    private Formatura graduation;
+    private Formatura formatura;
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private Usuario user;
+    @JoinColumn(name = "usuario_id", nullable = false)
+    private Usuario usuario;
     @Column(name = "accept")
     private boolean accept;
     @Column(name = "accept_date")

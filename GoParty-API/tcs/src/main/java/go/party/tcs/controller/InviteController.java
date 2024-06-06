@@ -39,9 +39,9 @@ public class InviteController {
             Invite invite = new Invite();
             invite.setInviteDate(LocalDateTime.now());
             invite.setAccept(false);
-            invite.setUser(usuarioOptional.get());
-            invite.setGraduation(formOptional.get());
-            Invite savedInvite = inviteService.save(invite);
+            invite.setUsuario(usuarioOptional.get());
+            invite.setFormatura(formOptional.get());
+            inviteService.save(invite);
             return ResponseEntity.ok("Convite enviado com sucesso.");
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(null);

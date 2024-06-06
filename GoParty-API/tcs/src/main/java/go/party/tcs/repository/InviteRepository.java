@@ -11,5 +11,5 @@ import java.util.List;
 @Repository
 public interface InviteRepository extends JpaRepository<Invite, Long> {
 
-    List<Invite> findByUserId(Long userId);
+    List<Invite> findByUsuarioId(Long userId);
 }
