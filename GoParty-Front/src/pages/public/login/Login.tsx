@@ -173,7 +173,7 @@ export default function Login() {
                       {/*Leva para a troca de senha */}
                       <Link to='/reset-password-email'>
                         <div className="text-sm ml-auto">
-                          <div className="font-semibold text-indigo-600 hover:text-indigo-500">Esqueceu a senha?</div>
+                          <div className="font-semibold text-indigo-600 hover:text-indigo-500 underline">Esqueceu a senha?</div>
                         </div>
                       </Link>
 
@@ -204,7 +204,7 @@ export default function Login() {
                     <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
                       Ainda não possui conta?
 
-                      <button onClick={handleButtonClick} className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
+                      <button onClick={handleButtonClick} className="font-semibold text-pink-500 transition-colors hover:text-blue-700 underline">
                         Crie a sua rápido e fácil
                       </button>
 
