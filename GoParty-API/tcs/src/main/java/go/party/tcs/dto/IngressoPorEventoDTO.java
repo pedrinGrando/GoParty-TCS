@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IngressoPorEventoDTO {
-  private String codIngresso;
+  private Long codigoIngresso;
   private LocalDate dataCompra;
   private String nomeComprador;
   private String nomeEvento;
