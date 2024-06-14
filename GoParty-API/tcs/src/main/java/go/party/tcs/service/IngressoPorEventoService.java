@@ -7,6 +7,7 @@ import go.party.tcs.repository.IngressoPorEventoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +21,9 @@ public class IngressoPorEventoService {
         List<IngressoPorEventoDTO> relatorios = new ArrayList<>();
         List<IngressoPorEventoProjection> resultado = ingressoPorEventoRepository.findIngressosPorEvento(idFormatura, idEvento, status);
         for (IngressoPorEventoProjection projection : resultado) {
-            IngressoPorEventoDTO dto = new IngressoPorEventoDTO(projection.getCodigoIngresso(), projection.getDataCompra(), projection.getComprador(), projection.getNomeEvento(), projection.getStatus());
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            String data = formatter.format(projection.getDataCompra());
+            IngressoPorEventoDTO dto = new IngressoPorEventoDTO(projection.getCodigoIngresso(), data, projection.getComprador(), projection.getNomeEvento(), projection.getStatus());
             relatorios.add(dto);
         }
         return relatorios;
