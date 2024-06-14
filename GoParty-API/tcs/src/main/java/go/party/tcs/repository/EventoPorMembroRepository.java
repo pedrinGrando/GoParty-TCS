@@ -2,6 +2,7 @@ package go.party.tcs.repository;
 
 import go.party.tcs.model.Evento;
 import go.party.tcs.projection.EventoPorMembroProjection;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +29,6 @@ public interface EventoPorMembroRepository extends JpaRepository<Evento, Long> {
             "    e.data_evento " +
             "ORDER BY " +
             "    e.data_evento DESC")
-    List<EventoPorMembroProjection> findEventosPorMembro(@Param("formaturaId") Long formaturaId, @Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim);
+    List<EventoPorMembroProjection> findEventosPorMembro(@Param("formaturaId") Long formaturaId, @Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim, Pageable pageable);
 
 }

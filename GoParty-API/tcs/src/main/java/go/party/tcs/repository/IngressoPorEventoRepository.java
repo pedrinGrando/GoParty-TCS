@@ -3,6 +3,7 @@ package go.party.tcs.repository;
 import go.party.tcs.Enums.TipoStatus;
 import go.party.tcs.model.Ingresso;
 import go.party.tcs.projection.IngressoPorEventoProjection;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -28,6 +29,6 @@ public interface IngressoPorEventoRepository extends JpaRepository<Ingresso, Lon
             "    i.status = COALESCE((:status), status) " +
             "order by " +
             "    i.data_compra desc;")
-    List<IngressoPorEventoProjection> findIngressosPorEvento(@Param("formaturaId") Long formaturaId, @Param("eventoId") Long eventoId, @Param("status") TipoStatus status);
+    List<IngressoPorEventoProjection> findIngressosPorEvento(@Param("formaturaId") Long formaturaId, @Param("eventoId") Long eventoId, @Param("status") TipoStatus status, Pageable pageable);
 
 }
