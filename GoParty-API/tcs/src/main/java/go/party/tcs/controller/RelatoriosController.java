@@ -5,6 +5,8 @@ import go.party.tcs.dto.EventoPorMembroDTO;
 import go.party.tcs.dto.IngressoPorEventoDTO;
 import go.party.tcs.repository.EventoPorMembroRepository;
 import go.party.tcs.repository.IngressoPorEventoRepository;
+import go.party.tcs.service.EventoPorMembroService;
+import go.party.tcs.service.IngressoPorEventoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import go.party.tcs.dto.RelatorioEventoPorMembroDTO;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,24 +27,26 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class RelatoriosController {
 
     @Autowired
-    IngressoPorEventoRepository ingressoPorEventoRepository;
+    IngressoPorEventoService ingressoPorEventoService;
 
     @Autowired
-    EventoPorMembroRepository eventoPorMembroRepository;
+    EventoPorMembroService eventoPorMembroService;
 
     @GetMapping("/ingresso")
     public ResponseEntity<List<IngressoPorEventoDTO>> ingresso(
-            @RequestParam(required = true) Long idFormatura,
+            @RequestParam Long idFormatura,
             @RequestParam(required = false) Long idEvento,
             @RequestParam(required = false) String status) {
-        TipoStatus tipoStatus = TipoStatus.valueOf(status);
-        return ResponseEntity.ok(ingressoPorEventoRepository.findIngressosPorEvento(idFormatura, idEvento, tipoStatus));
+        TipoStatus tipoStatus = status != null ? TipoStatus.valueOf(status) : null;
+        List<IngressoPorEventoDTO> relatorios = ingressoPorEventoService.gerarRelatorio(idFormatura, idEvento, tipoStatus);
+        return ResponseEntity.ok(relatorios);
     }
-    // * Listar: Quantidade de evento por integrante.
+    
     @GetMapping("/relatorio-evento-por-membro")
     public ResponseEntity<List<EventoPorMembroDTO>> eventoPorMembro(@RequestParam Long idFormatura,
                                                                   @RequestParam(required = false) LocalDate dataInicio,
                                                                   @RequestParam(required = false) LocalDate dataFim) {
-        return ResponseEntity.ok(eventoPorMembroRepository.findEventosPorMembro(idFormatura, dataInicio, dataFim));
+        List<EventoPorMembroDTO> relatorio = eventoPorMembroService.gerarRelatorio(idFormatura, dataInicio, dataFim);
+        return ResponseEntity.ok(relatorio);
     }
 }
