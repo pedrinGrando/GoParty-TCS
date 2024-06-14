@@ -4,14 +4,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import go.party.tcs.Enums.TipoStatus;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -40,7 +33,7 @@ public class Ingresso {
     @Column(name = "codigoEvento")
     private String codigoEvento;
      
-    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private TipoStatus status;
 
     @Column(name = "dataCompra")

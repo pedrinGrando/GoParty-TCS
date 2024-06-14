@@ -1,6 +1,6 @@
 package go.party.tcs.dto;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import go.party.tcs.Enums.TipoStatus;
 import lombok.AllArgsConstructor;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class IngressoPorEventoDTO {
   private Long codigoIngresso;
-  private LocalDate dataCompra;
+  private LocalDateTime dataCompra;
   private String nomeComprador;
   private String nomeEvento;
   private TipoStatus status;
