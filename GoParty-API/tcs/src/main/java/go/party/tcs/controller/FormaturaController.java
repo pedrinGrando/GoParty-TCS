@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import go.party.tcs.model.AppException;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 
@@ -65,24 +66,11 @@ public class FormaturaController {
     @PostMapping("/ser-adm/{userId}")
     public ResponseEntity<?> cadastrarSolicitacaoAdm(@PathVariable Long userId, @RequestBody Formatura formatura) {
         try {
-            Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-            if (!userOptional.isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-            }
-            Usuario usuarioAdm = userOptional.get();
-            if (usuarioAdm.getTipoUsuario().equals(TipoUsuario.ADM)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario já é ADM!");
-            } else if (!usuarioAdm.getTipoUsuario().equals(TipoUsuario.STUDENT)) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario nao estudante!");
-            }
-            formatura.setAdm(usuarioAdm);
-            formatura.setDataSolicitacao(LocalDateTime.now());
-            Formatura formaturaSalva = formaturaService.cadastrarSolicitacaoAdm(formatura);
-            usuarioAdm.setTipoUsuario(TipoUsuario.ADM);
-            usuarioAdm.setFormatura(formaturaSalva);
-            usuarioRepository.save(usuarioAdm);
-            return ResponseEntity
-                    .ok(Map.of("id", formaturaSalva.getId(), "mensagem", "Formatura cadastrada com sucesso!"));
+            formatura = formaturaService.cadastrarAdm(userId, formatura);
+            return ResponseEntity.ok(Map.of("id", formatura.getId(), "mensagem", "Formatura cadastrada com sucesso!"));
+        }catch (AppException exception) {
+            exception.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(exception.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

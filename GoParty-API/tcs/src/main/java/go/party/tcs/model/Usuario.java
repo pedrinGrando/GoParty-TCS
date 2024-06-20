@@ -111,5 +111,13 @@ public class Usuario implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public boolean isAdm() {
+        return this.tipoUsuario.equals(TipoUsuario.ADM);
+    }
+
+    public boolean isNotStudent() {
+        return !this.tipoUsuario.equals(TipoUsuario.STUDENT);
+    }
   
 }

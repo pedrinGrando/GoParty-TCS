@@ -73,7 +73,7 @@ public class UsuarioService {
         this.saveUser(usuario);
     }
 
-    private void saveUser(Usuario usuario) {
+    public void saveUser(Usuario usuario) {
         usuarioRepository.save(usuario);
     }
 
@@ -102,6 +102,10 @@ public class UsuarioService {
         usuario.setAtivo(false);
         this.saveUser(usuario);
     }
-   
+
+    public Usuario findById(Long id) throws AppException {
+        return usuarioRepository.findById(id).orElseThrow(() -> new AppException("Usuario não encontrado!"));
+    }
+
 }
 
