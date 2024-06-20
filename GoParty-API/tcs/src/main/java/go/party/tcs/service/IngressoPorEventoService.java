@@ -19,14 +19,15 @@ public class IngressoPorEventoService {
     IngressoPorEventoRepository ingressoPorEventoRepository;
 
     public List<IngressoPorEventoDTO> gerarRelatorio(Long idFormatura, Long idEvento, TipoStatus status, PageRequest pageRequest) {
-        List<IngressoPorEventoDTO> relatorios = new ArrayList<>();
-        List<IngressoPorEventoProjection> resultado = ingressoPorEventoRepository.findIngressosPorEvento(idFormatura, idEvento, status, pageRequest);
-        for (IngressoPorEventoProjection projection : resultado) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            String data = formatter.format(projection.getDataCompra());
-            IngressoPorEventoDTO dto = new IngressoPorEventoDTO(projection.getCodigoIngresso(), data, projection.getComprador(), projection.getNomeEvento(), projection.getStatus());
-            relatorios.add(dto);
-        }
+        List<IngressoPorEventoDTO> relatorios = ingressoPorEventoRepository.findIngressosPorEvento(idFormatura, idEvento, status, pageRequest).stream().map(
+                projection -> new IngressoPorEventoDTO(
+                        projection.getCodigoIngresso(),
+                        projection.getDataCompra(),
+                        projection.getComprador(),
+                        projection.getNomeEvento(),
+                        projection.getStatus()
+                )
+        ).toList();
         return relatorios;
     }
 }

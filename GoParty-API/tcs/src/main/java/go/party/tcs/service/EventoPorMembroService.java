@@ -18,12 +18,13 @@ public class EventoPorMembroService {
     EventoPorMembroRepository eventoPorMembroRepository;
 
     public List<EventoPorMembroDTO> gerarRelatorio(Long idFormatura, LocalDate dataInicio, LocalDate dataFim, PageRequest pageRequest) {
-        List<EventoPorMembroDTO> relatorio = new ArrayList<>();
-        List<EventoPorMembroProjection> resultados = eventoPorMembroRepository.findEventosPorMembro(idFormatura, dataInicio, dataFim, pageRequest);
-        for (EventoPorMembroProjection projection : resultados) {
-            EventoPorMembroDTO dto = new EventoPorMembroDTO(projection.getNome(), projection.getQuantidadeEventosCriados(), projection.getTotalIngressosVendidos(), projection.getValorArrecadadoTotal());
-            relatorio.add(dto);
-        }
+        List<EventoPorMembroDTO> relatorio = eventoPorMembroRepository.findEventosPorMembro(idFormatura, dataInicio, dataFim, pageRequest).stream().map(
+                projection -> new EventoPorMembroDTO(
+                        projection.getNome(),
+                        projection.getQuantidadeEventosCriados(),
+                        projection.getTotalIngressosVendidos(),
+                        projection.getValorArrecadadoTotal())
+        ).toList();
         return relatorio;
     }
 }
