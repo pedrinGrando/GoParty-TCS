@@ -6,7 +6,7 @@ public class Senha {
     private static final int TAMANHO_MAXIMO = 15;
 
     public static boolean isSenhaValida(String password) {
-        if (password == null || password.length() < TAMANHO_MINIMO || password.length() > TAMANHO_MAXIMO) {
+        if (password == null || password.length() < TAMANHO_MINIMO || password.length() > TAMANHO_MAXIMO || password.contains(" ")) {
             return false;
         }
         String regex = "^(?=.*[0-9])(?=.*[!@#$%^&*()-+]).{8,15}$";
