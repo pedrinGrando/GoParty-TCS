@@ -1,5 +1,6 @@
 package go.party.tcs.service;
 
+import go.party.tcs.Enums.TipoUsuario;
 import go.party.tcs.dto.UsuarioResponseDTO;
 import go.party.tcs.model.AppException;
 import go.party.tcs.model.Usuario;
@@ -95,9 +96,9 @@ public class AuthService implements UserDetailsService {
     public boolean validarEmailCadastro(String codigoDigitado) {
         if(codigoDigitado.equals(codigoGeradoEmail)){
             if(!Email.isStudent(usuarioValidarCadastro.getEmail())){
-                usuarioService.cadastrarUsuario(usuarioValidarCadastro);
+                usuarioService.cadastrarUsuario(usuarioValidarCadastro, TipoUsuario.BASIC);
             } else {
-                usuarioService.cadastrarUsuarioEstudante(usuarioValidarCadastro);
+                usuarioService.cadastrarUsuario(usuarioValidarCadastro, TipoUsuario.STUDENT);
             }
             return true;
         }
