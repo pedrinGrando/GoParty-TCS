@@ -11,11 +11,12 @@ public class InviteDTO {
     private boolean accept;
     private LocalDateTime acceptDate;
     private LocalDateTime rejectDate;
+    private String gradName;
 
     public InviteDTO() {
     }
 
-    public InviteDTO(Long id, LocalDateTime inviteDate, Long graduationId, Long userId, boolean accept, LocalDateTime acceptDate, LocalDateTime rejectDate) {
+    public InviteDTO(Long id, LocalDateTime inviteDate, Long graduationId, Long userId, boolean accept, LocalDateTime acceptDate, LocalDateTime rejectDate, String gradName) {
         this.id = id;
         this.inviteDate = inviteDate;
         this.graduationId = graduationId;
@@ -23,6 +24,7 @@ public class InviteDTO {
         this.accept = accept;
         this.acceptDate = acceptDate;
         this.rejectDate = rejectDate;
+        this.gradName = gradName;
     }
 
     // Getters and setters
@@ -80,5 +82,13 @@ public class InviteDTO {
 
     public void setRejectDate(LocalDateTime rejectDate) {
         this.rejectDate = rejectDate;
+    }
+
+    public String getGradName() {
+        return gradName;
+    }
+
+    public void setGradName(String gradName) {
+        this.gradName = gradName;
     }
 }

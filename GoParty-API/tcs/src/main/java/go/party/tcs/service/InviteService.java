@@ -73,7 +73,8 @@ public class InviteService {
                 invite.getUsuario().getId(),
                 invite.isAccept(),
                 invite.getAcceptDate(),
-                invite.getRejectDate()
+                invite.getRejectDate(),
+                invite.getFormatura().getTitulo()
         );
     }
 
