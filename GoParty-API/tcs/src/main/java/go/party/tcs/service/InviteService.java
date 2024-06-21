@@ -43,8 +43,6 @@ public class InviteService {
         Formatura graduation = this.isPresent(formaturaRepository.findById(invite.getFormatura().getId()));
         invite.setUsuario(user);
         invite.setFormatura(graduation);
-//       String notificationMessage = "Você foi convidado para a formatura " + graduation.getTitulo() + "!";
-//       notificationService.addNotification(notificationMessage, user.getId(), TipoNotificacao.INVITE, graduation.getAdm().getFotoCaminho());
         inviteRepository.save(invite);
     }
 
@@ -61,7 +59,7 @@ public class InviteService {
     }
 
     public List<InviteDTO> getInvitesByUserId(Long userId) {
-        List<Invite> invites = inviteRepository.findByUsuarioId(userId);
+        List<Invite> invites = inviteRepository.findByUsuarioIdAndAcceptFalse(userId);
         return invites.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 

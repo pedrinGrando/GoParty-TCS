@@ -288,8 +288,7 @@ public class EventoController {
             notificationService.addNotification(
                     usuario.getUsername() + " comentou em seu evento: " + comentario.getTexto(),
                     evento.getUsuario().getId(),
-                    TipoNotificacao.COMENTARIO,
-                    comentario.getAutor().getFotoCaminho()
+                    TipoNotificacao.COMENTARIO
             );
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Comentário adicionado com sucesso!");
@@ -346,8 +345,7 @@ public class EventoController {
         notificationService.addNotification(
                 usuario.getUsername() + " curtiu seu evento.",
                 evento.getUsuario().getId(),
-                TipoNotificacao.CURTIDA,
-                usuario.getFotoCaminho()
+                TipoNotificacao.CURTIDA
         );
 
         return ResponseEntity.ok("Evento curtido com sucesso");
