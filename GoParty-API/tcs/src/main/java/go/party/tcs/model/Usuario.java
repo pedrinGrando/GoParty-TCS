@@ -119,5 +119,9 @@ public class Usuario implements UserDetails {
     public boolean isNotStudent() {
         return !this.tipoUsuario.equals(TipoUsuario.STUDENT);
     }
-  
+
+    public boolean isNotAdm() {
+        return !this.tipoUsuario.equals(TipoUsuario.ADM);
+    }
+
 }
