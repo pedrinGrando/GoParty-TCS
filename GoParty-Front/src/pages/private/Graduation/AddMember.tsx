@@ -55,6 +55,7 @@ export default function AddMember() {
                 throw new Error(`Network response was not ok: ${response.statusText}`);
             }
     
+            setUsuarios(prevUsuarios => prevUsuarios.filter(usuario => usuario.id !== usuario.id));
             setInvited(true);
             setToastType('success');
             setIsVisible(true);

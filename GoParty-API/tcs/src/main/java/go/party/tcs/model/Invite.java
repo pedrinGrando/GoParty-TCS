@@ -14,20 +14,27 @@ import lombok.*;
 @Table(name = "invite")
 public class Invite {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(name = "invite_date")
     private LocalDateTime inviteDate;
-    @OneToOne
+
+    @ManyToOne
     @JoinColumn(name = "formatura_id", nullable = false)
     private Formatura formatura;
+
     @OneToOne
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
+
     @Column(name = "accept")
     private boolean accept;
+
     @Column(name = "accept_date")
     private LocalDateTime acceptDate;
+
     @Column(name = "reject_date")
     private LocalDateTime rejectDate;
 }
