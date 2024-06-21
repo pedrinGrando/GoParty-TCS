@@ -92,9 +92,9 @@ const EventCard: React.FC<EventoCardProps> = ({ evento, userId, toggleComentario
                         disabled={loading}
                     >
                         {curtido ? <UnlikeButton /> : <LikeButton />}
+                        <span> {evento.totalCurtidas > 0 ? evento.totalCurtidas : ''}</span>
                     </button>
-                    <span> {evento.totalCurtidas > 0 ? evento.totalCurtidas : ''}</span>
-                    
+                     
                     <button onClick={() => toggleComentarios(evento.id)} className="flex mr-2 text-gray-700 text-sm mr-8 hover:text-indigo-500">
                         <svg fill="none" viewBox="0 0 24 24" className="w-5 h-5 mr-1" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
