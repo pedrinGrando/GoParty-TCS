@@ -283,7 +283,6 @@ export default function RegisterStudent() {
       });
 
 
-
       if (response.ok) {
         // Limpar o formulário após o envio bem-sucedido, se necessário
         setFormData({
@@ -506,7 +505,7 @@ export default function RegisterStudent() {
                   </div>
                   <div className="relative">
                     <button type='submit'
-                         disabled={!isChecked || !isValidPass ||errors.senha|| errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
+                         disabled={!isChecked || !isValidPass|| errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                       {isLoading ? (
