@@ -1,5 +1,6 @@
 package go.party.tcs.controller;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -63,8 +64,6 @@ public class EventoController {
     @Autowired
     private IngressoRepository ingressoRepository;
 
-    @Value("${file.upload-dir}")
-    private String uploadDir;
     @Autowired
     private ComentarioRepository comentarioRepository;
 
@@ -75,24 +74,10 @@ public class EventoController {
     @PostMapping("/criar-evento/{userId}")
     public ResponseEntity<?> cadastrarEvento(@PathVariable Long userId, @RequestBody Evento evento) {
         try {
-
-            // encontrar usuario que fez a postagem
-            Optional<Usuario> userOptional = usuarioRepository.findById(userId);
-            if (!userOptional.isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
-            }
-            Usuario usuarioAutor = userOptional.get();
-            if (!usuarioAutor.getTipoUsuario().equals(TipoUsuario.MEMBER)
-                    && !usuarioAutor.getTipoUsuario().equals(TipoUsuario.ADM)) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário não é membro!");
-            } else {
-                evento.setFormatura(usuarioAutor.getFormatura());
-                evento.setUsuario(usuarioAutor);
-                // Momento da Postagem
-                evento.setDataPostagem(LocalDateTime.now());
-                Evento eventoSalvo = eventoRepository.save(evento);
-                return ResponseEntity.ok(Map.of("id", eventoSalvo.getId(), "mensagem", "Evento criado com sucesso"));
-            }
+            evento = eventoService.cadastrarEvento(userId, evento);
+            return ResponseEntity.ok(Map.of("id", evento.getId(), "mensagem", "Evento criado com sucesso"));
+        } catch (AppException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (RuntimeException exception) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao cadastrar evento.");
         }
@@ -102,54 +87,28 @@ public class EventoController {
     public ResponseEntity<String> uploadProfileImage(@PathVariable Long eventoId,
                                                      @RequestParam("file") MultipartFile file) {
         try {
-            Optional<Evento> eventoOpcional = eventoRepository.findById(eventoId);
-            if (!eventoOpcional.isPresent()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Event not found");
-            }
-
-            Evento evento = eventoOpcional.get();
-            String filename = eventoId + "_" + file.getOriginalFilename();
-            Path filePath = Paths.get(uploadDir, filename);
-            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-            evento.setEventoCaminho("/uploads/" + filename);
-            eventoRepository.save(evento);
-
+            eventoService.uploadEventImage(eventoId, file);
             return ResponseEntity.ok("Event image uploaded successfully");
-        } catch (Exception e) {
+        } catch (AppException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload event image");
         }
     }
 
     @GetMapping("/buscar-eventos")
     public List<EventoDTO> getAllEventosAtivos() {
-        List<Evento> eventosAtivos = eventoRepository.findByAtivoTrueAndEsgotadoFalse();
-        LocalDate now = LocalDate.now();
-        eventosAtivos.forEach(evento -> {
-            if (evento.getDataEvento().isBefore(now)) {
-                evento.setDataExpiracao(now);
-                eventoRepository.save(evento);
-            }
-        });
-
-        return eventosAtivos.stream()
-                .filter(evento -> evento.getDataEvento().isAfter(now))
-                .map(evento -> {
-                    int totalCurtidas = curtidaRepository.countByEventoId(evento.getId());
-                    int totalComentarios = comentarioRepository.countByEventoId(evento.getId());
-                    return new EventoDTO(evento, totalCurtidas, totalComentarios);
-                })
-                .collect(Collectors.toList());
+        return eventoService.getEventosAtivos();
     }
 
     // Id evento
     @GetMapping("/buscar-evento/{eventoId}")
     public ResponseEntity<?> buscarEventoPeloId(@PathVariable Long eventoId) {
-        int totalCurtidas = curtidaRepository.countByEventoId(eventoId);
-        int totalComentarios = comentarioRepository.countByEventoId(eventoId);
-        return eventoRepository.findById(eventoId)
-                .map(evento -> new ResponseEntity<>(new EventoDTO(evento, totalCurtidas, totalComentarios), HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+       try {
+           return ResponseEntity.ok(eventoService.buscarEventoPorId(eventoId));
+       } catch (AppException exception) {
+           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+       }
     }
 
     @GetMapping("/buscar-por-usuario/{userId}")
