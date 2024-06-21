@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class IngressoPorEventoDTO {
   private Long codigoIngresso;
-  private LocalDateTime dataCompra;
+  private String dataCompra;
   private String nomeComprador;
   private String nomeEvento;
   private TipoStatus status;
