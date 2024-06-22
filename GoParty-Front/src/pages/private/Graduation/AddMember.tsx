@@ -45,13 +45,14 @@ export default function AddMember() {
             });
 
             if (!response.ok) {
+                if (response.status === 400) {
+                    setMessage('Você já convidou este usuário');
+                }
                 setToastType('error');
                 setInvited(false);
                 setIsVisible(true);
-                setMessage('Erro ao adicionar membro');
                 throw new Error(`Network response was not ok: ${response.statusText}`);
             }
-
             setUsuarios(prevUsuarios => prevUsuarios.filter(usuario => usuario.id !== userId));
             setInvited(true);
             setToastType('success');
@@ -59,9 +60,9 @@ export default function AddMember() {
             setMessage('Convite enviado!');
         } catch (error) {
             setInvited(false);
-            setToastType('error');
+            setToastType('informative');
             setIsVisible(true);
-            setMessage('Erro ao enviar o convite!');
+            setMessage('Você já convidou este usuário!');
             console.error('Erro ao convidar usuário:', error);
         } finally {
             setIsLoading(false);
