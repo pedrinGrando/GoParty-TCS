@@ -18,9 +18,10 @@ public class FormaturaDTO {
     private double arrecadado;
     private double arrecad;
     private String nomeUsuario;
+    private Long totalMembros;
 
     public FormaturaDTO(Long id, String titulo, String descricao, String formaturaCaminho, String cidade, String estado,
-    LocalDate dataPrevista, double arrecadado, double arrecad, String nomeUsuario) {
+    LocalDate dataPrevista, double arrecadado, double arrecad, String nomeUsuario, Long totalMembros) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -31,6 +32,7 @@ public class FormaturaDTO {
         this.arrecadado = arrecadado;
         this.arrecad = arrecad;
         this.nomeUsuario = nomeUsuario;
+        this.totalMembros = totalMembros;
     }
 
     public FormaturaDTO() {
@@ -96,6 +98,11 @@ public class FormaturaDTO {
     public void setNomeUsuario(String nomeUsuario) {
         this.nomeUsuario = nomeUsuario;
     }
+    public Long getTotalMembros() {
+        return totalMembros;
+    }
 
-    
+    public void setTotalMembros(Long totalMembros) {
+        this.totalMembros = totalMembros;
+    }
 }
