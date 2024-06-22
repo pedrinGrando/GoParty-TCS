@@ -26,5 +26,9 @@ public class Curtida {
     private Usuario usuario;  // Quem esta curtindo
     @ManyToOne
     private Evento evento;  // Evento curtido
-    
+
+    public Curtida(Usuario usuario, Evento evento) {
+        this.usuario = usuario;
+        this.evento = evento;
+    }
 }
