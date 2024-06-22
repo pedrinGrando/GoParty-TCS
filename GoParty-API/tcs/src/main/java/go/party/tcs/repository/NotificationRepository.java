@@ -15,7 +15,8 @@ import go.party.tcs.model.Notification;
 @Repository
 public interface NotificationRepository extends JpaRepository<Notification, Long> {
 
-    List<Notification> findByUsuarioIdOrderByDateDesc(Long userId);
+    @Query("SELECT n FROM Notification n WHERE n.usuario.id = :userId AND n.tipoNotificacao IS NOT NULL ORDER BY n.date DESC")
+    List<Notification> findByUsuarioIdWithTipoNotificacaoNotNullOrderByDateDesc(@Param("userId") Long userId);
     @Transactional
     @Modifying
     @Query("UPDATE Notification n SET n.visualizado = true WHERE n.usuario.id = :userId AND n.visualizado = false")

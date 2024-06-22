@@ -71,7 +71,7 @@ public class NotificationService {
 
     public List<NotificationDTO> getNotificationByUser(Long userId) {
         Usuario user = this.isPresent(usuarioRepository.findById(userId));
-        List<Notification> notifications = notificationRepository.findByUsuarioIdOrderByDateDesc(user.getId());
+        List<Notification> notifications = notificationRepository.findByUsuarioIdWithTipoNotificacaoNotNullOrderByDateDesc(user.getId());
         List<NotificationDTO> notificationsResponse = this.convertNotificationListToDTO(notifications);
         return notificationsResponse;
     }

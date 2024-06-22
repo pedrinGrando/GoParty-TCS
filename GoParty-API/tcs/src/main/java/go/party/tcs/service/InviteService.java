@@ -43,6 +43,11 @@ public class InviteService {
         Formatura graduation = this.isPresent(formaturaRepository.findById(invite.getFormatura().getId()));
         invite.setUsuario(user);
         invite.setFormatura(graduation);
+
+        notificationService.addNotification(
+                graduation.getAdm().getUsername() + " Invite realizado: ",
+                user.getId(), null
+        );
         inviteRepository.save(invite);
     }
 
@@ -59,7 +64,7 @@ public class InviteService {
     }
 
     public List<InviteDTO> getInvitesByUserId(Long userId) {
-        List<Invite> invites = inviteRepository.findByUsuarioIdAndAcceptFalse(userId);
+        List<Invite> invites = inviteRepository.findPendingInvitesByUserId(userId);
         return invites.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
