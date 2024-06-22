@@ -1,7 +1,6 @@
 package go.party.tcs.controller;
 
 import go.party.tcs.Enums.TipoStatus;
-import go.party.tcs.dto.EventoPorMembroDTO;
 import go.party.tcs.dto.ResponseRelatorio;
 import go.party.tcs.service.RelatorioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
-import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,7 +29,7 @@ public class RelatoriosController {
             @RequestParam(defaultValue = "10") int qtdItens,
             @RequestParam(required = false) Long idEvento,
             @RequestParam(required = false) String status) {
-        TipoStatus tipoStatus = status != null ? TipoStatus.valueOf(status) : null;
+        TipoStatus tipoStatus = status != null ? TipoStatus.valueOf(status.toUpperCase()) : null;
         ResponseRelatorio relatorios = relatorioService.gerarRelatorioIngressoPorEvento(idFormatura, idEvento, tipoStatus, PageRequest.of(pagina, qtdItens));
         return ResponseEntity.ok(relatorios);
     }

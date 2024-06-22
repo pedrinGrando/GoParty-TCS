@@ -20,7 +20,7 @@ public interface IngressoPorEventoRepository extends JpaRepository<Ingresso, Lon
             "    i.status " +
             "from ingresso i " +
             "    inner join usuarios u on " +
-            "    u.id = i.user_id " +
+            "    u.id = i.usuario_id " +
             "    inner join evento e on " +
             "    i.evento_id = e.id " +
             "where " +
@@ -29,6 +29,6 @@ public interface IngressoPorEventoRepository extends JpaRepository<Ingresso, Lon
             "    i.status = COALESCE((:status), status) " +
             "order by " +
             "    i.data_compra desc;")
-    Page<IngressoPorEventoProjection> findIngressosPorEvento(@Param("formaturaId") Long formaturaId, @Param("eventoId") Long eventoId, @Param("status") TipoStatus status, Pageable pageable);
+    Page<IngressoPorEventoProjection> findIngressosPorEvento(@Param("formaturaId") Long formaturaId, @Param("eventoId") Long eventoId, @Param("status") String status, Pageable pageable);
 
 }

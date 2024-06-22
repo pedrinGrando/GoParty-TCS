@@ -20,7 +20,7 @@ public interface EventoPorMembroRepository extends JpaRepository<Evento, Long> {
             "    SUM(e.valor) AS valorArrecadadoTotal " +
             "FROM " +
             "    evento e " +
-            "    INNER JOIN usuarios u ON " +
+            "    inner JOIN usuarios u ON " +
             "    e.user_id = u.id " +
             "WHERE " +
             "    e.formatura_id = (:formaturaId) AND " +

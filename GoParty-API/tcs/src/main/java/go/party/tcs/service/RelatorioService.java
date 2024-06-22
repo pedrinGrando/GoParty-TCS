@@ -49,7 +49,8 @@ public class RelatorioService {
 
     public ResponseRelatorio gerarRelatorioIngressoPorEvento(Long idFormatura, Long idEvento, TipoStatus status, PageRequest pageRequest) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-        Page<IngressoPorEventoProjection> pageResponse = ingressoPorEventoRepository.findIngressosPorEvento(idFormatura, idEvento, status, pageRequest);
+        String statusString = status == null ? null : status.toString().toUpperCase();
+        Page<IngressoPorEventoProjection> pageResponse = ingressoPorEventoRepository.findIngressosPorEvento(idFormatura, idEvento, statusString, pageRequest);
         List<IngressoPorEventoDTO> relatorios = pageResponse.stream().map(
                 projection -> new IngressoPorEventoDTO(
                         projection.getCodigoIngresso(),
