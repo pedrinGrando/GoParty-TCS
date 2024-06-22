@@ -203,9 +203,16 @@ export default function Register() {
       }
 
       if (name === 'dataNasci') {
-        // calcula a idade com base na data de nascimento fornecida
         const today = new Date();
         const birthDate = new Date(value);
+
+        if (birthDate > today) {
+          setErrors({ ...errors, dataNasci: true });
+          return;
+        } else {
+          setErrors({ ...errors, dataNasci: false });
+        }
+
         const age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
 
@@ -377,19 +384,28 @@ export default function Register() {
                     {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
                   </div>
                   <div className="relative">
-                    <label htmlFor='dataNasci' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute dark:text-white dark:bg-gray-700">Data de Nascimento</label>
+                    <label
+                      htmlFor="dataNasci"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+          absolute dark:bg-gray-700 dark:text-white"
+                    >
+                      Data de Nascimento
+                    </label>
                     <input
                       placeholder="Data"
-                      id='dataNasci'
-                      name='dataNasci'
+                      id="dataNasci"
+                      name="dataNasci"
                       value={formData.dataNasci}
                       onChange={handleChange}
                       type="date"
                       className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.dataNasci
-                        ? 'border-red-500' : ''}`} />
-                    {errors.dataNasci && <p style={{ color: 'red' }}>Você deve ter pelo menos 16 anos de idade.</p>}
-
+                        ? 'border-red-500' : ''}`}
+                    />
+                    {errors.dataNasci && (
+                      <p style={{ color: 'red' }}>
+                        {formData.dataNasci ? 'data de nascimento inválida.' : 'Você deve ter pelo menos 16 anos de idade.'}
+                      </p>
+                    )}
                   </div>
 
                   <div className="relative">
