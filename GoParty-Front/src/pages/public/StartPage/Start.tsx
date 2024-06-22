@@ -48,7 +48,7 @@ export default function StartPage() {
                     <div className="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12 dark:bg-gray-900">
                         <div className="mr-auto place-self-center lg:col-span-7 dark:bg-gray-900">
                             <h1 className="max-w-2xl mb-4 text-4xl font-extrabold leading-none md:text-5xl xl:text-6xl dark:text-white">Festas e Formaturas</h1>
-                            <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Eleve a experiência de seus eventos com ingressos personalizados e garanta uma formatura inesquecível com nosso apoio especializado. O GoParty é seu parceiro na criação e aquisição de ingressos exclusivos, facilitando o acesso a uma celebração memorável. Junte-se a nós e transforme momentos importantes em eventos extraordinários.</p>
+                            <p className="max-w-2xl mb-6 font-light text-gray-500 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400"style={{ textIndent: "2em" }}>Eleve a experiência de seus eventos com ingressos personalizados e garanta uma formatura inesquecível com nosso apoio especializado. O GoParty é seu parceiro na criação e aquisição de ingressos exclusivos, facilitando o acesso a uma celebração memorável. Junte-se a nós e transforme momentos importantes em eventos extraordinários.</p>
 
                             <button onClick={handleButtonClick} className="backdrop:blur-md inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900">
                                 Comece a usar
@@ -66,7 +66,7 @@ export default function StartPage() {
                     <div className="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
                         <div className="max-w-screen-md mb-8 lg:mb-16">
                             <h2 className="mb-4 text-4xl font-extrabold text-gray-900 dark:text-white">Criado para trazer simplicidade ao realizar um evento.</h2>
-                            <p className="text-gray-500 sm:text-xl dark:text-gray-400">A GoParty é uma plataforma inovadora
+                            <p className="text-gray-500 sm:text-xl dark:text-gray-400"style={{ textIndent: "2em" }}>A GoParty é uma plataforma inovadora
                                 projetada para simplificar a organização de formaturas e eventos, proporcionando uma experiência interativa tanto para usuários interessados em adquirir ingressos quanto para formandos que desejam angariar fundos para suas celebrações. Nosso objetivo é assegurar que cada formatura seja um acontecimento memorável,
                                 otimizando o processo de planejamento e execução para garantir uma comemoração impecável.</p>
                         </div>
@@ -102,7 +102,7 @@ export default function StartPage() {
                                     <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path></svg>
                                 </div>
                                 <h3 className="mb-2 text-xl font-bold dark:text-white">Segurança de dados</h3>
-                                <p className="text-gray-500 dark:text-gray-400">O GoParty tem utiliza responsávelmente e com seguranças seus dados.</p>
+                                <p className="text-gray-500 dark:text-gray-400">O GoParty é responsável e cuidadosa com seus dados!</p>
                             </div>
                             <div
                                 data-aos="fade-up"
@@ -112,8 +112,8 @@ export default function StartPage() {
                                 <div className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 dark:bg-blue-900">
                                     <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path></svg>
                                 </div>
-                                <h3 className="mb-2 text-xl font-bold dark:text-white">Finança</h3>
-                                <p className="text-gray-500 dark:text-gray-400">Com a nossa gestão fica muito mais fácil organizar sua formatura.</p>
+                                <h3 className="mb-2 text-xl font-bold dark:text-white">Finanças</h3>
+                                <p className="text-gray-500 dark:text-gray-400">O GoParty te ajuda a organizar o financeiro da sua formatura</p>
                             </div>
                             <div
                                 data-aos="fade-up"
@@ -123,8 +123,8 @@ export default function StartPage() {
                                 <div className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 dark:bg-blue-900">
                                     <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
                                 </div>
-                                <h3 className="mb-2 text-xl font-bold dark:text-white">Design intuitivo</h3>
-                                <p className="text-gray-500 dark:text-gray-400">Craft beautiful, delightful experiences for both marketing and product with real cross-company collaboration.</p>
+                                <h3 className="mb-2 text-xl font-bold dark:text-white">Design adaptável</h3>
+                                <p className="text-gray-500 dark:text-gray-400"> O GoParty foi pensado para ter um design acessível e adaptável para suas preferências.</p>
                             </div>
                             <div
                                 data-aos="fade-up"
@@ -134,8 +134,8 @@ export default function StartPage() {
                                 <div className="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-blue-100 lg:h-12 lg:w-12 dark:bg-blue-900">
                                     <svg className="w-5 h-5 text-blue-600 lg:w-6 lg:h-6 dark:text-blue-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
                                 </div>
-                                <h3 className="mb-2 text-xl font-bold dark:text-white">Design intuitivo</h3>
-                                <p className="text-gray-500 dark:text-gray-400">Craft beautiful, delightful experiences for both marketing and product with real cross-company collaboration.</p>
+                                <h3 className="mb-2 text-xl font-bold dark:text-white">Transparência</h3>
+                                <p className="text-gray-500 dark:text-gray-400">O GoParty torna a gestão da sua formatura muito mais transparente</p>
                             </div>
 
                         </div>
@@ -145,7 +145,7 @@ export default function StartPage() {
                 <section className="bg-white dark:bg-gray-900">
                     <div className="gap-16 items-center py-8 px-4 mx-auto max-w-screen-xl lg:grid lg:grid-cols-2 lg:py-16 lg:px-6">
                         <div className="font-light text-gray-500 sm:text-lg dark:text-gray-400">
-                            <h2 className="mb-4 text-4xl font-extrabold text-gray-900 dark:text-white">Escolha o melhor evento para adiquirir um ingresso.</h2>
+                            <h2 className="mb-4 text-4xl font-extrabold text-gray-900 dark:text-white">Escolha o melhor evento para adquirir um ingresso.</h2>
                             <p className="mb-4">Com a funcionalidade de Eventos em alta, você pode escolher entre os eventos que estão mais chamando a atenção do público.</p>
                         </div>
                         <div className="grid grid-cols-2 gap-4 mt-8">
@@ -183,10 +183,10 @@ export default function StartPage() {
                                         <div className="overflow-hidden text-black bg-white border-t border-gray-100 rounded-lg shadow-sm">
                                             <div
                                                 className="block max-w-sm px-8 mx-auto mt-5 text-sm text-left text-black sm:text-md lg:px-6">
-                                                <h3 className="p-3 text-lg font-bold tracking-wide text-center uppercase">User<span
+                                                <h3 className="p-3 text-lg font-bold tracking-wide text-center uppercase">Basic<span
                                                     className="ml-2 font-light">GoParty</span></h3>
 
-                                                <p className="text-sm text-gray-600">Ao criar a sua conta voce sera um GoParty User.
+                                                <p className="text-sm text-gray-600">Ao criar a sua conta voce será um GoParty Basic.
                                                 </p>
                                             </div>
 
@@ -201,8 +201,9 @@ export default function StartPage() {
                                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                                             </svg>
                                                         </div>
-                                                        <span className="ml-3 text-lg text-gray-700">Adiquirir ingressos</span>
+                                                        <span className="ml-3 text-lg text-gray-700">Comprar ingressos</span>
                                                     </li>
+                                                    
                                                     <li className="flex items-center">
                                                         <div className="p-2 text-green-500 rounded-full fill-current ">
                                                             <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
@@ -225,6 +226,17 @@ export default function StartPage() {
                                                         </div>
                                                         <span className="ml-3 text-lg text-gray-700">Ser convidado para formaturas</span>
                                                     </li>
+                                                    <li className="flex items-center">
+                                                        <div className="p-2 text-green-500 rounded-full fill-current ">
+                                                            <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                            </svg>
+                                                        </div>
+                                                        <span className="ml-3 text-lg text-gray-700">Comentar e curtir postagens</span>
+                                                    </li>
                                                 </ul>
                                             </div>
                                             <div className="flex items-center block p-8 uppercase">
@@ -242,12 +254,35 @@ export default function StartPage() {
                                             <h3 className="p-3 pb-1 text-lg font-bold tracking-wide text-center uppercase">Adm<span
                                                 className="ml-2 font-light">GoParty</span></h3>
 
-                                            <p className="text-sm text-gray-600">Ao ser aprovado em uma solicitacao para ser GoParty ADM</p>
+                                            <p className="text-sm text-gray-600">Ao ser aprovado em uma solicitação para ser GoParty ADM</p>
                                         </div>
                                         <div className="flex justify-start pl-12 mt-8 sm:justify-start">
                                             <ul>
+                                            <li className="flex items-center">
+                                                        <div className="p-2 text-green-500 rounded-full fill-current ">
+                                                            <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                            </svg>
+                                                        </div>
+                                                        <span className="ml-3 text-lg text-gray-700">Comentar e curtir postagens</span>
+                                                    </li>
+                                                    <li className="flex items-center">
+                                                        <div className="p-2 text-green-500 rounded-full fill-current ">
+                                                            <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                            </svg>
+                                                        </div>
+                                                        <span className="ml-3 text-lg text-gray-700">Comprar ingressos</span>
+                                                    </li>
+                                            
                                                 <li className="flex items-center">
-                                                    <div className="p-2 text-green-500 rounded-full fill-current">
+                                                    <div className="p-2 text-green-500 rounded-full fill-current ">
                                                         <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
                                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                             stroke-linejoin="round">
@@ -255,7 +290,7 @@ export default function StartPage() {
                                                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                                         </svg>
                                                     </div>
-                                                    <span className="ml-3 text-lg text-gray-700">Acesso a gestao da formatura</span>
+                                                    <span className="ml-3 text-lg text-gray-700">Adicionar membros à formatura</span>
                                                 </li>
                                                 <li className="flex items-center">
                                                     <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -266,7 +301,7 @@ export default function StartPage() {
                                                             <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                                         </svg>
                                                     </div>
-                                                    <span className="ml-3 text-lg text-gray-700">Adicionar membros</span>
+                                                    <span className="ml-3 text-lg text-gray-700">Gerar relatórios</span>
                                                 </li>
                                                 <li className="flex items-center">
                                                     <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -278,6 +313,17 @@ export default function StartPage() {
                                                         </svg>
                                                     </div>
                                                     <span className="ml-3 text-lg text-gray-700">Criar eventos</span>
+                                                </li>
+                                                <li className="flex items-center">
+                                                    <div className="p-2 text-green-500 rounded-full fill-current ">
+                                                        <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
+                                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                            stroke-linejoin="round">
+                                                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                        </svg>
+                                                    </div>
+                                                    <span className="ml-3 text-lg text-gray-700">Representante da turma</span>
                                                 </li>
                                             </ul>
                                         </div>
@@ -319,7 +365,7 @@ export default function StartPage() {
                                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                                             </svg>
                                                         </div>
-                                                        <span className="ml-3 text-lg text-gray-700">Adquirir Ingressos</span>
+                                                        <span className="ml-3 text-lg text-gray-700">Comprar Ingressos</span>
                                                     </li>
                                                     <li className="flex items-center">
                                                         <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -330,7 +376,18 @@ export default function StartPage() {
                                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                                             </svg>
                                                         </div>
-                                                        <span className="ml-3 text-lg text-gray-700">Interagir na plataforma.</span>
+                                                        <span className="ml-3 text-lg text-gray-700">Comentar e curtir postagens</span>
+                                                    </li>
+                                                    <li className="flex items-center">
+                                                        <div className="p-2 text-green-500 rounded-full fill-current ">
+                                                            <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                            </svg>
+                                                        </div>
+                                                        <span className="ml-3 text-lg text-gray-700">Gerar relatórios</span>
                                                     </li>
                                                 </ul>
                                             </div>

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import go.party.tcs.Enums.TipoNotificacao;
 import go.party.tcs.dto.CommentDTO;
 import go.party.tcs.model.*;
 import go.party.tcs.repository.*;
@@ -280,8 +281,15 @@ public class EventoController {
             comentario.setEvento(eventoOptional.get());
             comentario.setAutor(usuarioOptional.get());
 
-            comentarioRepository.save(comentario);
+            Evento evento = eventoOptional.get();
+            Usuario usuario = usuarioOptional.get();
 
+            comentarioRepository.save(comentario);
+            notificationService.addNotification(
+                    usuario.getUsername() + " comentou em seu evento: " + comentario.getTexto(),
+                    evento.getUsuario().getId(),
+                    TipoNotificacao.COMENTARIO
+            );
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Comentário adicionado com sucesso!");
             response.put("comentario", new CommentDTO(  comentario.getId(),
@@ -334,6 +342,11 @@ public class EventoController {
         curtida.setEvento(evento);
         curtida.setUsuario(usuario);
         curtidaRepository.save(curtida);
+        notificationService.addNotification(
+                usuario.getUsername() + " curtiu seu evento.",
+                evento.getUsuario().getId(),
+                TipoNotificacao.CURTIDA
+        );
 
         return ResponseEntity.ok("Evento curtido com sucesso");
     }
@@ -358,6 +371,11 @@ public class EventoController {
         curtidaRepository.deleteByUsuarioAndEvento(usuario, evento);
 
         return ResponseEntity.ok("Evento descurtido com sucesso!");
+    }
+
+    @GetMapping("/top10Curtidas")
+    public List<EventoDTO> getTop10EventosComMaisCurtidas() {
+        return eventoService.findTop10EventosComMaisCurtidas();
     }
 
     private String calculateTimeDifference(LocalDateTime commentMoment) {

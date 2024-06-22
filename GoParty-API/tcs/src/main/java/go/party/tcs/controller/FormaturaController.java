@@ -249,7 +249,9 @@ public class FormaturaController {
                 formatura.getDataPrevista(),
                 formatura.getArrecacado(),
                 formatura.getMetaArrecad(),
-                usuario.getNome());
+                usuario.getNome(),
+                usuarioRepository.countUsersByFormaturaId(formatura.getId())
+        );
 
         return ResponseEntity.ok(formaturaDTO);
     }

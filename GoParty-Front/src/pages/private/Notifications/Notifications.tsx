@@ -1,120 +1,286 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import TrendEvents from "../../../components/Feed/TrendEvents";
 import { Loading } from "../../../components/Loading/Loading";
 import { Sidebar } from "../../../components/sidebar/Sidebar";
 import Notification from "../../../types/Notification";
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
-import { NotificationBell } from "../../../components/Notification/NotificationBell";
+import NotificationIcon from "../../../components/Icons/NotificationIcon";
+import { TipoNotificacao } from "../../../types/NotificationType";
+import { ToastType } from "../../../components/modal/ToastType";
+import { ToastContainer } from "../../../components/modal/ToastContainer";
 
 export default function Notifications() {
 
-    interface notificationDTO {
+    interface NotificationDTO {
         id: string;
-        tipoNotificacao: string;
+        tipoNotificacao: TipoNotificacao;
         message: string;
-        timestamp: string;
         visualizado: boolean;
+        notificationMoment: string;
+        fotoCaminho: string;
     }
 
-    const [notifications, setNotifications] = useState<notificationDTO[]>([]);
+    interface InviteDTO {
+        id: number;
+        inviteDate: string;
+        graduationId: string;
+        userId: string;
+        accept: boolean;
+        acceptDate: string;
+        rejectDate: string;
+        gradName: string;
+    }
+
+    const [notifications, setNotifications] = useState<NotificationDTO[]>([]);
+    const [invites, setInvites] = useState<InviteDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const [message, setMessage] = useState("");
+    const [toastType, setToasType] = useState<ToastType>("error");
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
 
-    const fetchSeusEventos = async (): Promise<notificationDTO[]> => {
+    const fetchYourNotifications = async (): Promise<NotificationDTO[]> => {
         setIsLoading(true);
         try {
-            const response = await fetch(`http://localhost:8081/v1/notifications/buscar-por-usuario/${user.id}`);
+            const response = await fetch(`http://localhost:8081/v1/notification/get/${user.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
+            const notificationsData = await response.json();
             setIsLoading(false);
-            const notificationsData: notificationDTO[] = await response.json();
-            return notificationsData;
+            return Array.isArray(notificationsData) ? notificationsData : [];
         } catch (error) {
-            console.error('Error fetching yout notifications events:', error);
+            console.error('Error fetching your notifications:', error);
+            setIsLoading(false);
             return [];
         }
     }
 
-    //Busca notifications usuario
+    const closeToast = () => {
+        setIsVisible(false);
+    }
+
+    const fetchUserInvites = async (): Promise<InviteDTO[]> => {
+        try {
+            const response = await fetch(`http://localhost:8081/v1/invite/user/${user.id}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const invitesData = await response.json();
+            return Array.isArray(invitesData) ? invitesData : [];
+        } catch (error) {
+            console.error('Error fetching user invites:', error);
+            return [];
+        }
+    }
+
+    const handleAcceptInvite = async (inviteId: number) => {
+        try {
+            const response = await fetch(`http://localhost:8081/v1/invite/accept/${inviteId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data.message);
+                setInvites(prevInvites => prevInvites.filter(invite => invite.id !== inviteId));
+                setMessage("Convite aceito.");
+                setToasType("success");
+                setIsVisible(true);
+            } else {
+                console.error("Falha ao aceitar o convite:", response.statusText);
+                setMessage("Erro ao rejeitar.");
+                setToasType("error");
+                setIsVisible(true);
+            }
+        } catch (error) {
+            console.error("Erro ao aceitar o convite:", error);
+            setMessage("Erro ao rejeitar.");
+            setToasType("error");
+            setIsVisible(true);
+        }
+    };
+
+    const handleRejectInvite = async (inviteId: number) => {
+        try {
+            const response = await fetch(`http://localhost:8081/v1/invite/reject/${inviteId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            if (response.ok) {
+                const data = await response.json();
+                console.log(data.message);
+                setInvites(prevInvites => prevInvites.filter(invite => invite.id !== inviteId));
+                setMessage("Convite rejeitado.");
+                setToasType("informative");
+                setIsVisible(true);
+            } else {
+                console.error("Falha ao rejeitar o convite:", response.statusText);
+                setMessage("Erro ao rejeitar.");
+                setToasType("error");
+                setIsVisible(true);
+            }
+        } catch (error) {
+            console.error("Erro ao rejeitar o convite:", error);
+            setMessage("Erro ao rejeitar.");
+            setToasType("error");
+            setIsVisible(true);
+        }
+    };
+
+    const markNotificationsAsVisualized = async (): Promise<void> => {
+        try {
+            const response = await fetch(`http://localhost:8081/v1/notification/change_visualization/${user.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to mark notifications as visualized');
+            }
+        } catch (error) {
+            console.error('Error marking notifications as visualized:', error);
+        }
+    }
+
     useEffect(() => {
-        fetchSeusEventos().then(data => {
-            setNotifications(data);
-            setIsLoading(false);
-        });
+        const fetchData = async () => {
+            const [notificationsData, invitesData] = await Promise.all([fetchYourNotifications(), fetchUserInvites()]);
+            setNotifications(notificationsData);
+            setInvites(invitesData);
+        };
+
+        fetchData();
+        markNotificationsAsVisualized();
     }, []);
 
     return (
-        <div>
+        <div className=" dark:bg-gray-900">
             <TrendEvents />
-            <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Suas notificacoes</h1>
-            <section className="pt-16 bg-blueGray-50 dark:bg-gray-900">
-                <div className="w-full lg:w-4/12 px-4 mx-auto">
-                    <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
-                        {isLoading ? (
-                            <div className="flex justify-center items-center h-screen">
-                                <Loading />
-                            </div>
+            <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Suas notificações</h1>
+            <div className="grid place-items-center my-8">
+                <ToastContainer
+                    message={message}
+                    onClose={closeToast}
+                    isVisible={isVisible}
+                    type={toastType}
+                />
+                <div className="lg:w-2/5 sm:w-3/5 w-11/12 bg-gray-100 dark:bg-gray-800 rounded-xl mx-auto border p-10 shadow-sm">
+                    <div className="inline-flex items-center justify-between w-full">
+                        <h3 className="font-bold text-xl sm:text-2xl text-gray-800 dark:text-white">Todas</h3>
+                        <button
+                            className="inline-flex text-xs sm:text-sm bg-white px-2 sm:px-3 py-2 text-blue-500 items-center rounded font-medium
+                            shadow border focus:outline-none transform active:scale-75 transition-transform duration-700 hover:bg-blue-500
+                            hover:text-white hover:-translate-y-1 hover:scale-110 dark:text-gray-800 dark:hover:bg-gray-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 sm:mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd"
+                                    d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                                    clipRule="evenodd" />
+                            </svg>
+                            Limpar
+                        </button>
+                    </div>
 
-                        ) : (
-                            <div>
-                                {notifications.length === 0 ? (
-                                    <div className="flex justify-center my-8  dark:bg-gray-900">
-                                        <h2>
-                                          Você não possui notificações.
-                                        </h2>
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-screen dark:bg-gray-900">
+                            <Loading />
+                        </div>
+                    ) : (
+                        <div>
+                            {notifications.length === 0 && invites.length === 0 ? (
+                                <div className="flex justify-center my-8 dark:bg-gray-900">
+                                    <h1>Você não possui notificações.</h1>
+                                </div>
+                            ) : (
+                                notifications.map(notification => (
+                                    <div key={notification.id} className="mt-2 px-6 py-4 bg-white rounded-lg shadow w-full">
+                                        <div className="inline-flex items-center justify-between w-full">
+                                            <div className="inline-flex items-center">
+                                                <NotificationIcon tipoNotificacao={notification.tipoNotificacao} />
+                                                <h3 className="font-bold text-base text-gray-800">{notification.tipoNotificacao}</h3>
+                                            </div>
+                                            <p className="text-xs text-gray-500">
+                                                {notification.notificationMoment}
+                                            </p>
+                                        </div>
+                                        <p className="mt-1 text-sm">
+                                            @{notification.message}
+                                        </p>
                                     </div>
-                                ) : (
-                                    notifications.map(notification => (
-                                        //Cada notificacao
-                                        <div className="flex justify-center my-8"> {/* Ajusta o espaçamento vertical para menor e mantém a centralização horizontal */}
-                                            <div id="toast-notification" className="w-full max-w-xs p-4 text-gray-900 bg-white rounded-lg shadow dark:bg-white dark:text-black" role="alert">
-                                                <div className="flex items-center mb-3">
-                                                    {/* Botão de fechar e ícone */}
+                                ))
+                            )}
+                        </div>
+                    )}
 
-                                                    <button type="button" className="ms-auto -mx-1.5 -my-1.5 bg-white justify-center items-center flex-shrink-0 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-white dark:hover:bg-white" data-dismiss-target="#toast-notification" aria-label="Close">
-                                                        <span className="sr-only">Close</span>
-                                                        <svg className="w-3 h-3 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                                                        </svg>
-                                                    </button>
-
-                                                </div>
-                                                <div className="flex items-center">
-                                                    {/* Ícone e detalhes da notificação */}
-                                                    <div className="relative inline-block shrink-0">
-                                                        {/* foto user */}
-                                                        <img className="w-12 h-12 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="Jese Leos image" />
-                                                        {/* tipo noti icon */}
-                                                        <span className="absolute bottom-0 right-0 inline-flex items-center justify-center w-6 h-6 bg-blue-600 rounded-full">
-                                                            <svg className="w-3 h-3 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 18" fill="currentColor">
-                                                                <path d="M18 4H16V9C16 10.0609 15.5786 11.0783 14.8284 11.8284C14.0783 12.5786 13.0609 13 12 13H9L6.846 14.615C7.17993 14.8628 7.58418 14.9977 8 15H11.667L15.4 17.8C15.5731 17.9298 15.7836 18 16 18C16.2652 18 16.5196 17.8946 16.7071 17.7071C16.8946 17.5196 17 17.2652 17 17V15H18C18.5304 15 19.0391 14.7893 19.4142 14.4142C19.7893 14.0391 20 13.5304 20 13V6C20 5.46957 19.7893 4.96086 19.4142 4.58579C19.0391 4.21071 18.5304 4 18 4Z" fill="currentColor" />
-                                                                <path d="M12 0H2C1.46957 0 0.960859 0.210714 0.585786 0.585786C0.210714 0.960859 0 1.46957 0 2V9C0 9.53043 0.210714 10.0391 0.585786 10.4142C0.960859 10.7893 1.46957 11 2 11H3V13C3 13.1857 3.05171 13.3678 3.14935 13.5257C3.24698 13.6837 3.38668 13.8114 3.55279 13.8944C3.71889 13.9775 3.90484 14.0126 4.08981 13.996C4.27477 13.9793 4.45143 13.9114 4.6 13.8L8.333 11H12C12.5304 11 13.0391 10.7893 13.4142 10.4142C13.7893 10.0391 14 9.53043 14 9V2C14 1.46957 13.7893 0.960859 13.4142 0.585786C13.0391 0.210714 12.5304 0 12 0Z" fill="currentColor" />
-                                                            </svg>
-                                                            <span className="sr-only">Message icon</span>
-                                                        </span>
+                    {isLoading ? (
+                        <div className="flex justify-center items-center h-screen">
+                            <Loading />
+                        </div>
+                    ) : (
+                        <div>
+                            {invites.length === 0 && notifications.length === 0 ? (
+                                <div></div>
+                            ) : (
+                                invites.map(invite => (
+                                    <div key={invite.id} id="toast-interactive" className="w-full max-w-xs p-4 text-gray-500 bg-white rounded-lg shadow dark:bg-gray-800 dark:text-gray-400" role="alert">
+                                        <div className="flex">
+                                            <div className="inline-flex items-center justify-center flex-shrink-0 w-8 h-8 text-blue-500 bg-blue-100 rounded-lg dark:text-blue-300 dark:bg-blue-900">
+                                                <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m12 18-7 3 7-18 7 18-7-3Zm0 0v-5" />
+                                                </svg>
+                                                <span className="sr-only">Convite para formatura</span>
+                                            </div>
+                                            <div className="ms-3 text-sm font-normal">
+                                                <span className="mb-1 text-sm font-semibold text-gray-900 dark:text-white">Convite para {invite.gradName}</span>
+                                                <div className="mb-2 text-sm font-normal"></div>
+                                                <div className="grid grid-cols-2 gap-2">
+                                                    <div>
+                                                        <button
+                                                            onClick={() => handleAcceptInvite(invite.id)}
+                                                            className="inline-flex justify-center w-full px-2 py-1.5 text-xs font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-800"
+                                                        >
+                                                            Aceitar
+                                                        </button>
                                                     </div>
-                                                    <div className="ms-3 text-sm font-normal">
-                                                        {/* Encaminhador */}
-                                                        <div className="text-sm font-semibold text-gray-900 dark:text-white">Dono da noti</div>
-                                                        {/* Message noti */}
-                                                        <div className="text-sm font-normal">{notification.message}</div>
-                                                        {/* Time noti */}
-                                                        <span className="text-xs font-medium text-blue-600 dark:text-blue-500">{notification.timestamp}</span>
+                                                    <div>
+                                                        <button
+                                                            onClick={() => handleRejectInvite(invite.id)}
+                                                            className="inline-flex justify-center w-full px-2 py-1.5 text-xs font-medium text-center text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 dark:bg-gray-600 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-700 dark:focus:ring-gray-700"
+                                                        >
+                                                            Rejeitar
+                                                        </button>
                                                     </div>
                                                 </div>
                                             </div>
+                                            <button type="button" className="ms-auto -mx-1.5 -my-1.5 bg-white items-center justify-center flex-shrink-0 text-gray-400 hover:text-gray-900 rounded-lg focus:ring-2 focus:ring-gray-300 p-1.5 hover:bg-gray-100 inline-flex h-8 w-8 dark:text-gray-500 dark:hover:text-white dark:bg-gray-800 dark:hover:bg-gray-700" data-dismiss-target="#toast-interactive" aria-label="Close">
+                                                <span className="sr-only">Close</span>
+                                                <svg className="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                                                </svg>
+                                            </button>
                                         </div>
-                                    ))
-                                )}
-                            </div>
-                        )}
-
-                    </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    )}
                 </div>
-            </section>
+            </div>
             <Sidebar />
             <ResponsiveNavBar />
         </div>

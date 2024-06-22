@@ -25,7 +25,7 @@ const TrendEvents: React.FC = () => {
     const fetchTodosEventos = async (): Promise<EventoDTO[]> => {
         setIsLoading(true);
         try {
-            const response = await fetch('http://localhost:8081/v1/eventos/buscar-eventos');
+            const response = await fetch('http://localhost:8081/v1/eventos/top10Curtidas');
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
@@ -58,7 +58,7 @@ const TrendEvents: React.FC = () => {
                     </div>
                     {events.length === 0 ? (
                         <div className="flex justify-center dark:bg-gray-900 items-center h-screen">
-                            <h2>Nenhum evento em alta.</h2>
+                            <h2 className="dark:text-white">Nenhum evento em alta.</h2>
                         </div>
                     ) : (
                         events.map(evento => (

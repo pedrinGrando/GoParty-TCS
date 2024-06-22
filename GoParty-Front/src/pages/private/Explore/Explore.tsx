@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import CommentsSection from "../../../components/Comments/CommentsSection";
 import { NoEvent } from "../../../components/Feed/NoEvent";
 import TrendEvents from "../../../components/Feed/TrendEvents";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Explore() {
 
@@ -60,13 +61,13 @@ export default function Explore() {
             <div className="px-4 mx-auto text-center mt-5">
                 {/* campo de pesquisa */}
                 <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow dark:bg-gray-900">
+                    <NotificationBell />
                     <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Pesquisar</label>
                     <div className="relative">
-                       
                         <input
                             type="text"
                             className="block w-96 p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-black"
-                            placeholder="Procure por eventos, formaturas..."
+                            placeholder="Procure por eventos..."
                             required
                             onChange={e => setSearch(e.target.value)}
                             value={search}
@@ -99,7 +100,7 @@ export default function Explore() {
                             </Link>
                             <div className="px-6 py-4 dark:bg-gray-500">
                                 <Link to={`/event/${evento.id}`} key={evento.id} className="block mt-16 mb-8">
-                                <div className="px-6 py-4 dark:bg-gray-500">
+                                    <div className="px-6 py-4 dark:bg-gray-500">
                                         <p className="text-gray-500 flex items-center">
                                             <svg className="w-6 h-6 text-gray-800 dark:text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 13a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z" />
