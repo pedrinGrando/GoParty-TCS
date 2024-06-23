@@ -15,6 +15,8 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     List<Evento> findByAtivoTrueAndEsgotadoFalse();
 
+    List<Evento> findByFormaturaId(Long formaturaId);
+
     Optional<Evento> findById(Long id);
 
     @Query("SELECT new go.party.tcs.dto.EventoDTO(e.id, e.ativo, e.titulo, e.descricao, e.eventoCaminho, e.cidade, e.estado, e.dataEvento, e.valor, e.qntIngressos, e.rua, e.bairro, e.cep, e.esgotado, e.formatura.titulo, 0, 0) "
@@ -22,4 +24,5 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
             "FROM Evento e WHERE (lower(e.titulo) LIKE lower(concat('%', :search, '%')) OR lower(e.descricao) LIKE lower(concat('%', :search, '%'))) AND e.ativo = true")
     List<EventoDTO> findByTituloOrDescricaoContainingIgnoreCase(String search);
 
+    Long countByFormaturaId(Long id);
 }

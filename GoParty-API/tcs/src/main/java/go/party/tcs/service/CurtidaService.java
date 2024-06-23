@@ -14,14 +14,9 @@ import go.party.tcs.repository.EventoRepository;
 
 @Service
 public class CurtidaService {
+
     @Autowired
     private CurtidaRepository curtidaRepository;
-
-    @Autowired
-    private EventoRepository eventoRepository;
-
-    @Autowired
-    private EventoService eventoService;
 
 
     public void curtirEvento(Usuario usuario, Evento evento) throws RuntimeException {
@@ -45,11 +40,6 @@ public class CurtidaService {
     public long contarCurtidasDoEvento(Evento evento) {
         return curtidaRepository.countByEvento(evento);
     }
-
-    public CurtidaService(CurtidaRepository curtidaRepository) {
-        this.curtidaRepository = curtidaRepository;
-    }
-
 
     public void excluirCurtida(Curtida curtida) {
         curtidaRepository.delete(curtida);

@@ -31,8 +31,6 @@ import Events from './pages/private/Events/Events';
 import Graduation from './pages/private/Graduation/Graduation';
 import EventUpdate from './pages/private/EventDetails/EventUpdate';
 import PixKey from './pages/private/Tickets/PixKey';
-import TicketReport from './pages/private/Reports/TicketReport/TicketReport';
-import EventReport from './pages/private/Reports/EventReport/EventReport';
 
 function App() {
 
@@ -85,8 +83,8 @@ function App() {
           <Route path='/your-tickets' element={isAuthenticated() ? <Tickets /> : <Navigate to="/login" />} />
           <Route path='/your-events' element={isAuthenticated() ? <Events /> : <Navigate to="/login" />} />
           <Route path='/your-graduation' element={isAuthenticated() ? <Graduation /> : <Navigate to="/login" />} />
-          <Route path='/your-graduation/ticket-report' element={isAuthenticated() ? <TicketReport /> : <Navigate to="/login" />} />
-          <Route path='/your-graduation/event-report' element={isAuthenticated() ? <EventReport /> : <Navigate to="/login" />} />
+          <Route path='/your-graduation/tickets-report' element={isAuthenticated() ? <Graduation /> : <Navigate to="/login" />} />
+          <Route path='/your-graduation/events-report' element={isAuthenticated() ? <Graduation /> : <Navigate to="/login" />} />
           <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />
           <Route path='/create-event' element={isAuthenticated() ? <PostEvent /> : <Navigate to="/login" />} />
