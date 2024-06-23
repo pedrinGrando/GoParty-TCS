@@ -31,6 +31,7 @@ import Events from './pages/private/Events/Events';
 import Graduation from './pages/private/Graduation/Graduation';
 import EventUpdate from './pages/private/EventDetails/EventUpdate';
 import PixKey from './pages/private/Tickets/PixKey';
+import GradEvents from './pages/private/Graduation/GradEvents';
 
 function App() {
 
@@ -83,6 +84,7 @@ function App() {
           <Route path='/your-tickets' element={isAuthenticated() ? <Tickets /> : <Navigate to="/login" />} />
           <Route path='/your-events' element={isAuthenticated() ? <Events /> : <Navigate to="/login" />} />
           <Route path='/your-graduation' element={isAuthenticated() ? <Graduation /> : <Navigate to="/login" />} />
+          <Route path='/graduation-events/:formId' element={isAuthenticated() ? <GradEvents /> : <Navigate to="/login" />} />
           <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />
           <Route path='/create-event' element={isAuthenticated() ? <PostEvent /> : <Navigate to="/login" />} />

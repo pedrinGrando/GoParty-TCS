@@ -57,7 +57,6 @@ public class EventoController {
         return eventoService.getEventosAtivos();
     }
 
-    // Id evento
     @GetMapping("/buscar-evento/{eventoId}")
     public ResponseEntity<?> buscarEventoPeloId(@PathVariable Long eventoId) {
        try {
@@ -70,6 +69,11 @@ public class EventoController {
     @GetMapping("/buscar-por-usuario/{userId}")
     public ResponseEntity<?> buscarEventoPorUserId(@PathVariable Long userId) {
         return ResponseEntity.ok(eventoService.buscarEventoPorUserId(userId));
+    }
+
+    @GetMapping("/buscar-por-formatura/{formaturaId}")
+    public ResponseEntity<List<EventoDTO>> buscarEventosPorFormaturaId(@PathVariable Long formaturaId) {
+        return ResponseEntity.ok(eventoService.buscarEventosPorFormaturaId(formaturaId));
     }
 
     @GetMapping("/consultar-eventos")

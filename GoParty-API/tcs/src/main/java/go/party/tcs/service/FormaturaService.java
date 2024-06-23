@@ -5,6 +5,8 @@ import go.party.tcs.dto.FormaturaDTO;
 import go.party.tcs.dto.UsuarioDTO;
 import go.party.tcs.model.AppException;
 import go.party.tcs.model.Usuario;
+import go.party.tcs.repository.EventoRepository;
+import go.party.tcs.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -30,11 +32,16 @@ public class FormaturaService {
     @Autowired
     private UsuarioService usuarioService;
 
+    @Autowired
+    private UsuarioRepository usuarioRepository;
+
     @Value("${file.upload-dir}")
     private String uploadDir;
 
     @Autowired
     private EventoService eventoService;
+    @Autowired
+    private EventoRepository eventoRepository;
 
 
     public Formatura cadastrarAdm(Long userId, Formatura formatura) throws AppException{
@@ -108,7 +115,9 @@ public class FormaturaService {
                 formatura.getDataPrevista(),
                 formatura.getArrecacado(),
                 formatura.getMetaArrecad(),
-                usuario.getNome()
+                usuario.getNome(),
+                usuarioRepository.countUsersByFormaturaId(formatura.getId()),
+                eventoRepository.countByFormaturaId(formatura.getId())
         );
     }
 

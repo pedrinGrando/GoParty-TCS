@@ -76,22 +76,23 @@ public class EventoService {
     }
 
     public List<EventoDTO> getEventosAtivos() {
-        List<Evento> eventos = eventoRepository.findByAtivoTrueAndEsgotadoFalse().stream().filter(
-                evento -> evento.getDataEvento().isBefore(LocalDate.now())
-        ).toList();
-        eventos.forEach(
-                evento -> {
-                    evento.setDataExpiracao(LocalDate.now());
-                    eventoRepository.save(evento);
-                }
-        );
-        return eventos.stream()
-                .filter(evento -> evento.getDataEvento().isAfter(LocalDate.now()))
+        List<Evento> eventosAtivos = eventoRepository.findByAtivoTrueAndEsgotadoFalse();
+        LocalDate now = LocalDate.now();
+        eventosAtivos.forEach(evento -> {
+            if (evento.getDataEvento().isBefore(now)) {
+                evento.setDataExpiracao(now);
+                eventoRepository.save(evento);
+            }
+        });
+
+        return eventosAtivos.stream()
+                .filter(evento -> evento.getDataEvento().isAfter(now))
                 .map(evento -> {
                     int totalCurtidas = curtidaRepository.countByEventoId(evento.getId());
                     int totalComentarios = comentarioRepository.countByEventoId(evento.getId());
                     return new EventoDTO(evento, totalCurtidas, totalComentarios);
-                }).toList();
+                })
+                .collect(Collectors.toList());
     }
 
     public EventoDTO buscarEventoPorId(Long eventoId) throws AppException {
@@ -111,6 +112,17 @@ public class EventoService {
                        comentarioRepository.countByEventoId(evento.getId())
                )
        ).toList();
+    }
+
+    public List<EventoDTO> buscarEventosPorFormaturaId(Long formaturaId) throws AppException {
+        List<Evento> eventos = eventoRepository.findByFormaturaId(formaturaId);
+        return eventos.stream().map(
+                evento -> new EventoDTO(
+                        evento,
+                        curtidaRepository.countByEventoId(evento.getId()),
+                        comentarioRepository.countByEventoId(evento.getId())
+                )
+        ).collect(Collectors.toList());
     }
 
     public List<EventoDTO> searchEventos(String search) throws AppException {
@@ -189,8 +201,7 @@ public class EventoService {
         notificationService.addNotification(
                 autor.getUsername() + " comentou em seu evento: " + comentario.getTexto(),
                 evento.getUsuario().getId(),
-                TipoNotificacao.COMENTARIO,
-                comentario.getAutor().getFotoCaminho()
+                TipoNotificacao.COMENTARIO
         );
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Comentário adicionado com sucesso!");
@@ -220,8 +231,7 @@ public class EventoService {
         notificationService.addNotification(
                 usuario.getUsername() + " curtiu seu evento.",
                 evento.getUsuario().getId(),
-                TipoNotificacao.CURTIDA,
-                usuario.getFotoCaminho()
+                TipoNotificacao.CURTIDA
         );
     }
 
