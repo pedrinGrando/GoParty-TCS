@@ -41,4 +41,11 @@ public class Comentario {
 
     @Column(name = "commentMoment")
     private LocalDateTime commentMoment;
+
+    public Comentario(String texto, Usuario autor, Evento evento) {
+        this.texto = texto;
+        this.autor = autor;
+        this.evento = evento;
+        this.commentMoment = LocalDateTime.now();
+    }
 }

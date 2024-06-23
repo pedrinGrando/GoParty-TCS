@@ -46,9 +46,16 @@ public class Ingresso {
     @Column(name = "dataCompra")
     private LocalDateTime dataCompra;
 
+    public Ingresso(Usuario autor, Evento evento) {
+        this.autor = autor;
+        this.evento = evento;
+        this.status = TipoStatus.PAGO;
+        this.dataCompra = LocalDateTime.now();
+        this.codigoEvento = gerarCodigoAleatorio();
+    }
+
     public static String gerarCodigoAleatorio() {
-        String uuid = UUID.randomUUID().toString().replaceAll("[^a-zA-Z0-9]", "").substring(0, 10);
-        return uuid;
+        return UUID.randomUUID().toString().replaceAll("[^a-zA-Z0-9]", "").substring(0, 10);
     }
     
 }
