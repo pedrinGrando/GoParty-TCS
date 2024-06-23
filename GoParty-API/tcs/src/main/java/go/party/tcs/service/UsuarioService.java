@@ -78,9 +78,13 @@ public class UsuarioService {
     }
 
     public List<UsuarioDTO> getUsuariosAtivosEstudantes() {
-        return usuarioRepository.findByAtivoTrueAndTipoUsuario(TipoUsuario.STUDENT).stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+        List<Usuario> usuarios = usuarioRepository.findByAtivoTrueAndTipoUsuario(TipoUsuario.STUDENT);
+        return usuarios.stream().map(this::convertToDTO).collect(Collectors.toList());
+    }
+
+    public List<UsuarioDTO> searchActiveStudentsByTerm(String search) {
+        List<Usuario> usuarios = usuarioRepository.findActiveStudentsBySearchTerm(TipoUsuario.STUDENT, search);
+        return usuarios.stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
     private UsuarioDTO convertToDTO(Usuario usuario) {

@@ -68,9 +68,16 @@ public class UsuarioController {
     }
 
     @GetMapping("/ativos-estudantes")
-    public ResponseEntity<List<UsuarioDTO>> findAllStudentsAtive() {
-        List<UsuarioDTO> ativeStudensUsers = usuarioService.getUsuariosAtivosEstudantes();
-        return ResponseEntity.ok(ativeStudensUsers);
+    public ResponseEntity<List<UsuarioDTO>> findAllStudentsAtive(
+            @RequestParam(value = "search", required = false) String search) {
+
+        List<UsuarioDTO> ativeStudents;
+        if (search == null || search.isEmpty()) {
+            ativeStudents = usuarioService.getUsuariosAtivosEstudantes();
+        } else {
+            ativeStudents = usuarioService.searchActiveStudentsByTerm(search);
+        }
+        return ResponseEntity.ok(ativeStudents);
     }
     
     @GetMapping("/search")

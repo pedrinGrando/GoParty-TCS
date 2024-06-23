@@ -16,17 +16,15 @@ public class NotificationDTO {
     private String message;
     private boolean visualizado;
     private String notificationMoment;
-    private String fotoCaminho;
 
     public NotificationDTO() {
     }
 
-    public NotificationDTO(Long id, TipoNotificacao tipoNotificacao, String message, boolean visualizado, String notificationMoment, String fotoCaminho) {
+    public NotificationDTO(Long id, TipoNotificacao tipoNotificacao, String message, boolean visualizado, String notificationMoment) {
         this.id = id;
         this.tipoNotificacao = tipoNotificacao;
         this.message = message;
         this.visualizado = visualizado;
         this.notificationMoment = notificationMoment;
-        this.fotoCaminho = fotoCaminho;
     }
 }

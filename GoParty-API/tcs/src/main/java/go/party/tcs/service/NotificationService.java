@@ -25,7 +25,7 @@ public class NotificationService {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    public Notification addNotification(String message, Long userId, TipoNotificacao notificationType, String fotoCaminho) {
+    public Notification addNotification(String message, Long userId, TipoNotificacao notificationType) {
         Optional<Usuario> usuarioOptional = usuarioRepository.findById(userId);
         if (!usuarioOptional.isPresent()) {
             throw new IllegalArgumentException("Usuário não encontrado com o ID: " + userId);
@@ -38,7 +38,6 @@ public class NotificationService {
         notification.setTipoNotificacao(notificationType);
         notification.setUsuario(usuario);
         notification.setVisualizado(false);
-        notification.setFotoCaminho(fotoCaminho);
 
         return notificationRepository.save(notification);
     }
@@ -72,7 +71,7 @@ public class NotificationService {
 
     public List<NotificationDTO> getNotificationByUser(Long userId) {
         Usuario user = this.isPresent(usuarioRepository.findById(userId));
-        List<Notification> notifications = notificationRepository.findByUsuarioIdOrderByDateDesc(user.getId());
+        List<Notification> notifications = notificationRepository.findByUsuarioIdWithTipoNotificacaoNotNullOrderByDateDesc(user.getId());
         List<NotificationDTO> notificationsResponse = this.convertNotificationListToDTO(notifications);
         return notificationsResponse;
     }
@@ -98,8 +97,7 @@ public class NotificationService {
                 notification.getTipoNotificacao(),
                 notification.getMessage(),
                 notification.getVisualizado(),
-                calculateNotificationTimeExistence(notification.getDate()),
-                notification.getFotoCaminho()
+                calculateNotificationTimeExistence(notification.getDate())
         );
     }
 
