@@ -1,6 +1,5 @@
 package go.party.tcs.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -13,14 +12,13 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import go.party.tcs.Enums.TipoUsuario;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -55,7 +53,7 @@ public class AuthControllerTest {
         usuario.setEmail("email@example.com");
         usuario.setSenha("senha");
 
-      doNothing().when(usuarioService).cadastrarUsuario(any(Usuario.class));
+      doNothing().when(usuarioService).cadastrarUsuario(any(Usuario.class), TipoUsuario.BASIC);
 
         mockMvc.perform(post("/cadastro")
             .contentType(MediaType.APPLICATION_JSON)
