@@ -6,41 +6,43 @@ import 'react-datepicker/dist/react-datepicker.css';
 import 'tailwindcss/tailwind.css';
 
 // Define the shape of our data
-interface Ticket {
-  date: string;
-  status: string;
-  description: string;
+interface Event {
+  eventName: string;
+  quantityCreated: number;
+  totalTicketsSold: number;
+  totalRevenue: number;
+  date: string; // Adding date to filter by date range
 }
 
 const EventReport: React.FC = () => {
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-  const [status, setStatus] = useState<string>('');
 
-  const data = useMemo<Ticket[]>(() => [
-    { date: '2023-06-01', status: 'Pago', description: 'Evento A' },
-    { date: '2023-06-05', status: 'Pendente', description: 'Evento B' },
-    { date: '2023-06-10', status: 'Cancelado', description: 'Evento C' },
+  const data = useMemo<Event[]>(() => [
+    { eventName: 'Evento A', quantityCreated: 5, totalTicketsSold: 150, totalRevenue: 7500, date: '2023-06-01' },
+    { eventName: 'Evento B', quantityCreated: 3, totalTicketsSold: 100, totalRevenue: 5000, date: '2023-06-05' },
+    { eventName: 'Evento C', quantityCreated: 2, totalTicketsSold: 50, totalRevenue: 2500, date: '2023-06-10' },
     // Adicione mais dados conforme necessário
   ], []);
 
-  const columns = useMemo<Column<Ticket>[]>(() => [
-    { Header: 'Data', accessor: 'date' },
-    { Header: 'Status', accessor: 'status' },
-    { Header: 'Descrição', accessor: 'description' },
+  const columns = useMemo<Column<Event>[]>(() => [
+    { Header: 'Nome do Evento', accessor: 'eventName' },
+    { Header: 'Quantidade de Eventos Criados', accessor: 'quantityCreated' },
+    { Header: 'Total de Ingressos Vendidos', accessor: 'totalTicketsSold' },
+    { Header: 'Valor Arrecadado Total (R$)', accessor: 'totalRevenue' },
   ], []);
 
   // Define the table instance with pagination and filters
-  const tableInstance = useTable<Ticket>(
+  const tableInstance = useTable<Event>(
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 5 } as Partial<TableState<Ticket>>,
+      initialState: { pageIndex: 0, pageSize: 5 } as Partial<TableState<Event>>,
     },
     useFilters, // Hook to enable filters
     usePagination // Hook to enable pagination
-  ) as TableInstance<Ticket> & {
-    page: Array<Row<Ticket>>;
+  ) as TableInstance<Event> & {
+    page: Array<Row<Event>>;
     setFilter: (columnId: string, filterValue: any) => void;
     pageOptions: number[];
     canPreviousPage: boolean;
@@ -48,7 +50,7 @@ const EventReport: React.FC = () => {
     previousPage: () => void;
     nextPage: () => void;
     setPageSize: (size: number) => void;
-    state: TableState<Ticket> & {
+    state: TableState<Event> & {
       pageIndex: number;
       pageSize: number;
     };
@@ -74,11 +76,6 @@ const EventReport: React.FC = () => {
   // Apply date range filter
   const applyDateFilter = () => {
     setFilter('date', [startDate, endDate]);
-  };
-
-  // Apply status filter
-  const applyStatusFilter = (status: string) => {
-    setFilter('status', status);
   };
 
   return (
@@ -117,17 +114,6 @@ const EventReport: React.FC = () => {
                 Filtrar
               </button>
             </div>
-
-            <select
-              value={status}
-              onChange={e => { setStatus(e.target.value); applyStatusFilter(e.target.value); }}
-              className="border p-2 rounded-md"
-            >
-              <option value="">Todos</option>
-              <option value="Pago">Pago</option>
-              <option value="Pendente">Pendente</option>
-              <option value="Cancelado">Cancelado</option>
-            </select>
           </div>
 
           <div className="overflow-x-auto">
