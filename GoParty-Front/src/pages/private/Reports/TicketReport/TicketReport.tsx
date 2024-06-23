@@ -1,7 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Sidebar } from "../../../../components/sidebar/Sidebar";
 import { useTable, usePagination, useFilters, Column, TableInstance, TableState, Row, Cell } from 'react-table';
-import 'tailwindcss/tailwind.css';
 
 // Define the shape of our data
 interface Ticket {

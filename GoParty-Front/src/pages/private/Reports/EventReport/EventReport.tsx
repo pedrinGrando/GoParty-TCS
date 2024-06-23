@@ -3,7 +3,6 @@ import { Sidebar } from "../../../../components/sidebar/Sidebar";
 import { useTable, usePagination, useFilters, Column, TableInstance, TableState, Row } from 'react-table';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import 'tailwindcss/tailwind.css';
 
 // Define the shape of our data
 interface Event {
