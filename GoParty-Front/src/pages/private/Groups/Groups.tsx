@@ -55,8 +55,8 @@ export default function Groups() {
             <div className="p-4 max-w-md bg-white rounded-lg border shadow-md sm:p-8 dark:bg-gray-800 dark:border-gray-700 mt-10 ml-10">
                     <div className="flex justify-between items-center mb-4">
                         <h3 className="text-xl font-bold leading-none text-gray-900 dark:text-white">Seu grupo</h3>
-                        <a href="" className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-500">
-                            Ver todos
+                        <a className="text-sm font-medium text-blue-600 dark:text-blue-500">
+                            Todos
                         </a>
                     </div>
                     <div className="flow-root">

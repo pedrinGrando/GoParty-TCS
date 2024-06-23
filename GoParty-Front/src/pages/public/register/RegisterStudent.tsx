@@ -132,11 +132,10 @@ export default function RegisterStudent() {
     nome: false,
     email: false,
     username: false,
-    idade: false,
+    dataNasci: false,
     senha: false,
     cpf: false,
     senhaConfirm: false,
-    senhaRegras: false,
     captcha: false
   });
 
@@ -144,12 +143,11 @@ export default function RegisterStudent() {
     nome: '',
     email: '',
     username: '',
-    idade: '',
+    dataNasci: '',
     senha: '',
     cpf: '',
     fotoPerfil: null,
     senhaConfirm: '',
-    senhaRegras: ''
   });
 
   const handleButtonClick = () => {
@@ -159,21 +157,16 @@ export default function RegisterStudent() {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
 
+    // Validação de CPF
     if (name === 'cpf' && type === 'text') {
-      setIsValidCPF(true);
       const numericValue = value.replace(/\D/g, '');
       setFormData({
         ...formData,
         [name]: numericValue,
       });
 
-    }
-
-    if (name === 'email') {
-      setIsEducational(isEmailEducational(value));
-    }
-
-    if (type === 'file' && event.target instanceof HTMLInputElement) {
+      setIsValidCPF(validateCPF(numericValue));
+    } else if (type === 'file' && event.target instanceof HTMLInputElement) {
       const file = event.target.files && event.target.files[0];
       if (file) {
         const blob = new Blob([file], { type: file.type });
@@ -188,6 +181,11 @@ export default function RegisterStudent() {
         [name]: value,
       });
 
+
+    if (name === 'email') {
+      setIsEducational(isEmailEducational(value));
+    }
+
       if (name === 'senhaConfirm' && value !== formData.senha) {
         setSenhaNotEqual(true);
       } else {
@@ -195,35 +193,32 @@ export default function RegisterStudent() {
       }
 
       if (name === 'senha') {
-        setIsValidPass(false)
-        setIsValidPass(validatePassword(value))
-      }
-
-      if (name === 'cpf') {
-        setIsValidCPF(true);
-        if (!validateCPF(value)) {
-          setIsValidCPF(false);
-        } else {
-          setIsValidCPF(true);
-        }
+        setIsValidPass(validatePassword(value));
       }
 
       if (name === 'idade') {
-        // calcula a idade com base na data de nascimento fornecida
         const today = new Date();
         const birthDate = new Date(value);
+
+        if (birthDate > today) {
+          setErrors({ ...errors, dataNasci: true });
+          return;
+        } else {
+          setErrors({ ...errors, dataNasci: false });
+        }
+
         const age = today.getFullYear() - birthDate.getFullYear();
         const monthDiff = today.getMonth() - birthDate.getMonth();
 
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-          setErrors({ ...errors, idade: age - 1 < 16 });
+          setErrors({ ...errors, dataNasci: age - 1 < 16 });
         } else {
-          setErrors({ ...errors, idade: age < 16 });
+          setErrors({ ...errors, dataNasci: age < 16 });
         }
       }
 
       if (!isCaptchaValid) {
-        setErrors({ ...errors, captcha: isCaptchaValid });
+        setErrors({ ...errors, captcha: true });
       }
     }
   };
@@ -247,6 +242,7 @@ export default function RegisterStudent() {
   };
 
   const handleSubmit = async (event: any) => {
+    console.log(formData);
     event.preventDefault();
     setIsLoading(true);
 
@@ -254,11 +250,10 @@ export default function RegisterStudent() {
       nome: formData.nome.trim() === '',
       email: formData.email.trim() === '',
       username: formData.username.trim() === '',
-      idade: formData.idade.trim() === '',
+      dataNasci: formData.dataNasci.trim() === '',
       senha: formData.senha.trim() === '',
       cpf: formData.cpf.trim() === '',
       senhaConfirm: formData.senhaConfirm.trim() === '',
-      senhaRegras: formData.senhaRegras.trim() === '',
       captcha: !isCaptchaValid
     };
 
@@ -283,19 +278,17 @@ export default function RegisterStudent() {
       });
 
 
-
       if (response.ok) {
         // Limpar o formulário após o envio bem-sucedido, se necessário
         setFormData({
           nome: '',
           email: '',
           username: '',
-          idade: '',
+          dataNasci: '',
           senha: '',
           cpf: '',
           fotoPerfil: null,
           senhaConfirm: '',
-          senhaRegras: ''
         });
 
         setIsLoading(false);
@@ -387,21 +380,29 @@ export default function RegisterStudent() {
                     {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
                   </div>
                   <div className="relative">
-                    <label htmlFor='idade' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute dark:bg-gray-700 dark:text-white">Data de Nascimento</label>
+                    <label
+                      htmlFor="idade"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+          absolute dark:bg-gray-700 dark:text-white"
+                    >
+                      Data de Nascimento
+                    </label>
                     <input
                       placeholder="Data"
-                      id='idade'
-                      name='idade'
-                      value={formData.idade}
+                      id="idade"
+                      name="idade"
+                      value={formData.dataNasci}
                       onChange={handleChange}
                       type="date"
-                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.idade
-                        ? 'border-red-500' : ''}`} />
-                    {errors.idade && <p style={{ color: 'red' }}>Você deve ter pelo menos 16 anos de idade.</p>}
-
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.dataNasci
+                        ? 'border-red-500' : ''}`}
+                    />
+                    {errors.dataNasci && (
+                      <p style={{ color: 'red' }}>
+                        {formData.dataNasci ? 'data de nascimento inválida.' : 'Você deve ter pelo menos 16 anos de idade.'}
+                      </p>
+                    )}
                   </div>
-
                   <div className="relative">
                     <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:bg-gray-700 dark:text-white">Seu CPF</label>
@@ -426,7 +427,7 @@ export default function RegisterStudent() {
                       value={formData.senha}
                       onChange={handleChange}
                       type='password'
-                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`} />
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha ? 'border-red-500' : ''}`} />
                     {!isValidPass && (
                       <ErrorPassword />
                     )}
@@ -506,7 +507,7 @@ export default function RegisterStudent() {
                   </div>
                   <div className="relative">
                     <button type='submit'
-                         disabled={!isChecked || !isValidPass ||errors.senha|| errors.idade || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
+                      disabled={!isChecked || !isValidPass || errors.dataNasci || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                       {isLoading ? (

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import go.party.tcs.model.Formatura;
+import go.party.tcs.repository.FormaturaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,6 +44,9 @@ public class IngressoController {
     private IngressoRepository ingressoRepository;
 
     @Autowired
+    private FormaturaRepository formaturaRepository;
+
+    @Autowired
     private UsuarioRepository usuarioRepository;
 
     @PostMapping("/comprar-ingresso")
@@ -51,6 +56,9 @@ public class IngressoController {
 
         Evento evento = eventoRepository.findById(eventoDTO.getId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Evento não encontrado"));
+
+        Formatura formatura = formaturaRepository.findById(evento.getFormatura().getId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Formatura não encontrada"));
 
         if (evento.isEsgotado()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ingressos para este evento estão esgotados");
@@ -72,6 +80,8 @@ public class IngressoController {
         ingresso.setCodigoEvento(Ingresso.gerarCodigoAleatorio());
 
         Ingresso savedIngresso = ingressoRepository.save(ingresso);
+        formatura.setArrecacado(formatura.getArrecacado() + evento.getValor());
+        formaturaRepository.save(formatura);
 
         IngressoDTO ingressoDTO = new IngressoDTO();
         ingressoDTO.setId(savedIngresso.getId());
