@@ -1,5 +1,6 @@
 package go.party.tcs.dto;
 
+import go.party.tcs.projection.EventoPorMembroProjection;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,4 +17,13 @@ public class EventoPorMembroDTO {
   private Long quantidadeEventosCriados;
   private Long totalIngressosVendidos;
   private BigDecimal valorArrecadadoTotal;
+
+  public static EventoPorMembroDTO convertProjection(EventoPorMembroProjection projection) {
+    return new EventoPorMembroDTO(
+            projection.getNome(),
+            projection.getQuantidadeEventosCriados(),
+            projection.getTotalIngressosVendidos(),
+            projection.getValorArrecadadoTotal()
+    );
+  }
 }

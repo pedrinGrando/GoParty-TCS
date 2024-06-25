@@ -25,10 +25,10 @@ public interface IngressoPorEventoRepository extends JpaRepository<Ingresso, Lon
             "    i.evento_id = e.id " +
             "where " +
             "    e.formatura_id = (:formaturaId) AND " +
-            "    e.id = COALESCE((:eventoId), e.id) AND " +
+            "    e.titulo like COALESCE((:nomeEvento), e.titulo) AND " +
             "    i.status = COALESCE((:status), status) " +
             "order by " +
             "    i.data_compra desc;")
-    Page<IngressoPorEventoProjection> findIngressosPorEvento(@Param("formaturaId") Long formaturaId, @Param("eventoId") Long eventoId, @Param("status") String status, Pageable pageable);
+    Page<IngressoPorEventoProjection> findIngressosPorEvento(@Param("formaturaId") Long formaturaId, @Param("nomeEvento") String nomeEvento, @Param("status") String status, Pageable pageable);
 
 }

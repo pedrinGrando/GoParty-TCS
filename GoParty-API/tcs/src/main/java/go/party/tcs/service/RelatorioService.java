@@ -24,42 +24,17 @@ public class RelatorioService {
     @Autowired
     EventoPorMembroRepository eventoPorMembroRepository;
 
-    public List<EventoPorMembroDTO> gerarRelatorioEventoPorMembro(Long idFormatura, LocalDate dataInicio, LocalDate dataFim, PageRequest pageRequest) {
-        List<EventoPorMembroDTO> relatorio = eventoPorMembroRepository.findEventosPorMembro(idFormatura, dataInicio, dataFim, pageRequest).stream().map(
-                projection -> new EventoPorMembroDTO(
-                        projection.getNome(),
-                        projection.getQuantidadeEventosCriados(),
-                        projection.getTotalIngressosVendidos(),
-                        projection.getValorArrecadadoTotal())
-        ).toList();
-        return relatorio;
-    }
-
-    public ResponseRelatorio gerarRelatorioEventoPorMembro2(Long idFormatura, LocalDate dataInicio, LocalDate dataFim, PageRequest pageRequest) {
+    public ResponseRelatorio gerarRelatorioEventoPorMembro(Long idFormatura, LocalDate dataInicio, LocalDate dataFim, PageRequest pageRequest) {
         Page<EventoPorMembroProjection> pageResponse = eventoPorMembroRepository.findEventosPorMembro(idFormatura, dataInicio, dataFim, pageRequest);
-        List<EventoPorMembroDTO> relatorio = pageResponse.stream().map(
-                projection -> new EventoPorMembroDTO(
-                        projection.getNome(),
-                        projection.getQuantidadeEventosCriados(),
-                        projection.getTotalIngressosVendidos(),
-                        projection.getValorArrecadadoTotal())
-        ).toList();
+        List<EventoPorMembroDTO> relatorio = pageResponse.stream().map(EventoPorMembroDTO::convertProjection).toList();
         return new ResponseRelatorio(relatorio, PaginationDTO.fromPage(pageResponse));
     }
 
-    public ResponseRelatorio gerarRelatorioIngressoPorEvento(Long idFormatura, Long idEvento, TipoStatus status, PageRequest pageRequest) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    public ResponseRelatorio gerarRelatorioIngressoPorEvento(Long idFormatura, String nomeEvento, TipoStatus status, PageRequest pageRequest) {
         String statusString = status == null ? null : status.toString().toUpperCase();
-        Page<IngressoPorEventoProjection> pageResponse = ingressoPorEventoRepository.findIngressosPorEvento(idFormatura, idEvento, statusString, pageRequest);
-        List<IngressoPorEventoDTO> relatorios = pageResponse.stream().map(
-                projection -> new IngressoPorEventoDTO(
-                        projection.getCodigoIngresso(),
-                        formatter.format(projection.getDataCompra()),
-                        projection.getComprador(),
-                        projection.getNomeEvento(),
-                        projection.getStatus()
-                )
-        ).toList();
+        nomeEvento = nomeEvento != null ? "%" + nomeEvento + "%" : null;
+        Page<IngressoPorEventoProjection> pageResponse = ingressoPorEventoRepository.findIngressosPorEvento(idFormatura, nomeEvento, statusString, pageRequest);
+        List<IngressoPorEventoDTO> relatorios = pageResponse.stream().map(IngressoPorEventoDTO::convertProjection).toList();
         return new ResponseRelatorio(relatorios, PaginationDTO.fromPage(pageResponse));
     }
 }

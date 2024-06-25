@@ -27,10 +27,10 @@ public class RelatoriosController {
             @RequestParam Long idFormatura,
             @RequestParam(defaultValue = "0") int pagina,
             @RequestParam(defaultValue = "10") int qtdItens,
-            @RequestParam(required = false) Long idEvento,
+            @RequestParam(required = false) String nomeEvento,
             @RequestParam(required = false) String status) {
         TipoStatus tipoStatus = status != null ? TipoStatus.valueOf(status.toUpperCase()) : null;
-        ResponseRelatorio relatorios = relatorioService.gerarRelatorioIngressoPorEvento(idFormatura, idEvento, tipoStatus, PageRequest.of(pagina, qtdItens));
+        ResponseRelatorio relatorios = relatorioService.gerarRelatorioIngressoPorEvento(idFormatura, nomeEvento, tipoStatus, PageRequest.of(pagina, qtdItens));
         return ResponseEntity.ok(relatorios);
     }
     
@@ -40,7 +40,7 @@ public class RelatoriosController {
                                                              @RequestParam(defaultValue = "10") int qtdItens,
                                                              @RequestParam(required = false) LocalDate dataInicio,
                                                              @RequestParam(required = false) LocalDate dataFim) {
-        ResponseRelatorio relatorio = relatorioService.gerarRelatorioEventoPorMembro2(idFormatura, dataInicio, dataFim, PageRequest.of(pagina, qtdItens));
+        ResponseRelatorio relatorio = relatorioService.gerarRelatorioEventoPorMembro(idFormatura, dataInicio, dataFim, PageRequest.of(pagina, qtdItens));
         return ResponseEntity.ok(relatorio);
     }
 }
