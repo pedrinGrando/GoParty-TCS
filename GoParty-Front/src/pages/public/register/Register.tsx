@@ -529,7 +529,8 @@ export default function Register() {
                   </div>
                   <div className="relative">
                     <button type='submit'
-                      disabled={!isChecked || !isValidPass || errors.senha || errors.dataNasci || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
+                      disabled={!isChecked || isCpfInUse|| !isValidPass || errors.senha ||
+                       errors.dataNasci || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                       {isLoading ? (
