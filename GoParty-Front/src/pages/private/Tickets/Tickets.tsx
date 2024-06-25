@@ -45,31 +45,134 @@ export default function Tickets() {
     return (
 
         <div>
-             <TrendEvents/>
+            <TrendEvents />
             {isLoading ? (
                 <LoadingHome />
             ) : (
                 <div>
-                   <h1 className="flex justify-center top-0 left-1/2 mt-4 text-4xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seus ingressos</h1>
+                    <h1 className="flex justify-center top-0 left-1/2 mt-4 text-4xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seus ingressos</h1>
                     {ingressos.length === 0 ? (
                         <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto ">
                             <p>Você nao possui ingressos.</p>
                         </div>
                     ) : (
                         ingressos.map(ingresso => (
-                            <div key={ingresso.id} className="rounded-3xl border-2 border-gray-200 p-4 lg:p-8 grid grid-cols-12 mb-8 gap-y-4 ">
-                                <div className="col-span-12 lg:col-span-2 img box">
-                                    <svg width="131px" height="131px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M14.0137 17L14.0079 19.0029C14.0065 19.4731 14.0058 19.7081 13.8591 19.8541C13.7124 20 13.4767 20 13.0054 20H9.99502C6.21438 20 4.32407 20 3.14958 18.8284C2.34091 18.0218 2.08903 16.8766 2.01058 15.0105C1.99502 14.6405 1.98724 14.4554 2.05634 14.332C2.12545 14.2085 2.40133 14.0545 2.95308 13.7463C3.56586 13.4041 3.98007 12.7503 3.98007 12C3.98007 11.2497 3.56586 10.5959 2.95308 10.2537C2.40133 9.94554 2.12545 9.79147 2.05634 9.66802C1.98724 9.54458 1.99502 9.35954 2.01058 8.98947C2.08903 7.12339 2.34091 5.97823 3.14958 5.17157C4.32407 4 6.21439 4 9.99502 4H13.5052C13.7814 4 14.0056 4.22298 14.0064 4.49855L14.0137 7C14.0137 7.55228 14.4625 8 15.0162 8L15.0162 10C14.4625 10 14.0137 10.4477 14.0137 11V13C14.0137 13.5523 14.4625 14 15.0162 14V16C14.4625 16 14.0137 16.4477 14.0137 17Z" fill="#1C274C"></path> <path opacity="0.5" d="M15.0166 15.9998C15.5703 15.9998 16.0191 16.4475 16.0191 16.9998V18.9763C16.0191 19.4578 16.0191 19.6986 16.1735 19.8462C16.3279 19.9939 16.5641 19.9839 17.0366 19.9639C18.8995 19.885 20.0441 19.633 20.8508 18.8282C21.6595 18.0216 21.9114 16.8764 21.9898 15.0104C22.0054 14.6403 22.0132 14.4552 21.9441 14.3318C21.875 14.2083 21.5991 14.0543 21.0473 13.7462C20.4346 13.404 20.0203 12.7501 20.0203 11.9998C20.0203 11.2495 20.4346 10.5957 21.0473 10.2535C21.5991 9.94536 21.875 9.7913 21.9441 9.66785C22.0132 9.5444 22.0054 9.35936 21.9898 8.98929C21.9114 7.12321 21.6595 5.97805 20.8508 5.17139C19.9731 4.29586 18.6956 4.07463 16.5282 4.01872C16.2486 4.01151 16.0191 4.237 16.0191 4.516V6.99982C16.0191 7.55211 15.5703 7.99982 15.0166 7.99982L15.0166 9.99982C15.5703 9.99982 16.0191 10.4475 16.0191 10.9998V12.9998C16.0191 13.5521 15.5703 13.9998 15.0166 13.9998V15.9998Z" fill="#1C274C"></path> </g></svg>
-                                </div>
-                                <div className="col-span-12 lg:col-span-10 detail w-full lg:pl-3">
-                                    <div className="flex items-center justify-between w-full mb-4">
-                                        <h5 className="font-manrope font-bold text-2xl leading-9 text-gray-900">{ingresso.codigoEvento}
-                                        </h5>
+                            <div key={ingresso.id} className="flex flex-col items-center justify-center min-h-screen bg-center bg-cover">
+                                <div className="absoluteopacity-80 inset-0 z-0"></div>
+                                <div className="max-w-md w-full h-full mx-auto z-10 shadow-md bg-indigo-600 rounded-3xl">
+                                    <div className="flex flex-col">
+                                        <div className="bg-white relative drop-shadow-2xl  rounded-3xl p-4 m-4">
+                                            <div className="flex-none sm:flex">
+                                                <div className=" relative h-32 w-32   sm:mb-0 mb-3 hidden">
+                                                    <img src="https://tailwindcomponents.com/storage/avatars/njkIbPhyZCftc4g9XbMWwVsa7aGVPajYLRXhEeoo.jpg" alt="aji" className=" w-32 h-32 object-cover rounded-2xl" />
+                                                    <a href="#"
+                                                        className="absolute -right-2 bottom-2   -ml-3  text-white p-1 text-xs bg-green-400 hover:bg-green-500 font-medium tracking-wider rounded-full transition ease-in duration-300">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+                                                            className="h-4 w-4">
+                                                            <path
+                                                                d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z">
+                                                            </path>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div className="flex-auto justify-evenly">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center  my-1">
+                                                            <span className="mr-3 rounded-full bg-white w-8 h-8">
+                                                                <img src="https://image.winudf.com/v2/image1/Y29tLmJldHMuYWlyaW5kaWEudWlfaWNvbl8xNTU0NTM4MzcxXzA0Mw/icon.png?w=&amp;fakeurl=1" className="h-8 p-1" />
+                                                            </span>
+                                                            <h2 className="font-medium">Nome evento</h2>
+                                                        </div>
+                                                        <div className="ml-auto text-blue-800">A380</div>
+                                                    </div>
+                                                    <div className="border-b border-dashed border-b-2 my-5"></div>
+                                                    <div className="flex items-center">
+                                                        <div className="flex flex-col">
+                                                            <div className="flex-auto text-xs text-gray-400 my-1">
+                                                                <span className="mr-1 ">MO</span><span>19 22</span>
+                                                            </div>
+                                                            <div className="w-full flex-none text-lg text-blue-800 font-bold leading-none">COK</div>
+                                                            <div className="text-xs">Cochi</div>
+
+                                                        </div>
+                                                        <div className="flex flex-col mx-auto">
+                                                            <img src="https://image.winudf.com/v2/image1/Y29tLmJldHMuYWlyaW5kaWEudWlfaWNvbl8xNTU0NTM4MzcxXzA0Mw/icon.png?w=&amp;fakeurl=1" className="w-20 p-1" />
+
+                                                        </div>
+                                                        <div className="flex flex-col ">
+                                                            <div className="flex-auto text-xs text-gray-400 my-1">
+                                                                <span className="mr-1">MO</span><span>19 22</span>
+                                                            </div>
+                                                            <div className="w-full flex-none text-lg text-blue-800 font-bold leading-none">DXB</div>
+                                                            <div className="text-xs">Dubai</div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div className="border-b border-dashed border-b-2 my-5 pt-5">
+                                                        <div className="absolute rounded-full w-5 h-5 bg-blue-900 -mt-2 -left-2"></div>
+                                                        <div className="absolute rounded-full w-5 h-5 bg-blue-900 -mt-2 -right-2"></div>
+                                                    </div>
+                                                    <div className="flex items-center mb-5 p-5 text-sm">
+                                                        <div className="flex flex-col">
+                                                            <span className="text-sm">Flight</span>
+                                                            <div className="font-semibold">Airbus380</div>
+
+                                                        </div>
+                                                        <div className="flex flex-col ml-auto">
+                                                            <span className="text-sm">Gate</span>
+                                                            <div className="font-semibold">B3</div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex items-center mb-4 px-5">
+                                                        <div className="flex flex-col text-sm">
+                                                            <span className="">Data</span>
+                                                            <div className="font-semibold">Data Evento</div>
+
+                                                        </div>
+                                                        <div className="flex flex-col mx-auto text-sm">
+                                                            <span className="">Departs</span>
+                                                            <div className="font-semibold">11:30Am</div>
+
+                                                        </div>
+                                                        <div className="flex flex-col text-sm">
+                                                            <span className="">Arrived</span>
+                                                            <div className="font-semibold">2:00PM</div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div className="border-b border-dashed border-b-2 my-5 pt-5">
+                                                        <div className="absolute rounded-full w-5 h-5 bg-blue-900 -mt-2 -left-2"></div>
+                                                        <div className="absolute rounded-full w-5 h-5 bg-blue-900 -mt-2 -right-2"></div>
+                                                    </div>
+                                                    <div className="flex items-center px-5 pt-3 text-sm">
+                                                        <div className="flex flex-col">
+                                                            <span className="">Passanger</span>
+                                                            <div className="font-semibold">Ajimon</div>
+
+                                                        </div>
+                                                        <div className="flex flex-col mx-auto">
+                                                            <span className="">className</span>
+                                                            <div className="font-semibold">Economic</div>
+
+                                                        </div>
+                                                        <div className="flex flex-col">
+                                                            <span className="">Seat</span>
+                                                            <div className="font-semibold">12 E</div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div className="flex flex-col py-5  justify-center text-sm ">
+                                                        <h6 className="font-bold text-center">Boarding Pass</h6>
+
+                                                        <div className="barcode h-14 w-0 inline-block mt-4 relative left-auto"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex justify-between items-center">
-                                        <h6 className="text-indigo-600 font-manrope font-bold text-2xl leading-9 text-right">{ingresso.status}</h6>
-                                    </div>
                                 </div>
+
                             </div>
                         ))
                     )}
