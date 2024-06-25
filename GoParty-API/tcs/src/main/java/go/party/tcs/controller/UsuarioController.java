@@ -67,6 +67,12 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/check-cpf")
+    public ResponseEntity<Boolean> checkCpf(@RequestParam String cpf) {
+        boolean exists = usuarioService.existsByCpf(cpf);
+        return ResponseEntity.ok(exists);
+    }
+
     @GetMapping("/ativos-estudantes")
     public ResponseEntity<List<UsuarioDTO>> findAllStudentsAtive(
             @RequestParam(value = "search", required = false) String search) {

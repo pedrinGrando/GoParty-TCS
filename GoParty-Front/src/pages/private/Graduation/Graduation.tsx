@@ -19,6 +19,7 @@ export default function Graduation() {
         arrecad: number;
         nomeUsuario: string;
         totalMembros: number;
+        totalEventos: number;
     }
 
     const [formatura, setFormatura] = useState<any>();
@@ -116,14 +117,16 @@ export default function Graduation() {
                     </div>
                     <div>
                         <div className="border-t border-b py-4 mt-7 border-gray-200">
+                        <Link to={`/graduation-events/${formatura?.id}`}>
                             <div data-menu className="flex justify-between items-center cursor-pointer">
-                                <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Eventos relacionados</p>
+                                <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Eventos relacionados <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">{formatura?.totalEventos}</span></p>
                                 <button className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 rounded" role="button" aria-label="show or hide">
                                     <svg className="transform text-gray-300 dark:text-white" width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 1L5 5L1 1" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
                                 </button>
                             </div>
+                            </Link>
                             <div className="hidden pt-4 text-base leading-normal pr-12 mt-4 text-gray-600 dark:text-gray-300" id="sect">You will be responsible for paying for your own shipping costs for returning your item. Shipping costs are nonrefundable</div>
                         </div>
                     </div>
