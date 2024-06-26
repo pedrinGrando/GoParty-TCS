@@ -1,28 +1,41 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Sidebar } from "../../../../components/sidebar/Sidebar";
 import { useTable, usePagination, useFilters, Column, TableInstance, TableState, Row } from 'react-table';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { useParams } from 'react-router-dom';
 
 // Define the shape of our data
 interface Event {
-  eventName: string;
+  eventName: string | null;
   quantityCreated: number;
   totalTicketsSold: number;
   totalRevenue: number;
   date: string; // Adding date to filter by date range
 }
 
+interface ApiResponse {
+  data: {
+    nome: string;
+    quantidadeEventosCriados: number;
+    totalIngressosVendidos: number;
+    valorArrecadadoTotal: number;
+  }[];
+  pagination: {
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+  };
+}
+
 const EventReport: React.FC = () => {
+  const { graduationId } = useParams();
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-
-  const data = useMemo<Event[]>(() => [
-    { eventName: 'Evento A', quantityCreated: 5, totalTicketsSold: 150, totalRevenue: 7500, date: '2023-06-01' },
-    { eventName: 'Evento B', quantityCreated: 3, totalTicketsSold: 100, totalRevenue: 5000, date: '2023-06-05' },
-    { eventName: 'Evento C', quantityCreated: 2, totalTicketsSold: 50, totalRevenue: 2500, date: '2023-06-10' },
-    // Adicione mais dados conforme necessário
-  ], []);
+  const [data, setData] = useState<Event[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(0);
 
   const columns = useMemo<Column<Event>[]>(() => [
     { Header: 'Nome do Evento', accessor: 'eventName' },
@@ -31,7 +44,53 @@ const EventReport: React.FC = () => {
     { Header: 'Valor Arrecadado Total (R$)', accessor: 'totalRevenue' },
   ], []);
 
-  // Define the table instance with pagination and filters
+  const formatDate = (date: Date | null) => {
+    if (!date) return null;
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString();
+    return `${year}-${month}-${day}`;
+  };
+
+  // Fetch data from the API
+  const fetchData = async () => {
+    setLoading(true);
+    try {
+      let url = `http://localhost:8081/v1/relatorio/relatorio-evento-por-membro?idFormatura=${graduationId}&pagina=0&qtdItens=10`;
+      const start = formatDate(startDate);
+      const end = formatDate(endDate);
+      if (start) {
+        url += `&dataInicio=${start}`;
+      }
+      if (end) {
+        url += `&dataFim=${end}`;
+      }
+      const response = await fetch(url);
+      const result: ApiResponse = await response.json();
+      if (result.data && Array.isArray(result.data)) {
+        const mappedData = result.data.map(item => ({
+          eventName: item.nome,
+          quantityCreated: item.quantidadeEventosCriados,
+          totalTicketsSold: item.totalIngressosVendidos,
+          totalRevenue: item.valorArrecadadoTotal,
+          date: '', // Add appropriate date if available
+        }));
+        setData(mappedData);
+      } else {
+        setData([]);
+      }
+      setTotalPages(result.pagination.totalPages); // Set total pages from pagination data
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setData([]); // Ensure data is an array on error
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [graduationId, startDate, endDate]);
+
   const tableInstance = useTable<Event>(
     {
       columns,
@@ -55,7 +114,6 @@ const EventReport: React.FC = () => {
     };
   };
 
-  // Destructure the tableInstance for use in the component
   const {
     getTableProps,
     getTableBodyProps,
@@ -74,14 +132,14 @@ const EventReport: React.FC = () => {
 
   // Apply date range filter
   const applyDateFilter = () => {
-    setFilter('date', [startDate, endDate]);
+    fetchData();
   };
 
   return (
     <div className="flex">
       <Sidebar />
-      <div className="flex-grow p-6">
-        <div className="max-w-6xl mx-auto bg-white shadow-md rounded-md p-6">
+      <div className="flex-grow p-4">
+        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-md p-4">
           <h1 className="text-2xl font-bold mb-4 text-left">Relatório de Eventos</h1>
           <br />
           
@@ -115,35 +173,43 @@ const EventReport: React.FC = () => {
             </div>
           </div>
 
-          <div className="overflow-x-auto">
-            <table {...getTableProps()} className="min-w-full bg-white shadow-md rounded-md border-collapse">
-              <thead>
-                {headerGroups.map(headerGroup => (
-                  <tr {...headerGroup.getHeaderGroupProps()} className="bg-gray-100 border-b">
-                    {headerGroup.headers.map(column => (
-                      <th {...column.getHeaderProps()} className="text-left p-3 text-gray-700">
-                        {column.render('Header')}
-                      </th>
+          {loading ? (
+            <div className="text-center">Carregando...</div>
+          ) : (
+            data.length === 0 ? (
+              <div className="text-center">Não existem registros</div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table {...getTableProps()} className="min-w-full bg-white shadow-md rounded-md border-collapse">
+                  <thead>
+                    {headerGroups.map(headerGroup => (
+                      <tr {...headerGroup.getHeaderGroupProps()} className="bg-gray-100 border-b">
+                        {headerGroup.headers.map(column => (
+                          <th {...column.getHeaderProps()} className="text-left p-3 text-gray-700">
+                            {column.render('Header')}
+                          </th>
+                        ))}
+                      </tr>
                     ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody {...getTableBodyProps()}>
-                {page.map((row) => {
-                  prepareRow(row);
-                  return (
-                    <tr {...row.getRowProps()} className="border-b hover:bg-gray-50">
-                      {row.cells.map((cell) => (
-                        <td {...cell.getCellProps()} className="p-3 text-gray-700">
-                          {cell.render('Cell')}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                  </thead>
+                  <tbody {...getTableBodyProps()}>
+                    {page.map((row) => {
+                      prepareRow(row);
+                      return (
+                        <tr {...row.getRowProps()} className="border-b hover:bg-gray-50">
+                          {row.cells.map((cell) => (
+                            <td {...cell.getCellProps()} className="p-3 text-gray-700">
+                              {cell.render('Cell')}
+                            </td>
+                          ))}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )
+          )}
 
           <div className="flex justify-between items-center mt-4">
             <div className="flex items-center space-x-2">
@@ -163,7 +229,7 @@ const EventReport: React.FC = () => {
               </button>
             </div>
             <span>
-              Página <strong>{pageIndex + 1} de {pageOptions.length}</strong>
+              Página <strong>{pageIndex + 1} de {totalPages}</strong>
             </span>
             <select
               value={pageSize}
