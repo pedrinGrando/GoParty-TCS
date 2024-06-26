@@ -51,14 +51,25 @@ export const FormsTrends: React.FC = () => {
       ) : (
 
         <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow  dark:bg-gray-900">
-          <div className="relative me-4">
-            <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-          </div>
-        
+          {
+            grads.length === 0 ? (
+              <div className="flex justify-center dark:bg-gray-900 items-center h-screen">
+                Nenhuma formatura em alta.
+              </div>
+            ) : (
+              grads.map(grad => (
+                <div className="relative me-4">
+                  <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src={`http://localhost:8081${grad.formaturaCaminho}`} alt="Bordered avatar" />
+                </div>
+              ))
+            )
+          }
+
           <NotificationBell />
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 
