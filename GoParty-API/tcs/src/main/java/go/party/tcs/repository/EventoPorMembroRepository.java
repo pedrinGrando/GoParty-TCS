@@ -24,11 +24,11 @@ public interface EventoPorMembroRepository extends JpaRepository<Evento, Long> {
             "    e.usuario_id = u.id " +
             "WHERE " +
             "    e.formatura_id = (:formaturaId) AND " +
-            "    e.data_evento between COALESCE((:dataInicio), (select min(data_evento) from evento)) and COALESCE((:dataFim), (select max(data_evento) from evento)) " +
+            "    e.data_postagem between COALESCE((:dataInicio), (select min(data_postagem) from evento)) and COALESCE((:dataFim), (select max(data_postagem) from evento)) " +
             "GROUP BY " +
             "    u.nome " +
             "ORDER BY " +
-            "    MAX(e.data_evento) DESC")
+            "    MAX(e.data_postagem) DESC")
     Page<EventoPorMembroProjection> findEventosPorMembro(@Param("formaturaId") Long formaturaId, @Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim, Pageable pageable);
 
 }
