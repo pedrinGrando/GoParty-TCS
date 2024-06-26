@@ -5,20 +5,35 @@ import { NotificationBell } from "../Notification/NotificationBell";
 
 export const FormsTrends: React.FC = () => {
 
-  const [events, setEvents] = useState<Event[]>([]);
+  interface FormaturaDTO {
+    id: number;
+    titulo: string;
+    descricao: string;
+    formaturaCaminho: string;
+    cidade: string;
+    estado: string;
+    dataPrevista: string;
+    arrecadado: number;
+    arrecad: number;
+    nomeUsuario: string;
+    totalMembros: number;
+    totalEventos: number;
+  }
+
+  const [grads, setGrads] = useState<FormaturaDTO[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
-        setIsLoading(true);
+      setIsLoading(true);
       try {
-        const response = await fetch('URL_DO_BACKEND/events');
+        const response = await fetch('http://localhost:8081/v1/formaturas/top-formaturas');
         if (!response.ok) {
           throw new Error('Erro ao buscar eventos');
         }
         setIsLoading(false);
         const data = await response.json();
-        setEvents(data);
+        setGrads(data);
       } catch (error) {
         console.error(error);
         setIsLoading(false);
@@ -29,34 +44,23 @@ export const FormsTrends: React.FC = () => {
   }, []);
 
 
-    return (
-        <div>
+  return (
+    <div>
       {isLoading ? (
-        <LoadingFormsTrends/>
-       ) : (
+        <LoadingFormsTrends />
+      ) : (
 
-      <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow  dark:bg-gray-900">
-        <div className="relative me-4">
-          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
+        <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow  dark:bg-gray-900">
+          <div className="relative me-4">
+            <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
+          </div>
+        
+          <NotificationBell />
         </div>
-        <div className="relative me-4">
-          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-        </div>
-        <div className="relative me-4">
-          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-        </div>
-        <div className="relative me-4">
-          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-        </div>
-        <div className="relative me-4">
-          <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src="/imagens/senac.png" alt="Bordered avatar" />
-        </div>
-        <NotificationBell/>
-      </div>
       )}
-      </div>
-    );
-  };
+    </div>
+  );
+};
 
 
 

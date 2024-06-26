@@ -13,7 +13,8 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     List<Evento> findByUsuarioId(Long userId);
 
-    List<Evento> findByAtivoTrueAndEsgotadoFalse();
+    @Query("SELECT e FROM Evento e WHERE e.ativo = true AND e.esgotado = false ORDER BY e.dataPostagem DESC")
+    List<Evento> findActiveAndAvailableEventsOrderByDateDesc();
 
     List<Evento> findByFormaturaId(Long formaturaId);
 

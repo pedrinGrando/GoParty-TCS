@@ -56,7 +56,7 @@ public class EventoService {
 
     public Evento cadastrarEvento(Long userId, Evento evento) throws AppException {
         Usuario usuario = usuarioService.findById(userId);
-        if (usuario.isNotStudent() || usuario.isNotAdm()) {
+        if (!usuario.getTipoUsuario().equals(TipoUsuario.MEMBER)) {
             throw new AppException("Usuario não é membro!");
         }
         evento.setUsuario(usuario);
@@ -76,7 +76,7 @@ public class EventoService {
     }
 
     public List<EventoDTO> getEventosAtivos() {
-        List<Evento> eventosAtivos = eventoRepository.findByAtivoTrueAndEsgotadoFalse();
+        List<Evento> eventosAtivos = eventoRepository.findActiveAndAvailableEventsOrderByDateDesc();
         LocalDate now = LocalDate.now();
         eventosAtivos.forEach(evento -> {
             if (evento.getDataEvento().isBefore(now)) {
@@ -129,7 +129,7 @@ public class EventoService {
         if(search != null || !search.isEmpty()) {
             return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
         } else {
-            return eventoRepository.findByAtivoTrueAndEsgotadoFalse().stream().map(
+            return eventoRepository.findActiveAndAvailableEventsOrderByDateDesc().stream().map(
                     evento -> new EventoDTO(
                             evento,
                             curtidaRepository.countByEventoId(evento.getId()),
