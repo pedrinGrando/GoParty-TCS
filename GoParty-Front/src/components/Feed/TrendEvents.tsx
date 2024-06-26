@@ -44,6 +44,7 @@ const TrendEvents: React.FC = () => {
             setIsLoading(false);
         });
     }, []);
+    
     return (
         <div>
             {isLoading ? (
