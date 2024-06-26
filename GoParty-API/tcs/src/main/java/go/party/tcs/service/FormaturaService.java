@@ -5,6 +5,7 @@ import go.party.tcs.dto.FormaturaDTO;
 import go.party.tcs.dto.UsuarioDTO;
 import go.party.tcs.model.AppException;
 import go.party.tcs.model.Usuario;
+import go.party.tcs.repository.CurtidaRepository;
 import go.party.tcs.repository.EventoRepository;
 import go.party.tcs.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class FormaturaService {
@@ -34,6 +36,9 @@ public class FormaturaService {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private CurtidaRepository curtidaRepository;
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -97,6 +102,35 @@ public class FormaturaService {
         return formatura.getUsuarios().stream().map(
                 this::convertToDTO
         ).toList();
+    }
+
+    public List<FormaturaDTO> getTop5FormaturasByCurtidas() {
+        List<Object[]> results = curtidaRepository.findTop5FormaturasByCurtidas();
+        return results.stream()
+                .map(result -> {
+                    Long formaturaId = (Long) result[0];
+                    Long curtidasCount = (Long) result[1];
+                    Formatura formatura = formaturaRepository.findById(formaturaId).orElseThrow();
+                    Long totalEventos = eventoRepository.countByFormaturaId(formaturaId);
+                    Long totalMembros =  usuarioRepository.countUsersByFormaturaId(formatura.getId());
+                    String nomeUsuario = formatura.getAdm().getNome();
+
+                    return new FormaturaDTO(
+                            formatura.getId(),
+                            formatura.getTitulo(),
+                            formatura.getDescricao(),
+                            formatura.getFormaturaCaminho(),
+                            formatura.getCidade(),
+                            formatura.getEstado(),
+                            formatura.getDataPrevista(),
+                            formatura.getArrecacado(),
+                            formatura.getMetaArrecad(),
+                            nomeUsuario,
+                            totalMembros,
+                            totalEventos
+                    );
+                })
+                .collect(Collectors.toList());
     }
 
     public FormaturaDTO formaturaPorId(Long userId) throws AppException {

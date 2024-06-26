@@ -61,6 +61,11 @@ public class FormaturaController {
         }
     }
 
+//    @GetMapping("/top-formaturas")
+//    public ResponseEntity<List<FormaturaDTO>> getTop5FormaturasByCurtidas() {
+//        return ResponseEntity.ok(formaturaService);
+//    }
+
     // TODO talvez esse método saia
 //    @GetMapping("/uploads/{filename:.+}")
 //    @ResponseBody
@@ -83,6 +88,11 @@ public class FormaturaController {
         } catch (AppException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         }
+    }
+
+    @GetMapping("/top-formaturas")
+    public ResponseEntity<List<FormaturaDTO>> getTop5FormaturasByCurtidas() {
+        return ResponseEntity.ok(formaturaService.getTop5FormaturasByCurtidas());
     }
 
     @PutMapping("/remover-membro/{userId}")
