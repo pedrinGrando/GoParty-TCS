@@ -14,6 +14,7 @@
     "@types/react-text-mask": "^5.4.14",
     "aos": "^2.3.4",
     "date-fns": "^3.6.0",
+    "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "jwt-decode": "^4.0.0",
     "react": "^18.2.0",

@@ -1,20 +1,21 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Sidebar } from "../../../../components/sidebar/Sidebar";
-import { useTable, usePagination, useFilters, Column, TableInstance, TableState, Row } from 'react-table';
+import { useTable, usePagination, useFilters, useSortBy, Column, TableInstance, TableState, Row } from 'react-table';
 import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useParams } from 'react-router-dom';
-import { pt } from 'date-fns/locale/pt'; // Import Portuguese locale
+import { pt } from 'date-fns/locale/pt';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
-registerLocale('pt', pt); // Register the locale
+registerLocale('pt', pt);
 
-// Define the shape of our data
 interface Event {
   nome: string | null;
   quantityCreated: number;
   totalTicketsSold: number;
   totalRevenue: number;
-  date: string; // Adding date to filter by date range
+  date: string;
 }
 
 interface ApiResponse {
@@ -41,6 +42,8 @@ const EventReport: React.FC = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
   const [currentPageSize, setCurrentPageSize] = useState(5);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   const columns = useMemo<Column<Event>[]>(() => [
     { Header: 'Nome do Criador', accessor: 'nome' },
@@ -48,14 +51,6 @@ const EventReport: React.FC = () => {
     { Header: 'Total de Ingressos Vendidos', accessor: 'totalTicketsSold' },
     { Header: 'Valor Arrecadado Total (R$)', accessor: 'totalRevenue' },
   ], []);
-
-  const formatDate = (date: Date | null) => {
-    if (!date) return null;
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear().toString();
-    return `${year}-${month}-${day}`;
-  };
 
   const formatDateForBackend = (date: Date | null) => {
     if (!date) return null;
@@ -65,7 +60,6 @@ const EventReport: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // Fetch data from the API
   const fetchData = async (pagina: number, qtdItens: number) => {
     setLoading(true);
     try {
@@ -88,16 +82,16 @@ const EventReport: React.FC = () => {
           quantityCreated: item.quantidadeEventosCriados,
           totalTicketsSold: item.totalIngressosVendidos,
           totalRevenue: item.valorArrecadadoTotal,
-          date: '', // Add appropriate date if available
+          date: '',
         }));
         setData(mappedData);
       } else {
         setData([]);
       }
-      setTotalPages(result.pagination.totalPages); // Set total pages from pagination data
+      setTotalPages(result.pagination.totalPages);
     } catch (error) {
       console.error('Error fetching data:', error);
-      setData([]); // Ensure data is an array on error
+      setData([]);
     }
     setLoading(false);
   };
@@ -106,14 +100,23 @@ const EventReport: React.FC = () => {
     fetchData(currentPageIndex, currentPageSize);
   }, [graduationId, startDate, endDate, currentPageIndex, currentPageSize]);
 
+  useEffect(() => {
+    if (startDate && endDate && startDate > endDate) {
+      setErrorMessage("A data inicial não pode ser posterior à data final.");
+    } else {
+      setErrorMessage(null);
+    }
+  }, [startDate, endDate]);
+
   const tableInstance = useTable<Event>(
     {
       columns,
       data,
       initialState: { pageIndex: currentPageIndex, pageSize: currentPageSize } as Partial<TableState<Event>>,
     },
-    useFilters, // Hook to enable filters
-    usePagination // Hook to enable pagination
+    useFilters,
+    useSortBy,
+    usePagination
   ) as TableInstance<Event> & {
     page: Array<Row<Event>>;
     setFilter: (columnId: string, filterValue: any) => void;
@@ -144,19 +147,48 @@ const EventReport: React.FC = () => {
     setPageSize,
   } = tableInstance;
 
-  // Apply date range filter
   const applyDateFilter = () => {
-    fetchData(currentPageIndex, currentPageSize);
+    if (!errorMessage) {
+      fetchData(currentPageIndex, currentPageSize);
+    }
+  };
+
+  const exportToPDF = () => {
+    const input = reportRef.current;
+    if (input) {
+      const exportButton = document.getElementById('exportButton');
+      const navigationButtons = document.getElementById('navigationButtons');
+      const filterButton = document.getElementById('filterButton');
+
+      if (exportButton) exportButton.style.display = 'none';
+      if (navigationButtons) navigationButtons.style.display = 'none';
+      if (filterButton) filterButton.style.display = 'none';
+
+      html2canvas(input, { scale: 2 }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        const pdf = new jsPDF('p', 'mm', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.save("relatorio-eventos.pdf");
+
+        if (exportButton) exportButton.style.display = 'block';
+        if (navigationButtons) navigationButtons.style.display = 'flex';
+        if (filterButton) filterButton.style.display = 'inline-block';
+      });
+    }
   };
 
   return (
     <div className="flex">
       <Sidebar />
       <div className="flex-grow p-4">
-        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-md p-4">
-          <h1 className="text-2xl font-bold mb-4 text-left">Relatório de Eventos</h1>
+        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-md p-4" ref={reportRef} style={{ position: 'relative' }}>
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold mb-4 text-left">Relatório de Eventos</h1>
+          </div>
           <br />
-          
+
           <div className="mb-4 flex flex-col sm:flex-row justify-between items-center">
             <div className="flex items-center space-x-2 mb-2 sm:mb-0">
               <DatePicker
@@ -184,12 +216,23 @@ const EventReport: React.FC = () => {
               />
               <button 
                 onClick={applyDateFilter}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-md"
+                className="bg-indigo-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
+                disabled={!!errorMessage}
+                id="filterButton"
               >
                 Filtrar
               </button>
+              <button 
+                onClick={exportToPDF}
+                className="bg-indigo-600 text-white px-4 py-2 rounded-md"
+                id="exportButton"
+              >
+                Exportar PDF
+              </button>
             </div>
           </div>
+
+          {errorMessage && <div className="text-red-500 mb-4">{errorMessage}</div>}
 
           {loading ? (
             <div className="text-center">Carregando...</div>
@@ -203,8 +246,15 @@ const EventReport: React.FC = () => {
                     {headerGroups.map(headerGroup => (
                       <tr {...headerGroup.getHeaderGroupProps()} className="bg-gray-100 border-b">
                         {headerGroup.headers.map(column => (
-                          <th {...column.getHeaderProps()} className="text-left p-3 text-gray-700">
+                          <th {...column.getHeaderProps(column.getSortByToggleProps())} title="Ordenar" className="text-left p-3 text-gray-700">
                             {column.render('Header')}
+                            <span>
+                              {column.isSorted
+                                ? column.isSortedDesc
+                                  ? ' 🔽'
+                                  : ' 🔼'
+                                : ''}
+                            </span>
                           </th>
                         ))}
                       </tr>
@@ -229,7 +279,7 @@ const EventReport: React.FC = () => {
             )
           )}
 
-          <div className="flex justify-between items-center mt-4">
+          <div className="flex justify-between items-center mt-4" id="navigationButtons">
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => {
@@ -259,7 +309,7 @@ const EventReport: React.FC = () => {
               value={currentPageSize}
               onChange={e => {
                 setCurrentPageSize(Number(e.target.value));
-                setCurrentPageIndex(0); // Reset to first page when page size changes
+                setCurrentPageIndex(0);
                 setPageSize(Number(e.target.value));
               }}
               className="border p-2 rounded-md"
