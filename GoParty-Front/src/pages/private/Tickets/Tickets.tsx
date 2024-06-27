@@ -58,7 +58,7 @@ export default function Tickets() {
                     ) : (
                         ingressos.map(ingresso => (
 
-                            <div className="max-w-3xl mx-auto bg-white shadow-md rounded-lg flex flex-col md:flex-row border border-gray-300">
+                            <div className="max-w-3xl mx-auto mt-5 bg-white shadow-md rounded-lg flex flex-col md:flex-row border border-gray-300">
                                 <div className="flex-shrink-0 w-full md:w-1/3 bg-gray-100 p-4 flex items-center justify-center rounded-t-lg md:rounded-l-lg md:rounded-t-none">
                                     <img src={"qrCodeUrl"} alt="QR Code" className="w-24 h-24 object-cover" />
                                 </div>

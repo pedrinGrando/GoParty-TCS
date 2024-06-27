@@ -83,7 +83,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                       </svg>
                     </span>
                     <span className="ml-2 text-sm tracking-wide truncate">Buscar</span>
-                    <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">New</span>
                   </div>
                 </Link>
               </li>
