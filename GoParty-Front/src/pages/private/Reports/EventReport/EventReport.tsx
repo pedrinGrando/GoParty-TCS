@@ -1,13 +1,16 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Sidebar } from "../../../../components/sidebar/Sidebar";
 import { useTable, usePagination, useFilters, Column, TableInstance, TableState, Row } from 'react-table';
-import DatePicker from 'react-datepicker';
+import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { useParams } from 'react-router-dom';
+import { pt } from 'date-fns/locale/pt'; // Import Portuguese locale
+
+registerLocale('pt', pt); // Register the locale
 
 // Define the shape of our data
 interface Event {
-  eventName: string | null;
+  nome: string | null;
   quantityCreated: number;
   totalTicketsSold: number;
   totalRevenue: number;
@@ -36,9 +39,11 @@ const EventReport: React.FC = () => {
   const [data, setData] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(0);
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [currentPageSize, setCurrentPageSize] = useState(5);
 
   const columns = useMemo<Column<Event>[]>(() => [
-    { Header: 'Nome do Evento', accessor: 'eventName' },
+    { Header: 'Nome do Criador', accessor: 'nome' },
     { Header: 'Quantidade de Eventos Criados', accessor: 'quantityCreated' },
     { Header: 'Total de Ingressos Vendidos', accessor: 'totalTicketsSold' },
     { Header: 'Valor Arrecadado Total (R$)', accessor: 'totalRevenue' },
@@ -52,24 +57,34 @@ const EventReport: React.FC = () => {
     return `${year}-${month}-${day}`;
   };
 
+  const formatDateForBackend = (date: Date | null) => {
+    if (!date) return null;
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear().toString();
+    return `${year}-${month}-${day}`;
+  };
+
   // Fetch data from the API
-  const fetchData = async () => {
+  const fetchData = async (pagina: number, qtdItens: number) => {
     setLoading(true);
     try {
-      let url = `http://localhost:8081/v1/relatorio/relatorio-evento-por-membro?idFormatura=${graduationId}&pagina=0&qtdItens=10`;
-      const start = formatDate(startDate);
-      const end = formatDate(endDate);
+      let url = `http://localhost:8081/v1/relatorio/relatorio-evento-por-membro?idFormatura=${graduationId}&pagina=${pagina}&qtdItens=${qtdItens}`;
+      const start = formatDateForBackend(startDate);
+      const end = formatDateForBackend(endDate);
       if (start) {
         url += `&dataInicio=${start}`;
       }
       if (end) {
         url += `&dataFim=${end}`;
       }
+      console.log(url)
       const response = await fetch(url);
       const result: ApiResponse = await response.json();
+      console.log(result);
       if (result.data && Array.isArray(result.data)) {
         const mappedData = result.data.map(item => ({
-          eventName: item.nome,
+          nome: item.nome,
           quantityCreated: item.quantidadeEventosCriados,
           totalTicketsSold: item.totalIngressosVendidos,
           totalRevenue: item.valorArrecadadoTotal,
@@ -88,14 +103,14 @@ const EventReport: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [graduationId, startDate, endDate]);
+    fetchData(currentPageIndex, currentPageSize);
+  }, [graduationId, startDate, endDate, currentPageIndex, currentPageSize]);
 
   const tableInstance = useTable<Event>(
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 5 } as Partial<TableState<Event>>,
+      initialState: { pageIndex: currentPageIndex, pageSize: currentPageSize } as Partial<TableState<Event>>,
     },
     useFilters, // Hook to enable filters
     usePagination // Hook to enable pagination
@@ -121,8 +136,7 @@ const EventReport: React.FC = () => {
     page,
     prepareRow,
     setFilter,
-    state: { pageIndex, pageSize },
-    pageOptions,
+    state,
     canPreviousPage,
     canNextPage,
     previousPage,
@@ -132,7 +146,7 @@ const EventReport: React.FC = () => {
 
   // Apply date range filter
   const applyDateFilter = () => {
-    fetchData();
+    fetchData(currentPageIndex, currentPageSize);
   };
 
   return (
@@ -151,8 +165,10 @@ const EventReport: React.FC = () => {
                 selectsStart
                 startDate={startDate || undefined}
                 endDate={endDate || undefined}
+                dateFormat="dd/MM/yyyy"
                 placeholderText="Data Início"
                 className="border p-2 rounded"
+                locale="pt"
               />
               <DatePicker
                 selected={endDate || undefined}
@@ -161,8 +177,10 @@ const EventReport: React.FC = () => {
                 startDate={startDate || undefined}
                 endDate={endDate || undefined}
                 minDate={startDate || undefined}
+                dateFormat="dd/MM/yyyy"
                 placeholderText="Data Fim"
                 className="border p-2 rounded"
+                locale="pt"
               />
               <button 
                 onClick={applyDateFilter}
@@ -214,14 +232,20 @@ const EventReport: React.FC = () => {
           <div className="flex justify-between items-center mt-4">
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => previousPage()}
+                onClick={() => {
+                  setCurrentPageIndex(currentPageIndex - 1);
+                  previousPage();
+                }}
                 disabled={!canPreviousPage}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
               >
                 Anterior
               </button>
               <button
-                onClick={() => nextPage()}
+                onClick={() => {
+                  setCurrentPageIndex(currentPageIndex + 1);
+                  nextPage();
+                }}
                 disabled={!canNextPage}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
               >
@@ -229,11 +253,15 @@ const EventReport: React.FC = () => {
               </button>
             </div>
             <span>
-              Página <strong>{pageIndex + 1} de {totalPages}</strong>
+              Página <strong>{currentPageIndex + 1} de {totalPages}</strong>
             </span>
             <select
-              value={pageSize}
-              onChange={e => setPageSize(Number(e.target.value))}
+              value={currentPageSize}
+              onChange={e => {
+                setCurrentPageSize(Number(e.target.value));
+                setCurrentPageIndex(0); // Reset to first page when page size changes
+                setPageSize(Number(e.target.value));
+              }}
               className="border p-2 rounded-md"
             >
               {[5, 10, 20].map(size => (
