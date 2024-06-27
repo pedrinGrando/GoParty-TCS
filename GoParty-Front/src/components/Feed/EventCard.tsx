@@ -15,6 +15,7 @@ interface Evento {
     rua: string;
     dataEvento: string;
     valor: number;
+    tituloFormatura: string;
     totalComentarios: number;
     totalCurtidas: number;
 }
@@ -52,6 +53,10 @@ const EventCard: React.FC<EventoCardProps> = ({ evento, userId, toggleComentario
         <div key={evento.id} className="mt-12 max-w-lg mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg">
             <Link to={`/event/${evento.id}`}>
                 <img className="w-full" src={`http://localhost:8081${evento.eventoCaminho}`} alt="fotoEvento" />
+                <span className="bg-indigo-100 shadow-lg text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">Evento relacionado à <span className="font-bold">{evento.tituloFormatura}
+                <span className="inline-flex justify-center items-center ml-4">
+                        <svg height="19px" width="19px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 245.827 245.827" fill="#000000"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <g> <path d="M223.336,148.384l-0.137-23.527l22.628-12.662L122.576,47.195L0,113.495l49.144,28.216 l0.098,16.766l0.01,1.339l0.449-0.215c-0.518,0.703-0.85,1.426-0.84,2.149c0.039,8.246,33.326,14.772,74.41,14.548 c41.064-0.215,74.302-7.122,74.273-15.349c0-0.723-0.381-1.426-0.889-2.149l0.449,0.215v-1.339l-0.088-16.834l21.309-13.258 l0.117,20.83c-2.345,1.006-3.976,3.312-3.957,6.009c0.02,3.537,2.892,6.399,6.458,6.37c3.586-0.02,6.429-2.912,6.409-6.439 C227.332,151.657,225.691,149.371,223.336,148.384z M123.241,170.621c-36.452,0.205-66.017-3.801-66.046-8.91 c-0.029-5.11,29.496-9.399,65.949-9.585c36.462-0.205,66.017,3.781,66.037,8.881 C189.209,166.098,159.703,170.426,123.241,170.621z M195.335,127.183c-4.934-5.188-22.618-18.886-72.426-18.602 c-49.877,0.264-67.336,14.128-72.211,19.394l-0.029-4.963c0,0,14.147-21.524,72.202-21.827 c58.025-0.313,72.436,21.045,72.436,21.045L195.335,127.183z M215.755,162.199l-2.511,36.433 c7.767-12.203,14.255-7.66,14.255-7.66l-0.156-28.832C218.998,165.414,215.755,162.199,215.755,162.199z"></path> </g> </g> </g> </g></svg>
+                      </span></span></span>
                 <div className="px-6 py-4 dark:bg-gray-500">
                     <div className="font-bold text-xl mb-2 dark:text-white">{evento.titulo}</div>
                     <p className="text-gray-800 text-base">
@@ -101,12 +106,6 @@ const EventCard: React.FC<EventoCardProps> = ({ evento, userId, toggleComentario
                         </svg>
                         <span>{evento.totalComentarios > 0 ? evento.totalComentarios : ''}</span>
                     </button>
-                    {/* <button className="flex mr-2 text-gray-700 text-sm mr-4 hover:text-indigo-500">
-                        <svg fill="none" viewBox="0 0 24 24" className="w-5 h-5 mr-1" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                        </svg>
-                        <span>Compartilhar</span>
-                    </button> */}
                 </div>
                 {selectedEventoId === evento.id && <CommentsSection eventoId={evento.id} />}
                 <div className="mt-6 text-white bg-indigo-500 hover:bg-grey-300 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center inline-flex items-center me-2 dark:bg-indigo-500 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
