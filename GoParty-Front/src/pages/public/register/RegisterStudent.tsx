@@ -67,7 +67,7 @@ export default function RegisterStudent() {
 
 
   const handleCloseFooter = () => {
-    setError(false);
+    setError(false)
   };
 
   function isEmailEducational(email: string): boolean {
