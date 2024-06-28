@@ -55,7 +55,7 @@ export default function TrendPage() {
 
   return (
     <div>
-      <FormsTrends />
+        <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Eventos em</h1>
       {isLoading ? (
         <LoadingTrends />
       ) : (
@@ -66,12 +66,6 @@ export default function TrendPage() {
                 <LoadingTrends />
               ) : (
                 <ul role="list" className="w-full max-w-4xl rounded-md border-gray-300 mt-4 bg-white divide-y divide-gray-300 shadow-lg dark:bg-gray-900">
-                  <div className="px-4 py-2 flex items-center justify-center">
-                    <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Eventos em alta</h1>
-                    <svg className="w-4 h-4 ml-2 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                      <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M18.122 17.645a7.185 7.185 0 0 1-2.656 2.495 7.06 7.06 0 0 1-3.52.853 6.617 6.617 0 0 1-3.306-.718 6.73 6.73 0 0 1-2.54-2.266c-2.672-4.57.287-8.846.887-9.668A4.448 4.448 0 0 0 8.07 6.31 4.49 4.49 0 0 0 7.997 4c1.284.965 6.43 3.258 5.525 10.631 1.496-1.136 2.7-3.046 2.846-6.216 1.43 1.061 3.985 5.462 1.754 9.23Z" />
-                    </svg>
-                  </div>
                   {events.length === 0 ? (
                     <div className="flex justify-center items-center h-full dark:bg-gray-900">
                       <h2 className="dark:text-white">Nenhum evento em alta.</h2>
