@@ -56,8 +56,9 @@ public class EventoService {
 
     public Evento cadastrarEvento(Long userId, Evento evento) throws AppException {
         Usuario usuario = usuarioService.findById(userId);
-        if (!usuario.getTipoUsuario().equals(TipoUsuario.MEMBER)) {
-            throw new AppException("Usuario não é membro!");
+
+        if (!usuario.getTipoUsuario().equals(TipoUsuario.MEMBER) && !usuario.getTipoUsuario().equals(TipoUsuario.ADM)) {
+            throw new AppException("Usuario não é membro ou administrador!");
         }
         evento.setUsuario(usuario);
         evento.setFormatura(usuario.getFormatura());
@@ -75,12 +76,16 @@ public class EventoService {
         eventoRepository.save(evento);
     }
 
+    public int countEventosByUsuarioId(Long usuarioId) {
+        return eventoRepository.countByUsuarioId(usuarioId);
+    }
+
     public List<EventoDTO> getEventosAtivos() {
         List<Evento> eventosAtivos = eventoRepository.findActiveAndAvailableEventsOrderByDateDesc();
-        LocalDate now = LocalDate.now();
+        LocalDateTime now = LocalDateTime.now();
         eventosAtivos.forEach(evento -> {
             if (evento.getDataEvento().isBefore(now)) {
-                evento.setDataExpiracao(now);
+                evento.setDataExpiracao(now.toLocalDate());
                 eventoRepository.save(evento);
             }
         });

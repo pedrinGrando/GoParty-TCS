@@ -33,10 +33,10 @@ interface EventoDTO {
 
 export default function GradEvents() {
 
+    const { formId } = useParams();
     const [eventos, setEventos] = useState<EventoDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-    const { formId } = useParams();
     const [selectedEventoId, setSelectedEventoId] = useState<number | null>(null);
     const navigate = useNavigate();
 
@@ -72,7 +72,8 @@ export default function GradEvents() {
         }
     };
 
-    const fetchEventosForm = async (): Promise<EventoDTO[]> => {
+    const fetchGradEvents = async (): Promise<EventoDTO[]> => {
+        console.log(formId)
         setIsLoading(true);
         try {
             const response = await fetch(`http://localhost:8081/v1/eventos/buscar-por-formatura/${formId}`);
@@ -88,8 +89,9 @@ export default function GradEvents() {
         }
     }
 
+    //Busca os eventos criados
     useEffect(() => {
-        fetchEventosForm().then(data => {
+        fetchGradEvents().then(data => {
             setEventos(data);
             setIsLoading(false);
         });
@@ -102,7 +104,7 @@ export default function GradEvents() {
                 <LoadingHome />
             ) : (
                 <div>
-                    <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Eventos relacionados</h1>
+                   <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Eventos relacionados</h1>
                     {eventos.length === 0 ? (
                         <div className="flex justify-center dark:bg-gray-900 items-center h-screen">
                             <NoEvent />

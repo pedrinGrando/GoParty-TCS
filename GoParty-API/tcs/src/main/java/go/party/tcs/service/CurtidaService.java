@@ -37,6 +37,10 @@ public class CurtidaService {
         }
     }
 
+    public int countCurtidasByUsuarioId(Long usuarioId) {
+        return curtidaRepository.countByUsuarioId(usuarioId);
+    }
+
     public long contarCurtidasDoEvento(Evento evento) {
         return curtidaRepository.countByEvento(evento);
     }

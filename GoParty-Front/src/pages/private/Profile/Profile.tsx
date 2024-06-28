@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RenderIf } from "../../../components/RenderIf/RenderIf";
 import { Sidebar } from "../../../components/sidebar/Sidebar";
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
@@ -7,8 +7,11 @@ import TrendEvents from "../../../components/Feed/TrendEvents";
 import { FormsTrends } from "../../../components/Feed/FormsTrend";
 
 export default function Profile() {
-
   const [imagePreview, setImagePreview] = useState<string>('');
+  const [eventosCriados, setEventosCriados] = useState<number>(0);
+  const [ingressosAdquiridos, setIngressosAdquiridos] = useState<number>(0);
+  const [curtidas, setCurtidas] = useState<number>(0);
+
   const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
   const token = localStorage.getItem('token');
 
@@ -27,11 +30,11 @@ export default function Profile() {
 
   const onFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const file = event.target.files[0]
-      const imageURL = URL.createObjectURL(file)
+      const file = event.target.files[0];
+      const imageURL = URL.createObjectURL(file);
       const fileData = new FormData();
       fileData.append('file', file);
-      setImagePreview(imageURL)
+      setImagePreview(imageURL);
 
       try {
         const response = await fetch(`http://localhost:8081/v1/usuarios/${user.id}/upload-profile-image`, {
@@ -45,12 +48,51 @@ export default function Profile() {
         if (response.ok) {
           console.log('File uploaded successfully.');
         }
-
       } catch (error) {
         console.error('Failed to upload file.');
       }
     }
-  }
+  };
+
+  useEffect(() => {
+    const fetchUserStats = async () => {
+      try {
+        const eventosResponse = await fetch(`http://localhost:8081/v1/eventos/count-by-usuario/${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (eventosResponse.ok) {
+          const eventosData = await eventosResponse.json();
+          setEventosCriados(eventosData);
+        }
+
+        const ingressosResponse = await fetch(`http://localhost:8081/v1/ingressos/count-by-usuario/${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (ingressosResponse.ok) {
+          const ingressosData = await ingressosResponse.json();
+          setIngressosAdquiridos(ingressosData);
+        }
+
+        const curtidasResponse = await fetch(`http://localhost:8081/v1/eventos/count-likes-by-usuario/${user.id}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        if (curtidasResponse.ok) {
+          const curtidasData = await curtidasResponse.json();
+          setCurtidas(curtidasData);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user stats.', error);
+      }
+    };
+
+    fetchUserStats();
+  }, [user.id, token]);
 
   return (
     <div>
@@ -62,7 +104,6 @@ export default function Profile() {
             <div className="px-6">
               <div className="flex flex-wrap justify-center">
                 <div className="w-full px-4 flex justify-center">
-                  {/* Upload da foto condicional*/}
                   {user.fotoCaminho == null ? (
                     <div className='mt-0 flex justify-center rounded-full h-36 w-36 border border-dashed border-gray-900/25 px-6 py-10'>
                       <div className='text-center'>
@@ -96,31 +137,23 @@ export default function Profile() {
                 </div>
                 <div className="w-full px-4 text-center mt-20">
                   <div className="flex justify-center py-4 lg:pt-4 pt-8">
-                    {user?.tipoUsuario === 'ADM' && (
+                    {(user?.tipoUsuario === 'MEMBER' || user?.tipoUsuario === 'ADM') && (
                       <div className="mr-4 p-3 text-center">
                         <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                          22
-                        </span>
-                        <span className="text-sm text-blueGray-400">Eventos Criados</span>
-                      </div>
-                    )}
-                    {user?.tipoUsuario === 'MEMBER' && (
-                      <div className="mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                          22
+                          {eventosCriados}
                         </span>
                         <span className="text-sm text-blueGray-400">Eventos Criados</span>
                       </div>
                     )}
                     <div className="mr-4 p-3 text-center">
                       <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                        10
+                        {ingressosAdquiridos}
                       </span>
                       <span className="text-sm text-blueGray-400">Ingressos adquiridos</span>
                     </div>
                     <div className="lg:mr-4 p-3 text-center">
                       <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
-                        89
+                        {curtidas}
                       </span>
                       <span className="text-sm text-blueGray-400">Curtidas</span>
                     </div>
@@ -151,24 +184,22 @@ export default function Profile() {
                   <img src="/imagens/envelopes (1).png" className="mr-2" alt="envelopes"></img>
                   <span>{user.email}</span>
                 </div>
-                {/* <div className="flex items-center mb-2 text-blueGray-600">
+                <div className="flex items-center mb-2 text-blueGray-600">
                   <img src="/imagens/calendar-lines.png" className="mr-2" alt="calendar-lines"></img>
                   <span>{formatDate(user.idade)}</span>
-                </div> */}
+                </div>
                 <div className="flex items-center mb-2 text-blueGray-600">
                   <img src="/imagens/documents.png" className="mr-2" alt="id-card"></img>
                   <span>{formatCpf(user.cpf)}</span>
                 </div>
               </div>
+
             </div>
           </div>
         </div>
-
       </section>
-
       <Sidebar />
       <ResponsiveNavBar />
     </div>
-
-  )
+  );
 }

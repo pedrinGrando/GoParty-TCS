@@ -45,4 +45,11 @@ public class IngressoController {
             return ResponseEntity.internalServerError().body(exception.getMessage());
         }
     }
+
+    @GetMapping("/count-by-usuario/{usuarioId}")
+    public ResponseEntity<Integer> countIngressosByUsuarioId(@PathVariable Long usuarioId) {
+        int numberOfTickets = ingressoService.countIngressosByUsuarioId(usuarioId);
+        return ResponseEntity.ok(numberOfTickets);
+    }
+
 }

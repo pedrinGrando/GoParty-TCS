@@ -4,6 +4,7 @@ import useEventoCurtido from '../../hooks/useEventoCurtido';
 import CommentsSection from '../Comments/CommentsSection';
 import { LikeButton } from './likeButton';
 import { UnlikeButton } from './UnlikeButton';
+import { format, parseISO } from 'date-fns';
 
 interface Evento {
     id: number;
@@ -23,12 +24,17 @@ interface Evento {
 interface EventoCardProps {
     evento: Evento;
     userId: number;
-    toggleComentarios: (eventoId: number) => void;
+    toggleComentarios: (eventoId: number) => void
     selectedEventoId: number | null;
 }
 
 const EventCard: React.FC<EventoCardProps> = ({ evento, userId, toggleComentarios, selectedEventoId }) => {
     const { curtido, loading } = useEventoCurtido(evento.id, userId);
+
+    const formatDateTime = (dateString: string) => {
+        const date = parseISO(dateString);
+        return `${format(date, 'dd/MM/yyyy')} às ${format(date, 'HH:mm')}`;
+    };
 
     const handleCurtir = async (eventoId: number, curtido: any) => {
         try {
@@ -84,8 +90,7 @@ const EventCard: React.FC<EventoCardProps> = ({ evento, userId, toggleComentario
                         <p className="text-gray-500 flex items-center">
                             <svg className="w-6 h-6 text-gray-800 dark:text-white mr-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fillRule="evenodd" d="M18 5.05h1a2 2 0 0 1 2 2v2H3v-2a2 2 0 0 1 2-2h1v-1a1 1 0 1 1 2 0v1h3v-1a1 1 0 1 1 2 0v1h3v-1a1 1 0 1 1 2 0v1Zm-15 6v8a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-8H3ZM11 18a1 1 0 1 0 2 0v-1h1a1 1 0 1 0 0-2h-1v-1a1 1 0 1 0-2 0v1h-1a1 1 0 1 0 0 2h1v1Z" clipRule="evenodd" />
-                            </svg>
-                            {new Date(evento.dataEvento).toLocaleDateString('pt-BR')}
+                            </svg>{formatDateTime(evento.dataEvento)} 
                         </p>
                     </div>
                 </Link>

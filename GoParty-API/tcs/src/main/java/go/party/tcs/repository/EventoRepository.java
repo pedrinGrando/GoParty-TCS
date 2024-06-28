@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.model.Evento;
+import org.springframework.data.repository.query.Param;
 
 public interface EventoRepository extends JpaRepository<Evento, Long> {
 
@@ -15,6 +16,9 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
 
     @Query("SELECT e FROM Evento e WHERE e.ativo = true AND e.esgotado = false ORDER BY e.dataPostagem DESC")
     List<Evento> findActiveAndAvailableEventsOrderByDateDesc();
+
+    @Query("SELECT COUNT(e) FROM Evento e WHERE e.usuario.id = :usuarioId")
+    int countByUsuarioId(@Param("usuarioId") Long usuarioId);
 
     List<Evento> findByFormaturaId(Long formaturaId);
 
