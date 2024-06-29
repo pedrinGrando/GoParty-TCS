@@ -74,7 +74,7 @@ public class Evento {
     private double valor;
 
     @Column(name = "data_evento")
-    private LocalDate dataEvento;
+    private LocalDateTime dataEvento;
 
     @Column(name = "data_postagem")
     private LocalDateTime dataPostagem;

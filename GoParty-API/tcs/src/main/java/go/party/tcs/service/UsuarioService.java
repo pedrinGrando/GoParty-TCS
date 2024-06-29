@@ -62,6 +62,10 @@ public class UsuarioService {
         this.saveUser(usuario);
     }
 
+    public boolean existsByCpf(String cpf) {
+        return usuarioRepository.existsByCpf(cpf);
+    }
+
     public void atualizarSenha(Long userId, Map<String, String> senhas) throws AppException {
         Usuario usuario = usuarioRepository.findById(userId).orElseThrow(() -> new AppException("Usuario não encontrado!"));
         String atual = senhas.get("senhaAtual");

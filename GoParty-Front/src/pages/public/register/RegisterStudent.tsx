@@ -15,6 +15,7 @@ export default function RegisterStudent() {
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isCpfInUse, setIsCpfInUse] = useState(false);
   const [message, setMessage] = useState("");
   const [isEmailUnique, setIsEmailUnique] = useState(true);
   const [isUsernameUnique, setIsUsernameUnique] = useState(true);
@@ -66,7 +67,7 @@ export default function RegisterStudent() {
 
 
   const handleCloseFooter = () => {
-    setError(false);
+    setError(false)
   };
 
   function isEmailEducational(email: string): boolean {
@@ -154,19 +155,38 @@ export default function RegisterStudent() {
     navigate('/login');
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
 
     // Validação de CPF
     if (name === 'cpf' && type === 'text') {
       const numericValue = value.replace(/\D/g, '');
+
       setFormData({
         ...formData,
         [name]: numericValue,
       });
 
       setIsValidCPF(validateCPF(numericValue));
-    } else if (type === 'file' && event.target instanceof HTMLInputElement) {
+      if (validateCPF(numericValue)) {
+        try {
+          const response = await fetch(`http://localhost:8081/v1/usuarios/check-cpf?cpf=${numericValue}`);
+          if (!response.ok) {
+            console.error('Erro ao verificar o CPF');
+          }
+          const exists = await response.json();
+          setIsCpfInUse(exists);
+          setErrors({ ...errors, cpf: exists });
+        } catch (error) {
+          console.error('Erro ao verificar o CPF:', error);
+        }
+      } else {
+        setIsCpfInUse(false);
+        setErrors({ ...errors, cpf: true });
+      }
+    }
+
+    if (type === 'file' && event.target instanceof HTMLInputElement) {
       const file = event.target.files && event.target.files[0];
       if (file) {
         const blob = new Blob([file], { type: file.type });
@@ -182,9 +202,9 @@ export default function RegisterStudent() {
       });
 
 
-    if (name === 'email') {
-      setIsEducational(isEmailEducational(value));
-    }
+      if (name === 'email') {
+        setIsEducational(isEmailEducational(value));
+      }
 
       if (name === 'senhaConfirm' && value !== formData.senha) {
         setSenhaNotEqual(true);
@@ -222,6 +242,7 @@ export default function RegisterStudent() {
       }
     }
   };
+
   const validateCPF = (inputCPF: string): boolean => {
     const cpf = inputCPF.replace(/[^\d]+/g, '');
     if (cpf.length !== 11) return false;
@@ -403,19 +424,25 @@ export default function RegisterStudent() {
                       </p>
                     )}
                   </div>
+
                   <div className="relative">
-                    <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute dark:bg-gray-700 dark:text-white">Seu CPF</label>
+                    <label
+                      htmlFor="cpf"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700"
+                    >
+                      Seu CPF
+                    </label>
                     <MaskedInput
                       mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
                       placeholder="Seu CPF"
-                      id='cpf'
-                      name='cpf'
+                      id="cpf"
+                      name="cpf"
                       value={formData.cpf}
                       onChange={handleChange}
                       className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
                     />
                     {!isValidCPF && <p style={{ color: 'red' }}>O CPF digitado é inválido!</p>}
+                    {isCpfInUse && <p style={{ color: 'red' }}>Este CPF já está em uso!</p>}
                   </div>
                   <div className="relative">
                     <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
@@ -507,7 +534,7 @@ export default function RegisterStudent() {
                   </div>
                   <div className="relative">
                     <button type='submit'
-                      disabled={!isChecked || !isValidPass || errors.dataNasci || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
+                      disabled={!isChecked || isCpfInUse|| !isValidPass || errors.dataNasci || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                       {isLoading ? (

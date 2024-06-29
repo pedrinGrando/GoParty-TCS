@@ -83,6 +83,8 @@ public class AuthService implements UserDetailsService {
             throw new AppException("Senha invalida");
         }
         String password = new BCryptPasswordEncoder().encode(usuario.getSenha());
+        String cpf = usuario.getCpf().replace(".", "").replace("-", "");
+        usuario.setCpf(cpf);
         usuario.setSenha(password);
         usuario.setDataAceite(LocalDateTime.now());
         usuarioValidarCadastro = usuario;

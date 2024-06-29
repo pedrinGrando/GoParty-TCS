@@ -56,8 +56,9 @@ public class EventoService {
 
     public Evento cadastrarEvento(Long userId, Evento evento) throws AppException {
         Usuario usuario = usuarioService.findById(userId);
-        if (usuario.isNotStudent() || usuario.isNotAdm()) {
-            throw new AppException("Usuario não é membro!");
+
+        if (!usuario.getTipoUsuario().equals(TipoUsuario.MEMBER) && !usuario.getTipoUsuario().equals(TipoUsuario.ADM)) {
+            throw new AppException("Usuario não é membro ou administrador!");
         }
         evento.setUsuario(usuario);
         evento.setFormatura(usuario.getFormatura());
@@ -75,23 +76,28 @@ public class EventoService {
         eventoRepository.save(evento);
     }
 
+    public int countEventosByUsuarioId(Long usuarioId) {
+        return eventoRepository.countByUsuarioId(usuarioId);
+    }
+
     public List<EventoDTO> getEventosAtivos() {
-        List<Evento> eventos = eventoRepository.findByAtivoTrueAndEsgotadoFalse().stream().filter(
-                evento -> evento.getDataEvento().isBefore(LocalDate.now())
-        ).toList();
-        eventos.forEach(
-                evento -> {
-                    evento.setDataExpiracao(LocalDate.now());
-                    eventoRepository.save(evento);
-                }
-        );
-        return eventos.stream()
-                .filter(evento -> evento.getDataEvento().isAfter(LocalDate.now()))
+        List<Evento> eventosAtivos = eventoRepository.findActiveAndAvailableEventsOrderByDateDesc();
+        LocalDateTime now = LocalDateTime.now();
+        eventosAtivos.forEach(evento -> {
+            if (evento.getDataEvento().isBefore(now)) {
+                evento.setDataExpiracao(now.toLocalDate());
+                eventoRepository.save(evento);
+            }
+        });
+
+        return eventosAtivos.stream()
+                .filter(evento -> evento.getDataEvento().isAfter(now))
                 .map(evento -> {
                     int totalCurtidas = curtidaRepository.countByEventoId(evento.getId());
                     int totalComentarios = comentarioRepository.countByEventoId(evento.getId());
                     return new EventoDTO(evento, totalCurtidas, totalComentarios);
-                }).toList();
+                })
+                .collect(Collectors.toList());
     }
 
     public EventoDTO buscarEventoPorId(Long eventoId) throws AppException {
@@ -113,11 +119,22 @@ public class EventoService {
        ).toList();
     }
 
+    public List<EventoDTO> buscarEventosPorFormaturaId(Long formaturaId) throws AppException {
+        List<Evento> eventos = eventoRepository.findByFormaturaId(formaturaId);
+        return eventos.stream().map(
+                evento -> new EventoDTO(
+                        evento,
+                        curtidaRepository.countByEventoId(evento.getId()),
+                        comentarioRepository.countByEventoId(evento.getId())
+                )
+        ).collect(Collectors.toList());
+    }
+
     public List<EventoDTO> searchEventos(String search) throws AppException {
         if(search != null || !search.isEmpty()) {
             return eventoRepository.findByTituloOrDescricaoContainingIgnoreCase(search);
         } else {
-            return eventoRepository.findByAtivoTrueAndEsgotadoFalse().stream().map(
+            return eventoRepository.findActiveAndAvailableEventsOrderByDateDesc().stream().map(
                     evento -> new EventoDTO(
                             evento,
                             curtidaRepository.countByEventoId(evento.getId()),
@@ -189,8 +206,7 @@ public class EventoService {
         notificationService.addNotification(
                 autor.getUsername() + " comentou em seu evento: " + comentario.getTexto(),
                 evento.getUsuario().getId(),
-                TipoNotificacao.COMENTARIO,
-                comentario.getAutor().getFotoCaminho()
+                TipoNotificacao.COMENTARIO
         );
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Comentário adicionado com sucesso!");
@@ -220,8 +236,7 @@ public class EventoService {
         notificationService.addNotification(
                 usuario.getUsername() + " curtiu seu evento.",
                 evento.getUsuario().getId(),
-                TipoNotificacao.CURTIDA,
-                usuario.getFotoCaminho()
+                TipoNotificacao.CURTIDA
         );
     }
 

@@ -8,6 +8,7 @@ import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 import { Recaptcha } from '../../../components/recaptcha/Recaptcha';
+import { SucessLogin } from '../../../components/modal/SucessLogin';
 
 export default function Register() {
 
@@ -19,6 +20,7 @@ export default function Register() {
   const [isEmailUnique, setIsEmailUnique] = useState(true);
   const [isUsernameUnique, setIsUsernameUnique] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [isCpfInUse, setIsCpfInUse] = useState(false);
   const navigate = useNavigate();
   const [senhaNotEqual, setSenhaNotEqual] = useState(false);
   const [mostrarModal, setMostrarModal] = useState<boolean>(false);
@@ -44,7 +46,6 @@ export default function Register() {
       return false;
     }
 
-    // Verifica se a senha contém pelo menos um caractere especial e um numérico
     const regexSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
     const regexNumeric = /[0-9]+/;
 
@@ -155,7 +156,7 @@ export default function Register() {
     navigate('/login');
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
 
     if (name === 'cpf' && type === 'text') {
@@ -166,6 +167,23 @@ export default function Register() {
         [name]: numericValue,
       });
 
+      setIsValidCPF(validateCPF(numericValue));
+      if (validateCPF(numericValue)) {
+        try {
+          const response = await fetch(`http://localhost:8081/v1/usuarios/check-cpf?cpf=${numericValue}`);
+          if (!response.ok) {
+            console.error('Erro ao verificar o CPF');
+          }
+          const exists = await response.json();
+          setIsCpfInUse(exists);
+          setErrors({ ...errors, cpf: exists });
+        } catch (error) {
+          console.error('Erro ao verificar o CPF:', error);
+        }
+      } else {
+        setIsCpfInUse(false);
+        setErrors({ ...errors, cpf: true });
+      }
     }
 
     if (type === 'file' && event.target instanceof HTMLInputElement) {
@@ -190,16 +208,7 @@ export default function Register() {
       }
 
       if (name === 'senha') {
-        setIsValidPass(validatePassword(value))
-      }
-
-      if (name === 'cpf') {
-        setIsValidCPF(true);
-        if (!validateCPF(value)) {
-          setIsValidCPF(false);
-        } else {
-          setIsValidCPF(true);
-        }
+        setIsValidPass(validatePassword(value));
       }
 
       if (name === 'dataNasci') {
@@ -222,11 +231,13 @@ export default function Register() {
           setErrors({ ...errors, dataNasci: age < 16 });
         }
       }
+
       if (!isCaptchaValid) {
         setErrors({ ...errors, captcha: isCaptchaValid });
       }
     }
   };
+
   const validateCPF = (inputCPF: string): boolean => {
     const cpf = inputCPF.replace(/[^\d]+/g, '');
     if (cpf.length !== 11) return false;
@@ -409,45 +420,51 @@ export default function Register() {
                   </div>
 
                   <div className="relative">
-                    <label htmlFor='cpf' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700">Seu CPF</label>
+                    <label
+                      htmlFor="cpf"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700"
+                    >
+                      Seu CPF
+                    </label>
                     <MaskedInput
                       mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
                       placeholder="Seu CPF"
-                      id='cpf'
-                      name='cpf'
+                      id="cpf"
+                      name="cpf"
                       value={formData.cpf}
                       onChange={handleChange}
                       className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
                     />
-                     {!isValidCPF && <p style={{ color: 'red' }}>O CPF digitado é inválido!</p>}
+                    {!isValidCPF && <p style={{ color: 'red' }}>O CPF digitado é inválido!</p>}
+                    {isCpfInUse && <p style={{ color: 'red' }}>Este CPF já está em uso!</p>}
                   </div>
                   <div className="relative">
-                      <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                    <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Crie uma senha</label>
-                            <input 
-                              placeholder="●●●●●●●●●●●●"
-                              name='senha'
-                              id='senha'
-                              value={formData.senha}
-                              onChange={handleChange}
-                              type='password'
-                     className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}/>
-                  
-                  {!isValidPass && (
-                        <ErrorPassword />
-                   )}
-                    </div>
-                    <div className="relative">
-                      <label htmlFor='senhaConfirm' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                    <input
+                      placeholder="●●●●●●●●●●●●"
+                      name='senha'
+                      id='senha'
+                      value={formData.senha}
+                      onChange={handleChange}
+                      type='password'
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`} />
+
+                    {!isValidPass && (
+                      <ErrorPassword />
+                    )}
+                  </div>
+                  <div className="relative">
+                    <label htmlFor='senhaConfirm' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute dark:text-white dark:bg-gray-700">Confirmar senha</label>
-                            <input placeholder="●●●●●●●●●●●●"
-                            id='senhaConfirm'
-                            name='senhaConfirm'
-                            onChange={handleChange}
-                            value={formData.senhaConfirm}
-                            type={showPassword ? 'text' : 'password'}
-                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}/>
-                 {senhaNotEqual && <p style={{ color: 'red' }}>As senhas não coincidem!</p>}
+                    <input placeholder="●●●●●●●●●●●●"
+                      id='senhaConfirm'
+                      name='senhaConfirm'
+                      onChange={handleChange}
+                      value={formData.senhaConfirm}
+                      type={showPassword ? 'text' : 'password'}
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`} />
+                    {senhaNotEqual && <p style={{ color: 'red' }}>As senhas não coincidem!</p>}
                     <button
                       type="button"
                       onClick={togglePasswordVisibility}
@@ -512,7 +529,8 @@ export default function Register() {
                   </div>
                   <div className="relative">
                     <button type='submit'
-                      disabled={!isChecked || !isValidPass ||errors.senha|| errors.dataNasci || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
+                      disabled={!isChecked || isCpfInUse|| !isValidPass || errors.senha ||
+                       errors.dataNasci || !isValidEmail || !isEmailUnique || !isUsernameUnique || errors.cpf}
                       className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                       {isLoading ? (

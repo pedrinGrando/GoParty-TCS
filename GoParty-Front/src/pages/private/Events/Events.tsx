@@ -117,14 +117,19 @@ export default function Events() {
                 <LoadingHome />
             ) : (
                 <div>
-                    <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seus eventos</h1>
+                    <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seus eventos
+                        <svg className="ml-2 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16M8 14h8m-4-7V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z" />
+                        </svg>
+
+                    </h1>
                     {eventos.length === 0 ? (
-                        <div className="fPlex justify-center dark:bg-gray-900 items-center h-screen">
+                        <div className="flex justify-center dark:bg-gray-900 items-center h-screen">
                             <NoEvent />
                         </div>
                     ) : (
                         eventos.map(evento => (
-                            <div className="max-w-sm mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg">
+                            <div className="mt-12 max-w-lg mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg">
                                 {evento.ativo ?
                                     <span className="inline-flex items-center bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">
                                         <span className="w-2 h-2 me-1 bg-green-500 rounded-full"></span>
@@ -194,12 +199,6 @@ export default function Events() {
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
                                             </svg>
                                             <span>{/* Quandidade comentarios*/}</span>
-                                        </button>
-                                        <button className="flex text-gray-700 text-sm mr-4  hover:text-indigo-500">
-                                            <svg fill="none" viewBox="0 0 24 24" className="w-5 h-5 mr-1" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                            </svg>
-                                            <span>Compartilhar</span>
                                         </button>
                                         <Link to={`/event-update/${evento.id}`} key={evento.id}>
                                             <div className='flex text-gray-700 text-sm mr-4  hover:text-indigo-500'>
