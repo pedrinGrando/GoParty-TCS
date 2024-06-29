@@ -27,6 +27,9 @@ public class EventoController {
     @Autowired
     private EventoService eventoService;
 
+    @Autowired
+    private CurtidaService curtidaService;
+
     @PostMapping("/criar-evento/{userId}")
     public ResponseEntity<?> cadastrarEvento(@PathVariable Long userId, @RequestBody Evento evento) {
         try {
@@ -52,9 +55,21 @@ public class EventoController {
         }
     }
 
+    @GetMapping("/count-by-usuario/{usuarioId}")
+    public ResponseEntity<Integer> countEventosByUsuarioId(@PathVariable Long usuarioId) {
+        int numberOfEvents = eventoService.countEventosByUsuarioId(usuarioId);
+        return ResponseEntity.ok(numberOfEvents);
+    }
+
     @GetMapping("/buscar-eventos")
     public List<EventoDTO> getAllEventosAtivos() {
         return eventoService.getEventosAtivos();
+    }
+
+    @GetMapping("/count-likes-by-usuario/{usuarioId}")
+    public ResponseEntity<Integer> countCurtidasByUsuarioId(@PathVariable Long usuarioId) {
+        int numberOfLikes = curtidaService.countCurtidasByUsuarioId(usuarioId);
+        return ResponseEntity.ok(numberOfLikes);
     }
 
     @GetMapping("/buscar-evento/{eventoId}")

@@ -47,8 +47,10 @@ public class IngressoService {
                 ingresso.getStatus().toString(),
                 ingresso.getAutor().getNome(),
                 ingresso.getEvento().getTitulo(),
-                ingresso.getDataCompra()
-        );
+                ingresso.getDataCompra(),
+                ingresso.getEvento().getDataEvento(),
+                ingresso.getEvento().getRua(),
+                ingresso.getEvento().getBairro());
     }
 
     public List<IngressoDTO> listarIngressosDoUsuario(Long userId) throws AppException {
@@ -63,7 +65,15 @@ public class IngressoService {
                         ingresso.getStatus().toString(),
                         ingresso.getAutor().getNome(),
                         ingresso.getEvento().getTitulo(),
-                        ingresso.getDataCompra())
+                        ingresso.getDataCompra(),
+                        ingresso.getEvento().getDataEvento(),
+                        ingresso.getEvento().getRua(),
+                        ingresso.getEvento().getBairro())
                 ).toList();
     }
+
+    public int countIngressosByUsuarioId(Long usuarioId) {
+        return ingressoRepository.countByUsuarioId(usuarioId);
+    }
+
 }

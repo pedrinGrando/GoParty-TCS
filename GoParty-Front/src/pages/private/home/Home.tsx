@@ -13,6 +13,7 @@ import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 import CommentsSection from '../../../components/Comments/CommentsSection';
 import useEventoCurtido from '../../../hooks/useEventoCurtido';
 import EventCard from '../../../components/Feed/EventCard';
+import ResponsiveImage from '../../../components/Image/ResponsiveImage';
 
 interface EventoDTO {
     id: number;
@@ -36,8 +37,8 @@ export default function Home() {
     const [eventos, setEventos] = useState<EventoDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-    const [selectedEventoId, setSelectedEventoId] = useState<number | null>(null);
     const navigate = useNavigate();
+    const [selectedEventoId, setSelectedEventoId] = useState<number | null>(null);
 
     const toggleComentarios = (eventoId: number) => {
         setSelectedEventoId(selectedEventoId === eventoId ? null : eventoId);
@@ -98,6 +99,10 @@ export default function Home() {
     return (
         <div>
             <TrendEvents />
+            <ResponsiveImage
+                imageUrl=""
+                altText="Placeholder Image"
+            />
             {isLoading ? (
                 <LoadingHome />
             ) : (

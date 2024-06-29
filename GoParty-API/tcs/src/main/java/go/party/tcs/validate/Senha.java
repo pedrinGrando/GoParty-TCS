@@ -6,10 +6,18 @@ public class Senha {
     private static final int TAMANHO_MAXIMO = 15;
 
     public static boolean isSenhaValida(String password) {
-        if (password == null || password.length() < TAMANHO_MINIMO || password.length() > TAMANHO_MAXIMO || password.contains(" ")) {
+        if (password == null || password.length() < 8 || password.length() > 15) {
             return false;
         }
-        String regex = "^(?=.*[0-9])(?=.*[!@#$%^&*()-+]).{8,15}$";
-        return password.matches(regex);
+
+        String regexSpecialChar = ".*[!@#$%^&*()_+\\-=\\[\\]{};':\"\\\\|,.<>\\/\\?].*";
+        String regexNumeric = ".*[0-9].*";
+
+        if (!password.matches(regexSpecialChar) || !password.matches(regexNumeric)) {
+            return false;
+        }
+
+        return true;
     }
+
 }

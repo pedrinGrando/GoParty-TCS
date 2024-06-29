@@ -1,6 +1,8 @@
 package go.party.tcs.dto;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import go.party.tcs.model.Evento;
 import lombok.Data;
 import lombok.Getter;
@@ -21,7 +23,7 @@ public class EventoDTO {
     private String cep;
     private String rua;
     private String estado;
-    private LocalDate dataEvento;
+    private LocalDateTime dataEvento;
     private double valor;
     private int qntIngressos;
     private boolean esgotado;
@@ -32,7 +34,7 @@ public class EventoDTO {
     public EventoDTO() {}
 
     public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado,
-                     LocalDate dataEvento, double valor, int qntIngressos, String rua, String bairro, String cep,
+                     LocalDateTime dataEvento, double valor, int qntIngressos, String rua, String bairro, String cep,
                      boolean esgotado, String tituloFormatura, int totalComentarios, int totalCurtidas) {
         this.id = id;
         this.ativo = ativo;

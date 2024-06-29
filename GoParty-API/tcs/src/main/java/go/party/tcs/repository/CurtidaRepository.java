@@ -26,6 +26,9 @@ public interface CurtidaRepository extends JpaRepository<Curtida, Long> {
     @Query("SELECT c.evento.formatura.id, COUNT(c) FROM Curtida c GROUP BY c.evento.formatura.id ORDER BY COUNT(c) DESC")
     List<Object[]> findTop5FormaturasByCurtidas();
 
+    @Query("SELECT COUNT(c) FROM Curtida c WHERE c.usuario.id = :usuarioId")
+    int countByUsuarioId(@Param("usuarioId") Long usuarioId);
+
     @Query("SELECT COUNT(c) FROM Curtida c WHERE c.evento.id = :eventoId")
     int quantidadeCurtidasPorEvento(@Param("eventoId") Integer eventoId);
 

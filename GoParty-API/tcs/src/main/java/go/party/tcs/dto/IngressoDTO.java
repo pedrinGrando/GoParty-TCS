@@ -1,5 +1,6 @@
 package go.party.tcs.dto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class IngressoDTO {
@@ -9,15 +10,21 @@ public class IngressoDTO {
     private String nomeUsuario;  
     private String nomeEvento;
     private LocalDateTime dataCompra;
+    private LocalDateTime dataEvento;
+    private String ruaEvento;
+    private String bairroEvento;
     
     public IngressoDTO(Long id, String codigoEvento, String status, String nomeUsuario, String nomeEvento,
-            LocalDateTime dataCompra) {
+            LocalDateTime dataCompra, LocalDateTime dataEvento, String ruaEvento, String bairroEvento) {
         this.id = id;
         this.codigoEvento = codigoEvento;
         this.status = status;
         this.nomeUsuario = nomeUsuario;
         this.nomeEvento = nomeEvento;
         this.dataCompra = dataCompra;
+        this.dataEvento = dataEvento;
+        this.ruaEvento = ruaEvento;
+        this.bairroEvento = bairroEvento;
     }
 
     public IngressoDTO() {
@@ -71,4 +78,28 @@ public class IngressoDTO {
         this.dataCompra = dataCompra;
     }
 
+    public LocalDateTime getDataEvento() {
+        return dataEvento;
+    }
+
+    public void setDataEvento(LocalDateTime dataEvento) {
+        this.dataEvento = dataEvento;
+
+    }
+
+    public String getRuaEvento() {
+        return ruaEvento;
+    }
+
+    public void setRuaEvento(String ruaEvento) {
+        this.ruaEvento = ruaEvento;
+    }
+
+    public String getBairroEvento() {
+        return bairroEvento;
+    }
+
+    public void setBairroEvento(String bairroEvento) {
+        this.bairroEvento = bairroEvento;
+    }
 }
