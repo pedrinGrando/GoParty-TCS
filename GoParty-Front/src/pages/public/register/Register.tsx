@@ -8,6 +8,7 @@ import { ErrorPassword } from '../../../components/Error/ErrorPassWord';
 import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 import { Recaptcha } from '../../../components/recaptcha/Recaptcha';
+import { SucessLogin } from '../../../components/modal/SucessLogin';
 
 export default function Register() {
 
@@ -45,7 +46,6 @@ export default function Register() {
       return false;
     }
 
-    // Verifica se a senha contém pelo menos um caractere especial e um numérico
     const regexSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
     const regexNumeric = /[0-9]+/;
 

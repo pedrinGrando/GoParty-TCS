@@ -5,6 +5,7 @@ import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
 import { format, parseISO } from 'date-fns';
 import TrendEvents from "../../../components/Feed/TrendEvents";
 import { FormsTrends } from "../../../components/Feed/FormsTrend";
+import ResponsiveImage from "../../../components/Image/ResponsiveImage";
 
 export default function Profile() {
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -96,10 +97,18 @@ export default function Profile() {
 
   return (
     <div>
+      <ResponsiveImage
+        imageUrl=""
+        altText="Placeholder Image"
+      />
+      <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seu perfil
+        <svg className="ml-3 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+          <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd" />
+        </svg>
+      </h1>
       <section className="pt-16 bg-blueGray-50 dark:bg-gray-900">
         <TrendEvents />
         <div className="w-full lg:w-4/12 px-4 mx-auto">
-          <FormsTrends />
           <div className="backdrop:blur-md relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
             <div className="px-6">
               <div className="flex flex-wrap justify-center">
@@ -122,7 +131,7 @@ export default function Profile() {
                             </RenderIf>
 
                             <RenderIf condition={!!imagePreview}>
-                              <img src={imagePreview} width={170} className='rounded-full' />
+                              <img src={imagePreview} width={170} className='mt-0 rounded-full ring-6 ring-indigo-500 dark:ring-gray-500 w-28 h-24' />
                             </RenderIf>
 
                             <input accept="image/*" onChange={onFileUpload} id='fotoPerfil' name='fotoPerfil' type='file' className='sr-only' />
@@ -132,7 +141,7 @@ export default function Profile() {
                     </div>
                   ) : (
 
-                    <img alt="..." src={`http://localhost:8081${user?.fotoCaminho}`} className="mt-0 flex justify-center rounded-full h-36 w-36 border"></img>
+                    <img alt="..." src={`http://localhost:8081${user?.fotoCaminho}`} className="mt-0 flex justify-center rounded-full ring-6 ring-indigo-500 dark:ring-gray-500 h-36 w-36"></img>
                   )}
                 </div>
                 <div className="w-full px-4 text-center mt-20">
