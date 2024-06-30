@@ -30,8 +30,8 @@ public class RelatorioService {
             if (dataInicio.isAfter(dataFim)) {
                 throw new AppException("Data final é anterior a data de inicio");
             }
+            dataFim = dataFim.plusDays(1);
         }
-        dataFim = dataFim.plusDays(1);
         Page<EventoPorMembroProjection> pageResponse = eventoPorMembroRepository.findEventosPorMembro(idFormatura, dataInicio, dataFim, pageRequest);
         List<EventoPorMembroDTO> relatorio = pageResponse.stream().map(EventoPorMembroDTO::convertProjection).toList();
         return new ResponseRelatorio(relatorio, PaginationDTO.fromPage(pageResponse));
