@@ -7,6 +7,7 @@ import java.util.Map;
 import go.party.tcs.dto.NotificationDTO;
 import go.party.tcs.dto.UsuarioDTO;
 import go.party.tcs.repository.NotificationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,13 @@ public class NotificationController {
     public ResponseEntity<List<NotificationDTO>> getNotificationByUserId(@PathVariable Long userId) {
         List<NotificationDTO> notifications = notificationService.getNotificationByUser(userId);
         return ResponseEntity.ok(notifications);
+    }
+
+    @DeleteMapping("/delete-all/{userId}")
+    @Transactional
+    public ResponseEntity<Void> deleteAllNotificationsByUserId(@PathVariable Long userId) {
+        notificationService.deleteAllNotificationsByUserId(userId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/count-notifications/{userId}")

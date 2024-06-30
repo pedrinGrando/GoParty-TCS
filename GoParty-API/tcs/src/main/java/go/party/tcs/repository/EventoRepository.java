@@ -12,7 +12,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface EventoRepository extends JpaRepository<Evento, Long> {
 
-    List<Evento> findByUsuarioId(Long userId);
+    @Query("SELECT e FROM Evento e WHERE e.usuario.id = :userId ORDER BY e.dataPostagem DESC")
+    List<Evento> findByUsuarioIdOrderByDataEventoDesc(@Param("userId") Long userId);
 
     @Query("SELECT e FROM Evento e WHERE e.ativo = true AND e.esgotado = false ORDER BY e.dataPostagem DESC")
     List<Evento> findActiveAndAvailableEventsOrderByDateDesc();
@@ -20,7 +21,8 @@ public interface EventoRepository extends JpaRepository<Evento, Long> {
     @Query("SELECT COUNT(e) FROM Evento e WHERE e.usuario.id = :usuarioId")
     int countByUsuarioId(@Param("usuarioId") Long usuarioId);
 
-    List<Evento> findByFormaturaId(Long formaturaId);
+    @Query("SELECT e FROM Evento e WHERE e.formatura.id = :formaturaId ORDER BY e.dataPostagem DESC")
+    List<Evento> findByFormaturaIdOrderByDataPostagemDesc(@Param("formaturaId") Long formaturaId);
 
     Optional<Evento> findById(Long id);
 

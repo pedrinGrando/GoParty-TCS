@@ -56,7 +56,7 @@ const EventCard: React.FC<EventoCardProps> = ({ evento, userId, toggleComentario
     };
 
     return (
-        <div key={evento.id} className="mt-12 max-w-lg mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg">
+        <div key={evento.id} className="mt-14 max-w-lg mx-auto rounded overflow-hidden shadow-lg dark:shadow-lg">
             <Link to={`/event/${evento.id}`}>
                 <img className="w-full" src={`http://localhost:8081${evento.eventoCaminho}`} alt="fotoEvento" />
                 <span className="bg-indigo-100 shadow-lg text-indigo-800 text-sm font-medium me-2 px-2.5 py-0.5 rounded dark:bg-indigo-900 dark:text-indigo-300">Evento relacionado à <span className="font-bold">{evento.tituloFormatura}

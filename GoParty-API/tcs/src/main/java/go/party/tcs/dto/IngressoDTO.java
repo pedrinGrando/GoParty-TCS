@@ -13,9 +13,10 @@ public class IngressoDTO {
     private LocalDateTime dataEvento;
     private String ruaEvento;
     private String bairroEvento;
+    private String statusIngresso;
     
     public IngressoDTO(Long id, String codigoEvento, String status, String nomeUsuario, String nomeEvento,
-            LocalDateTime dataCompra, LocalDateTime dataEvento, String ruaEvento, String bairroEvento) {
+            LocalDateTime dataCompra, LocalDateTime dataEvento, String ruaEvento, String bairroEvento, String statusIngresso) {
         this.id = id;
         this.codigoEvento = codigoEvento;
         this.status = status;
@@ -25,6 +26,7 @@ public class IngressoDTO {
         this.dataEvento = dataEvento;
         this.ruaEvento = ruaEvento;
         this.bairroEvento = bairroEvento;
+        this.statusIngresso = statusIngresso;
     }
 
     public IngressoDTO() {
@@ -101,5 +103,13 @@ public class IngressoDTO {
 
     public void setBairroEvento(String bairroEvento) {
         this.bairroEvento = bairroEvento;
+    }
+
+    public String getStatusIngresso() {
+        return statusIngresso;
+    }
+
+    public void setStatusIngresso(String statusIngresso) {
+        this.statusIngresso = statusIngresso;
     }
 }
