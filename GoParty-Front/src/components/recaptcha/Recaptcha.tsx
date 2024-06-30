@@ -12,6 +12,7 @@ export const Recaptcha: React.FC<{ onCaptchaChange: (captcha: boolean) => void }
         <ReCAPTCHA
             sitekey={config.REACT_APP_SITE_KEY}
             onChange={handleCaptchaChange}
+            size="compact"
         />
     );
 }

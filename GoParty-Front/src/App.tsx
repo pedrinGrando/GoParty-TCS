@@ -46,7 +46,7 @@ function App() {
   useEffect(() => {
     AOS.init({
       once: true,
-      duration: 1000,
+      duration: 2000,
     });
 
     return () => {
@@ -55,7 +55,6 @@ function App() {
   }, []);
 
   return (
-
     <Router>
       <UserProvider>
         <Routes>
