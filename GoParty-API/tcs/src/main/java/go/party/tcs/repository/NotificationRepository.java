@@ -23,5 +23,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     void markNotificationsAsVisualized(@Param("userId") Long userId);
     @Query("SELECT COUNT(n) FROM Notification n WHERE n.visualizado = false AND n.usuario.id = :userId")
     int countByVisualizadoFalseAndUsuarioId(@Param("userId") Long userId);
+    void deleteByUsuarioId(Long userId);
 }
 

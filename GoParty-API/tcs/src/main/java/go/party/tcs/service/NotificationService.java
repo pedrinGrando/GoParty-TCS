@@ -91,6 +91,10 @@ public class NotificationService {
         return notificationResponseDTOs;
     }
 
+    public void deleteAllNotificationsByUserId(Long userId) {
+        notificationRepository.deleteByUsuarioId(userId);
+    }
+
     private NotificationDTO convertNotificationToNotificationDTO(Notification notification) {
         return new NotificationDTO(
                 notification.getId(),
