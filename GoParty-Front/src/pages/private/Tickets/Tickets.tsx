@@ -7,6 +7,7 @@ import TrendEvents from "../../../components/Feed/TrendEvents";
 import { LoadingHome } from "../../../components/Loading/LoadingHome";
 import { format, parseISO } from 'date-fns';
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
+import ResponsiveImage from "../../../components/Image/ResponsiveImage";
 
 export default function Tickets() {
 
@@ -54,6 +55,10 @@ export default function Tickets() {
 
     return (
         <div>
+            <ResponsiveImage
+                imageUrl="/imagens/newGradMen.png"
+                altText="Placeholder Image"
+            />
             <TrendEvents />
             {isLoading ? (
                 <LoadingHome />

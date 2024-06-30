@@ -10,6 +10,7 @@ import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 import { Loading } from '../../../components/Loading/Loading';
 import { format, parseISO } from 'date-fns';
 import TrendEvents from '../../../components/Feed/TrendEvents';
+import ResponsiveImage from '../../../components/Image/ResponsiveImage';
 
 interface EventoDTO {
     id: number;
@@ -112,6 +113,10 @@ export default function Events() {
 
     return (
         <div>
+             <ResponsiveImage
+                imageUrl="/imagens/newGradMen.png"
+                altText="Placeholder Image"
+            />
             <TrendEvents />
             {isLoading ? (
                 <LoadingHome />
