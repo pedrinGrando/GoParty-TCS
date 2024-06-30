@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
 import { Loading } from '../../../components/Loading/Loading';
@@ -8,9 +7,7 @@ import { NavBar } from '../../../components/NavBar/NavBar';
 import { ModalChoose } from '../../../components/modal/ModalChoose';
 import { Recaptcha } from '../../../components/recaptcha/Recaptcha';
 
-
 export default function Login() {
-
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState(false);
@@ -27,7 +24,7 @@ export default function Login() {
 
   const handleClose = () => setModalEscolha(false);
 
-  function redirectHome(){
+  function redirectHome() {
     navigate('/home');
   }
 
@@ -43,7 +40,7 @@ export default function Login() {
   const handleButtonClick = () => {
     setModalEscolha(true);
     setMensagemModal('Seja bem vindo ao GoParty, Escolha seu cadastro!');
-    setImagemSrcModal('/imagens/choosePic.webp')
+    setImagemSrcModal('/imagens/choosePic.webp');
   };
 
   const handleCloseFooter = () => {
@@ -62,10 +59,10 @@ export default function Login() {
     event.preventDefault();
     setIsLoading(true);
 
-    if ((formData.username.trim() === "" || formData.senha.trim() === "" || !isCaptchaValid)) {
+    if (formData.username.trim() === "" || formData.senha.trim() === "" || !isCaptchaValid) {
       setError(true);
       setIsLoading(false);
-      setMessage("Preencha todos os campos e resolva o captcha!")
+      setMessage("Preencha todos os campos e resolva o captcha!");
       return;
     }
 
@@ -85,7 +82,7 @@ export default function Login() {
         const data = await response.json();
         const token = data.token;
         const sessionUser = data.usuario;
-        
+
         localStorage.setItem('token', token);
         localStorage.setItem('sessionUser', JSON.stringify(sessionUser));
 
@@ -107,8 +104,7 @@ export default function Login() {
   };
 
   return (
-    <div className='min-h-screen dark:bg-gray-900'>
-      {/* Modal de escolha*/}
+    <div className="min-h-screen dark:bg-gray-900">
       <ModalChoose
         mensagem={mensagemModal}
         imagemSrc={imagemSrcModal}
@@ -118,8 +114,7 @@ export default function Login() {
       <form onSubmit={handleSubmit}>
         <NavBar />
         <div className="bg-white relative lg:py-20 mt-[-1px] dark:bg-gray-900">
-          <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl
-              xl:px-5 lg:flex-row">
+          <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl xl:px-5 lg:flex-row">
             <div className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 lg:pt-20 lg:flex-row">
               <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
                 <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
@@ -127,68 +122,59 @@ export default function Login() {
                     data-aos="fade-up"
                     data-aos-delay="50"
                     data-aos-duration="0"
-                    src="/imagens/enjoyingParty-removebg-preview.png" className="rounded mt-20 lg:mt-0" />
+                    src="/imagens/enjoyingParty-removebg-preview.png"
+                    className="rounded mt-20 lg:mt-0"
+                    alt="Enjoying Party"
+                  />
                 </div>
               </div>
-              <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12">
-                <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl
-                    relative z-10 dark:bg-gray-700">
+              <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-lg lg:mt-0 lg:w-10/12 xl:w-5/12">
+                <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl relative z-10 dark:bg-gray-700 w-full sm:w-11/12 md:w-3/4 lg:w-full">
                   <p className="w-full text-4xl font-medium text-center leading-snug font-serif dark:text-white">Entre em sua conta</p>
                   <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
                     <div className="relative backdrop: blur-md">
-                      <label htmlFor='username' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute dark:text-white dark:bg-gray-700">Nome de usuário</label>
+                      <label htmlFor="username" className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700">Nome de usuário</label>
                       <input
-                        placeholder='Jhon12'
-                        id='username'
-                        name='username'
+                        placeholder="Jhon12"
+                        id="username"
+                        name="username"
                         value={formData.username}
                         onChange={handleChange}
                         type="text"
-                        className={`backdrop-blur-md border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700`} />
+                        className="backdrop-blur-md border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 sm:w-full md:w-3/4 lg:w-full"
+                      />
                     </div>
                     <div className="relative">
-                      <label htmlFor='senha' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute dark:text-white dark:bg-gray-700">Senha</label>
+                      <label htmlFor="senha" className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700">Senha</label>
                       <input
-                        placeholder='●●●●●●●●●●●'
-                        id='senha'
+                        placeholder="●●●●●●●●●"
+                        id="senha"
                         onChange={handleChange}
                         value={formData.senha}
-                        name='senha'
+                        name="senha"
                         type={showPassword ? 'text' : 'password'}
-                        className="border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700" />
+                        className="border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 sm:w-full md:w-3/4 lg:w-full"
+                      />
                       <button
                         type="button"
                         onClick={togglePasswordVisibility}
                         className="absolute inset-y-0 right-0 px-3 mb-4 text-gray-600"
                       >
                         {showPassword ? (
-                          <img src="/imagens/view.png" alt="" />
+                          <img src="/imagens/view.png" alt="Show Password" />
                         ) : (
-                          <img src="imagens/hide.png" alt="" />
+                          <img src="imagens/hide.png" alt="Hide Password" />
                         )}
                       </button>
-
-                      {/*Leva para a troca de senha */}
-                      <Link to='/reset-password-email'>
+                      <Link to="/reset-password-email">
                         <div className="text-sm ml-auto">
                           <div className="font-semibold text-indigo-600 hover:text-indigo-500 underline">Esqueceu a senha?</div>
                         </div>
                       </Link>
-
                     </div>
-                    <Error
-                      error={error}
-                      message={message}
-                      onClose={handleCloseFooter}
-                    />
-
+                    <Error error={error} message={message} onClose={handleCloseFooter} />
                     <div className="relative">
-
-                      <button type='submit' className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
-                          rounded-lg transition duration-200 hover:bg-indigo-600 ease">
-
+                      <button type="submit" className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500 rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                         {isLoading ? (
                           <Loading />
                         ) : (
@@ -200,7 +186,6 @@ export default function Login() {
                       <Recaptcha onCaptchaChange={handleCaptchaChange} />
                     </div>
 
-                    {/* AQUI*/}
                     <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
                       Ainda não possui conta?
 

@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import TrendEvents from "../../../components/Feed/TrendEvents";
 import { Loading } from "../../../components/Loading/Loading";
 import { Sidebar } from "../../../components/sidebar/Sidebar";
-import Notification from "../../../types/Notification";
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
 import NotificationIcon from "../../../components/Icons/NotificationIcon";
 import { TipoNotificacao } from "../../../types/NotificationType";
 import { ToastType } from "../../../components/modal/ToastType";
 import { ToastContainer } from "../../../components/modal/ToastContainer";
+import ResponsiveImage from "../../../components/Image/ResponsiveImage";
 
 export default function Notifications() {
 
@@ -65,6 +65,33 @@ export default function Notifications() {
     const closeToast = () => {
         setIsVisible(false);
     }
+
+    const clearNotifications = async () => {
+        if(notifications.length <= 0) return;
+        setIsLoading(true);
+        try {
+            const response = await fetch(`http://localhost:8081/v1/notification/delete-all/${user.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            if (!response.ok) {
+                throw new Error('Failed to clear notifications');
+            }
+            setNotifications([]); 
+            setMessage("Notificações limpas com sucesso.");
+            setToasType("success");
+            setIsVisible(true);
+        } catch (error) {
+            console.error('Error clearing notifications:', error);
+            setMessage("Erro ao limpar notificações.");
+            setToasType("error");
+            setIsVisible(true);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const fetchUserInvites = async (): Promise<InviteDTO[]> => {
         try {
@@ -171,6 +198,10 @@ export default function Notifications() {
 
     return (
         <div className=" dark:bg-gray-900">
+             <ResponsiveImage
+                imageUrl="/imagens/newGradMen.png"
+                altText="Placeholder Image"
+            />
             <TrendEvents />
             <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Suas notificações <svg className="ml-3 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5.365V3m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175 0 .593 0 1.292-.538 1.292H5.538C5 18 5 17.301 5 16.708c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.365ZM8.733 18c.094.852.306 1.54.944 2.112a3.48 3.48 0 0 0 4.646 0c.638-.572 1.236-1.26 1.33-2.112h-6.92Z" />
@@ -187,6 +218,7 @@ export default function Notifications() {
                     <div className="inline-flex items-center justify-between w-full">
                         <h3 className="font-bold text-xl sm:text-2xl text-gray-800 dark:text-white">Todas</h3>
                         <button
+                            onClick={clearNotifications}
                             className="inline-flex text-xs sm:text-sm bg-white px-2 sm:px-3 py-2 text-blue-500 items-center rounded font-medium
                             shadow border focus:outline-none transform active:scale-75 transition-transform duration-700 hover:bg-blue-500
                             hover:text-white hover:-translate-y-1 hover:scale-110 dark:text-gray-800 dark:hover:bg-gray-100">
@@ -211,7 +243,11 @@ export default function Notifications() {
                                 </div>
                             ) : (
                                 notifications.map(notification => (
-                                    <div key={notification.id} className="mt-2 px-6 py-4 bg-white rounded-lg shadow w-full">
+                                    <div 
+                                    data-aos="fade-left"
+                                    data-aos-delay="50"
+                                    data-aos-duration="0"
+                                    key={notification.id} className="mt-2 px-6 py-4 bg-white rounded-lg shadow w-full">
                                         <div className="inline-flex items-center justify-between w-full">
                                             <div className="inline-flex items-center">
                                                 <NotificationIcon tipoNotificacao={notification.tipoNotificacao} />

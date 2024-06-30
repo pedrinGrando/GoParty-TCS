@@ -98,7 +98,7 @@ export default function Profile() {
   return (
     <div>
       <ResponsiveImage
-        imageUrl=""
+        imageUrl="/imagens/newGradMen.png"
         altText="Placeholder Image"
       />
       <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seu perfil

@@ -9,6 +9,7 @@ import { NoEvent } from "../../../components/Feed/NoEvent";
 import TrendEvents from "../../../components/Feed/TrendEvents";
 import { NotificationBell } from "../../../components/Notification/NotificationBell";
 import EventCard from "../../../components/Feed/EventCard";
+import ResponsiveImage from "../../../components/Image/ResponsiveImage";
 
 export default function Explore() {
 
@@ -84,6 +85,10 @@ export default function Explore() {
 
     return (
         <div>
+             <ResponsiveImage
+                imageUrl="/imagens/newGradMen.png"
+                altText="Placeholder Image"
+            />
             <TrendEvents />
             <div className="px-4 mx-auto text-center mt-5">
                 {/* campo de pesquisa */}

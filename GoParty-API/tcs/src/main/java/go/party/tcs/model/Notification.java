@@ -27,7 +27,5 @@ public class Notification {
     @JoinColumn(name = "usuario_id")
     private Usuario usuario; // O usuário que receberá a notificação
 
-    private String fotoCaminho; // autor
-
     private Boolean visualizado;
 }
