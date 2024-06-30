@@ -87,7 +87,7 @@ function App() {
           <Route path='/your-events' element={isAuthenticated() ? <Events /> : <Navigate to="/login" />} />
           <Route path='/graduation-events/:formId' element={isAuthenticated() ? <GradEvents /> : <Navigate to="/login" />} />
           <Route path='/your-graduation' element={isAuthenticated() ? <Graduation /> : <Navigate to="/login" />} />
-          <Route path='/your-graduation/tickets-report' element={isAuthenticated() ? <TicketReport /> : <Navigate to="/login" />} />
+          <Route path='/your-graduation/tickets-report/:graduationId' element={isAuthenticated() ? <TicketReport /> : <Navigate to="/login" />} />
           <Route path='/your-graduation/events-report/:graduationId' element={isAuthenticated() ? <EventReport /> : <Navigate to="/login" />} />
           <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />
