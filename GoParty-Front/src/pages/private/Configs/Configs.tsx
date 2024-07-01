@@ -5,6 +5,8 @@ import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
 import { Link, useNavigate } from "react-router-dom";
 import { Loading } from "../../../components/Loading/Loading";
 import TrendEvents from "../../../components/Feed/TrendEvents";
+import ResponsiveImage from "../../../components/Image/ResponsiveImage";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Configs() {
 
@@ -88,6 +90,11 @@ export default function Configs() {
     };
     return (
         <div>
+             <NotificationBell />
+             <ResponsiveImage
+                imageUrl="/imagens/newGradMen.png"
+                altText="Placeholder Image"
+            />
             <TrendEvents />
             <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Configurações de conta
                 <svg className="ml-3 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">

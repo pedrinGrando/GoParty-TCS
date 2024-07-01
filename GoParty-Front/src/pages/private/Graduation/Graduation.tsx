@@ -4,6 +4,7 @@ import { Sidebar } from "../../../components/sidebar/Sidebar"
 import { Loading } from "../../../components/Loading/Loading";
 import { Link } from "react-router-dom";
 import { AddMemberModal } from "../../../components/modal/AddMemberModal";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Graduation() {
 
@@ -60,6 +61,7 @@ export default function Graduation() {
 
     return (
         <div>
+            <NotificationBell/>
             <AddMemberModal
                 mostrarModal={mostrarModal}
                 onClose={closeModal}
@@ -104,7 +106,7 @@ export default function Graduation() {
                         }
                     </div>
                     <div className="py-4 border-b border-gray-200 flex items-center justify-between">
-                        <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Arrecadado <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">$</span></p>
+                        <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Meta de arrecadacao <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">R$ {formatura?.arrecad}</span></p>
                         <div className="flex items-center justify-center">
                             <svg className="text-gray-300 dark:text-white cursor-pointer" width="6" height="10" viewBox="0 0 6 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1 1L5 5L1 9" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" />
@@ -112,7 +114,7 @@ export default function Graduation() {
                         </div>
                     </div>
                     <button className="dark:bg-white dark:text-gray-900 dark:hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-base flex items-center justify-center leading-none text-white bg-gray-800 w-full py-4 hover:bg-gray-700 focus:outline-none">
-                        R$ {formatura?.arrecadado}
+                       Arrecadado R$ {formatura?.arrecadado}
                     </button>
                     <div>
                         <p className="xl:pr-48 text-base lg:leading-tight leading-normal text-gray-600 dark:text-gray-300 mt-7">{formatura?.descricao}</p>
@@ -137,7 +139,7 @@ export default function Graduation() {
                     <div>
                         <div className="border-b py-4 border-gray-200">
                             <div data-menu className="flex justify-between items-center cursor-pointer" onClick={toggleDropdown}>
-                                <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Relatórios</p>
+                                <p className="text-base leading-4 text-gray-800 dark:text-gray-300">Relatórios <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">2</span></p>
                                 <button className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-400 rounded" role="button" aria-label="show or hide">
                                     <svg className={`transform ${isOpen ? 'rotate-180' : ''} text-gray-300 dark:text-white`} width="10" height="6" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M9 1L5 5L1 1" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" />

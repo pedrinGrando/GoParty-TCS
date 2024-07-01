@@ -6,8 +6,10 @@ interface ResponsiveImageProps {
 }
 
 const ResponsiveImage: React.FC<ResponsiveImageProps> = ({ imageUrl, altText }) => {
+  //enquanto nao tiver modelo definido
+  return;
   return (
-    <div className="fixed top-0 left-0 h-full w-1/4 hidden md:block">
+    <div className="fixed top-0 left-0 h-full w-1/3 hidden md:block">
       <img src={imageUrl} alt={altText} className="object-cover h-full w-full" />
     </div>
   );

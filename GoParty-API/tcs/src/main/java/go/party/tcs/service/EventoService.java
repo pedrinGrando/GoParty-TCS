@@ -109,7 +109,7 @@ public class EventoService {
 
     public List<EventoDTO> buscarEventoPorUserId(Long userId) throws AppException {
         Usuario usuario = usuarioService.findById(userId);
-        List<Evento> eventos = eventoRepository.findByUsuarioId(usuario.getId());
+        List<Evento> eventos = eventoRepository.findByUsuarioIdOrderByDataEventoDesc(usuario.getId());
        return eventos.stream().map(
                evento -> new EventoDTO(
                        evento,
@@ -120,7 +120,7 @@ public class EventoService {
     }
 
     public List<EventoDTO> buscarEventosPorFormaturaId(Long formaturaId) throws AppException {
-        List<Evento> eventos = eventoRepository.findByFormaturaId(formaturaId);
+        List<Evento> eventos = eventoRepository.findByFormaturaIdOrderByDataPostagemDesc(formaturaId);
         return eventos.stream().map(
                 evento -> new EventoDTO(
                         evento,
