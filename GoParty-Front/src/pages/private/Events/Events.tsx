@@ -11,6 +11,7 @@ import { Loading } from '../../../components/Loading/Loading';
 import { format, parseISO } from 'date-fns';
 import TrendEvents from '../../../components/Feed/TrendEvents';
 import ResponsiveImage from '../../../components/Image/ResponsiveImage';
+import { NotificationBell } from '../../../components/Notification/NotificationBell';
 
 interface EventoDTO {
     id: number;
@@ -113,6 +114,7 @@ export default function Events() {
 
     return (
         <div>
+            <NotificationBell/>
              <ResponsiveImage
                 imageUrl="/imagens/newGradMen.png"
                 altText="Placeholder Image"

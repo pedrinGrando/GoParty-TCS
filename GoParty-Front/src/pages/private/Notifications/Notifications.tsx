@@ -8,6 +8,7 @@ import { TipoNotificacao } from "../../../types/NotificationType";
 import { ToastType } from "../../../components/modal/ToastType";
 import { ToastContainer } from "../../../components/modal/ToastContainer";
 import ResponsiveImage from "../../../components/Image/ResponsiveImage";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Notifications() {
 
@@ -198,6 +199,7 @@ export default function Notifications() {
 
     return (
         <div className=" dark:bg-gray-900">
+             <NotificationBell />
              <ResponsiveImage
                 imageUrl="/imagens/newGradMen.png"
                 altText="Placeholder Image"

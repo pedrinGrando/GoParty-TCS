@@ -13,6 +13,7 @@ import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 import CommentsSection from '../../../components/Comments/CommentsSection';
 import useEventoCurtido from '../../../hooks/useEventoCurtido';
 import EventCard from '../../../components/Feed/EventCard';
+import { NotificationBell } from '../../../components/Notification/NotificationBell';
 
 interface EventoDTO {
     id: number;
@@ -29,6 +30,7 @@ interface EventoDTO {
     tituloFormatura: string;
     totalCurtidas: number;
     totalComentarios: number;
+    emAlta: boolean;
 }
 
 export default function GradEvents() {
@@ -99,6 +101,7 @@ export default function GradEvents() {
 
     return (
         <div>
+            <NotificationBell/>
             <TrendEvents />
             {isLoading ? (
                 <LoadingHome />

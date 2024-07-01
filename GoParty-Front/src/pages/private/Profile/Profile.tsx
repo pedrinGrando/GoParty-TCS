@@ -6,6 +6,7 @@ import { format, parseISO } from 'date-fns';
 import TrendEvents from "../../../components/Feed/TrendEvents";
 import { FormsTrends } from "../../../components/Feed/FormsTrend";
 import ResponsiveImage from "../../../components/Image/ResponsiveImage";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Profile() {
   const [imagePreview, setImagePreview] = useState<string>('');
@@ -97,6 +98,7 @@ export default function Profile() {
 
   return (
     <div>
+       <NotificationBell />
       <ResponsiveImage
         imageUrl="/imagens/newGradMen.png"
         altText="Placeholder Image"
