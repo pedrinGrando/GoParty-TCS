@@ -323,7 +323,7 @@ const EventReport: React.FC = () => {
               }}
               className="border p-2 rounded-md"
             >
-              {[5, 10, 20].map(size => (
+              {[5, 10].map(size => (
                 <option key={size} value={size}>
                   Mostrar {size}
                 </option>
