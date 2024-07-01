@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public interface IngressoPorEventoProjection {
 
-    Long getCodigoIngresso();
+    String getCodigoIngresso();
     LocalDateTime getDataCompra();
     String getComprador();
     String getNomeEvento();

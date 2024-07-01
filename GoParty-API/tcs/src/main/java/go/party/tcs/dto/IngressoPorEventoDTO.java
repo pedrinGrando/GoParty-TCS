@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class IngressoPorEventoDTO {
-  private Long codigoIngresso;
+  private String codigoIngresso;
   private String dataCompra;
   private String nomeComprador;
   private String nomeEvento;

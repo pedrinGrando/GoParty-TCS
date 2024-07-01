@@ -113,6 +113,8 @@ const EventReport: React.FC = () => {
       columns,
       data,
       initialState: { pageIndex: currentPageIndex, pageSize: currentPageSize } as Partial<TableState<Event>>,
+      manualPagination: true,
+      pageCount: totalPages,
     },
     useFilters,
     useSortBy,
@@ -126,6 +128,7 @@ const EventReport: React.FC = () => {
     previousPage: () => void;
     nextPage: () => void;
     setPageSize: (size: number) => void;
+    gotoPage: (pageIndex: number) => void;
     state: TableState<Event> & {
       pageIndex: number;
       pageSize: number;
@@ -138,13 +141,13 @@ const EventReport: React.FC = () => {
     headerGroups,
     page,
     prepareRow,
-    setFilter,
-    state,
+    state: { pageIndex, pageSize },
     canPreviousPage,
     canNextPage,
     previousPage,
     nextPage,
     setPageSize,
+    gotoPage,
   } = tableInstance;
 
   const applyDateFilter = () => {
@@ -283,8 +286,10 @@ const EventReport: React.FC = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => {
-                  setCurrentPageIndex(currentPageIndex - 1);
-                  previousPage();
+                  const newPageIndex = pageIndex - 1;
+                  setCurrentPageIndex(newPageIndex);
+                  gotoPage(newPageIndex);
+                  fetchData(newPageIndex, pageSize);
                 }}
                 disabled={!canPreviousPage}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
@@ -293,8 +298,10 @@ const EventReport: React.FC = () => {
               </button>
               <button
                 onClick={() => {
-                  setCurrentPageIndex(currentPageIndex + 1);
-                  nextPage();
+                  const newPageIndex = pageIndex + 1;
+                  setCurrentPageIndex(newPageIndex);
+                  gotoPage(newPageIndex);
+                  fetchData(newPageIndex, pageSize);
                 }}
                 disabled={!canNextPage}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
@@ -303,14 +310,16 @@ const EventReport: React.FC = () => {
               </button>
             </div>
             <span>
-              Página <strong>{currentPageIndex + 1} de {totalPages}</strong>
+              Página <strong>{pageIndex + 1} de {totalPages}</strong>
             </span>
             <select
-              value={currentPageSize}
+              value={pageSize}
               onChange={e => {
-                setCurrentPageSize(Number(e.target.value));
+                const newSize = Math.min(Number(e.target.value), 20);
+                setCurrentPageSize(newSize);
                 setCurrentPageIndex(0);
-                setPageSize(Number(e.target.value));
+                setPageSize(newSize);
+                fetchData(0, newSize);
               }}
               className="border p-2 rounded-md"
             >
