@@ -4,6 +4,7 @@ import { Sidebar } from "../../../components/sidebar/Sidebar"
 import { Loading } from "../../../components/Loading/Loading";
 import { Link } from "react-router-dom";
 import { AddMemberModal } from "../../../components/modal/AddMemberModal";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Graduation() {
 
@@ -60,6 +61,7 @@ export default function Graduation() {
 
     return (
         <div>
+            <NotificationBell/>
             <AddMemberModal
                 mostrarModal={mostrarModal}
                 onClose={closeModal}

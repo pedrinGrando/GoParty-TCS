@@ -100,7 +100,7 @@ export default function Home() {
         <div>
             <TrendEvents />
             <ResponsiveImage
-                imageUrl=""
+                imageUrl="/imagens/newGradMen.png"
                 altText="Placeholder Image"
             />
             {isLoading ? (
