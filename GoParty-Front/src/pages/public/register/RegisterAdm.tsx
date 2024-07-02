@@ -211,7 +211,7 @@ export default function RegisterAdm() {
           formDataImage.append('file', selectedFile);
 
           const responseImage = await fetch(`http://localhost:8081/v1/formaturas/upload-grad-image/${formaturaData.id}`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
               'Authorization': `Bearer ${token}`,
             },

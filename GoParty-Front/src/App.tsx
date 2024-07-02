@@ -34,6 +34,7 @@ import PixKey from './pages/private/Tickets/PixKey';
 import TicketReport from './pages/private/Reports/TicketReport/TicketReport';
 import EventReport from './pages/private/Reports/EventReport/EventReport';
 import GradEvents from './pages/private/Graduation/GradEvents';
+import GradUpdate from './pages/private/Graduation/GradUpdate';
 
 function App() {
 
@@ -77,6 +78,7 @@ function App() {
           <Route path="/home" element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
           <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
           <Route path="/event-update/:eventId" element={isAuthenticated() ? <EventUpdate /> : <Navigate to="/login" />} />
+          <Route path="/grad-update/:formId" element={isAuthenticated() ? <GradUpdate /> : <Navigate to="/login" />} />
           <Route path="/formatura-pix/:eventId" element={isAuthenticated() ? <PixKey /> : <Navigate to="/login" />} />
           <Route path='/explore' element={isAuthenticated() ? <Explore /> : <Navigate to="/login" />} />
           <Route path='/register-adm' element={isAuthenticated() ? <RegisterAdm /> : <Navigate to="/login" />} />
