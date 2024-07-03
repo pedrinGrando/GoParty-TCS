@@ -21,7 +21,6 @@ export default function RegisterAdm() {
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isChecked, setIsChecked] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedFileMatri, setSelectedFileMatri] = useState<File | null>(null);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
@@ -57,7 +56,6 @@ export default function RegisterAdm() {
     cep: false,
     chavePix: false,
     dataPrevista: false,
-    metaArrecad: false,
     cidade: false,
     bairro: false,
     rua: false
@@ -94,35 +92,38 @@ export default function RegisterAdm() {
     }
   }
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      setSelectedFileMatri(event.target.files[0]);
-    }
-  };
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | { target: { name: string; value: string } }
+  ) => {
+    const { name, value } = 'target' in event ? event.target : event;
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = event.target;
-
-    if (type === 'file' && event.target instanceof HTMLInputElement) {
+    if ('type' in event && event.type === 'file' && event.target instanceof HTMLInputElement) {
       const file = event.target.files && event.target.files[0];
       if (file) {
         const blob = new Blob([file], { type: file.type });
-        setFormData({
-          ...formData,
+        setFormData((prevData) => ({
+          ...prevData,
           [name]: blob,
-        });
+        }));
       }
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
-      });
-    }
+      let newValue: string | number = value;
 
-    if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
-      buscarEndereco(value);
+      if (name === 'metaArrecad') {
+        newValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+      }
+
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: newValue,
+      }));
+
+      if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
+        buscarEndereco(value);
+      }
     }
   };
+
 
   //checar endereços por CEP (api ViaCEP)
   const buscarEndereco = async (cep: string) => {
@@ -165,6 +166,8 @@ export default function RegisterAdm() {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
+    console.log("Cheguei AQUIII");
+    console.log(formData);
     setIsLoading(true);
 
     const newErrors = {
@@ -177,7 +180,6 @@ export default function RegisterAdm() {
       cep: formData.cep.trim() === '',
       bairro: formData.bairro.trim() === '',
       dataPrevista: formData.dataPrevista.trim() === '',
-      metaArrecad: formData.metaArrecad.trim() === '',
     };
 
     setErrors(newErrors);
@@ -209,7 +211,7 @@ export default function RegisterAdm() {
           formDataImage.append('file', selectedFile);
 
           const responseImage = await fetch(`http://localhost:8081/v1/formaturas/upload-grad-image/${formaturaData.id}`, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
               'Authorization': `Bearer ${token}`,
             },
@@ -240,7 +242,7 @@ export default function RegisterAdm() {
             setTimeout(() => {
               navigate('/home');
             }, 2000);
-          } else{
+          } else {
             setIsLoading(false);
             setImagePreview('');
             setMessage("Usuario nao elegivel!")
@@ -384,7 +386,7 @@ export default function RegisterAdm() {
                     <div className="relative">
                       <label htmlFor='chavePix' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Sua chave pix</label>
-                      <input placeholder="Rua major costa 291"
+                      <input placeholder="chave-email@email.com"
                         type="text"
                         value={formData.chavePix}
                         name='chavePix'
@@ -392,18 +394,20 @@ export default function RegisterAdm() {
                         onChange={handleChange}
                         className={`border placeholder-gray-400 text-balck focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`} />
                     </div>
-                    <div></div>
                     <div className="relative">
-                      <label htmlFor='metaArrecad' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Meta de Arrecadação
+                      <label htmlFor="metaArrecad" className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                        Meta de Arrecadação
                       </label>
                       <CurrencyInput
+                        id="metaArrecad"
+                        name="metaArrecad"
                         placeholder="R$ 0,00"
-                        id='metaArrecad'
-                        name='metaArrecad'
-                        value={formData.metaArrecad}
-                        onChange={handleChange}
-                        className={`border placeholder-gray-400 text-balck focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
+                        value={formData.metaArrecad.toString()}
+                        decimalsLimit={2}
+                        decimalSeparator=","
+                        groupSeparator="."
+                        onValueChange={(value, name) => handleChange({ target: { name: name || 'metaArrecad', value: value || '0' } })}
+                        className="border placeholder-gray-400 text-black focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
                       />
                     </div>
                     <div className="relative">
@@ -455,8 +459,6 @@ export default function RegisterAdm() {
                     )}
 
                     <div className="inline-flex items-center">
-
-
                     </div>
                     <div className="relative">
                       <button type='submit'

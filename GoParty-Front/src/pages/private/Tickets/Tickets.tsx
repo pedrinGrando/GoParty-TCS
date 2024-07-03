@@ -7,6 +7,8 @@ import TrendEvents from "../../../components/Feed/TrendEvents";
 import { LoadingHome } from "../../../components/Loading/LoadingHome";
 import { format, parseISO } from 'date-fns';
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
+import ResponsiveImage from "../../../components/Image/ResponsiveImage";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Tickets() {
 
@@ -19,6 +21,7 @@ export default function Tickets() {
         ruaEvento: string;
         bairroEvento: string;
         nomeEvento: string;
+        statusIngresso: string;
     }
 
     const [ingressos, setIngressos] = useState<ingressoDTO[]>([]);
@@ -53,14 +56,24 @@ export default function Tickets() {
 
     return (
         <div>
+             <NotificationBell />
+            <ResponsiveImage
+                imageUrl="/imagens/newGradMen.png"
+                altText="Placeholder Image"
+            />
             <TrendEvents />
             {isLoading ? (
                 <LoadingHome />
             ) : (
                 <div>
-                    <h1 className="flex justify-center top-0 left-1/2 mt-4 text-4xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seus ingressos</h1>
+                    <h1 className="flex justify-center top-0 left-1/2 mt-4 text-4xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seus ingressos
+                        <svg className="ml-2 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M4 5a2 2 0 0 0-2 2v2.5a1 1 0 0 0 1 1 1.5 1.5 0 1 1 0 3 1 1 0 0 0-1 1V17a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2.5a1 1 0 0 0-1-1 1.5 1.5 0 1 1 0-3 1 1 0 0 0 1-1V7a2 2 0 0 0-2-2H4Z" />
+                        </svg>
+
+                    </h1>
                     {ingressos.length === 0 ? (
-                        <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto ">
+                        <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
                             <p>Você não possui ingressos.</p>
                         </div>
                     ) : (
@@ -74,7 +87,8 @@ export default function Tickets() {
                                         <h3 className="text-lg font-semibold text-gray-900">{ingresso.nomeEvento}</h3>
                                         <span className="text-sm text-gray-600">Ingresso #{ingresso.codigoEvento}</span>
                                     </div>
-                                    <div className="mb-5">
+                                    <span className="text-sm font-semibold text-gray-900">Status = <span className="font-bold shadow-sm text-green-600">{ingresso.statusIngresso}</span></span>
+                                    <div className="mb-5 mt-2">
                                         <p className="text-sm text-gray-500">Data do Evento:</p>
                                         <p className="text-sm font-semibold text-gray-900">{formatDateTime(ingresso.dataEvento)}</p>
                                     </div>

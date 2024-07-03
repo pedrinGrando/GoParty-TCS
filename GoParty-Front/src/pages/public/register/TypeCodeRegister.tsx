@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Loading } from "../../../components/Loading/Loading";
 import { NavBar } from "../../../components/NavBar/NavBar";
+import { SucessLogin } from "../../../components/modal/SucessLogin";
 
 
 export default function TypeCodeRegister () {
@@ -9,11 +10,16 @@ export default function TypeCodeRegister () {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
     const [message, setMessage] = useState("");
+    const [mostrarModal, setMostrarModal] = useState(false);
     const navigate = useNavigate();
 
     const [formData, setFormData] = useState({
         codigoDigitado: '',
       });
+
+      const closeToast = () => {
+        setMostrarModal(false);
+      }
        
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -49,8 +55,10 @@ export default function TypeCodeRegister () {
             if (response.ok) {
                 // Codigo Validado  
                 setIsLoading(false);
-                navigate('/home');
-                console.log('Codigo validado com sucesso!');
+                setMostrarModal(true);
+                setTimeout(() => {
+                  navigate('/login');
+                }, 6000);
             } else {
                 setIsLoading(false);
                 setMessage("Codigo digitado invalido!");
@@ -69,6 +77,10 @@ export default function TypeCodeRegister () {
 
     <div>
   <form onSubmit={handleSubmit} className='bg-white'>
+               <SucessLogin
+                mostrarModal={mostrarModal}
+                onClose={closeToast}
+              />
      <NavBar/>
      <div className="bg-white relative lg:py-20 mt-[-1px]">
       <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl

@@ -1,19 +1,19 @@
-// EventDetails.tsx
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Sidebar } from '../../../components/sidebar/Sidebar';
 import { Loading } from '../../../components/Loading/Loading';
 import { format, parseISO } from 'date-fns';
-import Event from '../../../types/Event';
+import { SucessPaymentModal } from '../../../components/modal/SucessPurchase';
 
 const PixKey: React.FC = () => {
-
-    const { eventId } = useParams();
+    const { eventId } = useParams<{ eventId: string }>();
     const [isLoading, setIsLoading] = useState(false);
     const [eventoDTO, setEventoDTO] = useState<EventoDTO>();
     const [error, setError] = useState<string | null>(null);
     const [chavePix, setChavePix] = useState<string | null>(null);
     const [solicitPag, setSolicitPag] = useState(false);
+    const [mostrarModal, setMostrarModal] = useState(false);
+    const navigate = useNavigate();
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
@@ -79,10 +79,15 @@ const PixKey: React.FC = () => {
 
             if (response.ok) {
                 setSolicitPag(true);
+                setMostrarModal(true);
+                setTimeout(() => {
+                    navigate('/your-tickets');
+                  }, 5000);
                 const ingresso = await response.json();
                 console.log('Ingresso criado com sucesso:', ingresso);
             } else {
                 setSolicitPag(false);
+                setMostrarModal(false);
                 throw new Error('Falha ao comprar ingresso');
             }
         } catch (error) {
@@ -92,7 +97,7 @@ const PixKey: React.FC = () => {
     }
 
     useEffect(() => {
-        const fetchEvento = async () => {
+        const fetchPixKey = async () => {
             setIsLoading(true);
             try {
                 const response = await fetch(`http://localhost:8081/v1/formaturas/${eventId}/consultar-pix-formatura`, {
@@ -103,11 +108,11 @@ const PixKey: React.FC = () => {
                 });
 
                 if (!response.ok) {
-                    console.log("Erro ao consultar PIX")
+                    console.log("Erro ao consultar PIX");
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
 
-                console.log("PIX consultado com sucesso!")
+                console.log("PIX consultado com sucesso!");
                 const data = await response.text();
                 setChavePix(data);
             } catch (e) {
@@ -117,11 +122,14 @@ const PixKey: React.FC = () => {
             }
         };
 
-        fetchEvento();
+        fetchPixKey();
     }, [eventId]);
 
     return (
         <div>
+            <SucessPaymentModal
+            mostrarModal={mostrarModal}
+            />
             <div className="bg-white dark:bg-gray-800 py-8">
                 <div className="mx-auto px-4 sm:px-6 lg:px-8">
                     <h1 className='flex justify-center mt-4 text-4xl font-semibold dark:bg-gray-900 items-center'>Pagamento via PIX</h1>
@@ -130,23 +138,22 @@ const PixKey: React.FC = () => {
                         <div className="md:flex-1 px-4">
                             <div className="h-[460px] rounded-lg bg-gray-300 dark:bg-gray-700 mb-4">
                                 {chavePix ?
-                                    //API de qr code dinamico
                                     <div className="flex flex-col justify-center items-center ">
                                         <img src={`https://api.qrserver.com/v1/create-qr-code/?size=350x350&data=${chavePix}`} alt="QR Code" />
                                         {chavePix ? <p className="mt-4">{chavePix}</p> : <p className="mt-4">Não disponível.</p>}
                                         {solicitPag ?
-                                        <button onClick={() => handlePurchase(user.id, 1)} disabled={true} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
-                                            Evento pago(verifique o status na lista de ingressos)
-                                        </button>
-                                        :
-                                        <button onClick={() => handlePurchase(user.id, 1)} className="w-full max-w-xs bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
-                                            {isLoading ? (
-                                                <Loading/>
-                                            ) : (
-                                                'Pagar'
-                                            )}
-                                        </button>
-                                    }
+                                            <button onClick={() => handlePurchase(user.id, parseInt(eventId!))} disabled={true} className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
+                                                Evento pago (verifique o status na lista de ingressos)
+                                            </button>
+                                            :
+                                            <button onClick={() => handlePurchase(user.id, parseInt(eventId!))} className="w-full max-w-xs bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
+                                                {isLoading ? (
+                                                    <Loading />
+                                                ) : (
+                                                    'Pagar'
+                                                )}
+                                            </button>
+                                        }
                                     </div>
                                     : ''}
                             </div>
@@ -160,7 +167,6 @@ const PixKey: React.FC = () => {
             </div>
             <Sidebar />
         </div>
-
     );
 };
 

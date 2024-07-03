@@ -42,6 +42,8 @@ export default function PostEvent() {
     titulo: '',
     descricao: '',
     estado: '',
+    eventoData: '',
+    horaEvento: '',
     dataEvento: '',
     cep: '',
     valor: '',
@@ -58,6 +60,7 @@ export default function PostEvent() {
     estado: false,
     cep: false,
     dataEvento: false,
+    horaEvento: false,
     valor: false,
     qntIngressos: false,
     cidade: false,
@@ -93,31 +96,73 @@ export default function PostEvent() {
     setIsVisible(false);
   }
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = event.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
-    if (type === 'file' && event.target instanceof HTMLInputElement) {
-      const file = event.target.files && event.target.files[0];
-      if (file) {
-        const blob = new Blob([file], { type: file.type });
-        setFormData({
-          ...formData,
-          [name]: blob,
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | { target: { name: string; value: string } }
+  ) => {
+    const { name, value } = 'target' in event ? event.target : event;
+  
+    if ('type' in event) {
+      const { type } = event;
+      if (type === 'file' && event.target instanceof HTMLInputElement) {
+        const file = event.target.files && event.target.files[0];
+        if (file) {
+          const blob = new Blob([file], { type: file.type });
+          setFormData((prevState) => ({
+            ...prevState,
+            [name]: blob,
+          }));
+        }
+      } else {
+        let newValue: string | number = value;
+  
+        if (name === 'valor') {
+          newValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+        }
+  
+        setFormData((prevState) => {
+          const updatedFormData = { ...prevState, [name]: newValue };
+  
+          if (name === 'eventoData' || name === 'horaEvento') {
+            const combinedDateTime = combineDateTime(updatedFormData.eventoData, updatedFormData.horaEvento);
+            updatedFormData.dataEvento = combinedDateTime;
+          }
+  
+          if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
+            buscarEndereco(value);
+          }
+  
+          return updatedFormData;
         });
       }
     } else {
-      setFormData({
-        ...formData,
-        [name]: value,
+      let newValue: string | number = value;
+  
+      if (name === 'valor') {
+        newValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
+      }
+  
+      setFormData((prevState) => {
+        const updatedFormData = { ...prevState, [name]: newValue };
+  
+        if (name === 'eventoData' || name === 'horaEvento') {
+          const combinedDateTime = combineDateTime(updatedFormData.eventoData, updatedFormData.horaEvento);
+          updatedFormData.dataEvento = combinedDateTime;
+        }
+  
+        if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
+          buscarEndereco(value);
+        }
+  
+        return updatedFormData;
       });
     }
+  };
 
-    if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
-      buscarEndereco(value);
+  const combineDateTime = (date: string, time: string) => {
+    if (!date || !time) {
+      return '';
     }
+    return `${date}T${time}:00`;
   };
 
   //checar endereços por CEP (api ViaCEP)
@@ -153,7 +198,13 @@ export default function PostEvent() {
 
   const handleSubmit = async (event: any) => {
     event.preventDefault();
-    setIsLoading(true);
+    const { eventoData, horaEvento, ...rest } = formData;
+
+    const payload = {
+      ...rest,
+      dataHoraEvento: formData.dataEvento,
+    };
+    console.log(payload);
 
     try {
       const responseEvento = await fetch(`http://localhost:8081/v1/eventos/criar-evento/${user.id}`, {
@@ -162,7 +213,7 @@ export default function PostEvent() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const eventData = await responseEvento.json();
@@ -174,6 +225,8 @@ export default function PostEvent() {
           titulo: '',
           descricao: '',
           estado: '',
+          eventoData: '',
+          horaEvento: '',
           dataEvento: '',
           cep: '',
           valor: '',
@@ -210,6 +263,8 @@ export default function PostEvent() {
               titulo: '',
               descricao: '',
               estado: '',
+              eventoData: '',
+              horaEvento: '',
               dataEvento: '',
               cep: '',
               valor: '',
@@ -229,6 +284,8 @@ export default function PostEvent() {
               titulo: '',
               descricao: '',
               estado: '',
+              eventoData: '',
+              horaEvento: '',
               dataEvento: '',
               cep: '',
               valor: '',
@@ -248,10 +305,12 @@ export default function PostEvent() {
           titulo: '',
           descricao: '',
           estado: '',
+          eventoData: '',
+          horaEvento: '',
           dataEvento: '',
+          cep: '',
           valor: '',
           qntIngressos: 0,
-          cep: '',
           cidade: '',
           bairro: '',
           rua: '',
@@ -369,47 +428,50 @@ export default function PostEvent() {
                         onChange={handleChange}
                         className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`} />
                     </div>
-                    <div></div>
                     <div className="relative">
-                      <label htmlFor='metaArrecad' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Valor do Ingresso
+                      <label htmlFor="valor" className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                        Valor
                       </label>
                       <CurrencyInput
+                        id="valor"
+                        name="valor"
                         placeholder="R$ 0,00"
-                        id='valor'
-                        name='valor'
-                        value={formData.valor}
-                        onChange={handleChange}
-                        className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
+                        value={formData.valor.toString()}
+                        decimalsLimit={2}
+                        decimalSeparator=","
+                        groupSeparator="."
+                        onValueChange={(value, name) => handleChange({ target: { name: name || 'valor', value: value || '0' } })}
+                        className="border placeholder-gray-400 text-black focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
                       />
                     </div>
                     <div className="relative">
-                      <label htmlFor='qntIngressos' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Quantidade de ingressos
+                      <label htmlFor='eventoData' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                        Data do Evento
                       </label>
                       <input
-                        placeholder="0"
-                        id='qntIngressos'
-                        name='qntIngressos'
-                        value={formData.qntIngressos}
-                        onChange={handleChange}
-                        type='number'
-                        className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md`}
-                      />
-                    </div>
-                    <div className="relative">
-                      <label htmlFor='dataEvento' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
-                          absolute">Data do Evento</label>
-                      <input
                         placeholder="Data Evento"
-                        id='dataEvento'
-                        name='dataEvento'
-                        value={formData.dataEvento}
+                        id='eventoData'
+                        name='eventoData'
+                        value={formData.eventoData}
                         onChange={handleChange}
                         type="date"
-                        className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `} />
+                        className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                      />
                     </div>
-
+                    <div className="relative mt-4">
+                      <label htmlFor='horaEvento' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                        Hora do Evento
+                      </label>
+                      <input
+                        placeholder="Hora Evento"
+                        id='horaEvento'
+                        name='horaEvento'
+                        value={formData.horaEvento}
+                        onChange={handleChange}
+                        type="time"
+                        className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                      />
+                    </div>
                     <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
                       <div className='text-center'>
 
@@ -444,48 +506,6 @@ export default function PostEvent() {
                         onClose={handleCloseFooter}
                       />
                     )}
-                    <div className="inline-flex items-center">
-                      <label
-                        className="relative -ml-2.5 flex cursor-pointer items-center rounded-full p-3"
-                        data-ripple-dark="true"
-                      >
-                        <input
-                          type="checkbox"
-                          className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-pink-500 checked:bg-pink-500 checked:before:bg-pink-500 hover:before:opacity-10"
-                          id="checkbox"
-                          onChange={handleCheckboxChange}
-                        />
-                        <span className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-3.5 w-3.5"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                            stroke="currentColor"
-                            strokeWidth="1"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                              clipRule="evenodd"
-                            ></path>
-                          </svg>
-                        </span>
-                      </label>
-                      <label
-                        className="mt-px cursor-pointer select-none font-light text-gray-700"
-                      >
-                        <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased">
-                          Eu concordo com
-                          <a
-                            className="font-semibold transition-colors hover:text-pink-500"
-                            href="#"
-                          >
-                            &nbsp;Termos e Condições
-                          </a>
-                        </p>
-                      </label>
-                    </div>
                     <div className="relative">
                       <button type='submit'
                         className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500

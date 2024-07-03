@@ -13,7 +13,7 @@ import org.springframework.data.repository.query.Param;
 public interface IngressoPorEventoRepository extends JpaRepository<Ingresso, Long> {
 
     @Query(nativeQuery = true, value = "select " +
-            "    i.id as codigoIngresso, " +
+            "    i.codigo_evento as codigoIngresso, " +
             "    i.data_compra as dataCompra, " +
             "    u.nome as comprador, " +
             "    e.titulo as nomeEvento, " +

@@ -30,12 +30,14 @@ public class EventoDTO {
     private String tituloFormatura;
     private int totalComentarios;
     private int totalCurtidas;
+    private boolean emAlta = false;
 
-    public EventoDTO() {}
+    public EventoDTO() {
+    }
 
     public EventoDTO(Long id, boolean ativo, String titulo, String descricao, String eventoCaminho, String cidade, String estado,
                      LocalDateTime dataEvento, double valor, int qntIngressos, String rua, String bairro, String cep,
-                     boolean esgotado, String tituloFormatura, int totalComentarios, int totalCurtidas) {
+                     boolean esgotado, String tituloFormatura, int totalComentarios, int totalCurtidas, boolean emAlta) {
         this.id = id;
         this.ativo = ativo;
         this.titulo = titulo;
@@ -53,9 +55,10 @@ public class EventoDTO {
         this.tituloFormatura = tituloFormatura;
         this.totalComentarios = totalComentarios;
         this.totalCurtidas = totalCurtidas;
+        this.emAlta = emAlta;
     }
 
-    public EventoDTO(Evento evento, int totalCurtidas, int totalComentarios) {
+    public EventoDTO(Evento evento, int totalCurtidas, int totalComentarios, boolean emAlta) {
         if (evento != null) {
             this.id = evento.getId();
             this.ativo = evento.isAtivo();
@@ -73,6 +76,7 @@ public class EventoDTO {
             this.tituloFormatura = evento.getFormatura().getTitulo();
             this.totalCurtidas = totalCurtidas;
             this.totalComentarios = totalComentarios;
+            this.emAlta = emAlta;
         }
     }
 

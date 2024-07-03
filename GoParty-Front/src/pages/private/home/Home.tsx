@@ -13,22 +13,22 @@ import { ResponsiveNavBar } from '../../../components/sidebar/ResponsiveBar';
 import CommentsSection from '../../../components/Comments/CommentsSection';
 import useEventoCurtido from '../../../hooks/useEventoCurtido';
 import EventCard from '../../../components/Feed/EventCard';
+import ResponsiveImage from '../../../components/Image/ResponsiveImage';
 
 interface EventoDTO {
     id: number;
+    eventoCaminho: string;
     titulo: string;
     descricao: string;
-    eventoCaminho: string;
     cidade: string;
-    rua: string;
     estado: string;
+    rua: string;
     dataEvento: string;
     valor: number;
-    nomeUsuario?: string;
-    esgotado: boolean;
     tituloFormatura: string;
-    totalCurtidas: number;
     totalComentarios: number;
+    totalCurtidas: number;
+    emAlta: boolean;
 }
 
 export default function Home() {
@@ -36,8 +36,8 @@ export default function Home() {
     const [eventos, setEventos] = useState<EventoDTO[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isCommentsOpen, setIsCommentsOpen] = useState(false);
-    const [selectedEventoId, setSelectedEventoId] = useState<number | null>(null);
     const navigate = useNavigate();
+    const [selectedEventoId, setSelectedEventoId] = useState<number | null>(null);
 
     const toggleComentarios = (eventoId: number) => {
         setSelectedEventoId(selectedEventoId === eventoId ? null : eventoId);
@@ -98,6 +98,10 @@ export default function Home() {
     return (
         <div>
             <TrendEvents />
+            <ResponsiveImage
+                imageUrl="/imagens/newGradMen.png"
+                altText="Placeholder Image"
+            />
             {isLoading ? (
                 <LoadingHome />
             ) : (

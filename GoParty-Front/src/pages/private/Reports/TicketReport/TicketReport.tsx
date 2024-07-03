@@ -1,45 +1,96 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Sidebar } from "../../../../components/sidebar/Sidebar";
-import { useTable, usePagination, useFilters, Column, TableInstance, TableState, Row, Cell } from 'react-table';
+import { useTable, usePagination, useFilters, useSortBy, Column, TableInstance, TableState, Row } from 'react-table';
+import { useParams } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
-// Define the shape of our data
 interface Ticket {
-  ticketCode: string;
-  purchaseDate: string;
-  buyerName: string;
-  eventName: string;
+  codigoIngresso: string;
+  dataCompra: string;
+  nomeComprador: string;
+  nomeEvento: string;
   status: string;
 }
 
+interface ApiResponse {
+  data: Ticket[];
+  pagination: {
+    page: number;
+    size: number;
+    totalElements: number;
+    totalPages: number;
+  };
+}
+
+const formatDate = (dateString: string) => {
+  return dateString.split(' ')[0];
+};
+
 const TicketReport: React.FC = () => {
+  const { graduationId } = useParams();
   const [status, setStatus] = useState<string>('');
   const [eventName, setEventName] = useState<string>('');
 
-  // Example data
-  const data = useMemo<Ticket[]>(() => [
-    { ticketCode: 'A001', purchaseDate: '2023-06-01', buyerName: 'João Silva', eventName: 'Evento A', status: 'Pago' },
-    { ticketCode: 'A002', purchaseDate: '2023-06-05', buyerName: 'Maria Oliveira', eventName: 'Evento B', status: 'Pendente' },
-    { ticketCode: 'A003', purchaseDate: '2023-06-10', buyerName: 'Carlos Souza', eventName: 'Evento C', status: 'Cancelado' },
-    // Adicione mais dados conforme necessário
-  ], []);
+  const [data, setData] = useState<Ticket[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPageIndex, setCurrentPageIndex] = useState(0);
+  const [currentPageSize, setCurrentPageSize] = useState(5);
 
-  const columns = useMemo<Column<Ticket>[]>(() => [
-    { Header: 'Código do Ingresso', accessor: 'ticketCode' },
-    { Header: 'Data da Compra', accessor: 'purchaseDate' },
-    { Header: 'Nome do Comprador', accessor: 'buyerName' },
-    { Header: 'Nome do Evento', accessor: 'eventName' },
-    { Header: 'Status', accessor: 'status' },
-  ], []);
+  const columns = React.useMemo<Column<Ticket>[]>(
+    () => [
+      { Header: 'Código do Ingresso', accessor: 'codigoIngresso' },
+      { Header: 'Data da Compra', accessor: 'dataCompra', Cell: ({ value }) => formatDate(value) },
+      { Header: 'Nome do Comprador', accessor: 'nomeComprador' },
+      { Header: 'Nome do Evento', accessor: 'nomeEvento' },
+      { Header: 'Status', accessor: 'status' },
+    ],
+    []
+  );
 
-  // Define the table instance with pagination and filters
+  const fetchData = async (pagina: number, qtdItens: number) => {
+    setLoading(true);
+    try {
+      let url = `http://localhost:8081/v1/relatorio/ingresso?idFormatura=${graduationId}&pagina=${pagina}&qtdItens=${qtdItens}`;
+      if (eventName) {
+        url += `&nomeEvento=${encodeURIComponent(eventName)}`;
+      }
+      if (status) {
+        url += `&status=${status}`;
+      }
+      const response = await fetch(url);
+      const result: ApiResponse = await response.json();
+      if (result.data && Array.isArray(result.data)) {
+        setData(result.data);
+        setTotalPages(result.pagination.totalPages);
+      } else {
+        setData([]);
+        setTotalPages(0);
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setData([]);
+      setTotalPages(0);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData(currentPageIndex, currentPageSize);
+  }, [eventName, status, currentPageIndex, currentPageSize]);
+
   const tableInstance = useTable<Ticket>(
     {
       columns,
       data,
-      initialState: { pageIndex: 0, pageSize: 5 } as Partial<TableState<Ticket>>,
+      initialState: { pageIndex: currentPageIndex, pageSize: currentPageSize } as Partial<TableState<Ticket>>,
+      manualPagination: true,
+      pageCount: totalPages,
     },
-    useFilters, // Hook to enable filters
-    usePagination // Hook to enable pagination
+    useFilters,
+    useSortBy,
+    usePagination
   ) as TableInstance<Ticket> & {
     page: Array<Row<Ticket>>;
     setFilter: (columnId: string, filterValue: any) => void;
@@ -49,13 +100,13 @@ const TicketReport: React.FC = () => {
     previousPage: () => void;
     nextPage: () => void;
     setPageSize: (size: number) => void;
+    gotoPage: (pageIndex: number) => void;
     state: TableState<Ticket> & {
       pageIndex: number;
       pageSize: number;
     };
   };
 
-  // Destructure the tableInstance for use in the component
   const {
     getTableProps,
     getTableBodyProps,
@@ -70,16 +121,54 @@ const TicketReport: React.FC = () => {
     previousPage,
     nextPage,
     setPageSize,
+    gotoPage,
   } = tableInstance;
 
-  // Apply status filter
   const applyStatusFilter = (status: string) => {
-    setFilter('status', status || undefined);
+    setStatus(status || '');
+    setCurrentPageIndex(0);
+    fetchData(0, currentPageSize);
   };
 
-  // Apply event name filter
   const applyEventNameFilter = (name: string) => {
-    setFilter('eventName', name || undefined);
+    setEventName(name || '');
+    setCurrentPageIndex(0);
+    fetchData(0, currentPageSize);
+  };
+
+  const handlePreviousPage = () => {
+    if (canPreviousPage) {
+      const newPageIndex = pageIndex - 1;
+      setCurrentPageIndex(newPageIndex);
+      gotoPage(newPageIndex);
+      fetchData(newPageIndex, pageSize);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (canNextPage) {
+      const newPageIndex = pageIndex + 1;
+      setCurrentPageIndex(newPageIndex);
+      gotoPage(newPageIndex);
+      fetchData(newPageIndex, pageSize);
+    }
+  };
+
+  const handleExport = async () => {
+    const elementsToHide = document.querySelectorAll('.hide-on-export');
+    elementsToHide.forEach(element => element.classList.add('hidden'));
+    const input = document.getElementById('exportContainer');
+    if (input) {
+      const canvas = await html2canvas(input, { scale: 2, useCORS: true });
+      const imgData = canvas.toDataURL('image/png');
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const imgProps = pdf.getImageProperties(imgData);
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save('relatorio_ingressos.pdf');
+    }
+    elementsToHide.forEach(element => element.classList.remove('hidden'));
   };
 
   return (
@@ -87,73 +176,88 @@ const TicketReport: React.FC = () => {
       <Sidebar />
       <div className="flex-grow p-6">
         <div className="max-w-6xl mx-auto bg-white shadow-md rounded-md p-6">
-          <h1 className="text-2xl font-bold mb-4 text-left">Relatório de Ingressos</h1>
-          <br />
-          
-          <div className="mb-4 flex flex-col sm:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-2 sm:mb-0">
-              <input
-                type="text"
-                value={eventName}
-                onChange={e => { setEventName(e.target.value); applyEventNameFilter(e.target.value); }}
-                placeholder="Nome do Evento"
+          <div id="exportContainer">
+            <h1 className="text-2xl font-bold mb-4 text-left">Relatório de Ingressos</h1>
+            <div className="mb-4 flex flex-col sm:flex-row justify-between items-center">
+              <div className="flex items-center space-x-2 mb-2 sm:mb-0 hide-on-export">
+                <label htmlFor="eventNameInput" className="mr-2">Nome do Evento:</label>
+                <input
+                  id="eventNameInput"
+                  type="text"
+                  value={eventName}
+                  onChange={e => applyEventNameFilter(e.target.value)}
+                  placeholder="Digite o nome do evento"
+                  className="border p-2 rounded-md"
+                />
+                <button
+                  onClick={handleExport}
+                  className="bg-indigo-600 text-white px-4 py-2 rounded-md"
+                >
+                  Exportar
+                </button>
+              </div>
+
+              <select
+                value={status}
+                onChange={e => applyStatusFilter(e.target.value)}
                 className="border p-2 rounded-md"
-              />
+              >
+                <option value="">Todos</option>
+                <option value="Pago">Pago</option>
+                <option value="Pendente">Pendente</option>
+                <option value="Cancelado">Cancelado</option>
+              </select>
             </div>
 
-            <select
-              value={status}
-              onChange={e => { setStatus(e.target.value); applyStatusFilter(e.target.value); }}
-              className="border p-2 rounded-md"
-            >
-              <option value="">Todos</option>
-              <option value="Pago">Pago</option>
-              <option value="Pendente">Pendente</option>
-              <option value="Cancelado">Cancelado</option>
-            </select>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table {...getTableProps()} className="min-w-full bg-white shadow-md rounded-md border-collapse">
-              <thead>
-                {headerGroups.map(headerGroup => (
-                  <tr {...headerGroup.getHeaderGroupProps()} className="bg-gray-100 border-b">
-                    {headerGroup.headers.map(column => (
-                      <th {...column.getHeaderProps()} className="text-left p-3 text-gray-700">
-                        {column.render('Header')}
-                      </th>
-                    ))}
-                  </tr>
-                ))}
-              </thead>
-              <tbody {...getTableBodyProps()}>
-                {page.map((row) => {
-                  prepareRow(row);
-                  return (
-                    <tr {...row.getRowProps()} className="border-b hover:bg-gray-50">
-                      {row.cells.map((cell) => (
-                        <td {...cell.getCellProps()} className="p-3 text-gray-700">
-                          {cell.render('Cell')}
-                        </td>
+            <div id="tableContainer" className="overflow-x-auto">
+              <table {...getTableProps()} className="min-w-full bg-white shadow-md rounded-md border-collapse">
+                <thead>
+                  {headerGroups.map(headerGroup => (
+                    <tr {...headerGroup.getHeaderGroupProps()} className="bg-gray-100 border-b">
+                      {headerGroup.headers.map(column => (
+                        <th {...column.getHeaderProps(column.getSortByToggleProps())} className="text-left p-3 text-gray-700">
+                          {column.render('Header')}
+                          <span>
+                            {column.isSorted
+                              ? column.isSortedDesc
+                                ? ' 🔽'
+                                : ' 🔼'
+                              : ''}
+                          </span>
+                        </th>
                       ))}
                     </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                  ))}
+                </thead>
+                <tbody {...getTableBodyProps()}>
+                  {page.map((row) => {
+                    prepareRow(row);
+                    return (
+                      <tr {...row.getRowProps()} className="border-b hover:bg-gray-50">
+                        {row.cells.map((cell) => (
+                          <td {...cell.getCellProps()} className="p-3 text-gray-700">
+                            {cell.render('Cell')}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
 
           <div className="flex justify-between items-center mt-4">
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => previousPage()}
+                onClick={handlePreviousPage}
                 disabled={!canPreviousPage}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
               >
                 Anterior
               </button>
               <button
-                onClick={() => nextPage()}
+                onClick={handleNextPage}
                 disabled={!canNextPage}
                 className="bg-indigo-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
               >
@@ -161,14 +265,20 @@ const TicketReport: React.FC = () => {
               </button>
             </div>
             <span>
-              Página <strong>{pageIndex + 1} de {pageOptions.length}</strong>
+              Página <strong>{pageIndex + 1} de {totalPages}</strong>
             </span>
             <select
               value={pageSize}
-              onChange={e => setPageSize(Number(e.target.value))}
+              onChange={e => {
+                const newSize = Math.min(Number(e.target.value), 10);
+                setCurrentPageSize(newSize);
+                setCurrentPageIndex(0);
+                setPageSize(newSize);
+                fetchData(0, newSize);
+              }}
               className="border p-2 rounded-md"
             >
-              {[5, 10, 20].map(size => (
+              {[5, 10].map(size => (
                 <option key={size} value={size}>
                   Mostrar {size}
                 </option>

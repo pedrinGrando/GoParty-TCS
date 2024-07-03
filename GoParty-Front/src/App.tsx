@@ -34,6 +34,7 @@ import PixKey from './pages/private/Tickets/PixKey';
 import TicketReport from './pages/private/Reports/TicketReport/TicketReport';
 import EventReport from './pages/private/Reports/EventReport/EventReport';
 import GradEvents from './pages/private/Graduation/GradEvents';
+import GradUpdate from './pages/private/Graduation/GradUpdate';
 
 function App() {
 
@@ -46,7 +47,7 @@ function App() {
   useEffect(() => {
     AOS.init({
       once: true,
-      duration: 1000,
+      duration: 2000,
     });
 
     return () => {
@@ -55,7 +56,6 @@ function App() {
   }, []);
 
   return (
-
     <Router>
       <UserProvider>
         <Routes>
@@ -78,6 +78,7 @@ function App() {
           <Route path="/home" element={isAuthenticated() ? <Home /> : <Navigate to="/login" />} />
           <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
           <Route path="/event-update/:eventId" element={isAuthenticated() ? <EventUpdate /> : <Navigate to="/login" />} />
+          <Route path="/grad-update/:formId" element={isAuthenticated() ? <GradUpdate /> : <Navigate to="/login" />} />
           <Route path="/formatura-pix/:eventId" element={isAuthenticated() ? <PixKey /> : <Navigate to="/login" />} />
           <Route path='/explore' element={isAuthenticated() ? <Explore /> : <Navigate to="/login" />} />
           <Route path='/register-adm' element={isAuthenticated() ? <RegisterAdm /> : <Navigate to="/login" />} />
@@ -87,7 +88,7 @@ function App() {
           <Route path='/your-events' element={isAuthenticated() ? <Events /> : <Navigate to="/login" />} />
           <Route path='/graduation-events/:formId' element={isAuthenticated() ? <GradEvents /> : <Navigate to="/login" />} />
           <Route path='/your-graduation' element={isAuthenticated() ? <Graduation /> : <Navigate to="/login" />} />
-          <Route path='/your-graduation/tickets-report' element={isAuthenticated() ? <TicketReport /> : <Navigate to="/login" />} />
+          <Route path='/your-graduation/tickets-report/:graduationId' element={isAuthenticated() ? <TicketReport /> : <Navigate to="/login" />} />
           <Route path='/your-graduation/events-report/:graduationId' element={isAuthenticated() ? <EventReport /> : <Navigate to="/login" />} />
           <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
           <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />

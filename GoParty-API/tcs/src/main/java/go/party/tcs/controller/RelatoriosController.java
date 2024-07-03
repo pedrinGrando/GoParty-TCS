@@ -2,6 +2,7 @@ package go.party.tcs.controller;
 
 import go.party.tcs.Enums.TipoStatus;
 import go.party.tcs.dto.ResponseRelatorio;
+import go.party.tcs.model.AppException;
 import go.party.tcs.service.RelatorioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -35,12 +36,16 @@ public class RelatoriosController {
     }
     
     @GetMapping("/relatorio-evento-por-membro")
-    public ResponseEntity<ResponseRelatorio> eventoPorMembro(@RequestParam Long idFormatura,
+    public ResponseEntity<?> eventoPorMembro(@RequestParam Long idFormatura,
                                                              @RequestParam(defaultValue = "0") int pagina,
                                                              @RequestParam(defaultValue = "10") int qtdItens,
                                                              @RequestParam(required = false) LocalDate dataInicio,
                                                              @RequestParam(required = false) LocalDate dataFim) {
-        ResponseRelatorio relatorio = relatorioService.gerarRelatorioEventoPorMembro(idFormatura, dataInicio, dataFim, PageRequest.of(pagina, qtdItens));
-        return ResponseEntity.ok(relatorio);
+        try {
+            ResponseRelatorio relatorio = relatorioService.gerarRelatorioEventoPorMembro(idFormatura, dataInicio, dataFim, PageRequest.of(pagina, qtdItens));
+            return ResponseEntity.ok(relatorio);
+        } catch (AppException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
     }
 }

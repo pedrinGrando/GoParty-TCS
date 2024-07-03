@@ -59,12 +59,11 @@ export const FormsTrends: React.FC = () => {
             ) : (
               grads.map(grad => (
                 <div className="relative me-4">
-                  <img className="w-10 h-10 p-1 rounded-full bg-indigo-300 ring-2 ring-gray-300 dark:ring-gray-500" src={`http://localhost:8081${grad.formaturaCaminho}`} alt="Bordered avatar" />
+                  <img className="w-10 h-10 p-1 rounded-full shadow-lg bg-indigo-500 ring-2 ring-gray-300 dark:ring-gray-500" src={`http://localhost:8081${grad.formaturaCaminho}`} alt="Bordered avatar" />
                 </div>
               ))
             )
           }
-
           <NotificationBell />
         </div>
       )
