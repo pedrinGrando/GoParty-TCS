@@ -67,8 +67,8 @@ const TrendEvents: React.FC = () => {
                             <Link to={`/event/${evento.id}`} key={evento.id}>
                                 <li className="py-3 sm:py-4 hover:bg-gray-200">
                                     <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                                        <div className="flex-shrink-0">
-                                            <img className="w-8 h-8 rounded-full" src={`http://localhost:8081${evento.eventoCaminho}`} alt="ufsc" />
+                                        <div className="flex-shrink-0 pl-3">
+                                            <img className="w-8 h-8 p-1 rounded-full shadow-sm bg-indigo-400" src={`http://localhost:8081${evento.eventoCaminho}`} alt="ufsc" />
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center justify-between">
