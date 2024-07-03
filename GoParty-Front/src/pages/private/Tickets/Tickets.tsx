@@ -8,6 +8,7 @@ import { LoadingHome } from "../../../components/Loading/LoadingHome";
 import { format, parseISO } from 'date-fns';
 import { ResponsiveNavBar } from "../../../components/sidebar/ResponsiveBar";
 import ResponsiveImage from "../../../components/Image/ResponsiveImage";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Tickets() {
 
@@ -55,6 +56,7 @@ export default function Tickets() {
 
     return (
         <div>
+             <NotificationBell />
             <ResponsiveImage
                 imageUrl="/imagens/newGradMen.png"
                 altText="Placeholder Image"
@@ -85,7 +87,7 @@ export default function Tickets() {
                                         <h3 className="text-lg font-semibold text-gray-900">{ingresso.nomeEvento}</h3>
                                         <span className="text-sm text-gray-600">Ingresso #{ingresso.codigoEvento}</span>
                                     </div>
-                                    <span className="text-sm font-semibold text-gray-900">Status = <span className="font-bold">{ingresso.statusIngresso}</span></span>
+                                    <span className="text-sm font-semibold text-gray-900">Status = <span className="font-bold shadow-sm text-green-600">{ingresso.statusIngresso}</span></span>
                                     <div className="mb-5 mt-2">
                                         <p className="text-sm text-gray-500">Data do Evento:</p>
                                         <p className="text-sm font-semibold text-gray-900">{formatDateTime(ingresso.dataEvento)}</p>

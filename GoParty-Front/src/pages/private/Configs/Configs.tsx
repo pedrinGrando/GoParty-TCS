@@ -6,6 +6,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Loading } from "../../../components/Loading/Loading";
 import TrendEvents from "../../../components/Feed/TrendEvents";
 import ResponsiveImage from "../../../components/Image/ResponsiveImage";
+import { NotificationBell } from "../../../components/Notification/NotificationBell";
 
 export default function Configs() {
 
@@ -89,6 +90,7 @@ export default function Configs() {
     };
     return (
         <div>
+             <NotificationBell />
              <ResponsiveImage
                 imageUrl="/imagens/newGradMen.png"
                 altText="Placeholder Image"

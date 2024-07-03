@@ -14,6 +14,7 @@ public class FormaturaDTO {
     private String formaturaCaminho;
     private String cidade;
     private String estado;
+    private String bairro;
     private LocalDate dataPrevista;
     private double arrecadado;
     private double arrecad;
@@ -22,13 +23,14 @@ public class FormaturaDTO {
     private Long totalEventos;
 
     public FormaturaDTO(Long id, String titulo, String descricao, String formaturaCaminho, String cidade, String estado,
-    LocalDate dataPrevista, double arrecadado, double arrecad, String nomeUsuario, Long totalMembros, Long totalEventos) {
+    LocalDate dataPrevista, double arrecadado, double arrecad, String nomeUsuario, Long totalMembros, Long totalEventos, String bairro) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
         this.formaturaCaminho = formaturaCaminho;
         this.cidade = cidade;
         this.estado = estado;
+        this.bairro = bairro;
         this.dataPrevista = dataPrevista;
         this.arrecadado = arrecadado;
         this.arrecad = arrecad;
@@ -113,5 +115,13 @@ public class FormaturaDTO {
 
     public void setTotalEventos(Long totalEventos) {
         this.totalEventos = totalEventos;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
     }
 }

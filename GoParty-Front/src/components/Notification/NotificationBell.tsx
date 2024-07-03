@@ -13,7 +13,7 @@ export const NotificationBell: React.FC = () => {
 
     const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
     const token = localStorage.getItem('token');
-    const [contadorNoti, setContadorNoti] = useState<number>(3);
+    const [contadorNoti, setContadorNoti] = useState<number>(0);
 
     const fetchNoti = async (): Promise<number> => {
         try {

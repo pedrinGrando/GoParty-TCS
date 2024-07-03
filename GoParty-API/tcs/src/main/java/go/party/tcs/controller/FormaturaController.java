@@ -3,6 +3,7 @@ package go.party.tcs.controller;
 import java.util.Map;
 import java.util.List;
 
+import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.model.AppException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,7 @@ public class FormaturaController {
         }
     }
 
-    @PostMapping("/upload-grad-image/{formaturaId}")
+    @PutMapping("/upload-grad-image/{formaturaId}")
     public ResponseEntity<String> uploadProfileImage(@PathVariable Long formaturaId,
                                                      @RequestParam("file") MultipartFile file) {
         try {
@@ -61,24 +62,14 @@ public class FormaturaController {
         }
     }
 
-//    @GetMapping("/top-formaturas")
-//    public ResponseEntity<List<FormaturaDTO>> getTop5FormaturasByCurtidas() {
-//        return ResponseEntity.ok(formaturaService);
-//    }
-
-    // TODO talvez esse método saia
-//    @GetMapping("/uploads/{filename:.+}")
-//    @ResponseBody
-//    public ResponseEntity<Resource> serveFile(@PathVariable String filename) throws MalformedURLException {
-//        Path file = Paths.get(uploadDir).resolve(filename);
-//        Resource resource = new UrlResource(file.toUri());
-//        if (resource.exists() || resource.isReadable()) {
-//            return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION,
-//                    "attachment; filename=\"" + resource.getFilename() + "\"").body(resource);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+    @PutMapping("/atualizar-formatura/{formId}")
+    public ResponseEntity<?> atualizarForm(@PathVariable Long formId, @RequestBody FormaturaDTO formDTO) {
+        try {
+            return ResponseEntity.ok(formaturaService.atualizarFormatura(formId, formDTO));
+        } catch (AppException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
+    }
 
     @PutMapping("/adicionar-membro/{userId}")
     public ResponseEntity<?> adicionarMembros(@PathVariable Long userId, @RequestBody FormaturaDTO form) {

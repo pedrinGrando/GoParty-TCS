@@ -2,6 +2,7 @@ package go.party.tcs.service;
 
 import go.party.tcs.Enums.TipoStatus;
 import go.party.tcs.dto.*;
+import go.party.tcs.model.AppException;
 import go.party.tcs.projection.EventoPorMembroProjection;
 import go.party.tcs.projection.IngressoPorEventoProjection;
 import go.party.tcs.repository.EventoPorMembroRepository;
@@ -24,7 +25,13 @@ public class RelatorioService {
     @Autowired
     EventoPorMembroRepository eventoPorMembroRepository;
 
-    public ResponseRelatorio gerarRelatorioEventoPorMembro(Long idFormatura, LocalDate dataInicio, LocalDate dataFim, PageRequest pageRequest) {
+    public ResponseRelatorio gerarRelatorioEventoPorMembro(Long idFormatura, LocalDate dataInicio, LocalDate dataFim, PageRequest pageRequest) throws AppException {
+        if(dataInicio != null && dataFim != null) {
+            if (dataInicio.isAfter(dataFim)) {
+                throw new AppException("Data final é anterior a data de inicio");
+            }
+            dataFim = dataFim.plusDays(1);
+        }
         Page<EventoPorMembroProjection> pageResponse = eventoPorMembroRepository.findEventosPorMembro(idFormatura, dataInicio, dataFim, pageRequest);
         List<EventoPorMembroDTO> relatorio = pageResponse.stream().map(EventoPorMembroDTO::convertProjection).toList();
         return new ResponseRelatorio(relatorio, PaginationDTO.fromPage(pageResponse));

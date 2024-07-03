@@ -6,17 +6,84 @@ interface SidebarProps {
   userName?: string
 }
 
+interface UsuarioDTO {
+  id: string;
+  nome: string;
+  username: string;
+  usuarioCaminho: string;
+  tipoUsuario: string;
+}
+
+interface EventoDTO {
+  id: number;
+  titulo: string;
+  descricao: string;
+  eventoCaminho: string;
+  cidade: string;
+  rua: string;
+  status: string;
+  estado: string;
+  dataEvento: string;
+  valor: number;
+  nomeUsuario?: string;
+  esgotado: boolean;
+  tituloFormatura: string;
+  totalCurtidas: number;
+}
+
 export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
 
   const [isOpen, setIsOpen] = useState(true);
   const location = useLocation();
   const [mostrarModal, setMostrarModal] = useState<boolean>(false);
-  const [contadorNoti, setContadorNoti] = useState<number>(3);
+  const [contadorNoti, setContadorNoti] = useState<number>(0);
+  const [eventos, setEventos] = useState<EventoDTO[]>([]);
+  const [usuarios, setUsuarios] = useState<UsuarioDTO[]>([]);
 
   const handleClose = () => setMostrarModal(false);
 
   const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
   const token = localStorage.getItem('token');
+
+  const fetchTodosEventos = async (): Promise<EventoDTO[]> => {
+    try {
+      const response = await fetch('http://localhost:8081/v1/eventos/top10Curtidas');
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const eventos: EventoDTO[] = await response.json();
+      return eventos;
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      return [];
+    }
+  }
+  useEffect(() => {
+    fetchTodosEventos().then(data => {
+      setEventos(data);
+    });
+  }, []);
+
+
+  const fetchGroup = async (): Promise<UsuarioDTO[]> => {
+    try {
+      const response = await fetch(`http://localhost:8081/v1/formaturas/listar-grupo/${user.id}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const usuarios: UsuarioDTO[] = await response.json();
+      return usuarios;
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return [];
+    }
+  }
+
+  useEffect(() => {
+    fetchGroup().then(data => {
+      setUsuarios(data);
+    });
+  }, []);
 
   const fetchNoti = async (): Promise<number> => {
     try {
@@ -52,9 +119,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
         onClose={handleClose}
       />
       <div className="flex flex-col flex-auto flex-shrink-0 antialiased bg-gray-50 text-gray-800 dark:bg-gray-700">
-        <div className={`fixed flex flex-col top-0 left-0 w-64 bg-white h-full border-r transition-all duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`} style={{ zIndex: 999 }}> {/* Adicionando estilo zIndex */}
-          <div className="flex items-center justify-center h-14 dark:bg-gray-700">
-          </div>
+        <div className={`fixed flex flex-col top-0 left-0 w-80 bg-white h-full border-r transition-all duration-300 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`} style={{ zIndex: 999 }}>
+          <div className="flex items-center justify-center h-14 dark:bg-gray-700"></div>
           <div className="overflow-y-auto overflow-x-hidden flex-grow dark:bg-gray-700">
             <ul className="flex flex-col py-4 space-y-1">
               <li className="px-5">
@@ -135,7 +201,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                   </Link>
                 </li>
               )}
-               {user?.tipoUsuario === 'MEMBER' && (
+              {user?.tipoUsuario === 'MEMBER' && (
                 <li>
                   <Link to='/your-graduation'>
                     <div className={location.pathname === '/your-graduation' ? 'relative flex flex-row items-center h-11 focus:outline-none bg-gray-300 text-gray-600 hover:text-gray-800 border-l-4 border-transparent border-indigo-600 pr-6' : 'relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6'}>
@@ -217,7 +283,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                         </svg>
                       </span>
                       <span className="ml-2 text-sm tracking-wide truncate">Seu Grupo</span>
-                      <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-500 bg-green-50 rounded-full">15</span>
+                      <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-500 bg-green-50 rounded-full">{usuarios.length}</span>
                     </div>
                   </Link>
                 </li>
@@ -232,7 +298,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                         </svg>
                       </span>
                       <span className="ml-2 text-sm tracking-wide truncate">Seu Grupo</span>
-                      <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-500 bg-green-50 rounded-full">15</span>
+                      <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-500 bg-green-50 rounded-full">{usuarios.length}</span>
                     </div>
                   </Link>
                 </li>
@@ -246,7 +312,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
                       </svg>
                     </span>
                     <span className="ml-2 text-sm tracking-wide truncate">Em Alta</span>
-                    <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-500 bg-green-50 rounded-full">15</span>
+                    <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-green-500 bg-green-50 rounded-full">{eventos.length}</span>
                   </div>
                 </Link>
               </li>
@@ -317,11 +383,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
             </ul>
           </div>
         </div>
-
+        <button
+          className="fixed p-1 cursor-default text-black bg-white rounded-full top-3 left-2"
+          style={{ zIndex: 999 }}
+        >
+          <svg
+            className="w-6 h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+          </svg>
+          <span className="sr-only">{isOpen ? 'Close sidebar' : 'Open sidebar'}</span>
+        </button>
         {/* Botão de abertura e fechamento da sidebar */}
         <button
           onClick={toggleSidebar}
-          className="fixed p-1 text-black bg-white rounded-full top-3 left-2"
+          className="fixed p-1 text-black bg-white rounded-full top-3 left-2 block md:hidden"
           style={{ zIndex: 999 }}
         >
           <svg
