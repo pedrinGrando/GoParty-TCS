@@ -1,9 +1,11 @@
 package go.party.tcs.service;
 
 import go.party.tcs.Enums.TipoUsuario;
+import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.dto.FormaturaDTO;
 import go.party.tcs.dto.UsuarioDTO;
 import go.party.tcs.model.AppException;
+import go.party.tcs.model.Evento;
 import go.party.tcs.model.Usuario;
 import go.party.tcs.repository.CurtidaRepository;
 import go.party.tcs.repository.EventoRepository;
@@ -127,7 +129,8 @@ public class FormaturaService {
                             formatura.getMetaArrecad(),
                             nomeUsuario,
                             totalMembros,
-                            totalEventos
+                            totalEventos,
+                            formatura.getBairro()
                     );
                 })
                 .collect(Collectors.toList());
@@ -151,7 +154,8 @@ public class FormaturaService {
                 formatura.getMetaArrecad(),
                 usuario.getNome(),
                 usuarioRepository.countUsersByFormaturaId(formatura.getId()),
-                eventoRepository.countByFormaturaId(formatura.getId())
+                eventoRepository.countByFormaturaId(formatura.getId()),
+                formatura.getBairro()
         );
     }
 
@@ -183,5 +187,31 @@ public class FormaturaService {
         dto.setUsuarioCaminho(usuario.getFotoCaminho());
         dto.setTipoUsuario(usuario.getTipoUsuario());
         return dto;
+    }
+
+    public FormaturaDTO atualizarFormatura(Long formId, FormaturaDTO formDTO) throws AppException {
+        Formatura formatura = this.findById(formId);
+        formatura.setTitulo(formDTO.getTitulo());
+        formatura.setDescricao(formDTO.getDescricao());
+        formatura.setEstado(formDTO.getEstado());
+        formatura.setCidade(formDTO.getCidade());
+        formatura.setBairro(formDTO.getBairro());
+        formatura.setDataPrevista(formDTO.getDataPrevista());
+        formatura = formaturaRepository.save(formatura);
+        return new FormaturaDTO(
+                formatura.getId(),
+                formatura.getTitulo(),
+                formatura.getDescricao(),
+                formatura.getFormaturaCaminho(),
+                formatura.getCidade(),
+                formatura.getEstado(),
+                formatura.getDataPrevista(),
+                formatura.getArrecacado(),
+                formatura.getMetaArrecad(),
+                formatura.getAdm().getNome(),
+                usuarioRepository.countUsersByFormaturaId(formatura.getId()),
+                eventoRepository.countByFormaturaId(formatura.getId()),
+                formatura.getBairro()
+        );
     }
 }

@@ -17,19 +17,18 @@ import ResponsiveImage from '../../../components/Image/ResponsiveImage';
 
 interface EventoDTO {
     id: number;
+    eventoCaminho: string;
     titulo: string;
     descricao: string;
-    eventoCaminho: string;
     cidade: string;
-    rua: string;
     estado: string;
+    rua: string;
     dataEvento: string;
     valor: number;
-    nomeUsuario?: string;
-    esgotado: boolean;
     tituloFormatura: string;
-    totalCurtidas: number;
     totalComentarios: number;
+    totalCurtidas: number;
+    emAlta: boolean;
 }
 
 export default function Home() {

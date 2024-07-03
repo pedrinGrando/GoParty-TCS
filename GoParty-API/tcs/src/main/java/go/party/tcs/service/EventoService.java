@@ -90,12 +90,17 @@ public class EventoService {
             }
         });
 
+        List<EventoDTO> eventosEmAlta = findTop10EventosComMaisCurtidas();
+
         return eventosAtivos.stream()
                 .filter(evento -> evento.getDataEvento().isAfter(now))
                 .map(evento -> {
                     int totalCurtidas = curtidaRepository.countByEventoId(evento.getId());
                     int totalComentarios = comentarioRepository.countByEventoId(evento.getId());
-                    return new EventoDTO(evento, totalCurtidas, totalComentarios);
+
+                    boolean emAlta = eventosEmAlta.stream().anyMatch(eventoEmAlta -> eventoEmAlta.getId().equals(evento.getId()));
+
+                    return new EventoDTO(evento, totalCurtidas, totalComentarios, emAlta);
                 })
                 .collect(Collectors.toList());
     }
@@ -104,7 +109,7 @@ public class EventoService {
         int totalCurtidas = curtidaRepository.countByEventoId(eventoId);
         int totalComentarios = comentarioRepository.countByEventoId(eventoId);
         Evento evento = this.findById(eventoId);
-        return new EventoDTO(evento, totalCurtidas, totalComentarios);
+        return new EventoDTO(evento, totalCurtidas, totalComentarios, false);
     }
 
     public List<EventoDTO> buscarEventoPorUserId(Long userId) throws AppException {
@@ -114,7 +119,8 @@ public class EventoService {
                evento -> new EventoDTO(
                        evento,
                        curtidaRepository.countByEventoId(evento.getId()),
-                       comentarioRepository.countByEventoId(evento.getId())
+                       comentarioRepository.countByEventoId(evento.getId()),
+                       false
                )
        ).toList();
     }
@@ -125,7 +131,8 @@ public class EventoService {
                 evento -> new EventoDTO(
                         evento,
                         curtidaRepository.countByEventoId(evento.getId()),
-                        comentarioRepository.countByEventoId(evento.getId())
+                        comentarioRepository.countByEventoId(evento.getId()),
+                        false
                 )
         ).collect(Collectors.toList());
     }
@@ -138,7 +145,8 @@ public class EventoService {
                     evento -> new EventoDTO(
                             evento,
                             curtidaRepository.countByEventoId(evento.getId()),
-                            comentarioRepository.countByEventoId(evento.getId())
+                            comentarioRepository.countByEventoId(evento.getId()),
+                            false
                     )
             ).toList();
         }
@@ -173,7 +181,8 @@ public class EventoService {
         return new EventoDTO(
                 evento,
                 curtidaRepository.countByEventoId(evento.getId()),
-                comentarioRepository.countByEventoId(evento.getId())
+                comentarioRepository.countByEventoId(evento.getId()),
+                false
         );
     }
 
@@ -270,7 +279,7 @@ public class EventoService {
             Evento evento = eventoRepository.findById(eventoId).orElse(null);
             if (evento != null) {
                 int totalComentarios = evento.getComentarios().size();
-                return new EventoDTO(evento, totalCurtidas, totalComentarios);
+                return new EventoDTO(evento, totalCurtidas, totalComentarios, true);
             }
             return null;
         }).filter(dto -> dto != null).collect(Collectors.toList());

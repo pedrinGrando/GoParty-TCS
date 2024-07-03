@@ -65,25 +65,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
   }, []);
 
 
-    const fetchGroup = async (): Promise<UsuarioDTO[]> => {
-        try {
-            const response = await fetch(`http://localhost:8081/v1/formaturas/listar-grupo/${user.id}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const usuarios: UsuarioDTO[] = await response.json();
-            return usuarios;
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            return [];
-        }
+  const fetchGroup = async (): Promise<UsuarioDTO[]> => {
+    try {
+      const response = await fetch(`http://localhost:8081/v1/formaturas/listar-grupo/${user.id}`);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const usuarios: UsuarioDTO[] = await response.json();
+      return usuarios;
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      return [];
     }
+  }
 
-    useEffect(() => {
-        fetchGroup().then(data => {
-            setUsuarios(data);
-        });
-    }, []);
+  useEffect(() => {
+    fetchGroup().then(data => {
+      setUsuarios(data);
+    });
+  }, []);
 
   const fetchNoti = async (): Promise<number> => {
     try {
@@ -383,11 +383,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
             </ul>
           </div>
         </div>
-
+        <button
+          className="fixed p-1 cursor-default text-black bg-white rounded-full top-3 left-2"
+          style={{ zIndex: 999 }}
+        >
+          <svg
+            className="w-6 h-6"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+          </svg>
+          <span className="sr-only">{isOpen ? 'Close sidebar' : 'Open sidebar'}</span>
+        </button>
         {/* Botão de abertura e fechamento da sidebar */}
         <button
           onClick={toggleSidebar}
-          className="fixed p-1 text-black bg-white rounded-full top-3 left-2"
+          className="fixed p-1 text-black bg-white rounded-full top-3 left-2 block md:hidden"
           style={{ zIndex: 999 }}
         >
           <svg
