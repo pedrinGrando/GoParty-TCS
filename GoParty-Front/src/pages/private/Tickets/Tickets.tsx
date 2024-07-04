@@ -56,7 +56,7 @@ export default function Tickets() {
 
     return (
         <div>
-             <NotificationBell />
+            <NotificationBell />
             <ResponsiveImage
                 imageUrl="/imagens/newGradMen.png"
                 altText="Placeholder Image"
@@ -73,7 +73,7 @@ export default function Tickets() {
 
                     </h1>
                     {ingressos.length === 0 ? (
-                        <div className="w-full max-w-7xl px-4 md:px-5 lg-6 mx-auto">
+                        <div className="w-full max-w-7xl flex justify-center items-center h-screen px-4 md:px-5 lg:px-6 mx-auto">
                             <p>Você não possui ingressos.</p>
                         </div>
                     ) : (
