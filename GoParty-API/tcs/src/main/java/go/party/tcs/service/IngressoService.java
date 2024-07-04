@@ -3,6 +3,7 @@ package go.party.tcs.service;
 import java.util.List;
 import java.util.Optional;
 
+import go.party.tcs.Enums.TipoNotificacao;
 import go.party.tcs.dto.EventoDTO;
 import go.party.tcs.dto.IngressoDTO;
 import go.party.tcs.model.*;
@@ -26,6 +27,8 @@ public class IngressoService {
     private EventoRepository eventoRepository;
     @Autowired
     private FormaturaRepository formaturaRepository;
+    @Autowired
+    private NotificationService notificationService;
 
     public IngressoDTO criarIngresso(Long userId, EventoDTO eventoDTO) throws AppException {
         Usuario usuario = usuarioService.findById(userId);
@@ -39,6 +42,8 @@ public class IngressoService {
         eventoRepository.save(evento);
         Ingresso ingresso = new Ingresso(usuario, evento);
         ingresso = ingressoRepository.save(ingresso);
+        String message = usuario.getUsername() + " comprou um ingresso para seu evento: " + evento.getTitulo();
+        notificationService.addNotification(message, evento.getUsuario().getId(), TipoNotificacao.COMPRA);
         formatura.setArrecacado(formatura.getArrecacado() + evento.getValor());
         formaturaRepository.save(formatura);
         return new IngressoDTO(

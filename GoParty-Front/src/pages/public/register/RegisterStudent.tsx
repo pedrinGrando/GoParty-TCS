@@ -216,7 +216,7 @@ export default function RegisterStudent() {
         setIsValidPass(validatePassword(value));
       }
 
-      if (name === 'idade') {
+      if (name === 'dataNasci') {
         const today = new Date();
         const birthDate = new Date(value);
 
@@ -417,15 +417,15 @@ export default function RegisterStudent() {
                 </div>
                 <div className="relative">
                   <label
-                    htmlFor="idade"
+                    htmlFor="dataNasci"
                     className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-sm text-gray-600 absolute dark:bg-gray-700 dark:text-white"
                   >
                     Data de Nascimento
                   </label>
                   <input
                     placeholder="Data"
-                    id="idade"
-                    name="idade"
+                    id="dataNasci"
+                    name="dataNasci"
                     value={formData.dataNasci}
                     onChange={handleChange}
                     type="date"
