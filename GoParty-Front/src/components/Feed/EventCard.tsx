@@ -124,7 +124,7 @@ const EventCard: React.FC<EventoCardProps> = ({ evento, userId, toggleComentario
                         disabled={loading}
                     >
                         {curtido ? <UnlikeButton /> : <LikeButton />}
-                        <span> {evento.totalCurtidas > 0 ? evento.totalCurtidas : ''}</span>
+                        <span className='pl-1'> {evento.totalCurtidas > 0 ? evento.totalCurtidas : ''}</span>
                     </button>
 
                     <button onClick={() => toggleComentarios(evento.id)} className="flex mr-2 text-gray-700 text-sm mr-8 hover:text-indigo-500">

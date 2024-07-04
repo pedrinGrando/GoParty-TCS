@@ -81,9 +81,6 @@ export default function Notifications() {
                 throw new Error('Failed to clear notifications');
             }
             setNotifications([]); 
-            setMessage("Notificações limpas com sucesso.");
-            setToasType("success");
-            setIsVisible(true);
         } catch (error) {
             console.error('Error clearing notifications:', error);
             setMessage("Erro ao limpar notificações.");

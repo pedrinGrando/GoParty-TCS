@@ -60,6 +60,8 @@ public class InviteService {
         user.setTipoUsuario(TipoUsuario.MEMBER);
         user.setFormatura(graduation);
         inviteRepository.save(invite);
+        String message = user.getUsername() + " Aceitou seu convite para: " + invite.getFormatura().getTitulo();
+        notificationService.addNotification(message, invite.getFormatura().getAdm().getId(), TipoNotificacao.CURTIDA);
         userRepository.save(user);
     }
 

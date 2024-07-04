@@ -203,7 +203,6 @@ export default function StartPage() {
                                                         </div>
                                                         <span className="ml-3 text-lg text-gray-700">Comprar ingressos</span>
                                                     </li>
-                                                    
                                                     <li className="flex items-center">
                                                         <div className="p-2 text-green-500 rounded-full fill-current ">
                                                             <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
@@ -213,18 +212,7 @@ export default function StartPage() {
                                                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                                                             </svg>
                                                         </div>
-                                                        <span className="ml-3 text-lg text-gray-700">Se tornar um GoParty ADM</span>
-                                                    </li>
-                                                    <li className="flex items-center">
-                                                        <div className="p-2 text-green-500 rounded-full fill-current ">
-                                                            <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
-                                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                                stroke-linejoin="round">
-                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
-                                                            </svg>
-                                                        </div>
-                                                        <span className="ml-3 text-lg text-gray-700">Ser convidado para formaturas</span>
+                                                        <span className="ml-3 text-lg text-gray-700">Encontrar eventos</span>
                                                     </li>
                                                     <li className="flex items-center">
                                                         <div className="p-2 text-green-500 rounded-full fill-current ">
@@ -388,6 +376,49 @@ export default function StartPage() {
                                                             </svg>
                                                         </div>
                                                         <span className="ml-3 text-lg text-gray-700">Gerar relatórios</span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+
+                                            <div className="flex items-center block p-8 uppercase">
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        className="relative z-0 w-11/12 max-w-sm my-8 rounded-lg shadow-lg sm:w-3/5 lg:w-1/3 sm:my-5 md:-ml-4">
+                                        <div className="overflow-hidden text-black bg-white rounded-lg shadow-lg shadow-inner">
+                                            <div
+                                                className="block max-w-sm px-8 mx-auto mt-5 text-sm text-left text-black sm:text-md lg:px-8">
+                                                <h3 className="p-3 pb-1 text-lg font-bold tracking-wide text-center uppercase">Student<span
+                                                    className="ml-2 font-light">GoParty</span></h3>
+
+                                                <p className="pl-2 text-sm text-gray-600">Ao se cadastrar como estudante</p>
+                                            </div>
+                                            <div className="flex flex-wrap px-8 mt-8">
+                                                <ul>
+                                                    <li className="flex items-center">
+                                                        <div className="p-2 text-green-500 rounded-full fill-current ">
+                                                            <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                            </svg>
+                                                        </div>
+                                                        <span className="ml-3 text-lg text-gray-700">Ser convidado para formaturas</span>
+                                                    </li>
+                                                    <li className="flex items-center">
+                                                        <div className="p-2 text-green-500 rounded-full fill-current ">
+                                                            <svg className="w-6 h-6 align-middle" viewBox="0 0 24 24" fill="none"
+                                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                                stroke-linejoin="round">
+                                                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                                            </svg>
+                                                        </div>
+                                                        <span className="ml-3 text-lg text-gray-700">Comentar e curtir postagens</span>
                                                     </li>
                                                 </ul>
                                             </div>
