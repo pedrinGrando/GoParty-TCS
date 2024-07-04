@@ -87,13 +87,13 @@ class FormaturaServiceTest {
         Formatura formaturaSalva = formaturaCaptor.getValue();
         assertNotNull(formaturaSalva);
         assertEquals(usuario.getId(), formaturaSalva.getAdm().getId());
+        assertEquals(usuario.getTipoUsuario(), TipoUsuario.ADM);
     }
 
     @Test
-    @DisplayName("Achar a formatra por id da formatura")
+    @DisplayName("Achar a formatura por id da formatura")
     void acharFormaturaPorId() {
         formatura = new Formatura();
-        formatura.setId(2L);
         given(formaturaRepository.findById(1L)).willReturn(Optional.of(formatura));
         Formatura formaturaEncontrada = formaturaService.findById(1L);
         then(formaturaRepository).should().findById(1L);

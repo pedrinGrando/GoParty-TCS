@@ -146,11 +146,19 @@ class UsuarioServiceTest {
     }
 
     @Test
-    @DisplayName("Não existe o CPF no banco de dados")
-    void existeCPF() {
+    @DisplayName("Já existe o CPF no banco de dados")
+    void jaExisteCPF() {
         given(usuarioRepository.existsByCpf(anyString())).willReturn(true);
         boolean resultado = usuarioService.existsByCpf("244.865.740-87");
         assertTrue(resultado);
+    }
+
+    @Test
+    @DisplayName("Não existe o CPF no banco de dados")
+    void existeCPF() {
+        given(usuarioRepository.existsByCpf(anyString())).willReturn(false);
+        boolean resultado = usuarioService.existsByCpf("244.865.740-87");
+        assertFalse(resultado);
     }
 
     @Test

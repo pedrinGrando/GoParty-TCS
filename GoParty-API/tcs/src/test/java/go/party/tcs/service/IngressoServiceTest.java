@@ -117,19 +117,11 @@ class IngressoServiceTest {
     void testEventoEsgotado() {
         evento.setEsgotado(true);
         evento.setFormatura(formatura);
-
-        // Mock do eventoService para retornar o evento configurado acima
         given(eventoService.findById(1L)).willReturn(evento);
-
-        // Mock do formaturaRepository para retornar a formatura
         given(formaturaRepository.findById(formatura.getId())).willReturn(Optional.of(formatura));
-
-        // Verifica se a exceção é lançada ao tentar criar um ingresso para um evento esgotado
         Exception exception = assertThrows(AppException.class, () -> {
             ingressoService.criarIngresso(1L, eventoDTO);
         });
-
-        // Verifica a mensagem da exceção
         assertEquals("Ingressos para este evento estão esgotados", exception.getMessage());
     }
 
