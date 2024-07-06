@@ -175,7 +175,7 @@ const TicketReport: React.FC = () => {
     <div className="flex">
       <Sidebar />
       <div className="flex-grow p-6">
-        <div className="max-w-6xl mx-auto bg-white shadow-md rounded-md p-6">
+        <div className="max-w-4xl mx-auto bg-white shadow-md rounded-md p-6">
           <div id="exportContainer">
             <h1 className="text-2xl font-bold mb-4 text-left">Relatório de Ingressos</h1>
             <div className="mb-4 flex flex-col sm:flex-row justify-between items-center">
@@ -193,7 +193,7 @@ const TicketReport: React.FC = () => {
                   onClick={handleExport}
                   className="bg-indigo-600 text-white px-4 py-2 rounded-md"
                 >
-                  Exportar
+                  Exportar PDF
                 </button>
               </div>
 
