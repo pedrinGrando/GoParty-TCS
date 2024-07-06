@@ -36,6 +36,7 @@ import EventReport from './pages/private/Reports/EventReport/EventReport';
 import GradEvents from './pages/private/Graduation/GradEvents';
 import GradUpdate from './pages/private/Graduation/GradUpdate';
 import PrivateRoute from './components/UserContext/PrivateRoute';
+import GradDatails from './pages/private/Graduation/GradDetails';
 
 function App() {
   useEffect(() => {
@@ -74,6 +75,7 @@ function App() {
             <Route path="/event/:eventId" element={<EventDetails />} />
             <Route path="/event-update/:eventId" element={<EventUpdate />} />
             <Route path="/grad-update/:formId" element={<GradUpdate />} />
+            <Route path="/grad-details/:gradId" element={<GradDatails />} />
             <Route path="/formatura-pix/:eventId" element={<PixKey />} />
             <Route path='/explore' element={<Explore />} />
             <Route path='/register-adm' element={<RegisterAdm />} />
