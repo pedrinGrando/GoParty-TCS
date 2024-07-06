@@ -106,6 +106,16 @@ public class FormaturaController {
         }
     }
 
+    @GetMapping("/encontrar-por-gradId/{gradId}")
+    public ResponseEntity<?> formaturaPorGradId(@PathVariable Long gradId) {
+        try {
+            FormaturaDTO formaturaDTO = formaturaService.formaturaPorFormId(gradId);
+            return ResponseEntity.ok(formaturaDTO);
+        } catch (AppException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        }
+    }
+
     @GetMapping("/encontrar-por-id/{userId}")
     public ResponseEntity<?> formaturaPeloId(@PathVariable Long userId) {
         try {
