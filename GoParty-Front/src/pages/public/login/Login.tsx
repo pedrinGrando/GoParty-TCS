@@ -188,7 +188,7 @@ export default function Login() {
 
                     <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
                       Ainda não possui conta?
-
+                      <span className="ml-1"></span> 
                       <button onClick={handleButtonClick} className="font-semibold text-pink-500 transition-colors hover:text-blue-700 underline">
                         Crie a sua rápido e fácil
                       </button>
