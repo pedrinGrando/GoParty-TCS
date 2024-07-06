@@ -39,6 +39,8 @@ const EventUpdate: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [toastType, setToastType] = useState<ToastType>("error");
     const [message, setMessage] = useState("");
+    const [formattedTime, setFormattedTime] = useState('');
+    const [formattedDate, setFormattedDate] = useState('');
     const navigate = useNavigate();
 
     const [mostrarModal, setMostrarModal] = useState<boolean>(false);
@@ -50,18 +52,13 @@ const EventUpdate: React.FC = () => {
 
     const closeToast = () => {
         setIsVisible(false);
-      }
+    }
 
     const handleClose = () => setMostrarModal(false);
 
     const handleCloseFooter = () => {
         setError(false);
     };
-
-    const formatDate = (dateString: string) => {
-        const date = parseISO(dateString);
-        return format(date, 'dd/MM/yyyy');
-    }
 
     useEffect(() => {
         const fetchEvento = async () => {
@@ -91,6 +88,14 @@ const EventUpdate: React.FC = () => {
 
         fetchEvento();
     }, [eventId]);
+
+    useEffect(() => {
+        if (evento?.dataEvento) {
+          const [datePart, timePart] = evento.dataEvento.split('T');
+          setFormattedDate(datePart);
+          setFormattedTime(timePart.slice(0, 5)); 
+        }
+      }, [evento]);
 
     const [errors, setErrors] = useState({
         titulo: false,
@@ -124,83 +129,87 @@ const EventUpdate: React.FC = () => {
         }
     }
 
-    const handleSubmit = async (event: any) => {
+    const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
         setIsLoading(true);
-
+    
         try {
-            const responseEvento = await fetch(`http://localhost:8081/v1/eventos/atualizar-evento/${eventId}`, {
+          const responseEvento = await fetch(`http://localhost:8081/v1/eventos/atualizar-evento/${evento?.id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            },
+            body: JSON.stringify(evento),
+          });
+    
+          const eventData = await responseEvento.json();
+    
+          if (responseEvento.ok) {
+            console.log("Evento atualizado com sucesso:", eventData.id);
+            setMessage("Evento atualizado com sucesso!");
+            setToastType("success");
+            setIsVisible(true);
+    
+            if (selectedFile) {
+              const formDataImage = new FormData();
+              formDataImage.append('file', selectedFile);
+    
+              const responseImage = await fetch(`http://localhost:8081/v1/eventos/upload-event-image/${eventData.id}`, {
                 method: 'PUT',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`,
+                  'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify(evento),
-            });
-
-            const eventData = await responseEvento.json();
-
-            if (responseEvento.ok) {
-                console.log("Evento atualizado com sucesso:", eventData.id);
-                setImagemSrcModal("imagens/EventCreatedSucess.webp");
+                body: formDataImage,
+              });
+    
+              if (responseImage.ok) {
+                console.log("Imagem do evento enviada com sucesso.");
                 setMessage("Evento atualizado com sucesso!");
-                setImagePreview('');
-                setIsLoading(false);
-                setToastType("success")
+                setToastType('success');
                 setIsVisible(true);
-
-                if (selectedFile) {
-                    const formDataImage = new FormData();
-                    formDataImage.append('file', selectedFile);
-
-                    const responseImage = await fetch(`http://localhost:8081/v1/eventos/upload-event-image/${eventData.id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Authorization': `Bearer ${token}`,
-                        },
-                        body: formDataImage,
-                    });
-
-                    if (responseImage.ok) {
-                        console.log("Imagem do evento enviada com sucesso.");
-
-                        setMessage("Evento atualizado com sucesso!");
-                        setImagemSrcModal("imagens/EventCreatedSucess.webp");
-                        setToastType('success');
-                        setIsVisible(true);
-                        setImagePreview('');
-                        setIsLoading(false);
-                        setTimeout(() => {
-                            navigate('/your-events');
-                          }, 2000);
-                    } else {
-                        console.error("Falha ao enviar imagem do evento.");
-                        setImagePreview('');
-                        setIsLoading(false);
-                        setMessage("Erro ao atualizar evento!")
-                        setToastType('error');
-                        setIsVisible(true)
-                    }
-                }
-
-                setImagePreview('');
-                setIsLoading(false);
-            } else {
-                setMessage("Houve um erro ao atualizar o evento!")
-                setError(true);
-                setIsLoading(false);
-                setMessage("Erro ao atualizar evento!")
+              } else {
+                console.error("Falha ao enviar imagem do evento.");
+                setMessage("Erro ao atualizar evento!");
                 setToastType('error');
-                setIsVisible(true)
-                console.error("Erro ao atualizar evento:", eventData.mensagem);
+                setIsVisible(true);
+              }
             }
+          } else {
+            console.error("Erro ao atualizar evento:", eventData.mensagem);
+            setMessage("Erro ao atualizar evento!");
+            setToastType('error');
+            setIsVisible(true);
+          }
         } catch (error) {
-            setMessage("Houve um erro ao atualizar o evento!")
-            setError(true);
-            setIsLoading(false);
-            console.error("Erro na requisição:", error);
+          console.error("Erro na requisição:", error);
+          setMessage("Houve um erro ao atualizar o evento!");
+          setToastType('error');
+          setIsVisible(true);
+        } finally {
+          setIsLoading(false);
         }
-    };
+      };
+
+    const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setEvento(prev => ({
+          ...prev!,
+          [name]: value,
+          dataEvento: `${value}T${formattedTime}`,
+        }));
+        setFormattedDate(value);
+      };
+    
+      const handleTimeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = event.target;
+        setEvento(prev => ({
+          ...prev!,
+          [name]: value,
+          dataEvento: `${formattedDate}T${value}`,
+        }));
+        setFormattedTime(value);
+      };
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = event.target;
@@ -343,13 +352,35 @@ const EventUpdate: React.FC = () => {
                                                 placeholder="Data"
                                                 id='dataEvento'
                                                 name='dataEvento'
-                                                value={evento?.dataEvento}
-                                                onChange={handleChange}
+                                                value={formattedDate}
+                                                onChange={handleDateChange}
                                                 type="date"
                                                 className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `} />
                                         </div>
-
+                                        <div className="relative mt-4">
+                                            <label htmlFor='horaEvento' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                                                Hora do Evento
+                                            </label>
+                                            <input
+                                                placeholder="Hora Evento"
+                                                id='horaEvento'
+                                                name='horaEvento'
+                                                value={formattedTime}
+                                                onChange={handleTimeChange}
+                                                type="time"
+                                                className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                                            />
+                                        </div>
+                                        <div className='flex flex-col justify-center items-center space-y-3'>
+                                            <span className='font-medium'>Imagem atual do evento</span>
+                                            <img
+                                                src={`http://localhost:8081${evento?.eventoCaminho}`}
+                                                width={250}
+                                                className='rounded-full'
+                                            />
+                                        </div>
                                         <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
+
                                             <div className='text-center'>
 
                                                 <RenderIf condition={!imagePreview}>
@@ -363,7 +394,7 @@ const EventUpdate: React.FC = () => {
                                                     <label htmlFor='fotoEvento' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
 
                                                         <RenderIf condition={!imagePreview}>
-                                                            <span>Foto para o evento</span>
+                                                            <span>Nova imagem para o evento</span>
                                                         </RenderIf>
 
                                                         <RenderIf condition={!!imagePreview}>

@@ -35,15 +35,9 @@ import TicketReport from './pages/private/Reports/TicketReport/TicketReport';
 import EventReport from './pages/private/Reports/EventReport/EventReport';
 import GradEvents from './pages/private/Graduation/GradEvents';
 import GradUpdate from './pages/private/Graduation/GradUpdate';
+import PrivateRoute from './components/UserContext/PrivateRoute';
 
 function App() {
-
-  const user = JSON.parse(localStorage.getItem('sessionUser') || '{}');
-
-  const isAuthenticated = () => {
-    return !!localStorage.getItem('token');
-  };
-
   useEffect(() => {
     AOS.init({
       once: true,
@@ -59,7 +53,7 @@ function App() {
     <Router>
       <UserProvider>
         <Routes>
-          {/*Public pages*/}
+          {/* Public pages */}
           <Route path='/' element={<StartPage />} />
           <Route path='/about' element={<StartPage />} />
           <Route path='/login' element={<Login />} />
@@ -73,27 +67,29 @@ function App() {
           <Route path='/type-your-code' element={<TypeYourCode />} />
           <Route path='/change-password' element={<ChangePassword />} />
           <Route path='/new-password' element={<NewPass />} />
-          
+
           {/* Private Pages */}
-          <Route path="/home" element={<Home />} />
-          <Route path="/event/:eventId" element={isAuthenticated() ? <EventDetails /> : <Navigate to="/login" />} />
-          <Route path="/event-update/:eventId" element={isAuthenticated() ? <EventUpdate /> : <Navigate to="/login" />} />
-          <Route path="/grad-update/:formId" element={isAuthenticated() ? <GradUpdate /> : <Navigate to="/login" />} />
-          <Route path="/formatura-pix/:eventId" element={isAuthenticated() ? <PixKey /> : <Navigate to="/login" />} />
-          <Route path='/explore' element={isAuthenticated() ? <Explore /> : <Navigate to="/login" />} />
-          <Route path='/register-adm' element={isAuthenticated() ? <RegisterAdm /> : <Navigate to="/login" />} />
-          <Route path='/account-config' element={isAuthenticated() ? <Configs /> : <Navigate to="/login" />} />
-          <Route path='/your-groups' element={isAuthenticated() ? <Groups /> : <Navigate to="/login" />} />
-          <Route path='/your-tickets' element={isAuthenticated() ? <Tickets /> : <Navigate to="/login" />} />
-          <Route path='/your-events' element={isAuthenticated() ? <Events /> : <Navigate to="/login" />} />
-          <Route path='/graduation-events/:formId' element={isAuthenticated() ? <GradEvents /> : <Navigate to="/login" />} />
-          <Route path='/your-graduation' element={isAuthenticated() ? <Graduation /> : <Navigate to="/login" />} />
-          <Route path='/your-graduation/tickets-report/:graduationId' element={isAuthenticated() ? <TicketReport /> : <Navigate to="/login" />} />
-          <Route path='/your-graduation/events-report/:graduationId' element={isAuthenticated() ? <EventReport /> : <Navigate to="/login" />} />
-          <Route path='/your-profile' element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />} />
-          <Route path='/your-notifications' element={isAuthenticated() ? <Notifications /> : <Navigate to="/login" />} />
-          <Route path='/create-event' element={isAuthenticated() ? <PostEvent /> : <Navigate to="/login" />} />
-          <Route path='/trending-events' element={isAuthenticated() ? <TrendPage /> : <Navigate to="/login" />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/home" element={<Home />} />
+            <Route path="/event/:eventId" element={<EventDetails />} />
+            <Route path="/event-update/:eventId" element={<EventUpdate />} />
+            <Route path="/grad-update/:formId" element={<GradUpdate />} />
+            <Route path="/formatura-pix/:eventId" element={<PixKey />} />
+            <Route path='/explore' element={<Explore />} />
+            <Route path='/register-adm' element={<RegisterAdm />} />
+            <Route path='/account-config' element={<Configs />} />
+            <Route path='/your-groups' element={<Groups />} />
+            <Route path='/your-tickets' element={<Tickets />} />
+            <Route path='/your-events' element={<Events />} />
+            <Route path='/graduation-events/:formId' element={<GradEvents />} />
+            <Route path='/your-graduation' element={<Graduation />} />
+            <Route path='/your-graduation/tickets-report/:graduationId' element={<TicketReport />} />
+            <Route path='/your-graduation/events-report/:graduationId' element={<EventReport />} />
+            <Route path='/your-profile' element={<Profile />} />
+            <Route path='/your-notifications' element={<Notifications />} />
+            <Route path='/create-event' element={<PostEvent />} />
+            <Route path='/trending-events' element={<TrendPage />} />
+          </Route>
         </Routes>
       </UserProvider>
     </Router>
