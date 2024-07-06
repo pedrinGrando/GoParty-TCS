@@ -67,7 +67,7 @@ const GradUpdate: React.FC = () => {
             setIsLoading(true);
 
             try {
-                const response = await fetch(`http://localhost:8081/v1/formaturas/encontrar-por-id/${formId}`, {
+                const response = await fetch(`http://localhost:8081/v1/formaturas/encontrar-por-gradId/${formId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -126,6 +126,8 @@ const GradUpdate: React.FC = () => {
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         setIsLoading(true);
+
+        console.log(formatura);
 
         try {
             const responseEvento = await fetch(`http://localhost:8081/v1/formaturas/atualizar-formatura/${formId}`, {
