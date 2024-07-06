@@ -67,7 +67,7 @@ const EventDetails: React.FC = () => {
         <div>
             {evento ? (
                 <>
-                    <div className="bg-gray-100 dark:bg-gray-800 py-8">
+                    <div className="bg-gray-100 dark:bg-gray-800 py-8 pl-10">
                         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
                             <div className="flex flex-col md:flex-row -mx-4">
                                 <div className="md:flex-1 px-4">
