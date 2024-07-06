@@ -559,9 +559,7 @@ export default function Register() {
                   {isLoading ? <Loading /> : 'Cadastrar'}
                     </button>
                   </div>
-                  <div className='w-52'>
-                    <Recaptcha onCaptchaChange={handleCaptchaChange} />
-                  </div>
+                  <Recaptcha onCaptchaChange={handleCaptchaChange} />
                   {/* AQUI*/}
                   <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
                     Já possui conta?
