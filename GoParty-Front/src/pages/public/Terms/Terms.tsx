@@ -27,29 +27,29 @@ export default function Terms() {
   return (
     <div>
       <NavBar />
-      <div className="bg-white">
+      <div className="bg-white dark:bg-gray-900">
         <div className="container mx-auto px-4 py-8">
-          <h1 className="text-3xl font-bold mb-4">Politicas de Privacidade</h1>
+          <h1 className="text-3xl font-bold mb-4 dark:text-white">Politicas de Privacidade</h1>
 
-          <p className="mb-4">
+          <p className="mb-4 dark:text-white">
             Esta política de privacidade define como nosso site usa e protege qualquer informação que você nos fornece quando usa este site.
           </p>
 
-          <h2 className="text-2xl font-bold mb-2">Conformidade com a LGPD</h2>
+          <h2 className="text-2xl font-bold mb-2 dark:text-white">Conformidade com a LGPD</h2>
 
-          <ul className="list-disc list-inside mb-4">
+          <ul className="list-disc list-inside mb-4 dark:text-white">
             <li>Nosso sistema foi projetado para cumprir a Lei Geral de Proteção de Dados Pessoais (LGPD).</li>
             <li>Seguimos regras estritas sobre como coletar.</li>
             <li>E sobre usar e armazenar seus dados.</li>
           </ul>
 
-          <h2 className="text-2xl font-bold mb-2">Transparência</h2>
+          <h2 className="text-2xl font-bold mb-2 dark:text-white">Transparência</h2>
 
-          <p className="mb-4">
+          <p className="mb-4 dark:text-white">
             Ao se cadastrar, você será informado sobre quais dados coletamos e como eles serão utilizados. Garantimos clareza para que você sempre saiba quais informações estão sendo coletadas.
           </p>
 
-          <ul className="list-disc list-inside mb-4">
+          <ul className="list-disc list-inside mb-4 dark:text-white">
             <li>Segurança Avançada</li>
             <li>Melhorar nossos serviços</li>
             <li>De tempos em tempos, também poderemos usar suas informações para entrar em contato com você para fins de pesquisa de mercado. Nós podemos
@@ -58,32 +58,34 @@ export default function Terms() {
               interesses.</li>
           </ul>
 
-          <h2 className="text-2xl font-bold mb-2">Seus Direitos:</h2>
-          <h3 className='text-1xl font-bold mb-2'>Acesso e Controle:</h3>
-          <p className="mb-4">
+          <h2 className="text-2xl font-bold mb-2 dark:text-white">Seus Direitos:</h2>
+          <h3 className='text-1xl font-bold mb-2 dark:text-white'>Acesso e Controle:</h3>
+          <p className="mb-4 dark:text-white">
             Você tem o direito de acessar, corrigir ou excluir seus dados pessoais a qualquer momento. Essa flexibilidade permite que você mantenha controle total sobre suas informações pessoais.
           </p>
 
-          <h2 className="text-2xl font-bold mb-2">Uso Apropriado</h2>
+          <h2 className="text-2xl font-bold mb-2 dark:text-white">Uso Apropriado</h2>
 
-          <p className="mb-4">
+          <p className="mb-4 dark:text-white">
             A responsabilidade pelos eventos cadastrados na plataforma recai sobre os usuários que os criam. Qualquer questão legal ou consequência resultante de eventos é gerida de acordo com as informações fornecidas durante o registro.
           </p>
 
-          <h2 className="text-2xl font-bold mb-2">Integridade de Dados</h2>
+          <h2 className="text-2xl font-bold mb-2 dark:text-white">Integridade de Dados</h2>
 
-          <p className="mb-4">
+          <p className="mb-4 dark:text-white">
             É crucial que as informações fornecidas sejam verdadeiras e precisas. Caso contrário, medidas apropriadas serão tomadas em conformidade com as leis vigentes.
             No GoParty, você pode se dedicar totalmente à organização de sua formatura, sabendo que suas informações estão protegidas e que nossa plataforma está comprometida em garantir uma experiência segura e confiável para todos os usuários.
           </p>
-          <p className="mb-4">
+          <p className="mb-4 dark:text-white">
             Esta política de privacidade está sujeita a alterações sem aviso prévio.
           </p>
-          <div className="flex justify-center mt-6">
-          <button title='Baixar PDF' onClick={generatePdf} className="text-white font-bold py-2 px-4 rounded">
-           <img src="/imagens/downloads-folder.png" alt="download" />
-          </button>
-        </div>
+          <div className="flex justify-center mt-6 dark:text-white">
+            <button title='Baixar PDF' onClick={generatePdf} className="text-white font-bold py-2 px-4 rounded">
+              <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V4M7 14H5a1 1 0 0 0-1 1v4a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-4a1 1 0 0 0-1-1h-2m-1-5-4 5-4-5m9 8h.01" />
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
     </div>

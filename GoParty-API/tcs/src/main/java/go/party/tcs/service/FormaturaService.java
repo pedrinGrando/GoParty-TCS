@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -134,6 +135,27 @@ public class FormaturaService {
                     );
                 })
                 .collect(Collectors.toList());
+    }
+
+    public FormaturaDTO formaturaPorFormId(Long gradId) throws AppException {
+        Optional<Formatura> formaturaOptional = formaturaRepository.findById(gradId);
+        Formatura formatura = formaturaOptional.get();
+
+        return new FormaturaDTO(
+                formatura.getId(),
+                formatura.getTitulo(),
+                formatura.getDescricao(),
+                formatura.getFormaturaCaminho(),
+                formatura.getCidade(),
+                formatura.getEstado(),
+                formatura.getDataPrevista(),
+                formatura.getArrecacado(),
+                formatura.getMetaArrecad(),
+                formatura.getAdm().getNome(),
+                usuarioRepository.countUsersByFormaturaId(formatura.getId()),
+                eventoRepository.countByFormaturaId(formatura.getId()),
+                formatura.getBairro()
+        );
     }
 
     public FormaturaDTO formaturaPorId(Long userId) throws AppException {
