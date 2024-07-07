@@ -15,7 +15,7 @@ services:
       - goparty_network
 
   api_goparty:
-    image: api_goparty
+    image: renanleal/api_goparty:latest
     container_name: goparty_api
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://goparty_mysql:3306/goparty
@@ -33,7 +33,7 @@ services:
       - goparty_network
 
   goparty_webapp:
-    image: webapp_goparty
+    image: renanleal/webapp_goparty:latest
     container_name: goparty_webapp
     ports:
       - "5173:5173"
