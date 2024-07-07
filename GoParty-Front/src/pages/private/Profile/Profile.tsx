@@ -97,52 +97,49 @@ export default function Profile() {
   }, [user.id, token]);
 
   return (
-    <div>
-       <NotificationBell />
+    <div className="dark:bg-gray-900 dark:text-white">
+      <NotificationBell />
       <ResponsiveImage
         imageUrl="/imagens/newGradMen.png"
         altText="Placeholder Image"
       />
-      <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Seu perfil
+      <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 dark:text-white items-center">
+        Seu perfil
         <svg className="ml-3 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-          <path fill-rule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clip-rule="evenodd" />
+          <path fillRule="evenodd" d="M12 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4h-4Z" clipRule="evenodd" />
         </svg>
       </h1>
       <section className="pt-16 bg-blueGray-50 dark:bg-gray-900">
         <TrendEvents />
         <div className="w-full lg:w-4/12 px-4 mx-auto">
-          <div className="backdrop:blur-md relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16">
+          <div className="backdrop:blur-md relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-xl rounded-lg mt-16 dark:bg-gray-800">
             <div className="px-6">
               <div className="flex flex-wrap justify-center">
                 <div className="w-full px-4 flex justify-center">
                   {user.fotoCaminho == null ? (
-                    <div className='mt-0 flex justify-center rounded-full h-36 w-36 border border-dashed border-gray-900/25 px-6 py-10'>
+                    <div className='mt-0 flex justify-center rounded-full h-36 w-36 border border-dashed border-gray-900/25 px-6 py-10 dark:border-gray-700'>
                       <div className='text-center'>
                         <RenderIf condition={!imagePreview}>
-                          <svg className="mx-auto h-12 w-12 text-gray-300" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <svg className="mx-auto h-12 w-12 text-gray-300 dark:text-gray-500" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                             <path fillRule="evenodd"
                               d="M1.5 6a2.25 2.25 0 012.25-2.25h16.5A2.25 2.25 0 0122.5 6v12a2.25 2.25 0 01-2.25 2.25H3.75A2.25 2.25 0 011.5 18V6zM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0021 18v-1.94l-2.69-2.689a1.5 1.5 0 00-2.12 0l-.88.879.97.97a.75.75 0 11-1.06 1.06l-5.16-5.159a1.5 1.5 0 00-2.12 0L3 16.061zm10.125-7.81a1.125 1.125 0 112.25 0 1.125 1.125 0 01-2.25 0z"
                               clipRule="evenodd" />
                           </svg>
                         </RenderIf>
-                        <div className='mt-2 flex text-sm leading-6 text-gray-600'>
-                          <label htmlFor='fotoPerfil' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600'>
-
+                        <div className='mt-2 flex text-sm leading-6 text-gray-600 dark:text-gray-300'>
+                          <label htmlFor='fotoPerfil' className='relative cursor-pointer rounded-md bg-white font-semibold text-indigo-600 dark:bg-gray-800 dark:text-indigo-400'>
                             <RenderIf condition={!imagePreview}>
                               <span>Foto de Perfil</span>
                             </RenderIf>
-
                             <RenderIf condition={!!imagePreview}>
                               <img src={imagePreview} width={170} className='mt-0 rounded-full ring-6 ring-indigo-500 dark:ring-gray-500 w-28 h-24' />
                             </RenderIf>
-
                             <input accept="image/*" onChange={onFileUpload} id='fotoPerfil' name='fotoPerfil' type='file' className='sr-only' />
                           </label>
                         </div>
                       </div>
                     </div>
                   ) : (
-
                     <img alt="..." src={`http://localhost:8081${user?.fotoCaminho}`} className="mt-0 flex justify-center rounded-full ring-6 ring-indigo-500 dark:ring-gray-500 h-36 w-36"></img>
                   )}
                 </div>
@@ -150,30 +147,30 @@ export default function Profile() {
                   <div className="flex justify-center py-4 lg:pt-4 pt-8">
                     {(user?.tipoUsuario === 'MEMBER' || user?.tipoUsuario === 'ADM') && (
                       <div className="mr-4 p-3 text-center">
-                        <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                        <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600 dark:text-blueGray-400">
                           {eventosCriados}
                         </span>
-                        <span className="text-sm text-blueGray-400">Eventos Criados</span>
+                        <span className="text-sm text-blueGray-400 dark:text-blueGray-300">Eventos Criados</span>
                       </div>
                     )}
                     <div className="mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600 dark:text-blueGray-400">
                         {ingressosAdquiridos}
                       </span>
-                      <span className="text-sm text-blueGray-400">Ingressos adquiridos</span>
+                      <span className="text-sm text-blueGray-400 dark:text-blueGray-300">Ingressos adquiridos</span>
                     </div>
                     <div className="lg:mr-4 p-3 text-center">
-                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600">
+                      <span className="text-xl font-bold block uppercase tracking-wide text-blueGray-600 dark:text-blueGray-400">
                         {curtidas}
                       </span>
-                      <span className="text-sm text-blueGray-400">Curtidas</span>
+                      <span className="text-sm text-blueGray-400 dark:text-blueGray-300">Curtidas</span>
                     </div>
                   </div>
                 </div>
               </div>
               <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
               <div className="text-center mt-12">
-                <h3 className="text-xl font-semibold leading-normal text-blueGray-700 mb-2">
+                <h3 className="text-xl font-semibold leading-normal text-blueGray-700 mb-2 dark:text-blueGray-300">
                   @{user.username}
                 </h3>
                 <div className="mb-2 text-green-600 mt-10">
@@ -187,24 +184,23 @@ export default function Profile() {
                     </span></p>
                 </div>
                 <hr className="my-5 border-gray-300 dark:bg-gray-900 dark:border-gray-300 lg:my-5" />
-                <div className="flex items-center mb-2 text-blueGray-600 mt-10">
+                <div className="flex items-center mb-2 text-blueGray-600 mt-10 dark:text-blueGray-300">
                   <img src="/imagens/id-card.png" className="mr-2" alt="id-card"></img>
                   <span>{user.nome}</span>
                 </div>
-                <div className="flex items-center mb-2 text-blueGray-600">
+                <div className="flex items-center mb-2 text-blueGray-600 dark:text-blueGray-300">
                   <img src="/imagens/envelopes (1).png" className="mr-2" alt="envelopes"></img>
                   <span>{user.email}</span>
                 </div>
-                <div className="flex items-center mb-2 text-blueGray-600">
+                <div className="flex items-center mb-2 text-blueGray-600 dark:text-blueGray-300">
                   <img src="/imagens/calendar-lines.png" className="mr-2" alt="calendar-lines"></img>
                   <span>{formatDate(user.idade)}</span>
                 </div>
-                <div className="flex items-center mb-2 text-blueGray-600">
+                <div className="flex items-center mb-2 text-blueGray-600 dark:text-blueGray-300">
                   <img src="/imagens/documents.png" className="mr-2" alt="id-card"></img>
                   <span>{formatCpf(user.cpf)}</span>
                 </div>
               </div>
-
             </div>
           </div>
         </div>
@@ -212,5 +208,5 @@ export default function Profile() {
       <Sidebar />
       <ResponsiveNavBar />
     </div>
-  );
+  )
 }

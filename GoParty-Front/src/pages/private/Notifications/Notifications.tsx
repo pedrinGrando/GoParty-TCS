@@ -195,18 +195,20 @@ export default function Notifications() {
     }, []);
 
     return (
-        <div className=" dark:bg-gray-900">
-             <NotificationBell />
-             <ResponsiveImage
+        <div className="dark:bg-gray-900 dark:text-white">
+            <NotificationBell />
+            <ResponsiveImage
                 imageUrl="/imagens/newGradMen.png"
                 altText="Placeholder Image"
             />
             <TrendEvents />
-            <h1 className="flex justify-center fixed transform -translate-x-1/2 w-full top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Suas notificações <svg className="ml-3 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5.365V3m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175 0 .593 0 1.292-.538 1.292H5.538C5 18 5 17.301 5 16.708c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.365ZM8.733 18c.094.852.306 1.54.944 2.112a3.48 3.48 0 0 0 4.646 0c.638-.572 1.236-1.26 1.33-2.112h-6.92Z" />
-            </svg>
+            <h1 className="flex justify-center fixed transform -translate-x-1/2 w-full top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 dark:text-white items-center">
+                Suas notificações 
+                <svg className="ml-3 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5.365V3m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175 0 .593 0 1.292-.538 1.292H5.538C5 18 5 17.301 5 16.708c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.365ZM8.733 18c.094.852.306 1.54.944 2.112a3.48 3.48 0 0 0 4.646 0c.638-.572 1.236-1.26 1.33-2.112h-6.92Z" />
+                </svg>
             </h1>
-            <div className="grid place-items-center my-8">
+            <div className="grid place-items-center my-8 dark:bg-gray-900">
                 <ToastContainer
                     message={message}
                     onClose={closeToast}
@@ -220,7 +222,7 @@ export default function Notifications() {
                             onClick={clearNotifications}
                             className="inline-flex text-xs sm:text-sm bg-white px-2 sm:px-3 py-2 text-blue-500 items-center rounded font-medium
                             shadow border focus:outline-none transform active:scale-75 transition-transform duration-700 hover:bg-blue-500
-                            hover:text-white hover:-translate-y-1 hover:scale-110 dark:text-gray-800 dark:hover:bg-gray-100">
+                            hover:text-white hover:-translate-y-1 hover:scale-110 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1 sm:mr-2" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd"
                                     d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
@@ -229,8 +231,7 @@ export default function Notifications() {
                             Limpar
                         </button>
                     </div>
-                    
-
+    
                     {isLoading ? (
                         <div className="flex justify-center items-center h-screen dark:bg-gray-900">
                             <Loading />
@@ -247,17 +248,17 @@ export default function Notifications() {
                                     data-aos="fade-left"
                                     data-aos-delay="50"
                                     data-aos-duration="0"
-                                    key={notification.id} className="mt-2 px-6 py-4 bg-white rounded-lg shadow w-full">
+                                    key={notification.id} className="mt-2 px-6 py-4 bg-white rounded-lg shadow w-full dark:bg-gray-700">
                                         <div className="inline-flex items-center justify-between w-full">
                                             <div className="inline-flex items-center">
                                                 <NotificationIcon tipoNotificacao={notification.tipoNotificacao} />
-                                                <h3 className="font-bold text-base text-gray-800">{notification.tipoNotificacao}</h3>
+                                                <h3 className="font-bold text-base text-gray-800 dark:text-white">{notification.tipoNotificacao}</h3>
                                             </div>
-                                            <p className="text-xs text-gray-500">
+                                            <p className="text-xs text-gray-500 dark:text-gray-300">
                                                 {notification.notificationMoment}
                                             </p>
                                         </div>
-                                        <p className="mt-1 text-sm">
+                                        <p className="mt-1 text-sm dark:text-gray-200">
                                             @{notification.message}
                                         </p>
                                     </div>
@@ -265,7 +266,7 @@ export default function Notifications() {
                             )}
                         </div>
                     )}
-
+    
                     {isLoading ? (
                         <div className="flex justify-center items-center h-screen">
                             <Loading />

@@ -75,7 +75,7 @@ const EventDetails: React.FC = () => {
                                         <img className="w-full h-full object-cover shadow-lg bg-indigo-500 rounded-lg" src={`http://localhost:8081${evento.eventoCaminho}`} alt="Product Image" />
                                     </div>
                                     <div className="flex -mx-2 mb-4">
-                                        <div className="w-1/2 px-2">
+                                        <div className="w-1/2 px-2 justify-center items-center">
                                             <Link to={`/formatura-pix/${evento.id}`}>
                                                 <button className="w-full bg-indigo-500 dark:bg-gray-600 text-white py-2 px-4 rounded-full font-bold hover:bg-gray-800 dark:hover:bg-gray-700">
                                                     {isLoading ? (
