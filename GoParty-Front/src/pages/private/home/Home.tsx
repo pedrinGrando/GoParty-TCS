@@ -105,7 +105,7 @@ export default function Home() {
             {isLoading ? (
                 <LoadingHome />
             ) : (
-                <div>
+                <div className='dark:bg-gray-900'>
                     <FormsTrends />
                     <hr className="my-5 border-gray-300 dark:text-white dark:bg-gray-900 dark:border-white lg:my-5" />
                     {eventos.length === 0 ? (
