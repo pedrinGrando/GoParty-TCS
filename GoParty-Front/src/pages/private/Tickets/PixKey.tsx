@@ -82,7 +82,7 @@ const PixKey: React.FC = () => {
                 setMostrarModal(true);
                 setTimeout(() => {
                     navigate('/your-tickets');
-                  }, 5000);
+                  }, 3000);
                 const ingresso = await response.json();
                 console.log('Ingresso criado com sucesso:', ingresso);
             } else {

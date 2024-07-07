@@ -57,9 +57,9 @@ export default function TrendPage() {
   }, []);
 
   return (
-    <div>
+    <div className="dark:bg-gray-900">
   <NotificationBell />
-  <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">
+  <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 dark:text-white items-center">
     Eventos em alta
     <svg
       className="ml-3 w-6 h-6 text-gray-800 dark:text-white"
