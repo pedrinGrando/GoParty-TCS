@@ -202,7 +202,7 @@ export default function Notifications() {
                 altText="Placeholder Image"
             />
             <TrendEvents />
-            <h1 className="flex justify-center top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Suas notificações <svg className="ml-3 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+            <h1 className="flex justify-center fixed transform -translate-x-1/2 w-full top-0 left-1/2 mt-4 text-3xl font-semibold bg-white py-3 shadow dark:bg-gray-900 items-center">Suas notificações <svg className="ml-3 w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5.365V3m0 2.365a5.338 5.338 0 0 1 5.133 5.368v1.8c0 2.386 1.867 2.982 1.867 4.175 0 .593 0 1.292-.538 1.292H5.538C5 18 5 17.301 5 16.708c0-1.193 1.867-1.789 1.867-4.175v-1.8A5.338 5.338 0 0 1 12 5.365ZM8.733 18c.094.852.306 1.54.944 2.112a3.48 3.48 0 0 0 4.646 0c.638-.572 1.236-1.26 1.33-2.112h-6.92Z" />
             </svg>
             </h1>
@@ -213,7 +213,7 @@ export default function Notifications() {
                     isVisible={isVisible}
                     type={toastType}
                 />
-                <div className="lg:w-2/5 sm:w-3/5 w-11/12 bg-gray-100 dark:bg-gray-800 rounded-xl mx-auto border p-10 shadow-sm">
+                <div className="lg:w-2/5 sm:w-3/5 w-11/12 mt-16 bg-gray-100 dark:bg-gray-800 rounded-xl mx-auto border p-10 shadow-sm">
                     <div className="inline-flex items-center justify-between w-full">
                         <h3 className="font-bold text-xl sm:text-2xl text-gray-800 dark:text-white">Todas</h3>
                         <button
@@ -229,6 +229,7 @@ export default function Notifications() {
                             Limpar
                         </button>
                     </div>
+                    
 
                     {isLoading ? (
                         <div className="flex justify-center items-center h-screen dark:bg-gray-900">
