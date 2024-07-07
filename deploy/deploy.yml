@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: goparty_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 230613
+      MYSQL_DATABASE: goparty
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - goparty_network
+
+  api_goparty:
+    image: api_goparty
+    container_name: goparty_api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://goparty_mysql:3306/goparty
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: 230613
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT: org.hibernate.dialect.MySQLDialect
+      SERVER_PORT: 8081
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+    networks:
+      - goparty_network
+
+  goparty_webapp:
+    image: webapp_goparty
+    container_name: goparty_webapp
+    ports:
+      - "5173:5173"
+    depends_on:
+      - api_goparty
+    networks:
+      - goparty_network
+
+volumes:
+  db_data:
+
+networks:
+  goparty_network:
+    driver: bridge
