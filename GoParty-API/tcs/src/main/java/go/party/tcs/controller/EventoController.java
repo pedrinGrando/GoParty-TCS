@@ -21,7 +21,6 @@ import go.party.tcs.service.EventoService;
 
 @RestController
 @RequestMapping("/v1/eventos")
-@CrossOrigin(origins = "http://localhost:5173/")
 public class EventoController {
 
     @Autowired

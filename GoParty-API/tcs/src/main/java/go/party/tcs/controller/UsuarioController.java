@@ -18,7 +18,6 @@ import go.party.tcs.service.UsuarioService;
 
 @RestController
 @RequestMapping("/v1/usuarios")
-@CrossOrigin(origins = "http://localhost:5173/")
 public class UsuarioController {
 
     @Autowired

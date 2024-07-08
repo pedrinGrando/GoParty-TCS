@@ -90,9 +90,8 @@ public class AuthController {
         if (authService.verificarCodigoDigitado(codigoDigitado)){
             return ResponseEntity.ok("codigo verificado com sucesso!");
         } else {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body("Código digitado incorreto!");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Código digitado incorreto!");
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Email não cadastrado!");
     }
 
     @PostMapping("/change-password")

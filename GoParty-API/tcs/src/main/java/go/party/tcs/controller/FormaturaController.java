@@ -27,7 +27,6 @@ import go.party.tcs.service.FormaturaService;
 
 @RestController
 @RequestMapping("/v1/formaturas")
-@CrossOrigin(origins = "http://localhost:5173/")
 public class FormaturaController {
 
     @Autowired

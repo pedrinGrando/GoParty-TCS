@@ -2,6 +2,9 @@ package go.party.tcs.config;
 
 import java.io.IOException;
 
+import go.party.tcs.model.AppException;
+import go.party.tcs.model.Usuario;
+import go.party.tcs.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,25 +26,23 @@ public class SecurityFilter extends OncePerRequestFilter {
     JWTService jwtService;
 
     @Autowired
-    UsuarioRepository repository;
+    private UsuarioRepository usuarioRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String token = this.recoverJWT(request);
-        if (token != null) {
-            String username = jwtService.validateToken(token);
-            UserDetails user = repository.findByUsername(username);
-            if (user != null) {
-                UsernamePasswordAuthenticationToken autorizathion = new UsernamePasswordAuthenticationToken(null, user.getAuthorities());
-                SecurityContextHolder.getContext().setAuthentication(autorizathion);
-            }
+        String token = this.recoverToken(request);
+        String username = jwtService.validateToken(token);
+        if (username != null) {
+            Usuario usuario = usuarioRepository.findByUsername(username).orElseThrow(() -> new AppException("Usuário não encontrado!"));
+            var authentication = new UsernamePasswordAuthenticationToken(usuario, null,  usuario.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);
     }
 
-    private String recoverJWT(HttpServletRequest request) {
-        String autorizathionHeader = request.getHeader("Authorization");
-        return (autorizathionHeader == null) ? null : autorizathionHeader.replace("Bearer ", "");
+    private String recoverToken(HttpServletRequest request) {
+        var auth = request.getHeader("Authorization");
+        if (auth == null) return null;
+        return auth.replace("Bearer ", "");
     }
-
 }

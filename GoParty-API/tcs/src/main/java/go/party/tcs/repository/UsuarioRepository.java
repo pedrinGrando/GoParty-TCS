@@ -35,7 +35,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
 
     List<Usuario> findByNomeContaining(String query);
 
-    UserDetails findByUsername(String username);
+    Optional<Usuario> findByUsername(String username);
 
     boolean existsByUsername(String username);
 

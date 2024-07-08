@@ -115,5 +115,8 @@ public class UsuarioService {
         return usuarioRepository.findById(id).orElseThrow(() -> new AppException("Usuario não encontrado!"));
     }
 
+    public Usuario findByUsername(String username) throws AppException {
+        return usuarioRepository.findByUsername(username).orElseThrow(() -> new AppException("Usuário não encontrado!"));
+    }
 }
 

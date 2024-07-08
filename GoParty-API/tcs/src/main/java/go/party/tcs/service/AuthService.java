@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import go.party.tcs.repository.UsuarioRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,23 +53,25 @@ public class AuthService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, AppException {
-        return usuarioRepository.findByUsername(username);
+        Usuario usuario = usuarioService.findByUsername(username);
+        return new org.springframework.security.core.userdetails.User(usuario.getUsername(), usuario.getPassword(), usuario.getAuthorities());
     }
 
     public Map<String, Object> login(Usuario usuario) {
-        UsernamePasswordAuthenticationToken userPassword = new UsernamePasswordAuthenticationToken(usuario.getUsername(), usuario.getPassword());
-        var authenticate = manager.authenticate(userPassword);
-        Usuario authenticatedUser = (Usuario) authenticate.getPrincipal();
-        if (!authenticatedUser.isAtivo()) {
+        Usuario usuarioAuthenticado = usuarioService.findByUsername(usuario.getUsername());
+        if (!usuarioAuthenticado.isAtivo()) {
             throw new AppException("Conta inativa. Por favor, entre em contato com o suporte.");
         }
+        if (!passwordEncoder.matches(usuario.getPassword(), usuarioAuthenticado.getPassword())) {
+            throw new AppException("Senha errada");
+        }
         UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO(
-                authenticatedUser.getId(), authenticatedUser.getNome(), authenticatedUser.getUsername(),
-                authenticatedUser.getEmail(), authenticatedUser.getDataNasci(), authenticatedUser.getTipoUsuario(),
-                authenticatedUser.getCpf(), authenticatedUser.getFotoCaminho(),
-                authenticatedUser.getDataAceite()
+                usuarioAuthenticado.getId(), usuarioAuthenticado.getNome(), usuarioAuthenticado.getUsername(),
+                usuarioAuthenticado.getEmail(), usuarioAuthenticado.getDataNasci(), usuarioAuthenticado.getTipoUsuario(),
+                usuarioAuthenticado.getCpf(), usuarioAuthenticado.getFotoCaminho(),
+                usuarioAuthenticado.getDataAceite()
         );
-        String jwt = jwtService.generateToken(authenticatedUser);
+        String jwt = jwtService.generateToken(usuarioAuthenticado);
         Map<String, Object> response = new HashMap<>();
         response.put("token", jwt);
         response.put("usuario", usuarioResponseDTO);
