@@ -76,18 +76,4 @@ class AuthServiceTest {
         when(usuario.isAtivo()).thenReturn(false);
         assertThrows(AppException.class, () -> authService.login(usuario));
     }
-
-// TODO implementar esse teste corretamente
-//    @Test
-//    void testCadastroUsuario() throws MessagingException, AppException {
-//        try (MockedStatic<Senha> mocked = mockStatic(Senha.class)) {
-//            given(usuario.getEmail()).willReturn("teste@exemplo.com");
-//            given(usuario.getSenha()).willReturn("SenhaV@l1da");
-//            when(passwordEncoder.encode(anyString())).thenReturn("encodedpassword");
-//            authService.cadastroUsuario(usuario);
-//            verify(emailService, times(1)).sendEmailToClient(eq(usuario.getEmail()), anyString(), anyString());
-//            assertNotNull(authService.getCodigoGeradoEmail());
-//        }
-    }
-
 }
