@@ -26,7 +26,7 @@ A GoParty é a próxima evolução em plataformas de eventos, permitindo aos usu
 - Tailwind(CSS)
 
    - Como Executar o Frontend
-      - Abrir o scr com o terminal e digitar o comando "npm run dev"
+      -  Rodar "npm run dev" no terminal
 
 ## Sistema de gerenciamento de banco de dados
 - MySQL
