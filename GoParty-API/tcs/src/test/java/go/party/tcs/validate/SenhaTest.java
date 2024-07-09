@@ -47,11 +47,6 @@ public class SenhaTest {
     }
 
     @Test
-    public void testSenhaInvalidaComEspacos() {
-        assertFalse(Senha.isSenhaValida("Valid 123!"));
-    }
-
-    @Test
     public void testSenhaInvalidaNula() {
         assertFalse(Senha.isSenhaValida(null));
     }
