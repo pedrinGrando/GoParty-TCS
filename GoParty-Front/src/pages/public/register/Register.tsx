@@ -9,6 +9,7 @@ import { Loading } from '../../../components/Loading/Loading';
 import { NavBar } from '../../../components/NavBar/NavBar';
 import { Recaptcha } from '../../../components/recaptcha/Recaptcha';
 import { SucessLogin } from '../../../components/modal/SucessLogin';
+import { ModalTerms } from '../../../components/modal/ModalTerms';
 
 export default function Register() {
 
@@ -27,10 +28,15 @@ export default function Register() {
   const [isCaptchaValid, setIsCaptchaValid] = useState(false)
   const [isValidPass, setIsValidPass] = useState(true);
   const [isValidCPF, setIsValidCPF] = useState<boolean>(true);
+  const [mostrarTerms, setMostrarTerms] = useState(false);
 
   const handleCaptchaChange = (isValid: boolean) => {
     setIsCaptchaValid(isValid);
   };
+
+  const closeTerms = () => {
+    setMostrarTerms(false);
+  }
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -327,241 +333,243 @@ export default function Register() {
 
   return (
     <form onSubmit={handleSubmit}>
-  <NavBar />
-  <div className="bg-white relative lg:py-20 dark:bg-gray-900">
-    <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl xl:px-5 lg:flex-row">
-      <div
-        data-aos="fade-left"
-        data-aos-delay="50"
-        data-aos-duration="0"
-        className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 lg:pt-20 lg:flex-row"
-      >
-        <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
-          <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
-            <img
-              data-aos="fade-down"
-              data-aos-delay="50"
-              data-aos-duration="0"
-              src="/imagens/registerPicNoBG.png"
-              className="rounded lg:-mt-60 sm:mb-36 sm:mt-16 mt-36"
-              alt="Register"
-            />
-          </div>
-        </div>
-        <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12 dark:bg-gray-900">
-          <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl relative z-10 dark:bg-gray-700 w-full sm:w-11/12 md:w-3/4 lg:w-full">
-            <p className="w-full text-3xl font-medium text-center leading-snug font-serif dark:text-white">
-              Crie uma nova conta
-            </p>
-            <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
-              <div className="relative">
-                <label
-                  htmlFor="nome"
-                  className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:bg-gray-700 dark:text-white"
-                >
-                  Seu nome 
-                </label>
-                <input
-                  placeholder="Nome completo"
-                  type="text"
-                  name="nome"
-                  id="nome"
-                  value={formData.nome}
-                  onChange={handleChange}
-                  className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.nome ? 'border-red-500' : ''}`}
+      <NavBar />
+      <ModalTerms
+        mostrarModal={mostrarTerms}
+        onClose={closeTerms}
+      />
+      <div className="bg-white relative lg:py-20 dark:bg-gray-900">
+        <div className="flex flex-col items-center justify-between pt-0 pr-10 pb-0 pl-10 mt-0 mr-auto mb-0 ml-auto max-w-7xl xl:px-5 lg:flex-row">
+          <div
+            data-aos="fade-left"
+            data-aos-delay="50"
+            data-aos-duration="0"
+            className="flex flex-col items-center w-full pt-5 pr-10 pb-20 pl-10 mb-20 lg:pt-20 lg:flex-row"
+          >
+            <div className="w-full bg-cover relative max-w-md lg:max-w-2xl lg:w-7/12">
+              <div className="flex flex-col items-center justify-center w-full h-full relative lg:pr-10">
+                <img
+                  data-aos="fade-down"
+                  data-aos-delay="50"
+                  data-aos-duration="0"
+                  src="/imagens/registerPicNoBG.png"
+                  className="rounded lg:-mt-60 sm:mb-36 sm:mt-16 mt-36"
+                  alt="Register"
                 />
               </div>
-              <div className="relative">
-                <label
-                  htmlFor="email"
-                  className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:bg-gray-700 dark:text-white"
-                >
-                  E-mail
-                </label>
-                <input
-                  placeholder="example@gmail.com"
-                  id="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  type="text"
-                  className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.email || !isValidEmail || !isEmailUnique ? 'border-red-500' : ''}`}
-                />
-                {!isValidEmail && <p style={{ color: 'red' }}>Por favor, insira um e-mail válido.</p>}
-                {!isEmailUnique && <p style={{ color: 'red' }}>Este e-mail já está cadastrado no GoParty!</p>}
-              </div>
-              <div className="relative">
-                <label
-                  htmlFor="username"
-                  className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:bg-gray-700 dark:text-white"
-                >
-                  Nome de usuário
-                </label>
-                <input
-                  placeholder="jhon12"
-                  id="username"
-                  name="username"
-                  value={formData.username}
-                  onChange={handleChange}
-                  onBlur={handleBlurUserName}
-                  type="text"
-                  className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}
-                />
-                {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
-              </div>
-              <div className="relative">
-                <label
-                  htmlFor="dataNasci"
-                  className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-sm text-gray-600 absolute dark:bg-gray-700 dark:text-white"
-                >
-                  Data de Nascimento
-                </label>
-                <input
-                  placeholder="Data"
-                  id="dataNasci"
-                  name="dataNasci"
-                  value={formData.dataNasci}
-                  onChange={handleChange}
-                  type="date"
-                  className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-6 pr-5 pb-5 pl-5 mt-4 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.dataNasci ? 'border-red-500' : ''}`}
-                />
-                {errors.dataNasci && (
-                  <p style={{ color: 'red' }}>
-                    {formData.dataNasci ? 'data de nascimento inválida.' : 'Você deve ter pelo menos 16 anos de idade.'}
-                  </p>
-                )}
-              </div>
-              <div className="relative">
-                <label
-                  htmlFor="cpf"
-                  className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700"
-                >
-                  Seu CPF
-                </label>
-                <MaskedInput
-                  mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
-                  placeholder="Seu CPF"
-                  id="cpf"
-                  name="cpf"
-                  value={formData.cpf}
-                  onChange={handleChange}
-                  className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
-                />
-                {!isValidCPF && <p style={{ color: 'red' }}>O CPF digitado é inválido!</p>}
-                {isCpfInUse && <p style={{ color: 'red' }}>Este CPF já está em uso!</p>}
-              </div>
-              <div className="relative">
-                <label
-                  htmlFor="senha"
-                  className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700"
-                >
-                  Crie uma senha
-                </label>
-                <input
-                  placeholder="●●●●●●●●●"
-                  name="senha"
-                  id="senha"
-                  value={formData.senha}
-                  onChange={handleChange}
-                  type="password"
-                  className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}
-                />
-                {!isValidPass && <ErrorPassword />}
-              </div>
-              <div className="relative">
-                <label
-                  htmlFor="senhaConfirm"
-                  className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700"
-                >
-                  Confirmar senha
-                </label>
-                <input
-                  placeholder="●●●●●●●●●"
-                  id="senhaConfirm"
-                  name="senhaConfirm"
-                  onChange={handleChange}
-                  value={formData.senhaConfirm}
-                  type={showPassword ? 'text' : 'password'}
-                  className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}
-                />
-                {senhaNotEqual && <p style={{ color: 'red' }}>As senhas não coincidem!</p>}
-                <button
-                  type="button"
-                  onClick={togglePasswordVisibility}
-                  className="absolute inset-y-0 right-0 px-3 text-gray-600"
-                >
-                  {showPassword ? (
-                    <img src="/imagens/view.png" alt="Show Password" />
-                  ) : (
-                    <img src="imagens/hide.png" alt="Hide Password" />
-                  )}
-                </button>
-              </div>
-              <Error error={error} message={message} onClose={handleCloseFooter} />
-              <div className="inline-flex items-center">
-                <label
-                  className="relative -ml-2.5 flex cursor-pointer items-center rounded-full p-3"
-                  data-ripple-dark="true"
-                >
-                  <input
-                    type="checkbox"
-                    className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-pink-500 checked:bg-pink-500 checked:before:bg-pink-500 hover:before:opacity-10"
-                    id="checkbox"
-                    onChange={handleCheckboxChange}
-                  />
-                  <span className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-3.5 w-3.5"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      stroke="currentColor"
-                      strokeWidth="1"
+            </div>
+            <div className="w-full mt-20 mr-0 mb-0 ml-0 relative z-10 max-w-2xl lg:mt-0 lg:w-5/12 dark:bg-gray-900">
+              <div className="flex flex-col items-start justify-start pt-10 pr-10 pb-10 pl-10 bg-white shadow-2xl rounded-xl relative z-10 dark:bg-gray-700 w-full sm:w-11/12 md:w-3/4 lg:w-full">
+                <p className="w-full text-3xl font-medium text-center leading-snug font-serif dark:text-white">
+                  Crie uma nova conta
+                </p>
+                <div className="w-full mt-6 mr-0 mb-0 ml-0 relative space-y-8">
+                  <div className="relative">
+                    <label
+                      htmlFor="nome"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:bg-gray-700 dark:text-white"
                     >
-                      <path
-                        fillRule="evenodd"
-                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                        clipRule="evenodd"
-                      ></path>
-                    </svg>
-                  </span>
-                </label>
-                <label className="mt-px cursor-pointer select-none font-light text-gray-700">
-                  <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased dark:text-white">
-                    Eu concordo com
-                    <Link to="/terms-and-conditions">
-                      <a
-                        className="font-semibold transition-colors hover:text-pink-500"
-                        href="#"
-                      >
-                        &nbsp;Termos e Condições
-                      </a>
-                    </Link>
-                  </p>
-                </label>
-              </div>
-              <div className="relative">
-                <button
-                  type="submit"
-                  disabled={
-                    !isChecked ||
-                    isCpfInUse ||
-                    !isValidPass ||
-                    errors.dataNasci ||
-                    !isValidEmail ||
-                    !isEmailUnique ||
-                    !isUsernameUnique ||
-                    errors.cpf
-                  }
-                  className="w-full inline-block pt-5 pr-5 pb-5 pl-5 text-xl font-medium text-center text-white bg-indigo-500 rounded-lg transition duration-200 hover:bg-indigo-600 ease"
-                >
-                  {isLoading ? <Loading /> : 'Cadastrar'}
+                      Seu nome
+                    </label>
+                    <input
+                      placeholder="Nome completo"
+                      type="text"
+                      name="nome"
+                      id="nome"
+                      value={formData.nome}
+                      onChange={handleChange}
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.nome ? 'border-red-500' : ''}`}
+                    />
+                  </div>
+                  <div className="relative">
+                    <label
+                      htmlFor="email"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:bg-gray-700 dark:text-white"
+                    >
+                      E-mail
+                    </label>
+                    <input
+                      placeholder="example@gmail.com"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      type="text"
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.email || !isValidEmail || !isEmailUnique ? 'border-red-500' : ''}`}
+                    />
+                    {!isValidEmail && <p style={{ color: 'red' }}>Por favor, insira um e-mail válido.</p>}
+                    {!isEmailUnique && <p style={{ color: 'red' }}>Este e-mail já está cadastrado no GoParty!</p>}
+                  </div>
+                  <div className="relative">
+                    <label
+                      htmlFor="username"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:bg-gray-700 dark:text-white"
+                    >
+                      Nome de usuário
+                    </label>
+                    <input
+                      placeholder="jhon12"
+                      id="username"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                      onBlur={handleBlurUserName}
+                      type="text"
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.username || !isUsernameUnique ? 'border-red-500' : ''}`}
+                    />
+                    {!isUsernameUnique && <p style={{ color: 'red' }}>Este username já está em uso no GoParty!</p>}
+                  </div>
+                  <div className="relative">
+                    <label
+                      htmlFor="dataNasci"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-sm text-gray-600 absolute dark:bg-gray-700 dark:text-white"
+                    >
+                      Data de Nascimento
+                    </label>
+                    <input
+                      placeholder="Data"
+                      id="dataNasci"
+                      name="dataNasci"
+                      value={formData.dataNasci}
+                      onChange={handleChange}
+                      type="date"
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-6 pr-5 pb-5 pl-5 mt-4 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.dataNasci ? 'border-red-500' : ''}`}
+                    />
+                    {errors.dataNasci && (
+                      <p style={{ color: 'red' }}>
+                        {formData.dataNasci ? 'data de nascimento inválida.' : 'Você deve ter pelo menos 16 anos de idade.'}
+                      </p>
+                    )}
+                  </div>
+                  <div className="relative">
+                    <label
+                      htmlFor="cpf"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700"
+                    >
+                      Seu CPF
+                    </label>
+                    <MaskedInput
+                      mask={[/\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/]}
+                      placeholder="Seu CPF"
+                      id="cpf"
+                      name="cpf"
+                      value={formData.cpf}
+                      onChange={handleChange}
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.cpf ? 'border-red-500' : ''}`}
+                    />
+                    {!isValidCPF && <p style={{ color: 'red' }}>O CPF digitado é inválido!</p>}
+                    {isCpfInUse && <p style={{ color: 'red' }}>Este CPF já está em uso!</p>}
+                  </div>
+                  <div className="relative">
+                    <label
+                      htmlFor="senha"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700"
+                    >
+                      Crie uma senha
+                    </label>
+                    <input
+                      placeholder="●●●●●●●●●"
+                      name="senha"
+                      id="senha"
+                      value={formData.senha}
+                      onChange={handleChange}
+                      type="password"
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || errors.senhaRegras ? 'border-red-500' : ''}`}
+                    />
+                    {!isValidPass && <ErrorPassword />}
+                  </div>
+                  <div className="relative">
+                    <label
+                      htmlFor="senhaConfirm"
+                      className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute dark:text-white dark:bg-gray-700"
+                    >
+                      Confirmar senha
+                    </label>
+                    <input
+                      placeholder="●●●●●●●●●"
+                      id="senhaConfirm"
+                      name="senhaConfirm"
+                      onChange={handleChange}
+                      value={formData.senhaConfirm}
+                      type={showPassword ? 'text' : 'password'}
+                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.senha || senhaNotEqual ? 'border-red-500' : ''}`}
+                    />
+                    {senhaNotEqual && <p style={{ color: 'red' }}>As senhas não coincidem!</p>}
+                    <button
+                      type="button"
+                      onClick={togglePasswordVisibility}
+                      className="absolute inset-y-0 right-0 px-3 text-gray-600"
+                    >
+                      {showPassword ? (
+                        <img src="/imagens/view.png" alt="Show Password" />
+                      ) : (
+                        <img src="imagens/hide.png" alt="Hide Password" />
+                      )}
                     </button>
                   </div>
-                  <div className='w-52'>
-                    <Recaptcha onCaptchaChange={handleCaptchaChange} />
+                  <Error error={error} message={message} onClose={handleCloseFooter} />
+                  <div className="inline-flex items-center">
+                    <label
+                      className="relative -ml-2.5 flex cursor-pointer items-center rounded-full p-3"
+                      data-ripple-dark="true"
+                    >
+                      <input
+                        type="checkbox"
+                        className="before:content[''] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-pink-500 checked:bg-pink-500 checked:before:bg-pink-500 hover:before:opacity-10"
+                        id="checkbox"
+                        onChange={handleCheckboxChange}
+                      />
+                      <span className="pointer-events-none absolute top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 text-white opacity-0 transition-opacity peer-checked:opacity-100">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-3.5 w-3.5"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          stroke="currentColor"
+                          strokeWidth="1"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                            clipRule="evenodd"
+                          ></path>
+                        </svg>
+                      </span>
+                    </label>
+                    <label className="mt-px cursor-pointer select-none font-light text-gray-700">
+                      <p className="flex items-center font-sans text-sm font-normal leading-normal text-gray-700 antialiased dark:text-white">
+                        Eu concordo com
+                    
+                          <a
+                            onClick={() => setMostrarTerms(true)}
+                            className="font-semibold transition-colors hover:text-pink-500"
+                          >
+                            &nbsp;Termos e Condições
+                          </a>
+                       
+                      </p>
+                    </label>
                   </div>
+                  <div className="relative">
+                    <button
+                      type="submit"
+                      disabled={
+                        !isChecked ||
+                        isCpfInUse ||
+                        !isValidPass ||
+                        errors.dataNasci ||
+                        !isValidEmail ||
+                        !isEmailUnique ||
+                        !isUsernameUnique ||
+                        errors.cpf
+                      }
+                      className="w-full inline-block pt-5 pr-5 pb-5 pl-5 text-xl font-medium text-center text-white bg-indigo-500 rounded-lg transition duration-200 hover:bg-indigo-600 ease"
+                    >
+                      {isLoading ? <Loading /> : 'Cadastrar'}
+                    </button>
+                  </div>
+                  <Recaptcha onCaptchaChange={handleCaptchaChange} />
                   {/* AQUI*/}
                   <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased dark:text-white">
                     Já possui conta?

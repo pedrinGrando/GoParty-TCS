@@ -125,7 +125,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
             <ul className="flex flex-col py-4 space-y-1">
               <li className="px-5">
                 <div className="flex flex-row items-center h-8">
-                  <div className="text-sm font-light tracking-wide text-gray-500">Menu</div>
+
                 </div>
               </li>
               <li>
@@ -387,15 +387,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ userName }) => {
           className="fixed p-1 cursor-default text-black bg-white rounded-full top-3 left-2"
           style={{ zIndex: 999 }}
         >
-          <svg
-            className="w-6 h-6"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
-          </svg>
+          <img src="/imagens/GoParty_Icon_128px_NoBG (1).png" alt="logo" className="w-16 h-16 hidden md:block" />
           <span className="sr-only">{isOpen ? 'Close sidebar' : 'Open sidebar'}</span>
         </button>
         {/* Botão de abertura e fechamento da sidebar */}

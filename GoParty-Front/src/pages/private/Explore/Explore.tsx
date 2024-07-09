@@ -28,6 +28,7 @@ export default function Explore() {
         tituloFormatura: string;
         totalCurtidas: number;
         totalComentarios: number;
+        emAlta: boolean;
     }
     
     const [search, setSearch] = useState<string>('');
@@ -84,8 +85,8 @@ export default function Explore() {
     };
 
     return (
-        <div>
-             <ResponsiveImage
+        <div className="dark:bg-gray-900 dark:text-white">
+            <ResponsiveImage
                 imageUrl="/imagens/newGradMen.png"
                 altText="Placeholder Image"
             />
@@ -94,11 +95,11 @@ export default function Explore() {
                 {/* campo de pesquisa */}
                 <div className="fixed top-0 left-1/2 transform -translate-x-1/2 w-full flex justify-center items-start bg-white py-3 shadow dark:bg-gray-900">
                     <NotificationBell />
-                    <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-black">Pesquisar</label>
+                    <label className="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Pesquisar</label>
                     <div className="relative">
                         <input
                             type="text"
-                            className="block w-96 p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-blue-500 dark:focus:border-black"
+                            className="block w-96 p-4 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Procure por eventos..."
                             required
                             onChange={e => setSearch(e.target.value)}
@@ -135,3 +136,4 @@ export default function Explore() {
         </div>
     )
 }
+    

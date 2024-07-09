@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { LoadingFormsTrends } from "../Loading/LoadingFormsTrend";
 import { NotificationBell } from "../Notification/NotificationBell";
+import { Link } from "react-router-dom";
 
 export const FormsTrends: React.FC = () => {
 
@@ -59,7 +60,9 @@ export const FormsTrends: React.FC = () => {
             ) : (
               grads.map(grad => (
                 <div className="relative me-4">
-                  <img className="w-10 h-10 p-1 rounded-full shadow-lg bg-indigo-500 ring-2 ring-gray-300 dark:ring-gray-500" src={`http://localhost:8081${grad.formaturaCaminho}`} alt="Bordered avatar" />
+                  <Link to={`/grad-details/${grad?.id}`}>
+                    <img className="w-10 h-10 p-1 rounded-full shadow-lg bg-indigo-500 ring-2 ring-gray-300 dark:ring-gray-500" src={`http://localhost:8081${grad.formaturaCaminho}`} alt="Bordered avatar" />
+                  </Link>
                 </div>
               ))
             )

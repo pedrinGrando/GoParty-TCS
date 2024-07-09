@@ -201,9 +201,10 @@ export default function ChangePassword () {
                 {/* AQUI*/}
                 <p className="mt-4 block text-center font-sans text-base font-normal leading-relaxed text-gray-700 antialiased">
                 Ainda não possui conta? 
+                <span className="ml-1"></span> 
     
                 <button onClick={handleButtonClick} className="font-semibold text-pink-500 transition-colors hover:text-blue-700">
-                 Crie a sua rápido e fácil
+                  Crie a sua rápido e fácil
                </button>
                
                </p>

@@ -26,7 +26,7 @@ export default function RegisterAdm() {
   const navigate = useNavigate();
 
   const [mostrarModal, setMostrarModal] = useState<boolean>(true);
-  const [mensagemModal, setMensagemModal] = useState<string>('Crie sua formatura de forma fácil e gerencia os ganhos sendo o melhor GoParty ADM!');
+  const [mensagemModal, setMensagemModal] = useState<string>('Crie sua formatura de forma fácil e gerencie os ganhos sendo o melhor GoParty ADM!');
   const [imagemSrcModal, setImagemSrcModal] = useState<string>('/imagens/BEGoPartyADM.webp');
   const [toastType, setToasType] = useState<ToastType>('error');
 
