@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import MaskedInput from 'react-text-mask';
+import DatePicker from 'react-datepicker';
+import { format, parse } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 //Componentes/Pages
 import { Error } from '../../../components/Error/Error';
@@ -146,11 +149,12 @@ export default function RegisterStudent() {
     nome: '',
     email: '',
     username: '',
-    dataNasci: '',
+    dataNasci: new Date(),
     senha: '',
     cpf: '',
     fotoPerfil: null,
     senhaConfirm: '',
+    senhaRegras: '',
   });
 
   const handleButtonClick = () => {
@@ -160,6 +164,30 @@ export default function RegisterStudent() {
   const closeTerms = () => {
     setMostrarTerms(false);
   }
+
+  const handleDateChange = (date: any) => {
+    setFormData({
+      ...formData,
+      dataNasci: date,
+    });
+
+    const today = new Date();
+    if (date > today) {
+      setErrors({ ...errors, dataNasci: true });
+      return;
+    } else {
+      setErrors({ ...errors, dataNasci: false });
+    }
+
+    const age = today.getFullYear() - date.getFullYear();
+    const monthDiff = today.getMonth() - date.getMonth();
+
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < date.getDate())) {
+      setErrors({ ...errors, dataNasci: age - 1 < 16 });
+    } else {
+      setErrors({ ...errors, dataNasci: age < 16 });
+    }
+  };
 
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -278,7 +306,7 @@ export default function RegisterStudent() {
       nome: formData.nome.trim() === '',
       email: formData.email.trim() === '',
       username: formData.username.trim() === '',
-      dataNasci: formData.dataNasci.trim() === '',
+      dataNasci: formData.dataNasci == null,
       senha: formData.senha.trim() === '',
       cpf: formData.cpf.trim() === '',
       senhaConfirm: formData.senhaConfirm.trim() === '',
@@ -312,11 +340,12 @@ export default function RegisterStudent() {
           nome: '',
           email: '',
           username: '',
-          dataNasci: '',
+          dataNasci: new Date(),
           senha: '',
           cpf: '',
           fotoPerfil: null,
           senhaConfirm: '',
+          senhaRegras: '',
         });
 
         setIsLoading(false);
@@ -433,18 +462,17 @@ export default function RegisterStudent() {
                     >
                       Data de Nascimento
                     </label>
-                    <input
-                      placeholder="Data"
-                      id="dataNasci"
-                      name="dataNasci"
-                      value={formData.dataNasci}
-                      onChange={handleChange}
-                      type="date"
-                      className={`border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-5 pr-5 pb-5 pl-5 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700 ${errors.dataNasci ? 'border-red-500' : ''}`}
+                    <DatePicker
+                      selected={formData.dataNasci}
+                      onChange={handleDateChange}
+                      dateFormat="dd/MM/yyyy"
+                      locale="pt-BR"
+                      className="border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-6 pr-5 pb-5 pl-5 mt-4 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700"
+                      wrapperClassName="w-full"
                     />
                     {errors.dataNasci && (
                       <p style={{ color: 'red' }}>
-                        {formData.dataNasci ? 'data de nascimento inválida.' : 'Você deve ter pelo menos 16 anos de idade.'}
+                        {formData.dataNasci ? 'Data de nascimento inválida.' : 'Você deve ter pelo menos 16 anos de idade.'}
                       </p>
                     )}
                   </div>
@@ -562,6 +590,8 @@ export default function RegisterStudent() {
                         !isChecked ||
                         isCpfInUse ||
                         !isValidPass ||
+                        !isEducational ||
+                        errors.email ||
                         errors.dataNasci ||
                         !isValidEmail ||
                         !isEmailUnique ||

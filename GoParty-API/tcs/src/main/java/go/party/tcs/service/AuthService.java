@@ -125,7 +125,7 @@ public class AuthService implements UserDetailsService {
         emailService.sendEmailToClient(emailUsuario, assunto, mensagem);
     }
 
-    public boolean checkEmailExistsTroca(String emailDigitado) throws MessagingException, AppException{
+    public boolean checkEmailExistsTroca(String emailDigitado) throws MessagingException, AppException {
         if(!Email.isValidEmail(emailDigitado)){
             throw new AppException("Email invalido");
         }
