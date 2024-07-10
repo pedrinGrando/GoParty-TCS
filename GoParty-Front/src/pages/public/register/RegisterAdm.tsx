@@ -4,9 +4,6 @@ import { RenderIf } from '../../../components/RenderIf/RenderIf';
 import InputMask from 'react-input-mask';
 import { ToastContainer } from '../../../components/modal/ToastContainer';
 import { ToastType } from '../../../components/modal/ToastType';
-import DatePicker from 'react-datepicker';
-import { format, parse } from 'date-fns';
-import { ptBR } from 'date-fns/locale';
 
 //Pages/components
 import { Loading } from '../../../components/Loading/Loading';
@@ -29,7 +26,7 @@ export default function RegisterAdm() {
   const navigate = useNavigate();
 
   const [mostrarModal, setMostrarModal] = useState<boolean>(true);
-  const [mensagemModal, setMensagemModal] = useState<string>('Crie sua formatura de forma fácil e gerencie os ganhos sendo o melhor GoParty ADM!');
+  const [mensagemModal, setMensagemModal] = useState<string>('Crie sua formatura de forma fácil e gerencia os ganhos sendo o melhor GoParty ADM!');
   const [imagemSrcModal, setImagemSrcModal] = useState<string>('/imagens/BEGoPartyADM.webp');
   const [toastType, setToasType] = useState<ToastType>('error');
 
@@ -42,7 +39,7 @@ export default function RegisterAdm() {
     titulo: '',
     descricao: '',
     estado: '',
-    dataPrevista: new Date(),
+    dataPrevista: '',
     metaArrecad: '',
     chavePix: '',
     cep: '',
@@ -97,20 +94,20 @@ export default function RegisterAdm() {
 
   const handleDateChange = (date: any) => {
     const today = new Date();
-
+  
     if (date <= today) {
       setErrors({ ...errors, dataPrevista: true });
       return;
     }
-
+  
     setFormData({
       ...formData,
       dataPrevista: date,
     });
-
+  
     setErrors({ ...errors, dataPrevista: false });
   };
-
+  
 
   const handleChange = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | { target: { name: string; value: string } }
@@ -199,7 +196,7 @@ export default function RegisterAdm() {
       rua: formData.rua.trim() === '',
       cep: formData.cep.trim() === '',
       bairro: formData.bairro.trim() === '',
-      dataPrevista: formData.dataPrevista === null,
+      dataPrevista: formData.dataPrevista.trim() === '',
     };
 
     setErrors(newErrors);
@@ -245,7 +242,7 @@ export default function RegisterAdm() {
               titulo: '',
               descricao: '',
               estado: '',
-              dataPrevista: new Date(),
+              dataPrevista: '',
               metaArrecad: '',
               chavePix: '',
               cep: '',
@@ -271,7 +268,7 @@ export default function RegisterAdm() {
               titulo: '',
               descricao: '',
               estado: '',
-              dataPrevista: new Date(),
+              dataPrevista: '',
               metaArrecad: '',
               chavePix: '',
               cep: '',
@@ -407,7 +404,7 @@ export default function RegisterAdm() {
                       <label htmlFor='chavePix' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
                           absolute">Sua chave pix</label>
                       <input placeholder="chave-email@email.com"
-                        type="email"
+                        type="text"
                         value={formData.chavePix}
                         name='chavePix'
                         id='chavePix'
@@ -431,25 +428,16 @@ export default function RegisterAdm() {
                       />
                     </div>
                     <div className="relative">
-                      <label
-                        htmlFor="dataPrevista"
-                        className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-sm text-gray-600 absolute dark:bg-gray-700 dark:text-white"
-                      >
-                        Data de Nascimento
-                      </label>
-                      <DatePicker
-                        selected={formData.dataPrevista}
+                      <label htmlFor='dataPrevista' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600
+                          absolute">Data Prevista</label>
+                      <input
+                        placeholder="Data"
+                        id='dataPrevista'
+                        name='dataPrevista'
+                        value={formData.dataPrevista}
                         onChange={handleDateChange}
-                        dateFormat="dd/MM/yyyy"
-                        locale="pt-BR"
-                        className="border placeholder-gray-400 dark:text-white focus:outline-none focus:border-gray-500 w-full pt-6 pr-5 pb-5 pl-5 mt-4 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md dark:bg-gray-700"
-                        wrapperClassName="w-full"
-                      />
-                      {errors.dataPrevista && (
-                        <p style={{ color: 'red' }}>
-                          {formData.dataPrevista ? 'Data de nascimento inválida.' : 'Você deve ter pelo menos 16 anos de idade.'}
-                        </p>
-                      )}
+                        type="date"
+                        className={`border placeholder-gray-400 text-balck focus:outline-none focus:border-gray-500 w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md `} />
                     </div>
 
                     <div className='mt-0 flex justify-center rounded-lg border border-dashed border-gray-900/25 px-6 py-10'>
