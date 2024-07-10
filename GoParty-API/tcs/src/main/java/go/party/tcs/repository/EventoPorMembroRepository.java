@@ -13,22 +13,24 @@ import java.time.LocalDate;
 
 public interface EventoPorMembroRepository extends JpaRepository<Evento, Long> {
 
-    @Query(nativeQuery = true, value = "SELECT " +
-            "    u.nome AS nome, " +
-            "    COUNT(e.id) AS quantidadeEventosCriados, " +
-            "    SUM(e.qnt_ingressos) AS totalIngressosVendidos, " +
-            "    SUM(e.valor) AS valorArrecadadoTotal " +
-            "FROM " +
-            "    evento e " +
-            "    inner JOIN usuarios u ON " +
-            "    e.usuario_id = u.id " +
-            "WHERE " +
-            "    e.formatura_id = (:formaturaId) AND " +
-            "    e.data_postagem between COALESCE((:dataInicio), (select min(data_postagem) from evento)) and COALESCE((:dataFim), (select max(data_postagem) from evento)) " +
-            "GROUP BY " +
-            "    u.nome " +
-            "ORDER BY " +
-            "    MAX(e.data_postagem) DESC")
+    @Query(nativeQuery = true, value = "SELECT "+
+            "u.nome AS nome, " +
+            " COUNT(DISTINCT e.id) AS quantidadeEventosCriados, "+
+    "COUNT(i.id) AS totalIngressosVendidos, " +
+    "count(i.id)  * e.valor AS valorArrecadadoTotal "+
+    "FROM " +
+    "usuarios u " +
+    "LEFT JOIN evento e ON e.usuario_id = u.id AND e.formatura_id = :formaturaId " +
+    "LEFT JOIN ingresso i ON i.evento_id = e.id " +
+     "       WHERE " +
+    "e.formatura_id = :formaturaId " +
+    "AND e.data_postagem BETWEEN COALESCE(:dataInicio, (SELECT MIN(data_postagem) FROM evento)) " +
+    "AND COALESCE(:dataFim, (SELECT MAX(data_postagem) FROM evento)) " +
+    "GROUP BY " +
+    "u.nome, " +
+    "e.valor " +
+    "ORDER BY " +
+    "MAX(e.data_postagem) DESC;")
     Page<EventoPorMembroProjection> findEventosPorMembro(@Param("formaturaId") Long formaturaId, @Param("dataInicio") LocalDate dataInicio, @Param("dataFim") LocalDate dataFim, Pageable pageable);
 
 }
