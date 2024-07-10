@@ -59,6 +59,7 @@ export default function PostEvent() {
     descricao: false,
     estado: false,
     cep: false,
+    eventoData: false,
     dataEvento: false,
     horaEvento: false,
     valor: false,
@@ -100,7 +101,7 @@ export default function PostEvent() {
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement> | { target: { name: string; value: string } }
   ) => {
     const { name, value } = 'target' in event ? event.target : event;
-  
+
     if ('type' in event) {
       const { type } = event;
       if (type === 'file' && event.target instanceof HTMLInputElement) {
@@ -114,45 +115,68 @@ export default function PostEvent() {
         }
       } else {
         let newValue: string | number = value;
-  
+
         if (name === 'valor') {
           newValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
         }
-  
+
         setFormData((prevState) => {
           const updatedFormData = { ...prevState, [name]: newValue };
-  
+
           if (name === 'eventoData' || name === 'horaEvento') {
             const combinedDateTime = combineDateTime(updatedFormData.eventoData, updatedFormData.horaEvento);
             updatedFormData.dataEvento = combinedDateTime;
+
+            // Verificar se a data do evento é uma data passada
+            if (name === 'eventoData') {
+              const selectedDate = new Date(value);
+              const today = new Date();
+              today.setHours(0, 0, 0, 0); // Remover a parte de horas para comparação
+              if (selectedDate < today) {
+                setErrors((prevErrors) => ({ ...prevErrors, eventoData: true }));
+              } else {
+                setErrors((prevErrors) => ({ ...prevErrors, eventoData: false }));
+              }
+            }
           }
-  
+
           if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
             buscarEndereco(value);
           }
-  
+
           return updatedFormData;
         });
       }
     } else {
       let newValue: string | number = value;
-  
+
       if (name === 'valor') {
         newValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
       }
-  
+
       setFormData((prevState) => {
         const updatedFormData = { ...prevState, [name]: newValue };
-  
+
         if (name === 'eventoData' || name === 'horaEvento') {
           const combinedDateTime = combineDateTime(updatedFormData.eventoData, updatedFormData.horaEvento);
           updatedFormData.dataEvento = combinedDateTime;
+
+          if (name === 'eventoData') {
+            const selectedDate = new Date(value);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            if (selectedDate < today) {
+              setErrors((prevErrors) => ({ ...prevErrors, eventoData: true }));
+            } else {
+              setErrors((prevErrors) => ({ ...prevErrors, eventoData: false }));
+            }
+          }
         }
-  
+
         if (name === 'cep' && value.replace(/\D/g, '').length === 8) {
           buscarEndereco(value);
         }
-  
+
         return updatedFormData;
       });
     }
@@ -445,18 +469,19 @@ export default function PostEvent() {
                       />
                     </div>
                     <div className="relative">
-                      <label htmlFor='eventoData' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
+                      <label htmlFor="eventoData" className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
                         Data do Evento
                       </label>
                       <input
                         placeholder="Data Evento"
-                        id='eventoData'
-                        name='eventoData'
+                        id="eventoData"
+                        name="eventoData"
                         value={formData.eventoData}
                         onChange={handleChange}
                         type="date"
-                        className="border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md"
+                        className={`border placeholder-gray-400 focus:outline-none focus:border-black w-full pt-4 pr-4 pb-4 pl-4 mt-2 mr-0 mb-0 ml-0 text-base block bg-white border-gray-300 rounded-md ${errors.eventoData ? 'border-red-500' : ''}`}
                       />
+                      {errors.eventoData && <p style={{ color: 'red' }}>Data inválida.</p>}
                     </div>
                     <div className="relative mt-4">
                       <label htmlFor='horaEvento' className="bg-white pt-0 pr-2 pb-0 pl-2 -mt-3 mr-0 mb-0 ml-2 font-medium text-gray-600 absolute">
@@ -508,6 +533,7 @@ export default function PostEvent() {
                     )}
                     <div className="relative">
                       <button type='submit'
+                        disabled={errors.eventoData}
                         className="w-full inline-block pt-4 pr-5 pb-4 pl-5 text-xl font-medium text-center text-white bg-indigo-500
                           rounded-lg transition duration-200 hover:bg-indigo-600 ease">
                         {isLoading ? (
