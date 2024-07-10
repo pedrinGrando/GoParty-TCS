@@ -71,15 +71,15 @@ public class EventoController {
         int numberOfLikes = curtidaService.countCurtidasByUsuarioId(usuarioId);
         return ResponseEntity.ok(numberOfLikes);
     }
-
     @GetMapping("/buscar-evento/{eventoId}")
     public ResponseEntity<?> buscarEventoPeloId(@PathVariable Long eventoId) {
-       try {
-           return ResponseEntity.ok(eventoService.buscarEventoPorId(eventoId));
-       } catch (AppException exception) {
-           return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
-       }
+        try {
+            return ResponseEntity.ok(eventoService.buscarEventoPorId(eventoId));
+        } catch (AppException exception) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(exception.getMessage());
+        }
     }
+
 
     @GetMapping("/buscar-por-usuario/{userId}")
     public ResponseEntity<?> buscarEventoPorUserId(@PathVariable Long userId) {
