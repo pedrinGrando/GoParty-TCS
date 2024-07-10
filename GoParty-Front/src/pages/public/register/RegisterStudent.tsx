@@ -554,6 +554,7 @@ export default function RegisterStudent() {
                       isCpfInUse ||
                       !isValidPass ||
                       errors.dataNasci ||
+                      !isEducational ||
                       !isValidEmail ||
                       !isEmailUnique ||
                       !isUsernameUnique ||
