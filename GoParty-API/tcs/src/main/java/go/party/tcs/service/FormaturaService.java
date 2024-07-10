@@ -54,11 +54,14 @@ public class FormaturaService {
 
     public Formatura cadastrarAdm(Long userId, Formatura formatura) throws AppException{
         Usuario usuario = usuarioService.findById(userId);
-        if (usuario.isAdm()){
-            throw new AppException("Usuario já é ADM!");
+        if (usuario.getTipoUsuario().equals(TipoUsuario.ADM)) {
+            throw new AppException("Usuario ja ADM!");
         }
-        if(usuario.isNotStudent()) {
-            throw new AppException("Usuario não é estudante");
+        if (usuario.getTipoUsuario().equals(TipoUsuario.MEMBER)) {
+            throw new AppException("Usuario ja MEMBER!");
+        }
+        if (!usuario.getTipoUsuario().equals(TipoUsuario.STUDENT)) {
+            throw new AppException("Usuario nao estudante!");
         }
         formatura = this.cadastrarFormatura(usuario, formatura);
         this.saveUsuario(usuario, formatura);
